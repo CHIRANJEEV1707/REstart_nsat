@@ -210,5 +210,3 @@ erDiagram
 * Phase 3: Reviews, print-friendly pages, comparisons
 --- 
 
-Do you want me to also add a **MongoDB document reference diagram** in Mermaid (class diagram style), so both relational and non-relational models are captured in the README?
-```

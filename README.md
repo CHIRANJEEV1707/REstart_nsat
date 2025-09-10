@@ -172,8 +172,8 @@ erDiagram
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-org/restart.git
-   cd restart
+   https://github.com/CodeMaverick-143/RE_START.git
+   cd RE_START
    ```
 
 2. Install dependencies:

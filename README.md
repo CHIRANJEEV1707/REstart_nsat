@@ -207,6 +207,6 @@ erDiagram
 * Phase 0: Data model, CMS, seed 50 colleges and 3 exams
 * Phase 1: Auth, Discovery, College Detail, Exams pages
 * Phase 2: Prep Guidance, Saved/Reminders, emails
-* Phase 3: Reviews, print-friendly pages, comparisons
+* Phase 3: Reviews, print-friendly pages, comparisons.
 --- 
 

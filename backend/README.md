@@ -21,23 +21,18 @@ cp .env.example .env
 python manage.py migrate
 python manage.py createsuperuser
 
-# Create Elasticsearch index
-python manage.py search_index --create
+# Seed the database with test data
+python seed_db.py
 
 # Run server
 python manage.py runserver
-
-# In separate terminals:
-celery -A config worker -l info
-celery -A config beat -l info
 ```
 
 ## 📋 Prerequisites
 
 - **Python 3.8+**
 - **MySQL 8.0+**
-- **Elasticsearch 8.11+**
-- **Redis 5.0+**
+- **Redis 5.0+** (optional, for caching)
 
 ## 🏗️ Architecture
 
@@ -45,10 +40,8 @@ celery -A config beat -l info
 
 - **Django 5.0** - Web framework
 - **Django REST Framework** - API framework
-- **MySQL** - Primary database with read replica support
-- **Elasticsearch** - Full-text search for college discovery
-- **Redis** - Caching and message broker
-- **Celery** - Async task processing
+- **MySQL** - Primary database
+- **Redis** - Caching and message broker (optional)
 - **JWT** - Token-based authentication
 
 ### Modular App Structure
@@ -56,7 +49,7 @@ celery -A config beat -l info
 ```
 backend/
 ├── users/          # Authentication & user management
-├── colleges/       # College data with Elasticsearch
+├── colleges/       # College data
 ├── exams/          # Exam management
 ├── guidance/       # Preparation plans
 ├── interactions/   # Shortlist, reminders, reviews
@@ -65,17 +58,10 @@ backend/
 
 ## 🔑 Key Features
 
-### ⚡ Elasticsearch-Powered Search
-- **Zero MySQL queries** for college search
-- Full-text search with fuzzy matching
+### 🔍 Advanced College Search
+- Full-text search with filtering
 - Advanced filtering (fees, location, exams, degrees)
-- Sub-100ms response times
-
-### 🔄 Async Task Processing
-- Email reminders via Celery
-- Bulk data imports
-- Review notifications
-- Daily index updates
+- Fast response times
 
 ### 🔐 Security & Compliance
 - JWT authentication with token rotation
@@ -90,12 +76,6 @@ backend/
 - Review moderation queue
 - Draft/publish workflow
 
-## 📚 Documentation
-
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and scalability
-- **[SETUP_NEW.md](SETUP_NEW.md)** - Detailed setup instructions
-- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - Complete API reference
-
 ## 🔌 API Endpoints
 
 ### Authentication
@@ -103,7 +83,7 @@ backend/
 - `POST /api/auth/verify-otp/` - Verify & login
 - `POST /api/auth/google/` - Google OAuth
 
-### College Discovery (Elasticsearch)
+### College Discovery
 - `GET /api/colleges/` - Search with filters
 - `GET /api/colleges/:id/` - Details (cached)
 - `GET /api/colleges/:id/reviews/` - Reviews
@@ -125,15 +105,6 @@ backend/
 ```bash
 # Django
 python manage.py runserver
-
-# Celery Worker
-celery -A config worker -l info
-
-# Celery Beat (Scheduler)
-celery -A config beat -l info
-
-# Celery Flower (Monitoring)
-celery -A config flower
 ```
 
 ### Database Migrations
@@ -143,17 +114,11 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Elasticsearch
+### Database Seeding
 
 ```bash
-# Create index
-python manage.py search_index --create
-
-# Rebuild index
-python manage.py search_index --rebuild -f
-
-# Populate index
-python manage.py search_index --populate
+# Seed the database with test data
+python seed_db.py
 ```
 
 ## 🧪 Testing
@@ -181,15 +146,6 @@ Access at: `http://localhost:8000/admin/`
 - djangorestframework 3.14.0
 - mysqlclient 2.2.1
 
-### Search & Cache
-- elasticsearch 8.11.1
-- django-elasticsearch-dsl 8.0
-- django-redis 5.4.0
-
-### Async
-- celery 5.3.4
-- django-celery-beat 2.5.0
-
 ### Auth
 - djangorestframework-simplejwt 5.3.1
 - django-allauth 0.57.0
@@ -206,8 +162,7 @@ Access at: `http://localhost:8000/admin/`
 - [ ] Configure `ALLOWED_HOSTS`
 - [ ] Use strong `SECRET_KEY`
 - [ ] Setup MySQL read replicas
-- [ ] Configure Elasticsearch cluster
-- [ ] Setup Redis cluster
+- [ ] Configure Redis (optional)
 - [ ] Use Gunicorn/uWSGI
 - [ ] Configure Nginx reverse proxy
 - [ ] Setup SSL certificates
@@ -218,11 +173,9 @@ Access at: `http://localhost:8000/admin/`
 
 See `.env.example` for all required variables:
 - Database credentials
-- Elasticsearch host
-- Redis URL
+- Redis URL (optional)
 - Email configuration
 - Google OAuth credentials
-- Celery broker URL
 
 ## 📊 Scalability
 
@@ -231,20 +184,10 @@ See `.env.example` for all required variables:
 - Connection pooling
 - Optimized indexes
 
-### Search
-- Elasticsearch cluster
-- Horizontal scaling
-- Sharding support
-
 ### Caching
-- Redis cluster
+- Redis cluster (optional)
 - Cache warming
 - CDN integration
-
-### Async Processing
-- Multiple Celery workers
-- Task routing
-- Rate limiting
 
 ## 🐛 Troubleshooting
 
@@ -256,20 +199,6 @@ See `.env.example` for all required variables:
 brew services list | grep mysql
 sudo systemctl status mysql
 ```
-
-**Elasticsearch Connection Error**
-```bash
-# Verify Elasticsearch
-curl http://localhost:9200
-```
-
-**Celery Tasks Not Running**
-```bash
-# Check worker status
-celery -A config inspect active
-```
-
-See [SETUP_NEW.md](SETUP_NEW.md) for detailed troubleshooting.
 
 ## 📝 API Examples
 
@@ -324,15 +253,8 @@ Proprietary - REstart Platform
 
 REstart Development Team
 
-## 📞 Support
-
-For issues or questions:
-- Check documentation
-- Review troubleshooting guide
-- Contact development team
-
 ---
 
-**Version**: 2.0  
-**Last Updated**: 2025-01-22  
+**Version**: 2.1  
+**Last Updated**: 2025-10-26  
 **Status**: Production Ready

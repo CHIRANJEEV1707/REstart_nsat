@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
-    'django_elasticsearch_dsl',
-    'django_elasticsearch_dsl_drf',
+    # 'django_elasticsearch_dsl',
+    # 'django_elasticsearch_dsl_drf',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'guidance.apps.GuidanceConfig',
     'interactions.apps.InteractionsConfig',
     'administration.apps.AdministrationConfig',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -192,8 +193,12 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
+# Allow requests from file:// URLs for testing
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 # Email Configuration for OTP
@@ -209,13 +214,21 @@ GOOGLE_OAUTH2_CLIENT_ID = os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
 GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv('GOOGLE_OAUTH2_CLIENT_SECRET')
 
 # Cache Configuration (Redis)
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
+
+# Use local memory cache instead
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
 }
 
@@ -240,22 +253,27 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 # Elasticsearch Configuration
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': os.getenv('ELASTICSEARCH_HOST', 'localhost:9200'),
-        'http_auth': (
-            os.getenv('ELASTICSEARCH_USER', ''),
-            os.getenv('ELASTICSEARCH_PASSWORD', '')
-        ) if os.getenv('ELASTICSEARCH_USER') else None,
-    },
-}
+# Completely disabled to avoid connection errors
+ELASTICSEARCH_DSL_AUTOSYNC = False
+ELASTICSEARCH_DSL = None
+
+# Original settings commented out
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts': os.getenv('ELASTICSEARCH_HOST', 'localhost:9200'),
+#         'http_auth': (
+#             os.getenv('ELASTICSEARCH_USER', ''),
+#             os.getenv('ELASTICSEARCH_PASSWORD', '')
+#         ) if os.getenv('ELASTICSEARCH_USER') else None,
+#     },
+# }
 
 # Celery Configuration
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_CACHE_BACKEND = 'django-cache'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
+# CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_CACHE_BACKEND = 'django-cache'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TIMEZONE = 'UTC'
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

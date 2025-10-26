@@ -134,7 +134,7 @@ class CollegeSearchView(APIView):
 class CollegeViewSet(viewsets.ModelViewSet):
     """
     ViewSet for College CRUD operations.
-    List view uses Elasticsearch, detail view uses MySQL with caching.
+    List view uses database, detail view uses MySQL with caching.
     """
     queryset = College.objects.all()
     permission_classes = [permissions.AllowAny]
@@ -153,9 +153,32 @@ class CollegeViewSet(viewsets.ModelViewSet):
         return [permissions.AllowAny()]
     
     def list(self, request, *args, **kwargs):
-        """Redirect to Elasticsearch search"""
-        search_view = CollegeSearchView.as_view()
-        return search_view(request._request)
+        """Use database instead of Elasticsearch for testing"""
+        # Get query parameters
+        state = request.query_params.get('state')
+        fees_annual__lte = request.query_params.get('fees_annual__lte')
+        
+        # Start with all colleges
+        queryset = College.objects.filter(status='published')
+        
+        # Apply filters if provided
+        if state:
+            queryset = queryset.filter(state=state)
+        
+        if fees_annual__lte:
+            queryset = queryset.filter(fees_annual__lte=int(fees_annual__lte))
+        
+        # Order by restart_score by default
+        queryset = queryset.order_by('-restart_score')
+        
+        # Use pagination from DRF
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
     
     def retrieve(self, request, *args, **kwargs):
         """Get college detail with Redis caching"""

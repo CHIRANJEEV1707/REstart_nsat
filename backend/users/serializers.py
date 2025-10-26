@@ -72,5 +72,15 @@ class OTPVerifySerializer(serializers.Serializer):
 
 class GoogleAuthSerializer(serializers.Serializer):
     """Serializer for Google OAuth"""
-    access_token = serializers.CharField()
-    id_token = serializers.CharField(required=False)
+    access_token = serializers.CharField(required=False)
+    id_token = serializers.CharField(required=True)
+    
+    def validate(self, data):
+        """
+        Check that at least one of access_token or id_token is provided.
+        """
+        if not data.get('access_token') and not data.get('id_token'):
+            raise serializers.ValidationError(
+                "Either access_token or id_token must be provided."
+            )
+        return data

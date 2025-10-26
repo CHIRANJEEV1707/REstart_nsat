@@ -1,41 +1,37 @@
-import type { Metadata } from "next";
-import { Inter, Figtree } from "next/font/google";
-import "./globals.css";
-import { Providers } from "@/components/providers";
-import { Navbar } from "@/components/navbar";
-import { SmoothScroll } from "@/components/smooth-scroll";
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
+import { ThemeProvider } from '@/providers/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const figtree = Figtree({
-  subsets: ["latin"],
-  variable: "--font-figtree",
-});
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
 
 export const metadata: Metadata = {
-  title: "REstart - Find Your Perfect College",
-  description: "Discover colleges, prepare for exams, and plan your future with personalized guidance",
-  keywords: ["college", "education", "exams", "JEE", "NEET", "admission", "university", "career"],
+  title: 'REstart - Discover Your College Journey',
+  description: 'Modern platform helping students discover colleges, prepare for exams, and plan their future with personalized guidance.',
+  keywords: ['college', 'education', 'career planning', 'exams', 'students'],
+  authors: [{ name: 'REstart' }],
+  viewport: 'width=device-width, initial-scale=1',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${figtree.variable} font-sans antialiased`}>
-        <Providers>
-          <SmoothScroll />
-          <Navbar />
-          <main className="pt-16">
-            {children}
-          </main>
-        </Providers>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

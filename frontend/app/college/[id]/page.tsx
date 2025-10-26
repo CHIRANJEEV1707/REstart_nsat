@@ -1,380 +1,302 @@
-"use client";
+"use client"
 
-import { useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { MapPin, Globe, Calendar, GraduationCap, Check, Heart, Star, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { api } from "@/lib/api";
-import { useAuthStore } from "@/lib/stores/auth";
-import { toast } from "react-hot-toast";
+import { motion } from 'framer-motion';
+import { ArrowLeft, MapPin, Users, Star, Award, BookOpen, Calendar, DollarSign, ExternalLink, Heart, Share2 } from 'lucide-react';
+import Link from 'next/link';
+import { Navbar } from '@/components/shared/navbar';
+import { Footer } from '@/components/shared/footer';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-type College = {
-  id: number;
-  name: string;
-  city: string;
-  state: string;
-  website_url: string;
-  logo_url: string | null;
-  established_year: number;
-  rating: number;
-  fees_min: number;
-  fees_max: number;
-  overview: string;
-  is_saved?: boolean;
-  degrees: Array<{ id: number; name: string }>;
-  exams: Array<{ id: number; name: string; code: string }>;
-  important_dates: Array<{
-    id: number;
-    type: string;
-    date: string;
-    description: string;
-  }>;
+const collegeData: Record<string, any> = {
+  '1': {
+    name: 'Massachusetts Institute of Technology',
+    location: 'Cambridge',
+    state: 'Massachusetts',
+    rating: 4.8,
+    students: 11520,
+    image: 'https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg',
+    type: 'Private',
+    established: 1861,
+    accreditation: 'NEASC',
+    tuitionFee: '$53,790',
+    description: 'MIT is a world-renowned institution known for its cutting-edge research and innovation in science, engineering, and technology. The institute combines rigorous academics with hands-on learning experiences.',
+    courses: [
+      'Computer Science',
+      'Electrical Engineering',
+      'Mechanical Engineering',
+      'Physics',
+      'Mathematics',
+      'Biology',
+      'Economics',
+      'Chemical Engineering',
+    ],
+    facilities: [
+      'State-of-the-art Research Labs',
+      'Modern Library System',
+      'Sports Complex',
+      'Student Housing',
+      'Innovation Centers',
+      'Dining Halls',
+    ],
+    reviews: [
+      {
+        name: 'Sarah Johnson',
+        rating: 5,
+        date: '2024-01-15',
+        comment: 'Outstanding research opportunities and world-class faculty. The collaborative environment pushes you to excel.',
+      },
+      {
+        name: 'Michael Chen',
+        rating: 5,
+        date: '2024-01-10',
+        comment: 'The best decision I made for my career. Amazing resources and networking opportunities.',
+      },
+    ],
+  },
 };
 
-export default function CollegeDetailPage() {
-  const { id } = useParams();
-  const { isAuthenticated } = useAuthStore();
-  const overviewRef = useRef<HTMLDivElement>(null);
-  const feesRef = useRef<HTMLDivElement>(null);
-  const datesRef = useRef<HTMLDivElement>(null);
-  
-  const { data: college, isLoading, error } = useQuery({
-    queryKey: ["college", id],
-    queryFn: async () => {
-      const response = await api.get(`/colleges/${id}/`);
-      return response.data;
-    },
-  });
-
-  const handleSaveCollege = async () => {
-    if (!isAuthenticated) {
-      toast.error("Please sign in to save colleges");
-      return;
-    }
-    
-    try {
-      await api.post("/saved/", { college: id });
-      toast.success("College saved to your list");
-    } catch (error) {
-      toast.error("Failed to save college");
-      console.error(error);
-    }
-  };
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.6 }
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen py-8">
-        <div className="container mx-auto px-4">
-          <div className="animate-pulse">
-            <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
-            <div className="h-64 bg-muted rounded-lg mb-8"></div>
-            <div className="space-y-4">
-              <div className="h-4 bg-muted rounded w-3/4"></div>
-              <div className="h-4 bg-muted rounded w-full"></div>
-              <div className="h-4 bg-muted rounded w-5/6"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !college) {
-    return (
-      <div className="min-h-screen py-8">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-2xl font-bold text-destructive mb-4">Failed to load college details</h1>
-          <p className="text-muted-foreground mb-6">There was an error retrieving the college information.</p>
-          <Link href="/discover">
-            <Button>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Discover
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
+export default function CollegePage({ params }: { params: { id: string } }) {
+  const college = collegeData[params.id] || collegeData['1'];
 
   return (
-    <div className="min-h-screen py-8">
-      <div className="container mx-auto px-4">
-        {/* Back Button */}
-        <div className="mb-6">
-          <Link href="/discover">
-            <Button variant="ghost" className="pl-0 hover:pl-2 transition-all">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Discover
-            </Button>
-          </Link>
-        </div>
+    <main className="min-h-screen bg-background">
+      <Navbar />
 
-        {/* College Header */}
-        <div className="flex flex-col md:flex-row gap-6 items-start mb-8">
-          <div className="w-full md:w-24 h-24 bg-primary/5 rounded-lg flex items-center justify-center flex-shrink-0">
-            {college.logo_url ? (
-              <img 
-                src={college.logo_url} 
-                alt={college.name} 
-                className="w-full h-full object-contain p-2"
-              />
-            ) : (
-              <GraduationCap className="h-12 w-12 text-primary/30" />
-            )}
-          </div>
-          
-          <div className="flex-1">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">{college.name}</h1>
-                <div className="flex items-center text-muted-foreground mb-1">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  <span>{college.city}, {college.state}</span>
-                </div>
-                <div className="flex items-center text-muted-foreground">
-                  <Globe className="h-4 w-4 mr-1" />
-                  <a 
-                    href={college.website_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors"
-                  >
-                    {college.website_url.replace(/^https?:\/\/(www\.)?/, '')}
-                  </a>
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex items-center gap-1 bg-primary/5 px-3 py-1.5 rounded-md">
-                  <Star className="h-4 w-4 text-amber-500" />
-                  <span className="font-medium">{college.rating.toFixed(1)}</span>
-                </div>
-                
-                <Button 
-                  variant="outline" 
-                  className="flex items-center gap-2"
-                  onClick={handleSaveCollege}
-                >
-                  <Heart className={`h-4 w-4 ${college.is_saved ? "fill-destructive text-destructive" : ""}`} />
-                  {college.is_saved ? "Saved" : "Save"}
+      <div className="pt-20">
+        <div className="relative h-96 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-500 to-cyan-500"
+            style={{
+              backgroundImage: `url(${college.image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+
+          <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-8">
+            <div>
+              <Link href="/discover">
+                <Button variant="ghost" className="mb-4">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Discover
                 </Button>
-              </div>
+              </Link>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="flex items-center space-x-2 mb-3">
+                  <Badge className="bg-white/90 text-foreground">{college.type}</Badge>
+                  <Badge variant="secondary">Established {college.established}</Badge>
+                </div>
+                <h1 className="text-4xl sm:text-5xl font-bold mb-3 font-[var(--font-space-grotesk)] text-white drop-shadow-lg">
+                  {college.name}
+                </h1>
+                <div className="flex items-center space-x-4 text-white/90">
+                  <div className="flex items-center">
+                    <MapPin className="h-5 w-5 mr-1" />
+                    <span>{college.location}, {college.state}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Star className="h-5 w-5 mr-1 fill-yellow-400 text-yellow-400" />
+                    <span className="font-semibold">{college.rating}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 mr-1" />
+                    <span>{college.students.toLocaleString()} students</span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="p-4">
-            <h3 className="text-sm font-medium text-muted-foreground mb-1">Established</h3>
-            <p className="text-xl font-semibold">{college.established_year}</p>
-          </Card>
-          
-          <Card className="p-4">
-            <h3 className="text-sm font-medium text-muted-foreground mb-1">Fee Range</h3>
-            <p className="text-xl font-semibold">₹{college.fees_min.toLocaleString()} - ₹{college.fees_max.toLocaleString()}</p>
-          </Card>
-          
-          <Card className="p-4">
-            <h3 className="text-sm font-medium text-muted-foreground mb-1">Degrees</h3>
-            <p className="text-xl font-semibold">{college.degrees?.length || 0}</p>
-          </Card>
-          
-          <Card className="p-4">
-            <h3 className="text-sm font-medium text-muted-foreground mb-1">Accepts Exams</h3>
-            <p className="text-xl font-semibold">{college.exams?.length || 0}</p>
-          </Card>
-        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Tabs defaultValue="overview" className="space-y-8">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="courses">Courses</TabsTrigger>
+                  <TabsTrigger value="facilities">Facilities</TabsTrigger>
+                  <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                </TabsList>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            {/* Overview Section */}
-            <motion.div 
-              ref={overviewRef}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.2
-                  }
-                }
-              }}
-            >
-              <motion.h2 
-                className="text-2xl font-bold mb-4"
-                variants={fadeInUp}
-              >
-                Overview
-              </motion.h2>
-              
-              <motion.div 
-                className="prose dark:prose-invert max-w-none"
-                variants={fadeInUp}
-              >
-                <p>{college.overview}</p>
-              </motion.div>
-            </motion.div>
-
-            {/* Degrees Section */}
-            <motion.div
-              ref={feesRef}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.2
-                  }
-                }
-              }}
-            >
-              <motion.h2 
-                className="text-2xl font-bold mb-4"
-                variants={fadeInUp}
-              >
-                Degrees Offered
-              </motion.h2>
-              
-              <motion.div 
-                className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                variants={fadeInUp}
-              >
-                {college.degrees?.map((degree: { id: number; name: string }) => (
-                  <div 
-                    key={degree.id}
-                    className="bg-card border border-border rounded-md p-3 flex items-center gap-3"
+                <TabsContent value="overview" className="space-y-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                   >
-                    <div className="bg-primary/10 p-2 rounded-full">
-                      <GraduationCap className="h-5 w-5 text-primary" />
-                    </div>
-                    <span>{degree.name}</span>
-                  </div>
-                ))}
-              </motion.div>
-            </motion.div>
+                    <Card>
+                      <CardContent className="p-6">
+                        <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]">
+                          About {college.name}
+                        </h2>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {college.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
 
-            {/* Important Dates */}
-            <motion.div
-              ref={datesRef}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.2
-                  }
-                }
-              }}
-            >
-              <motion.h2 
-                className="text-2xl font-bold mb-4"
-                variants={fadeInUp}
-              >
-                Important Dates
-              </motion.h2>
-              
-              <motion.div variants={fadeInUp}>
-                {college.important_dates?.length > 0 ? (
-                  <div className="space-y-3">
-                    {college.important_dates.map((date: { id: number; type: string; date: string; description: string }) => (
-                      <div 
-                        key={date.id}
-                        className="bg-card border border-border rounded-md p-4 flex gap-4"
-                      >
-                        <div className="bg-primary/10 h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Calendar className="h-5 w-5 text-primary" />
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <Card>
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold mb-4 font-[var(--font-space-grotesk)]">
+                          Key Highlights
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="flex items-start space-x-3">
+                            <Award className="h-5 w-5 text-primary mt-1" />
+                            <div>
+                              <div className="font-semibold">Accreditation</div>
+                              <div className="text-sm text-muted-foreground">{college.accreditation}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start space-x-3">
+                            <Calendar className="h-5 w-5 text-primary mt-1" />
+                            <div>
+                              <div className="font-semibold">Established</div>
+                              <div className="text-sm text-muted-foreground">{college.established}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start space-x-3">
+                            <Users className="h-5 w-5 text-primary mt-1" />
+                            <div>
+                              <div className="font-semibold">Total Students</div>
+                              <div className="text-sm text-muted-foreground">{college.students.toLocaleString()}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start space-x-3">
+                            <DollarSign className="h-5 w-5 text-primary mt-1" />
+                            <div>
+                              <div className="font-semibold">Annual Tuition</div>
+                              <div className="text-sm text-muted-foreground">{college.tuitionFee}</div>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-medium mb-1">{date.type}</h3>
-                          <p className="text-sm text-muted-foreground mb-1">{new Date(date.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                          <p className="text-sm">{date.description}</p>
-                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </TabsContent>
+
+                <TabsContent value="courses">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-bold mb-4 font-[var(--font-space-grotesk)]">
+                        Popular Courses
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {college.courses.map((course: string) => (
+                          <div
+                            key={course}
+                            className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                          >
+                            <BookOpen className="h-5 w-5 text-primary" />
+                            <span>{course}</span>
+                          </div>
+                        ))}
                       </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="facilities">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-bold mb-4 font-[var(--font-space-grotesk)]">
+                        Campus Facilities
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {college.facilities.map((facility: string) => (
+                          <div
+                            key={facility}
+                            className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50"
+                          >
+                            <div className="h-2 w-2 rounded-full bg-primary" />
+                            <span>{facility}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="reviews">
+                  <div className="space-y-4">
+                    {college.reviews.map((review: any, index: number) => (
+                      <Card key={index}>
+                        <CardContent className="p-6">
+                          <div className="flex items-center justify-between mb-3">
+                            <div>
+                              <div className="font-semibold">{review.name}</div>
+                              <div className="text-sm text-muted-foreground">{review.date}</div>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              {[...Array(review.rating)].map((_, i) => (
+                                <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-muted-foreground">{review.comment}</p>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-muted-foreground">No important dates available at this time.</p>
-                )}
-              </motion.div>
-            </motion.div>
-          </div>
+                </TabsContent>
+              </Tabs>
+            </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Exams Accepted */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Exams Accepted</h2>
-              
-              {college.exams?.length > 0 ? (
-                <div className="space-y-3">
-                  {college.exams.map((exam: { id: number; name: string; code: string }) => (
-                    <Link 
-                      key={exam.id}
-                      href={`/exams/${exam.code}`}
-                      className="flex items-center justify-between p-3 bg-muted/50 hover:bg-muted rounded-md transition-colors"
-                    >
-                      <span>{exam.name}</span>
-                      <span className="text-sm font-medium bg-primary/10 text-primary px-2 py-0.5 rounded">{exam.code}</span>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground">No exam information available.</p>
-              )}
-            </Card>
+            <div className="space-y-6">
+              <Card className="sticky top-24">
+                <CardContent className="p-6">
+                  <div className="text-3xl font-bold mb-2">{college.tuitionFee}</div>
+                  <div className="text-sm text-muted-foreground mb-6">Annual Tuition Fee</div>
 
-            {/* How to Get In */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">How to Get In</h2>
-              
-              <ul className="space-y-3">
-                {[
-                  "Check eligibility criteria",
-                  "Prepare for entrance exams",
-                  "Submit application before deadline",
-                  "Prepare for interviews (if applicable)",
-                  "Check scholarship opportunities"
-                ].map((step, index) => (
-                  <motion.li 
-                    key={index}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="bg-primary/10 rounded-full p-1">
-                      <Check className="h-4 w-4 text-primary" />
-                    </div>
-                    <span>{step}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </Card>
+                  <div className="space-y-3">
+                    <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
+                      Apply Now
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      <Heart className="mr-2 h-4 w-4" />
+                      Save College
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      <Share2 className="mr-2 h-4 w-4" />
+                      Share
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Visit Website
+                    </Button>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t">
+                    <h4 className="font-semibold mb-3">Need Help?</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Get personalized guidance from our experts
+                    </p>
+                    <Button variant="outline" className="w-full">
+                      Contact Advisor
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <Footer />
+    </main>
   );
 }

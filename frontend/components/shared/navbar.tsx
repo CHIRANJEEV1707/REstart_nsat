@@ -5,8 +5,10 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Moon, Sun, GraduationCap, Menu, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import { UserMenu } from '@/components/shared/user-menu';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -21,6 +23,7 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const { status } = useSession();
 
   useEffect(() => {
     setMounted(true);
@@ -103,15 +106,21 @@ export function Navbar() {
               </Button>
             )}
 
-            <Link href="/auth/signin" className="hidden md:block">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
+            {status !== 'authenticated' ? (
+              <>
+                <Link href="/auth/signin" className="hidden md:block">
+                  <Button variant="ghost">Sign In</Button>
+                </Link>
 
-            <Link href="/auth/signup" className="hidden md:block">
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
-                Sign Up Free
-              </Button>
-            </Link>
+                <Link href="/auth/signup" className="hidden md:block">
+                  <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
+                    Sign Up Free
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <UserMenu />
+            )}
 
             <Button
               variant="ghost"
@@ -147,18 +156,28 @@ export function Navbar() {
                 </Button>
               </Link>
             ))}
-            <div className="pt-4 space-y-2">
-              <Link href="/auth/signin" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500">
-                  Sign Up Free
-                </Button>
-              </Link>
-            </div>
+            {status !== 'authenticated' ? (
+              <div className="pt-4 space-y-2">
+                <Link href="/auth/signin" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button variant="outline" className="w-full">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500">
+                    Sign Up Free
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="pt-4">
+                <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button variant="outline" className="w-full">
+                    Dashboard
+                  </Button>
+                </Link>
+              </div>
+            )}
           </motion.div>
         )}
       </div>

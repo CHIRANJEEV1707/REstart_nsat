@@ -1,9 +1,8 @@
 "use client"
 
+import { useSession } from "next-auth/react";
 import { motion } from 'framer-motion';
 import { BookMarked, TrendingUp, Calendar, Award, Settings, Bell, Heart, FileText } from 'lucide-react';
-import { Navbar } from '@/components/shared/navbar';
-import { Footer } from '@/components/shared/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -44,12 +43,12 @@ const achievements = [
 ];
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
+  const userName = session?.user?.name || "User";
+  
   return (
-    <main className="min-h-screen bg-background">
-      <Navbar />
-
-      <div className="pt-24 pb-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <>
+      <div className="mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -58,7 +57,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mb-2">
               <div>
                 <h1 className="text-4xl font-bold font-[var(--font-space-grotesk)]">
-                  Welcome back, <span className="text-gradient">John</span>
+                  Welcome back, <span className="text-gradient">{userName.split(" ")[0]}</span>
                 </h1>
                 <p className="text-muted-foreground mt-2">
                   Here's an overview of your college journey
@@ -301,9 +300,6 @@ export default function DashboardPage() {
             </motion.div>
           </div>
         </div>
-      </div>
-
-      <Footer />
-    </main>
+    </>
   );
 }

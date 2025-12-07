@@ -65,8 +65,8 @@ export default function ProfilePage() {
     const { name, value } = e.target;
     setProfileData((prev) => ({
       ...prev,
-      [name]: name === "class_level" || name === "budget_min" || name === "budget_max" 
-        ? parseInt(value) 
+      [name]: name === "class_level" || name === "budget_min" || name === "budget_max"
+        ? parseInt(value)
         : value,
     }));
   };
@@ -77,7 +77,7 @@ export default function ProfilePage() {
 
     try {
       const response = await apiClient.put("/users/profile/", profileData);
-      
+
       if (response.status === 200) {
         // Update session with new user data
         await update({
@@ -92,7 +92,7 @@ export default function ProfilePage() {
           title: "Profile Updated",
           description: "Your profile has been updated successfully.",
         });
-        
+
         setIsEditing(false);
       }
     } catch (error) {
@@ -116,11 +116,11 @@ export default function ProfilePage() {
 
   const userInitials = profileData.name
     ? profileData.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .substring(0, 2)
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2)
     : "U";
 
   return (
@@ -267,7 +267,7 @@ export default function ProfilePage() {
                     <div className="flex justify-end pt-4">
                       <Button
                         type="submit"
-                        className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+                        className="bg-primary hover:bg-primary/90"
                         disabled={isLoading}
                       >
                         {isLoading ? (

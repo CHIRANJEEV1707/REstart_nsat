@@ -13,36 +13,7 @@ const stats = [
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20" />
-
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-purple-400/30 to-blue-400/30 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [90, 0, 90],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-cyan-400/30 to-violet-400/30 rounded-full blur-3xl"
-        />
-      </div>
-
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
@@ -69,7 +40,7 @@ export function HeroSection() {
           >
             Discover Your
             <br />
-            <span className="text-gradient">Perfect College</span>
+            <span className="text-primary">Perfect College</span>
           </motion.h1>
 
           <motion.p
@@ -88,7 +59,7 @@ export function HeroSection() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
             <Link href="/discover">
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-lg px-8">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8">
                 Explore Colleges
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>

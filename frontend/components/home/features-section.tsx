@@ -57,7 +57,7 @@ export function FeaturesSection() {
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-[var(--font-space-grotesk)]">
             Everything You Need to
             <br />
-            <span className="text-gradient">Plan Your Future</span>
+            <span className="text-primary">Plan Your Future</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Comprehensive tools and resources to guide you through every step of your college journey.
@@ -75,8 +75,8 @@ export function FeaturesSection() {
             >
               <Card className="h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 group">
                 <CardContent className="p-6">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <feature.icon className="h-6 w-6 text-white" />
+                  <div className={`w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <feature.icon className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-bold mb-2 font-[var(--font-space-grotesk)]">
                     {feature.title}

@@ -24,7 +24,7 @@ export default function SignOutPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20" />
+      <div className="absolute inset-0 bg-background" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ export default function SignOutPage() {
             <div className="space-y-4">
               <Button
                 onClick={handleSignOut}
-                className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-base font-semibold"
+                className="w-full h-12 bg-primary hover:bg-primary/90 text-base font-semibold"
                 disabled={isLoading}
               >
                 {isLoading ? (

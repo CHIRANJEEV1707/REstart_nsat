@@ -114,8 +114,8 @@ export default function DiscoverPage() {
   const filteredColleges = mockColleges
     .filter(college => {
       const matchesSearch = college.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          college.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          college.state.toLowerCase().includes(searchQuery.toLowerCase());
+        college.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        college.state.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesType = collegeType === 'all' || college.type.toLowerCase() === collegeType;
       return matchesSearch && matchesType;
     })
@@ -139,7 +139,7 @@ export default function DiscoverPage() {
             <h1 className="text-4xl sm:text-5xl font-bold mb-4 font-[var(--font-space-grotesk)]">
               Discover Your
               <br />
-              <span className="text-gradient">Dream College</span>
+              <span className="text-primary">Dream College</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Explore top colleges and universities across the country

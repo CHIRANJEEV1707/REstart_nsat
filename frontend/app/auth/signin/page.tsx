@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, GraduationCap, Loader2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,7 +17,7 @@ export default function SignInPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const error = searchParams.get('error');
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,8 +27,8 @@ export default function SignInPage() {
   if (error) {
     toast({
       title: "Authentication Error",
-      description: error === "CredentialsSignin" 
-        ? "Invalid email or password" 
+      description: error === "CredentialsSignin"
+        ? "Invalid email or password"
         : "An error occurred during sign in",
       variant: "destructive",
     });
@@ -36,14 +37,14 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
       });
-      
+
       if (result?.error) {
         toast({
           title: "Authentication Error",
@@ -66,21 +67,9 @@ export default function SignInPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20" />
+      <div className="absolute inset-0 bg-background" />
 
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-purple-400/30 to-blue-400/30 rounded-full blur-3xl"
-        />
       </div>
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -90,8 +79,14 @@ export default function SignInPage() {
           className="max-w-md mx-auto"
         >
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
-            <GraduationCap className="h-10 w-10 text-primary" />
-            <span className="text-3xl font-bold font-[var(--font-space-grotesk)] text-gradient">
+            <Image
+              src="/Restart Logo.svg"
+              alt="REstart Logo"
+              width={40}
+              height={40}
+              className="h-10 w-10"
+            />
+            <span className="text-3xl font-bold font-[var(--font-space-grotesk)] text-primary">
               REstart
             </span>
           </Link>
@@ -161,7 +156,7 @@ export default function SignInPage() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-base font-semibold"
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-base font-semibold"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -186,9 +181,9 @@ export default function SignInPage() {
                 </div>
 
                 <div className="mt-6 grid grid-cols-2 gap-3">
-                  <Button 
-                    variant="outline" 
-                    className="h-12" 
+                  <Button
+                    variant="outline"
+                    className="h-12"
                     onClick={() => signIn('google', { callbackUrl })}
                     disabled={isLoading}
                   >
@@ -212,8 +207,8 @@ export default function SignInPage() {
                     </svg>
                     Google
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="h-12"
                     onClick={() => signIn('github', { callbackUrl })}
                     disabled={isLoading}

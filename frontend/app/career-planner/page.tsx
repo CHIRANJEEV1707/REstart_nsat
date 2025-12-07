@@ -93,7 +93,7 @@ export default function CareerPlannerPage() {
             <h1 className="text-4xl sm:text-5xl font-bold mb-4 font-[var(--font-space-grotesk)]">
               Plan Your
               <br />
-              <span className="text-gradient">Dream Career</span>
+              <span className="text-primary">Dream Career</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Discover your ideal career path with AI-powered guidance and expert insights
@@ -109,7 +109,7 @@ export default function CareerPlannerPage() {
             <Card className="glassmorphic border-2">
               <CardContent className="p-8">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
                     <Brain className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -136,7 +136,7 @@ export default function CareerPlannerPage() {
                     <Textarea placeholder="Tell us about your aspirations..." rows={4} />
                   </div>
 
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
+                  <Button className="w-full bg-primary hover:bg-primary/90">
                     Get AI Recommendations
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -166,8 +166,8 @@ export default function CareerPlannerPage() {
                   <Card className="h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${career.color} flex items-center justify-center`}>
-                          <career.icon className="h-6 w-6 text-white" />
+                        <div className={`h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center`}>
+                          <career.icon className="h-6 w-6 text-primary" />
                         </div>
                         <Badge variant="secondary">
                           Growth: {career.growth}

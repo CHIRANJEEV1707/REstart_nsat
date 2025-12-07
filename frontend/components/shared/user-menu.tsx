@@ -42,7 +42,7 @@ export function UserMenu() {
     return (
       <Button
         variant="default"
-        className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+        className="bg-primary hover:bg-primary/90"
         onClick={() => router.push("/auth/signin")}
       >
         Sign In
@@ -52,11 +52,11 @@ export function UserMenu() {
 
   const userInitials = session?.user?.name
     ? session.user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .substring(0, 2)
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2)
     : "U";
 
   return (

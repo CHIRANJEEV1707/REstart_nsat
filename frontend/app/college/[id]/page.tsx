@@ -68,14 +68,14 @@ export default function CollegePage({ params }: { params: { id: string } }) {
       <div className="pt-20">
         <div className="relative h-96 overflow-hidden">
           <div
-            className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-500 to-cyan-500"
+            className="absolute inset-0 bg-muted"
             style={{
               backgroundImage: `url(${college.image})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          <div className="absolute inset-0 bg-black/40" />
 
           <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-8">
             <div>
@@ -263,7 +263,7 @@ export default function CollegePage({ params }: { params: { id: string } }) {
                   <div className="text-sm text-muted-foreground mb-6">Annual Tuition Fee</div>
 
                   <div className="space-y-3">
-                    <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
+                    <Button className="w-full bg-primary hover:bg-primary/90">
                       Apply Now
                     </Button>
                     <Button variant="outline" className="w-full">

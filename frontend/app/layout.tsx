@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   keywords: ['college', 'education', 'career planning', 'exams', 'students'],
   authors: [{ name: 'REstart' }],
   viewport: 'width=device-width, initial-scale=1',
+  icons: {
+    icon: '/Restart_Logo.ico',
+  },
 };
 
 export default function RootLayout({

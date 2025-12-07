@@ -1,251 +1,325 @@
 "use client"
 
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from 'framer-motion';
-import { BookMarked, TrendingUp, Calendar, Award, Settings, Bell, Heart, FileText } from 'lucide-react';
+import { BookMarked, TrendingUp, Calendar, Award, Settings, Bell, Heart, FileText, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { toast } from "@/components/ui/use-toast";
+import apiClient from "@/lib/api-client";
 
-const savedColleges = [
-  {
-    id: 1,
-    name: 'MIT',
-    location: 'Cambridge, MA',
-    status: 'Application Pending',
-    deadline: '2024-12-15',
-  },
-  {
-    id: 2,
-    name: 'Stanford University',
-    location: 'Stanford, CA',
-    status: 'Saved',
-    deadline: '2024-12-20',
-  },
-  {
-    id: 3,
-    name: 'Harvard University',
-    location: 'Cambridge, MA',
-    status: 'Application Submitted',
-    deadline: '2024-12-10',
-  },
-];
+// Define types for our data
+interface SavedCollege {
+  id: number;
+  college: {
+    id: number;
+    name: string;
+    city: string;
+    state: string;
+  };
+  status?: string;
+  deadline?: string;
+}
 
-const upcomingExams = [
-  { name: 'SAT', date: '2024-11-15', status: 'Registered' },
-  { name: 'TOEFL', date: '2024-11-22', status: 'Pending' },
-];
+interface Exam {
+  id: number;
+  name: string;
+  date: string;
+  status: string;
+}
 
-const achievements = [
-  { icon: Award, title: 'Profile Complete', description: 'Completed your profile 100%' },
-  { icon: BookMarked, title: 'First College Saved', description: 'Saved your first college' },
-  { icon: TrendingUp, title: 'Career Path Selected', description: 'Completed career assessment' },
-];
+interface Achievement {
+  icon: any;
+  title: string;
+  description: string;
+}
 
 export default function DashboardPage() {
   const { data: session } = useSession();
   const userName = session?.user?.name || "User";
-  
+
+  // State for data
+  const [savedColleges, setSavedColleges] = useState<SavedCollege[]>([]);
+  const [upcomingExams, setUpcomingExams] = useState<Exam[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true);
+
+        // Fetch saved colleges
+        const collegesResponse = await apiClient.get('/saved-colleges/');
+        setSavedColleges(collegesResponse.data || []);
+
+        // Fetch upcoming exams (assuming there's an endpoint for user's exams)
+        try {
+          const examsResponse = await apiClient.get('/exams/upcoming/');
+          setUpcomingExams(examsResponse.data || []);
+        } catch (examError) {
+          console.error('Failed to fetch exams:', examError);
+          // Default to empty array if endpoint doesn't exist yet
+          setUpcomingExams([]);
+        }
+
+        // For achievements, we'll use static data for now
+        // This could be replaced with an API call in the future
+        setAchievements([
+          { icon: Award, title: 'Profile Complete', description: 'Completed your profile' },
+          { icon: BookMarked, title: 'First College Saved', description: 'Saved your first college' },
+          { icon: TrendingUp, title: 'Career Path Selected', description: 'Selected your career path' },
+        ]);
+
+        setIsLoading(false);
+      } catch (err: any) {
+        console.error('Error fetching dashboard data:', err);
+        setError(err.message || 'Failed to load dashboard data');
+        setIsLoading(false);
+        toast({
+          title: "Error",
+          description: "Failed to load dashboard data. Please try again.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh]">
+        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+        <p className="text-lg">Loading your dashboard...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh]">
+        <div className="text-red-500 mb-4">⚠️</div>
+        <p className="text-lg font-semibold">Something went wrong</p>
+        <p className="text-muted-foreground mb-4">{error}</p>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h1 className="text-4xl font-bold font-[var(--font-space-grotesk)]">
+                Welcome back, <span className="text-primary">{userName.split(" ")[0]}</span>
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                Here's an overview of your college journey
+              </p>
+            </div>
+            <Button variant="outline" size="icon">
+              <Settings className="h-5 w-5" />
+            </Button>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            transition={{ delay: 0.1 }}
           >
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <h1 className="text-4xl font-bold font-[var(--font-space-grotesk)]">
-                  Welcome back, <span className="text-gradient">{userName.split(" ")[0]}</span>
-                </h1>
-                <p className="text-muted-foreground mt-2">
-                  Here's an overview of your college journey
-                </p>
-              </div>
-              <Button variant="outline" size="icon">
-                <Settings className="h-5 w-5" />
-              </Button>
-            </div>
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <Heart className="h-8 w-8 text-primary" />
+                  <Badge variant="secondary">Active</Badge>
+                </div>
+                <div className="text-3xl font-bold mb-1">{savedColleges?.length || 0}</div>
+                <div className="text-sm text-muted-foreground">Saved Colleges</div>
+              </CardContent>
+            </Card>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <Heart className="h-8 w-8 text-primary" />
-                    <Badge variant="secondary">Active</Badge>
-                  </div>
-                  <div className="text-3xl font-bold mb-1">{savedColleges.length}</div>
-                  <div className="text-sm text-muted-foreground">Saved Colleges</div>
-                </CardContent>
-              </Card>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <FileText className="h-8 w-8 text-primary" />
+                  <Badge variant="secondary">In Progress</Badge>
+                </div>
+                <div className="text-3xl font-bold mb-1">2</div>
+                <div className="text-sm text-muted-foreground">Applications</div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <FileText className="h-8 w-8 text-primary" />
-                    <Badge variant="secondary">In Progress</Badge>
-                  </div>
-                  <div className="text-3xl font-bold mb-1">2</div>
-                  <div className="text-sm text-muted-foreground">Applications</div>
-                </CardContent>
-              </Card>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <Calendar className="h-8 w-8 text-primary" />
+                  <Badge variant="secondary">Upcoming</Badge>
+                </div>
+                <div className="text-3xl font-bold mb-1">{upcomingExams?.length || 0}</div>
+                <div className="text-sm text-muted-foreground">Exams Scheduled</div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <Calendar className="h-8 w-8 text-primary" />
-                    <Badge variant="secondary">Upcoming</Badge>
-                  </div>
-                  <div className="text-3xl font-bold mb-1">{upcomingExams.length}</div>
-                  <div className="text-sm text-muted-foreground">Exams Scheduled</div>
-                </CardContent>
-              </Card>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <Award className="h-8 w-8 text-primary" />
+                  <Badge variant="secondary">Earned</Badge>
+                </div>
+                <div className="text-3xl font-bold mb-1">{achievements?.length || 0}</div>
+                <div className="text-sm text-muted-foreground">Achievements</div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <Award className="h-8 w-8 text-primary" />
-                    <Badge variant="secondary">Earned</Badge>
-                  </div>
-                  <div className="text-3xl font-bold mb-1">{achievements.length}</div>
-                  <div className="text-sm text-muted-foreground">Achievements</div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="lg:col-span-2"
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-[var(--font-space-grotesk)]">Saved Colleges</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {savedColleges.map((college) => (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="lg:col-span-2"
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-[var(--font-space-grotesk)]">Saved Colleges</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {savedColleges.length > 0 ? (
+                    savedColleges.map((savedCollege) => (
                       <div
-                        key={college.id}
+                        key={savedCollege.id}
                         className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                       >
                         <div>
-                          <div className="font-semibold">{college.name}</div>
-                          <div className="text-sm text-muted-foreground">{college.location}</div>
+                          <div className="font-semibold">{savedCollege.college.name}</div>
+                          <div className="text-sm text-muted-foreground">{savedCollege.college.city}, {savedCollege.college.state}</div>
                         </div>
                         <div className="flex items-center space-x-3">
                           <Badge
-                            variant={
-                              college.status === 'Application Submitted'
-                                ? 'default'
-                                : college.status === 'Application Pending'
-                                ? 'secondary'
-                                : 'outline'
-                            }
+                            variant={savedCollege.status === 'Saved' ? 'outline' : 'secondary'}
                           >
-                            {college.status}
+                            {savedCollege.status || 'Saved'}
                           </Badge>
-                          <div className="text-sm text-muted-foreground">Due: {college.deadline}</div>
+                          {savedCollege.deadline && (
+                            <div className="text-sm text-muted-foreground">Due: {savedCollege.deadline}</div>
+                          )}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle className="font-[var(--font-space-grotesk)]">Profile Completion</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">Overall Progress</span>
-                        <span className="text-sm font-bold">85%</span>
-                      </div>
-                      <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
-                        <div className="bg-primary h-full transition-all" style={{ width: '85%' }} />
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Heart className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+                      <p>No saved colleges yet</p>
+                      <Button variant="outline" className="mt-4" onClick={() => window.location.href = '/discover'}>
+                        Discover Colleges
+                      </Button>
                     </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Personal Info</span>
-                        <span className="font-semibold text-green-600">Complete</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Academic Details</span>
-                        <span className="font-semibold text-green-600">Complete</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Test Scores</span>
-                        <span className="font-semibold text-yellow-600">Pending</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Essays</span>
-                        <span className="font-semibold text-yellow-600">In Progress</span>
-                      </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="font-[var(--font-space-grotesk)]">Profile Completion</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Overall Progress</span>
+                      <span className="text-sm font-bold">85%</span>
                     </div>
-
-                    <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
-                      Complete Profile
-                    </Button>
+                    <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+                      <div className="bg-primary h-full transition-all" style={{ width: '85%' }} />
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-[var(--font-space-grotesk)]">Upcoming Exams</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {upcomingExams.map((exam, index) => (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Personal Info</span>
+                      <span className="font-semibold text-green-600">Complete</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Academic Details</span>
+                      <span className="font-semibold text-green-600">Complete</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Test Scores</span>
+                      <span className="font-semibold text-yellow-600">Pending</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Essays</span>
+                      <span className="font-semibold text-yellow-600">In Progress</span>
+                    </div>
+                  </div>
+
+                  <Button className="w-full bg-primary hover:bg-primary/90">
+                    Complete Profile
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-[var(--font-space-grotesk)]">Upcoming Exams</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {upcomingExams.length > 0 ? (
+                    upcomingExams.map((exam, index) => (
                       <div
-                        key={index}
+                        key={exam.id || index}
                         className="flex items-center justify-between p-4 rounded-lg bg-muted/50"
                       >
                         <div className="flex items-center space-x-3">
@@ -259,33 +333,43 @@ export default function DashboardPage() {
                         </div>
                         <Badge variant="outline">{exam.status}</Badge>
                       </div>
-                    ))}
-                    <Button variant="outline" className="w-full">
-                      <Bell className="mr-2 h-4 w-4" />
-                      View All Exams
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Calendar className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+                      <p>No upcoming exams</p>
+                      <Button variant="outline" className="mt-4" onClick={() => window.location.href = '/exams'}>
+                        Browse Exams
+                      </Button>
+                    </div>
+                  )}
+                  <Button variant="outline" className="w-full">
+                    <Bell className="mr-2 h-4 w-4" />
+                    View All Exams
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-[var(--font-space-grotesk)]">Recent Achievements</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {achievements.map((achievement, index) => (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-[var(--font-space-grotesk)]">Recent Achievements</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {achievements.length > 0 ? (
+                    achievements.map((achievement, index) => (
                       <div
                         key={index}
                         className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50"
                       >
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center flex-shrink-0">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                           <achievement.icon className="h-5 w-5 text-white" />
                         </div>
                         <div>
@@ -293,13 +377,19 @@ export default function DashboardPage() {
                           <div className="text-sm text-muted-foreground">{achievement.description}</div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Award className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+                      <p>Complete tasks to earn achievements</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
+      </div>
     </>
   );
 }

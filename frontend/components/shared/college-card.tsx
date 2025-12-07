@@ -38,7 +38,7 @@ export function CollegeCard({
         <Card className="overflow-hidden h-full hover:shadow-2xl transition-shadow duration-300 border-2 hover:border-primary/50">
           <div className="relative h-48 overflow-hidden">
             <div
-              className="w-full h-full bg-gradient-to-br from-purple-400 via-blue-400 to-cyan-400"
+              className="w-full h-full bg-muted"
               style={{
                 backgroundImage: `url(${image})`,
                 backgroundSize: 'cover',
@@ -46,7 +46,7 @@ export function CollegeCard({
               }}
             />
             {featured && (
-              <Badge className="absolute top-3 right-3 bg-gradient-to-r from-purple-600 to-blue-500">
+              <Badge className="absolute top-3 right-3 bg-primary">
                 <Award className="h-3 w-3 mr-1" />
                 Featured
               </Badge>

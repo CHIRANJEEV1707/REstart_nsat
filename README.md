@@ -1,33 +1,88 @@
 # REstart Web App
 
-REstart is a web application that helps PCM (Physics, Chemistry, Math) students discover engineering colleges, understand admission criteria and timelines, and access structured preparation guidance.
+<div align="center">
 
-This repository contains the MVP implementation of REstart, including the backend (API + database) and frontend (Next.js + Tailwind).
+![REstart Logo](https://via.placeholder.com/200x200?text=REstart)
+
+**Empowering students to discover their perfect college, prepare for exams, and plan their future with confidence.**
+
+</div>
+
+REstart is a comprehensive web application that helps PCM (Physics, Chemistry, Math) students discover engineering colleges, understand admission criteria and timelines, and access structured preparation guidance. The platform provides personalized college recommendations, exam preparation resources, and career planning tools.
+
+This repository contains the full-stack implementation of REstart, including the Django backend (API + PostgreSQL database) and Next.js frontend (React + Tailwind CSS).
 
 ---
 
-## Features (MVP)
+## Features
 
-- Authentication (Email OTP / Google)
-- College Discovery & Filters
-- College Detail Pages (Overview, Fees, Scholarships, Dates, Exams)
-- Exams Module (JEE Main, JEE Advanced, State CETs)
-- Prep Guidance (PCM Weekly Plans)
-- Saved Colleges & Reminders
-- Admin CMS for managing colleges, exams, content
-- Reviews & Ratings (Phase 2)
+### Authentication System
+- Multiple authentication methods:
+  - Email OTP verification
+  - Google OAuth integration
+  - GitHub OAuth integration
+  - Email/Password authentication
+- JWT-based session management
+- Protected routes and middleware
+- User profile management
+
+### College Discovery
+- Advanced filtering and search
+- Interactive college cards
+- Responsive grid layout
+- Loading skeletons and animations
+
+### College Details
+- Comprehensive college profiles
+- Fee structure and scholarships
+- Exam requirements and deadlines
+- Interactive UI with animations
+
+### Exams Module
+- Exam information (JEE Main, JEE Advanced, State CETs)
+- Important dates and deadlines
+- Syllabus and pattern details
+- Preparation resources
+
+### User Dashboard
+- Personalized overview
+- Saved colleges management
+- Exam preparation tracking
+- Profile settings
+
+### Additional Features
+- Dark/Light theme toggle
+- Responsive design for all devices
+- Animated UI components
+- Toast notifications
 
 ---
 
 ## Tech Stack
 
-- Frontend: Next.js (App Router), TypeScript, Tailwind, TanStack Query
-- Backend: Node.js (NestJS or Express), TypeScript, REST API
-- Database: PostgreSQL (primary), Redis (cache, sessions)
-- Search: Postgres FTS / Elastic (optional)
-- Auth: NextAuth (Email OTP + Google), JWT (httpOnly cookies)
-- Storage: S3-compatible for assets
-- Deployment: Vercel (frontend), Render/AWS (backend)
+### Frontend
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **State Management**: React Context API
+- **Authentication**: NextAuth.js
+- **Animations**: Framer Motion
+- **Form Handling**: React Hook Form
+- **API Client**: Axios
+
+### Backend
+- **Framework**: Django 4.2 with Django REST Framework
+- **Language**: Python
+- **Authentication**: JWT with Simple JWT
+- **Email**: SMTP integration for OTP
+
+### Database
+- **Primary Database**: PostgreSQL
+- **Caching**: Redis (for OTP and session data)
+
+### DevOps
+- **Version Control**: Git
+- **Deployment**: Vercel (frontend), Render (backend)
 
 ---
 
@@ -169,11 +224,62 @@ erDiagram
 
 ## Setup Instructions
 
+### Prerequisites
+
+- Python 3.8+ and pip
+- Node.js 18+ and npm
+- PostgreSQL 12+
+- Redis (optional, for OTP caching)
+
+### Backend Setup
+
 1. Clone this repository:
 
    ```bash
-   https://github.com/CodeMaverick-143/RE_START.git
+   git clone https://github.com/CodeMaverick-143/RE_START.git
    cd RE_START
+   ```
+
+2. Set up Python virtual environment:
+
+   ```bash
+   cd backend
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. Configure environment variables:
+
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database credentials and OAuth keys
+   ```
+
+4. Run database migrations:
+
+   ```bash
+   python manage.py migrate
+   ```
+
+5. Create a superuser:
+
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+6. Start the development server:
+
+   ```bash
+   python manage.py runserver
+   ```
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+
+   ```bash
+   cd ../frontend
    ```
 
 2. Install dependencies:
@@ -184,29 +290,97 @@ erDiagram
 
 3. Configure environment variables:
 
-   * Database connection (`DATABASE_URL`)
-   * Auth provider keys
-   * Email service keys
-
-4. Run database migrations:
-
    ```bash
-   npx prisma migrate dev
+   cp env.example .env.local
+   # Edit .env.local with your OAuth credentials and API URL
    ```
 
-5. Start development servers:
+4. Start the development server:
 
    ```bash
    npm run dev
    ```
 
+5. Access the application:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000/api
+   - Admin interface: http://localhost:8000/admin
+
 ---
+
+## Project Structure
+
+### Backend Structure
+
+```
+backend/
+├── core/                 # Core application with auth and base models
+│   ├── auth_views.py     # Authentication endpoints
+│   ├── login_views.py    # Login endpoints
+│   ├── models.py         # Database models
+│   ├── serializers.py    # API serializers
+│   └── urls.py           # API URL routing
+├── colleges/             # Colleges module
+├── exams/                # Exams module
+├── guidance/             # Prep guidance module
+├── interactions/         # User interactions (saved, reminders)
+├── config/               # Project configuration
+└── manage.py            # Django management script
+```
+
+### Frontend Structure
+
+```
+frontend/
+├── app/                  # Next.js App Router
+│   ├── (auth)/           # Authentication pages
+│   │   ├── signin/       # Sign-in page
+│   │   ├── signup/       # Sign-up page
+│   │   └── error/        # Auth error page
+│   ├── api/              # API routes
+│   │   └── auth/         # NextAuth configuration
+│   ├── dashboard/        # Protected dashboard pages
+│   │   └── profile/      # User profile page
+│   ├── college/          # College pages
+│   └── exams/            # Exams pages
+├── components/           # Reusable components
+│   ├── dashboard/        # Dashboard components
+│   ├── shared/           # Shared components
+│   └── ui/               # UI components
+├── lib/                  # Utility functions
+└── providers/            # Context providers
+```
 
 ## Roadmap
 
-* Phase 0: Data model, CMS, seed 50 colleges and 3 exams
-* Phase 1: Auth, Discovery, College Detail, Exams pages
-* Phase 2: Prep Guidance, Saved/Reminders, emails
-* Phase 3: Reviews, print-friendly pages, comparisons.
---- 
+### Phase 1: Core Platform (Current)
+- ✅ Authentication system
+- ✅ Database schema
+- ✅ API endpoints
+- ✅ Frontend UI components
+- ✅ Dashboard interface
+
+### Phase 2: Content & Features
+- College data integration
+- Exam information
+- Search and filtering
+- User preferences
+
+### Phase 3: Advanced Features
+- Prep guidance system
+- Reminders and notifications
+- Reviews and ratings
+- Analytics dashboard
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributors
+
+- [CodeMaverick-143](https://github.com/CodeMaverick-143)
+
+---
 

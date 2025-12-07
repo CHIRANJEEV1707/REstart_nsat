@@ -4,55 +4,130 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* -------------------------------------------- */
+    /* LIGHT THEME — Electric Blue Brand System     */
+    /* -------------------------------------------- */
+
+    --background: 220 100% 99%;
+    /* #F8FAFF */
+    --foreground: 0 0% 4%;
+    /* #0A0A0A */
+
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* #FFFFFF */
+    --card-foreground: 0 0% 4%;
+    /* #0A0A0A */
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 262 83% 58%;
+    /* #FFFFFF */
+    --popover-foreground: 0 0% 4%;
+    /* #0A0A0A */
+
+    --primary: 207 100% 50%;
+    /* #008CFF */
+    --primary-hover: 207 63% 42%;
+    /* #0075D6 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 33% 91%;
+    /* #E1E6F0 */
+    --secondary-foreground: 0 0% 4%;
+
+    --muted: 220 33% 96%;
+    /* lighter border */
+    --muted-foreground: 0 0% 29%;
+    /* #4A4A4A */
+
+    --accent: 194 100% 50%;
+    /* #00C2FF */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    /* #16A34A */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    /* #F59E0B */
+    --warning-foreground: 0 0% 100%;
+
+    --border: 220 33% 91%;
+    /* #E1E6F0 */
+    --input: 220 33% 91%;
+    --ring: 207 100% 50%;
+    /* #008CFF */
+
     --radius: 0.5rem;
   }
 
+  /* -------------------------------------------- */
+  /* DARK THEME — Futuristic, Clean, Premium      */
+  /* -------------------------------------------- */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 262 83% 58%;
+    --background: 216 28% 7%;
+    /* #0D1117 */
+    --foreground: 216 33% 97%;
+    /* #F2F6FC */
+
+    --card: 215 21% 11%;
+    /* #161B22 */
+    --card-foreground: 216 33% 97%;
+    /* #F2F6FC */
+
+    --popover: 215 21% 11%;
+    --popover-foreground: 216 33% 97%;
+
+    --primary: 206 100% 60%;
+    /* #33A8FF */
+    --primary-hover: 210 100% 56%;
+    /* #1E90FF */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 12% 19%;
+    /* #2A2F36 */
+    --secondary-foreground: 216 33% 97%;
+
+    --muted: 215 12% 15%;
+    /* subtle background */
+    --muted-foreground: 213 16% 71%;
+    /* #A9B4C1 */
+
+    --accent: 187 100% 50%;
+    /* #00E0FF */
+    --accent-foreground: 216 28% 7%;
+    /* #0D1117 */
+
+    --destructive: 0 91% 71%;
+    /* #F87171 */
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    /* #22C55E */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 43 96% 56%;
+    /* #FBBF24 */
+    --warning-foreground: 0 0% 100%;
+
+    --border: 215 12% 19%;
+    /* #2A2F36 */
+    --input: 215 12% 19%;
+    --ring: 206 100% 60%;
+    /* #33A8FF */
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    transition: background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
   }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -65,7 +140,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-violet-500 to-blue-500;
+    @apply text-primary;
   }
 
   .glassmorphic {

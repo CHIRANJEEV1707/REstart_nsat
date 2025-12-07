@@ -118,7 +118,7 @@ export default function ExamsPage() {
             <h1 className="text-4xl sm:text-5xl font-bold mb-4 font-[var(--font-space-grotesk)]">
               Exam
               <br />
-              <span className="text-gradient">Information Center</span>
+              <span className="text-primary">Information Center</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Stay updated with exam dates, eligibility, and registration details
@@ -218,7 +218,7 @@ export default function ExamsPage() {
                           <Badge className="text-base">{exam.difficulty}</Badge>
                         </div>
 
-                        <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
+                        <Button className="w-full bg-primary hover:bg-primary/90">
                           <Bell className="mr-2 h-4 w-4" />
                           Set Reminder
                         </Button>

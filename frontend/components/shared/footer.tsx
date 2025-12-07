@@ -37,7 +37,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <GraduationCap className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold font-[var(--font-space-grotesk)] text-gradient">
+              <span className="text-2xl font-bold font-[var(--font-space-grotesk)] text-primary">
                 REstart
               </span>
             </Link>

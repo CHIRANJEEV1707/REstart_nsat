@@ -15,7 +15,7 @@ export default function AuthErrorPage() {
 
   useEffect(() => {
     const error = searchParams.get("error");
-    
+
     if (error) {
       switch (error) {
         case "Configuration":
@@ -63,7 +63,7 @@ export default function AuthErrorPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20" />
+      <div className="absolute inset-0 bg-background" />
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
@@ -73,7 +73,7 @@ export default function AuthErrorPage() {
         >
           <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
             <GraduationCap className="h-10 w-10 text-primary" />
-            <span className="text-3xl font-bold font-[var(--font-space-grotesk)] text-gradient">
+            <span className="text-3xl font-bold font-[var(--font-space-grotesk)] text-primary">
               REstart
             </span>
           </Link>
@@ -95,7 +95,7 @@ export default function AuthErrorPage() {
               <div className="space-y-4">
                 <Button
                   onClick={() => router.push("/auth/signin")}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+                  className="w-full bg-primary hover:bg-primary/90"
                 >
                   Try Again
                 </Button>

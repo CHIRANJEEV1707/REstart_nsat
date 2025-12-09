@@ -1,386 +1,289 @@
-# REstart Web App
+# **REstart — Engineering College Discovery Platform**
 
-<div align="center">
+*A smart, clean, AI-friendly web app helping PCM students find the right engineering college — without the chaos.*
 
-![REstart Logo](https://via.placeholder.com/200x200?text=REstart)
-
-**Empowering students to discover their perfect college, prepare for exams, and plan their future with confidence.**
-
-</div>
-
-REstart is a comprehensive web application that helps PCM (Physics, Chemistry, Math) students discover engineering colleges, understand admission criteria and timelines, and access structured preparation guidance. The platform provides personalized college recommendations, exam preparation resources, and career planning tools.
-
-This repository contains the full-stack implementation of REstart, including the Django backend (API + PostgreSQL database) and Next.js frontend (React + Tailwind CSS).
+> Think “Zomato for engineering colleges,” but with prep plans, reminders, and actually useful filters.
 
 ---
 
-## Features
+## **Overview**
 
-### Authentication System
-- Multiple authentication methods:
-  - Email OTP verification
-  - Google OAuth integration
-  - GitHub OAuth integration
-  - Email/Password authentication
-- JWT-based session management
-- Protected routes and middleware
-- User profile management
+REstart is a web application built for PCM (Physics, Chemistry, Math) students to **discover engineering colleges**, understand **eligibility**, track **exam timelines**, and access **PCM prep guidance** — all in one chill, student-friendly interface.
 
-### College Discovery
-- Advanced filtering and search
-- Interactive college cards
-- Responsive grid layout
-- Loading skeletons and animations
+The MVP focuses on:
 
-### College Details
-- Comprehensive college profiles
-- Fee structure and scholarships
-- Exam requirements and deadlines
-- Interactive UI with animations
+* Smooth login → discover → compare → learn flow
+* Rich filters + SEO-optimized college pages
+* Exam pages with real timelines
+* PCM weekly prep plans
+* Save, shortlist & reminders
+* Clean, responsive UI
 
-### Exams Module
-- Exam information (JEE Main, JEE Advanced, State CETs)
-- Important dates and deadlines
-- Syllabus and pattern details
-- Preparation resources
-
-### User Dashboard
-- Personalized overview
-- Saved colleges management
-- Exam preparation tracking
-- Profile settings
-
-### Additional Features
-- Dark/Light theme toggle
-- Responsive design for all devices
-- Animated UI components
-- Toast notifications
+(Yes, we actually built something students will *want* to use.)
 
 ---
 
-## Tech Stack
+## **Core Features**
+
+### **College Discovery**
+
+* Real-time filters: degree, ratings, fees, location, exams
+* Smart ranking based on profile fit & cost
+* REstart Score with transparent logic
+* Infinite scroll, skeleton loaders, no jank
+
+### **College Detail Pages**
+
+* Overview
+* Eligibility & Required Exams
+* Fees & Scholarships
+* Important Dates
+* Reviews (Phase 2)
+* Automatically-generated “How to Get In” checklist
+
+### **Exams Module**
+
+* JEE Main, JEE Advanced, state CETs, institute-level exams
+* Eligibility, pattern, syllabus snapshots
+* Important dates with reminder support
+
+### **PCM Prep Guidance**
+
+* Weekly structured plans (6–12 weeks)
+* Physics, Chemistry, Math goal breakdown
+* Task-based progress tracking
+* Mock test & resource links
+
+### **Saved Colleges + Reminders**
+
+* Save/unsave in one click
+* Email reminders for deadlines
+* Dashboard for quick access
+
+### **Admin Panel (Phase 2)**
+
+* College & exam CMS
+* Date management
+* Review moderation
+* Bulk import
+
+---
+
+## **Tech Stack**
+
+### **Frontend**
+
+* Next.js (App Router)
+* React + TypeScript
+* TailwindCSS
+* TanStack Query
+* NextAuth (Magic Link + Google)
+
+### **Backend**
+
+* Node.js + Express
+* MongoDB (Mongoose)
+* Redis (caching & rate limiting)
+* SendGrid/SES (magic links + reminders)
+
+### **Infra**
+
+* Vercel (frontend)
+* Render/EC2 (backend)
+* MongoDB Atlas
+* S3-compatible storage
+* GitHub Actions for CI/CD
+
+---
+
+## **Project Structure**
+
+```
+/frontend
+  README.md
+  frontend.md
+  src/
+    app/
+    components/
+    hooks/
+    lib/
+    styles/
+
+/backend
+  README.md
+  backend.md
+  src/
+    models/
+    controllers/
+    routes/
+    services/
+    utils/
+```
+
+---
+
+## **Authentication Flow**
+
+* Email magic link (no OTP if link verified — clean and frictionless)
+* Google OAuth (fallback)
+* Sessions stored as secure httpOnly cookies
+
+---
+
+## **API Overview**
+
+Mapped from PRD contracts:
+
+| Method | Endpoint            | Description        |
+| ------ | ------------------- | ------------------ |
+| POST   | `/api/auth/login`   | Send magic link    |
+| POST   | `/api/auth/verify`  | Verify login       |
+| GET    | `/api/colleges`     | Filter & search    |
+| GET    | `/api/colleges/:id` | College detail     |
+| GET    | `/api/exams`        | Fetch exams        |
+| POST   | `/api/prep/plans`   | Start prep plan    |
+| POST   | `/api/reminders`    | Add reminder       |
+| GET    | `/api/saved`        | Get saved colleges |
+
+---
+
+## **Data Model**
+
+(Straight from PRD — simplified for README)
+
+### User
+
+```
+id, name, email, state, class_level,
+target_degree, target_exams[], budget_min/max
+```
+
+### College
+
+```
+id, name, description, state, city,
+accreditation, type, exams_required[],
+fees, scholarships, restart_score,
+reviews_avg, ratings_count
+```
+
+### Exam
+
+```
+id, code, name, overview, eligibility,
+dates { registration_open, exam_date, ... }
+```
+
+### PrepPlan
+
+```
+id, user_id, exam_id, weeks[], status
+```
+
+---
+
+## **Ranking Logic**
+
+Based on PRD scoring formula:
+
+```
+score =
+  w1 * profile_fit +
+  w2 * restart_score +
+  w3 * cost_fit +
+  w4 * popularity +
+  w5 * review_quality
+```
+
+Admin can tweak weights.
+Search is full-text + filtered + ranked.
+
+---
+
+## **Reminder System**
+
+Cron-driven:
+
+* T-7, T-3, T-1 → Registration closing reminders
+* T-0 → Exam day reminder
+* Weekly → Prep plan updates
+
+Reminders delivered via email + in-app events.
+
+---
+
+## **Quality & Performance**
+
+Targets (from PRD):
+
+* LCP < 2.5s
+* TTFB < 800ms
+* 99.5% uptime
+* Mobile-first UX
+* WCAG 2.2 AA compliant
+
+---
+
+## **Roadmap**
+
+### **Phase 1 (MVP)**
+
+* Auth
+* College Discovery
+* College Detail Pages
+* Exams Module
+* Prep Guidance
+* Save + Reminders
+
+### **Phase 2**
+
+* Reviews + moderation
+* Admin CMS
+* PDF print-friendly pages
+
+### **Phase 3**
+
+* Comparisons
+* User communities
+* Advanced analytics
+
+---
+
+## **Local Development**
 
 ### Frontend
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **State Management**: React Context API
-- **Authentication**: NextAuth.js
-- **Animations**: Framer Motion
-- **Form Handling**: React Hook Form
-- **API Client**: Axios
+
+```
+cd frontend
+npm install
+npm run dev
+```
 
 ### Backend
-- **Framework**: Django 4.2 with Django REST Framework
-- **Language**: Python
-- **Authentication**: JWT with Simple JWT
-- **Email**: SMTP integration for OTP
-
-### Database
-- **Primary Database**: PostgreSQL
-- **Caching**: Redis (for OTP and session data)
-
-### DevOps
-- **Version Control**: Git
-- **Deployment**: Vercel (frontend), Render (backend)
-
----
-
-## Database Schema (Relational)
-
-```mermaid
-erDiagram
-
-    USERS {
-        uuid id PK
-        string name
-        string email
-        string auth_provider
-        string state
-        int class_level
-        string target_degree
-        int budget_min
-        int budget_max
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    COLLEGES {
-        uuid id PK
-        string name
-        string description
-        string state
-        string city
-        float location_lat
-        float location_lng
-        string type
-        int fees_annual
-        int fees_hostel
-        int restart_score
-        int ratings_count
-        float reviews_avg
-        string website_url
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    EXAMS {
-        uuid id PK
-        string code
-        string name
-        text overview
-        text eligibility
-        text pattern
-        text syllabus_summary
-        string application_url
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    EXAM_DATES {
-        uuid id PK
-        uuid exam_id FK
-        string type
-        date date
-    }
-
-    COLLEGE_EXAMS {
-        uuid college_id FK
-        uuid exam_id FK
-    }
-
-    COLLEGE_DEGREES {
-        uuid id PK
-        uuid college_id FK
-        string degree
-    }
-
-    SCHOLARSHIPS {
-        uuid id PK
-        uuid college_id FK
-        string name
-        text criteria
-    }
-
-    PREP_PLANS {
-        uuid id PK
-        uuid user_id FK
-        uuid exam_id FK
-        string status
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    PREP_WEEKS {
-        uuid id PK
-        uuid prep_plan_id FK
-        int week_number
-        json tasks
-    }
-
-    SAVED_COLLEGES {
-        uuid user_id FK
-        uuid college_id FK
-        timestamp created_at
-    }
-
-    REMINDERS {
-        uuid id PK
-        uuid user_id FK
-        string type
-        uuid target_id
-        string channels
-        timestamp created_at
-    }
-
-    REVIEWS {
-        uuid id PK
-        uuid user_id FK
-        uuid college_id FK
-        int rating
-        string title
-        text body
-        json tags
-        string status
-        timestamp created_at
-    }
-
-    USERS ||--o{ PREP_PLANS : has
-    USERS ||--o{ SAVED_COLLEGES : saves
-    USERS ||--o{ REMINDERS : subscribes
-    USERS ||--o{ REVIEWS : writes
-    COLLEGES ||--o{ COLLEGE_EXAMS : requires
-    COLLEGES ||--o{ COLLEGE_DEGREES : offers
-    COLLEGES ||--o{ SCHOLARSHIPS : provides
-    COLLEGES ||--o{ REVIEWS : receives
-    COLLEGES ||--o{ SAVED_COLLEGES : shortlisted_by
-    EXAMS ||--o{ EXAM_DATES : has
-    EXAMS ||--o{ COLLEGE_EXAMS : required_for
-    EXAMS ||--o{ PREP_PLANS : targeted_by
-    PREP_PLANS ||--o{ PREP_WEEKS : contains
-````
-
----
-
-## Setup Instructions
-
-### Prerequisites
-
-- Python 3.8+ and pip
-- Node.js 18+ and npm
-- PostgreSQL 12+
-- Redis (optional, for OTP caching)
-
-### Backend Setup
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/CodeMaverick-143/RE_START.git
-   cd RE_START
-   ```
-
-2. Set up Python virtual environment:
-
-   ```bash
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. Configure environment variables:
-
-   ```bash
-   cp .env.example .env
-   # Edit .env with your database credentials and OAuth keys
-   ```
-
-4. Run database migrations:
-
-   ```bash
-   python manage.py migrate
-   ```
-
-5. Create a superuser:
-
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-6. Start the development server:
-
-   ```bash
-   python manage.py runserver
-   ```
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-
-   ```bash
-   cd ../frontend
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Configure environment variables:
-
-   ```bash
-   cp env.example .env.local
-   # Edit .env.local with your OAuth credentials and API URL
-   ```
-
-4. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-5. Access the application:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000/api
-   - Admin interface: http://localhost:8000/admin
-
----
-
-## Project Structure
-
-### Backend Structure
 
 ```
-backend/
-├── core/                 # Core application with auth and base models
-│   ├── auth_views.py     # Authentication endpoints
-│   ├── login_views.py    # Login endpoints
-│   ├── models.py         # Database models
-│   ├── serializers.py    # API serializers
-│   └── urls.py           # API URL routing
-├── colleges/             # Colleges module
-├── exams/                # Exams module
-├── guidance/             # Prep guidance module
-├── interactions/         # User interactions (saved, reminders)
-├── config/               # Project configuration
-└── manage.py            # Django management script
+cd backend
+npm install
+npm run dev
 ```
 
-### Frontend Structure
+Environment variables:
 
-```
-frontend/
-├── app/                  # Next.js App Router
-│   ├── (auth)/           # Authentication pages
-│   │   ├── signin/       # Sign-in page
-│   │   ├── signup/       # Sign-up page
-│   │   └── error/        # Auth error page
-│   ├── api/              # API routes
-│   │   └── auth/         # NextAuth configuration
-│   ├── dashboard/        # Protected dashboard pages
-│   │   └── profile/      # User profile page
-│   ├── college/          # College pages
-│   └── exams/            # Exams pages
-├── components/           # Reusable components
-│   ├── dashboard/        # Dashboard components
-│   ├── shared/           # Shared components
-│   └── ui/               # UI components
-├── lib/                  # Utility functions
-└── providers/            # Context providers
-```
-
-## Roadmap
-
-### Phase 1: Core Platform (Current)
-- ✅ Authentication system
-- ✅ Database schema
-- ✅ API endpoints
-- ✅ Frontend UI components
-- ✅ Dashboard interface
-
-### Phase 2: Content & Features
-- College data integration
-- Exam information
-- Search and filtering
-- User preferences
-
-### Phase 3: Advanced Features
-- Prep guidance system
-- Reminders and notifications
-- Reviews and ratings
-- Analytics dashboard
+* MongoDB URI
+* JWT secret
+* Email provider keys
+* Redis URL
+* Public website domain
 
 ---
 
-## License
+## **Contributing**
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contributors
-
-- [CodeMaverick-143](https://github.com/CodeMaverick-143)
+Pull requests welcome.
+Follow the commit style: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 
 ---
 
+## **License**
+
+MIT — go wild.

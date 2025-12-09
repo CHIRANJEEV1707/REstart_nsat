@@ -1,0 +1,23 @@
+"use client";
+
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/axios';
+import Link from 'next/link';
+
+export default function AdminPage() {
+    return (
+        <div className="min-h-screen bg-gray-100 p-8">
+            <h1 className="text-2xl font-bold mb-8">Admin Dashboard</h1>
+            <div className="grid md:grid-cols-3 gap-6">
+                <Link href="/admin/colleges" className="block p-8 bg-white rounded-xl shadow-sm hover:shadow-md">
+                    <h3 className="font-bold text-lg">Manage Colleges</h3>
+                    <p className="text-gray-500 text-sm mt-1">Add, edit, or remove colleges.</p>
+                </Link>
+                <Link href="/admin/exams" className="block p-8 bg-white rounded-xl shadow-sm hover:shadow-md">
+                    <h3 className="font-bold text-lg">Manage Exams</h3>
+                    <p className="text-gray-500 text-sm mt-1">Update exam dates and details.</p>
+                </Link>
+            </div>
+        </div>
+    )
+}

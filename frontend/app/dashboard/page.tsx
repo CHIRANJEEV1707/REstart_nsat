@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import Cookies from 'js-cookie';
 
 // Components
 import { Sidebar } from "@/components/dashboard/Sidebar";
@@ -43,6 +44,11 @@ export default function DashboardPage() {
         }
     };
 
+    const handleLogout = () => {
+        Cookies.remove('token');
+        router.push('/auth/login');
+    };
+
     if (isLoading) return (
         <div className="min-h-screen bg-gray-50 flex">
             {/* Skeleton Sidebar */}
@@ -66,7 +72,7 @@ export default function DashboardPage() {
     if (isError || !dashboard) return (
         <div className="min-h-screen flex items-center justify-center flex-col bg-gray-50 px-4">
             <p className="mb-4 text-gray-600 text-lg">Unable to load dashboard. Please login again.</p>
-            <Link href="/auth/login" className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all">Go to Login</Link>
+            <button onClick={handleLogout} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all">Go to Login</button>
         </div>
     );
 

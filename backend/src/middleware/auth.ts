@@ -18,6 +18,11 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
         const user = await User.findById(decoded.id);
         if (!user) {
+            // Clear invalid cookie
+            res.cookie('token', 'none', {
+                expires: new Date(Date.now() + 10 * 1000),
+                httpOnly: true
+            });
             return res.status(401).json({ success: false, message: 'Not authorized: User not found' });
         }
         // @ts-ignore

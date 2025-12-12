@@ -13,6 +13,10 @@ export const getDashboardData = async (req: Request, res: Response) => {
     try {
         // @ts-ignore
         if (!req.user || !req.user.id) {
+            res.cookie('token', 'none', {
+                expires: new Date(Date.now() + 10 * 1000),
+                httpOnly: true
+            });
             return res.status(401).json({ success: false, message: 'Not authorized' });
         }
         // @ts-ignore

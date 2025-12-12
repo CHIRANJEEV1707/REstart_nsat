@@ -9,26 +9,25 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/Badge";
+import { useComparison } from "@/context/ComparisonContext";
 
 export default function CountryPage() {
-    // Correctly accessing the params. The issue is likely that useParams returns an object with keys matching file structure.
-    // In strict mode / newer Next.js types, explicit casting or checking might be needed.
-    // However, useParams<Params>() is standard. Let's just use simple access for now.
     const params = useParams();
     const countryName = Array.isArray(params.country) ? params.country[0] : params.country;
-
-    // Decode if needed (e.g. %20 -> space)
     const decodedCountry = decodeURIComponent(countryName || '');
 
+    const { addToCompare, removeFromCompare, isInCompare } = useComparison();
+
     const { data, isLoading } = useQuery({
-        queryKey: ['colleges', 'country', decodedCountry],
+        queryKey: ['international-colleges', 'country', decodedCountry],
         queryFn: async () => {
-            // Pass country as filter
-            const res = await api.get(`/colleges?country=${decodedCountry}`);
+            const res = await api.get(`/international-colleges?country=${decodedCountry}`);
             return res.data;
         },
         enabled: !!decodedCountry
     });
+
+    const colleges = data?.data || [];
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -46,43 +45,58 @@ export default function CountryPage() {
                     </div>
                 ) : (
                     <>
-                        {data?.data.length > 0 ? (
+                        {colleges.length > 0 ? (
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {data.data.map((college: any) => (
-                                    <Card key={college._id} className="overflow-hidden hover:shadow-xl transition-all h-full flex flex-col">
+                                {colleges.map((college: any) => (
+                                    <Card key={college._id} className="overflow-hidden hover:shadow-xl transition-all h-full flex flex-col group relative">
                                         <div className="h-48 bg-gray-200 relative">
                                             {/* Placeholder for image */}
-                                            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-                                                {college.location.city}
+                                            <div className="absolute inset-0 flex items-center justify-center text-4xl bg-gray-100">
+                                                🏛️
                                             </div>
+                                            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                                                {college.city}
+                                            </div>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    isInCompare(college._id)
+                                                        ? removeFromCompare(college._id)
+                                                        : addToCompare({ _id: college._id, name: college.name, type: 'international' });
+                                                }}
+                                                className={`absolute top-4 right-4 text-xs font-bold px-3 py-1 rounded-full shadow-sm transition-all z-10 ${isInCompare(college._id) ? 'bg-indigo-600 text-white' : 'bg-white/90 text-gray-600 hover:bg-white'}`}
+                                            >
+                                                {isInCompare(college._id) ? '✓ Added' : '+ Compare'}
+                                            </button>
                                         </div>
                                         <CardContent className="p-6 flex-1 flex flex-col">
                                             <div className="flex flex-wrap gap-2 mb-3">
-                                                {college.badges.map((b: string) => (
+                                                <Badge variant="secondary" className="bg-blue-50 text-blue-700">#{college.global_ranking} Global</Badge>
+                                                {college.badges?.slice(0, 2).map((b: string) => (
                                                     <Badge key={b} variant="secondary" className="bg-green-50 text-green-700">{b}</Badge>
                                                 ))}
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-900 mb-2">{college.name}</h3>
+                                            <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">
+                                                <Link href={`/international/college/${college._id}`} className="hover:text-indigo-600 transition-colors">
+                                                    {college.name}
+                                                </Link>
+                                            </h3>
 
-                                            <div className="space-y-2 mb-6 text-sm text-gray-600">
-                                                <div className="flex justify-between">
-                                                    <span>Fees:</span>
-                                                    <span className="font-semibold text-gray-900">₹{(college.fees / 100000).toFixed(1)}L/yr</span>
+                                            <div className="space-y-3 mb-6 text-sm text-gray-600">
+                                                <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+                                                    <span>Tuition:</span>
+                                                    <span className="font-semibold text-gray-900">${college.tuition_fee_annual?.toLocaleString()}/yr</span>
                                                 </div>
-                                                <div className="flex justify-between">
+                                                <div className="flex justify-between items-start border-b border-gray-100 pb-2">
                                                     <span>Exams:</span>
-                                                    <span className="font-semibold text-gray-900">{college.exams_required.join(', ')}</span>
+                                                    <span className="font-semibold text-gray-900 text-right">
+                                                        {[...college.entrance_exams, ...college.english_tests].join(', ')}
+                                                    </span>
                                                 </div>
                                             </div>
 
-                                            {college.study_abroad_info && (
-                                                <div className="mt-auto pt-4 border-t border-gray-100 text-xs">
-                                                    <p className="font-bold text-gray-900 mb-1">Visa Req:</p>
-                                                    <p className="text-gray-500">{college.study_abroad_info.visa_requirements.join(', ')}</p>
-                                                </div>
-                                            )}
-                                            <Button className="w-full mt-4" asChild>
-                                                <Link href={`/college/${college._id}`}>View Details</Link>
+                                            <Button className="w-full mt-auto" asChild>
+                                                <Link href={`/international/college/${college._id}`}>View Details</Link>
                                             </Button>
                                         </CardContent>
                                     </Card>

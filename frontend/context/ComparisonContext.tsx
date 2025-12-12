@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 interface College {
     _id: string;
     name: string;
+    type: 'indian' | 'international';
     logo?: string;
 }
 
@@ -22,7 +23,7 @@ export function ComparisonProvider({ children }: { children: ReactNode }) {
 
     // Load from local storage
     useEffect(() => {
-        const saved = localStorage.getItem('compare_list');
+        const saved = localStorage.getItem('compare_list_v2'); // New key to avoid conflicts with old format
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
@@ -39,12 +40,13 @@ export function ComparisonProvider({ children }: { children: ReactNode }) {
 
     // Save to local storage
     useEffect(() => {
-        localStorage.setItem('compare_list', JSON.stringify(selectedColleges));
+        localStorage.setItem('compare_list_v2', JSON.stringify(selectedColleges));
     }, [selectedColleges]);
 
     const addToCompare = (college: College) => {
         if (selectedColleges.length >= 3) {
-            alert("You can only compare up to 3 colleges.");
+            // Using logic to prevent adding more than 3
+            // In a real app we might show a toast here.
             return;
         }
         if (!selectedColleges.some(c => c._id === college._id)) {

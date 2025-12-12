@@ -1,30 +1,27 @@
+
 "use client";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useComparison } from "@/context/ComparisonContext";
-import { useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
-import { X, Check, Minus } from "lucide-react";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { X } from "lucide-react";
 
 export default function ComparePage() {
     const { selectedColleges, removeFromCompare } = useComparison();
 
-    const collegeQueries = useQueries({
-        queries: selectedColleges.map((col) => ({
-            queryKey: ['college', col._id],
-            queryFn: async () => {
-                const res = await api.get(`/colleges/${col._id}`);
-                return res.data.data;
-            }
-        }))
+    const { data: colleges = [], isLoading } = useQuery({
+        queryKey: ['compare-colleges', selectedColleges],
+        queryFn: async () => {
+            if (selectedColleges.length === 0) return [];
+            const res = await api.post('/compare', { colleges: selectedColleges });
+            return res.data.data;
+        },
+        enabled: selectedColleges.length > 0
     });
-
-    const isLoading = collegeQueries.some(q => q.isLoading);
-    const colleges = collegeQueries.map(q => q.data).filter(Boolean);
 
     if (selectedColleges.length === 0) {
         return (
@@ -70,7 +67,7 @@ export default function ComparePage() {
                         <thead>
                             <tr>
                                 <th className="p-4 w-48 bg-gray-50/50 border-b border-gray-100">Features</th>
-                                {colleges.map((col, idx) => (
+                                {colleges.map((col: any, idx: number) => (
                                     <th key={col._id || idx} className="p-4 min-w-[280px] border-b border-gray-100 align-top relative group">
                                         <button
                                             onClick={() => removeFromCompare(col._id)}
@@ -80,20 +77,22 @@ export default function ComparePage() {
                                         </button>
                                         <div className="mb-3">
                                             <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full mb-2 inline-block">
-                                                ★ {col.restart_score}/10
+                                                {col.ranking || 'N/A'}
                                             </span>
                                             <h3 className="text-xl font-bold text-gray-900 leading-tight">
-                                                <Link href={`/college/${col._id}`} className="hover:underline">{col.name}</Link>
+                                                <Link href={`/${col.type === 'international' ? 'international' : 'college'}/${col._id}`} className="hover:underline">
+                                                    {col.name}
+                                                </Link>
                                             </h3>
-                                            <p className="text-sm text-gray-500">{col.location?.city || 'Unknown'}, {col.location?.state || 'Unknown'}</p>
+                                            <p className="text-sm text-gray-500">{col.location}</p>
                                         </div>
                                         <Button size="sm" className="w-full" asChild>
-                                            <Link href={`/college/${col._id}`}>View Details</Link>
+                                            <Link href={`/${col.type === 'international' ? 'international' : 'college'}/${col._id}`}>View Details</Link>
                                         </Button>
                                     </th>
                                 ))}
                                 {/* Fill empty slots if less than 3 */}
-                                {[...Array(3 - colleges.length)].map((_, i) => (
+                                {[...Array(Math.max(0, 3 - selectedColleges.length))].map((_, i) => (
                                     <th key={i} className="p-4 min-w-[280px] border-b border-gray-100 bg-gray-50/30 rounded-t-xl align-middle text-center">
                                         <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center h-48">
                                             <p className="text-sm text-gray-400 font-medium mb-3">Add another college</p>
@@ -106,22 +105,22 @@ export default function ComparePage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            <Row label="Institute Type" data={colleges} render={(c) => c.type} />
-                            <Row label="Annual Fees" data={colleges} render={(c) => c.fees ? `₹${c.fees.toLocaleString()}` : 'N/A'} />
-                            <Row label="Exams Accepted" data={colleges} render={(c) => (
-                                <div className="flex flex-wrap gap-1">
-                                    {c.exams_required.map((e: string) => (
-                                        <span key={e} className="text-xs bg-gray-100 px-2 py-1 rounded">{e}</span>
-                                    ))}
-                                </div>
-                            )} />
-                            <Row label="Avg Package" data={colleges} render={(c) => c.placement_stats?.average_package || '-'} />
-                            <Row label="Highest Package" data={colleges} render={(c) => c.placement_stats?.highest_package || '-'} />
-                            <Row label="Highlights" data={colleges} render={(c) => (
-                                <ul className="list-disc list-inside text-sm space-y-1 text-gray-600">
-                                    {c.badges.slice(0, 3).map((b: string) => <li key={b}>{b}</li>)}
-                                </ul>
-                            )} />
+                            {isLoading ? (
+                                <tr><td colSpan={4} className="p-8 text-center text-gray-500">Loading comparison details...</td></tr>
+                            ) : (
+                                <>
+                                    <Row label="Institute Type" data={colleges} render={(c) => <span className="capitalize">{c.institute_type}</span>} />
+                                    <Row label="Annual Fees" data={colleges} render={(c) => c.fees} />
+                                    <Row label="Exams Required" data={colleges} render={(c) => (
+                                        <div className="text-sm text-gray-700">{c.exams || 'None'}</div>
+                                    )} />
+                                    <Row label="Highlights" data={colleges} render={(c) => (
+                                        <ul className="list-disc list-inside text-sm space-y-1 text-gray-600">
+                                            {c.highlights?.map((b: string) => <li key={b}>{b}</li>)}
+                                        </ul>
+                                    )} />
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -140,7 +139,7 @@ function Row({ label, data, render }: { label: string, data: any[], render: (c: 
                     {render(col)}
                 </td>
             ))}
-            {[...Array(3 - data.length)].map((_, i) => <td key={i} className="p-4"></td>)}
+            {[...Array(Math.max(0, 3 - data.length))].map((_, i) => <td key={i} className="p-4"></td>)}
         </tr>
     );
 }

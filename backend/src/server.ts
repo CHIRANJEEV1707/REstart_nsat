@@ -51,6 +51,10 @@ app.use('/api/dashboard', dashboard);
 app.use('/api/saved', saved);
 app.use('/api/prep', prep);
 app.use('/api/alerts', alerts);
+import internationalColleges from './routes/internationalColleges';
+app.use('/api/international-colleges', internationalColleges);
+import compareRoutes from './routes/compare';
+app.use('/api/compare', compareRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

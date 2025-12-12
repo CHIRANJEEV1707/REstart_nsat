@@ -90,7 +90,7 @@ export default function CollegeGrid({ filters }: { filters: any }) {
                             <button
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    isInCompare(college._id) ? removeFromCompare(college._id) : addToCompare(college);
+                                    isInCompare(college._id) ? removeFromCompare(college._id) : addToCompare({ _id: college._id, name: college.name, type: 'indian' });
                                 }}
                                 className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full shadow-sm transition-all ${isInCompare(college._id) ? 'bg-indigo-600 text-white' : 'bg-white/90 text-gray-600 hover:bg-white'}`}
                             >

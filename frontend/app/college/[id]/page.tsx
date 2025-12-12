@@ -23,7 +23,7 @@ export default function CollegeDetailPage() {
         if (isCompared) {
             removeFromCompare(id as string);
         } else {
-            addToCompare({ _id: id as string, name: college?.name || 'College' });
+            addToCompare({ _id: id as string, name: college?.name || 'College', type: 'indian' });
         }
     };
 

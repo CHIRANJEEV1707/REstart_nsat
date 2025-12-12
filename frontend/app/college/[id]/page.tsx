@@ -9,11 +9,23 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useState } from "react";
-import Link from "next/link"; // Correct import for Link
+import Link from "next/link";
+import { useComparison } from "@/context/ComparisonContext";
 
 export default function CollegeDetailPage() {
     const { id } = useParams();
     const [activeTab, setActiveTab] = useState("overview");
+    const { addToCompare, removeFromCompare, isInCompare } = useComparison();
+
+    const isCompared = isInCompare(id as string);
+
+    const handleCompare = () => {
+        if (isCompared) {
+            removeFromCompare(id as string);
+        } else {
+            addToCompare({ _id: id as string, name: college?.name || 'College' });
+        }
+    };
 
     // Fetch user to check saved status
     const { data: userRes } = useQuery({
@@ -21,7 +33,8 @@ export default function CollegeDetailPage() {
         queryFn: async () => (await api.get('/auth/me').catch(() => null))?.data
     });
     const user = userRes?.data;
-    const isSaved = user?.saved_colleges?.includes(id);
+    // Handle both populated (objects) and unpopulated (strings) saved_colleges
+    const isSaved = user?.saved_colleges?.some((c: any) => (typeof c === 'string' ? c : c._id) === id);
 
     const queryClient = useQueryClient();
     const saveMutation = useMutation({
@@ -78,6 +91,13 @@ export default function CollegeDetailPage() {
                                 className={`min-w-[140px] ${isSaved ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-white text-gray-900 hover:bg-gray-100'}`}
                             >
                                 {isSaved ? 'Saved ✓' : 'Save College'}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className={`border-gray-700 text-white hover:bg-gray-800 hover:text-white ${isCompared ? 'bg-indigo-900 ring-2 ring-indigo-500' : ''}`}
+                                onClick={handleCompare}
+                            >
+                                {isCompared ? '✓ Added to Compare' : '+ Compare'}
                             </Button>
                             <Button variant="outline" className="border-gray-700 text-white hover:bg-gray-800 hover:text-white">Share</Button>
                         </div>

@@ -34,7 +34,9 @@ export const saveCollege = async (req: Request, res: Response) => {
 
         // Check if already saved
         // @ts-ignore
-        if (user.saved_colleges.includes(collegeId)) {
+        const isSaved = user.saved_colleges.some(id => id.toString() === collegeId);
+
+        if (isSaved) {
             return res.status(400).json({ success: false, message: 'College already saved' });
         }
 

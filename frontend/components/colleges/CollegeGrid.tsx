@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useComparison } from "@/context/ComparisonContext";
 
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/axios';
@@ -22,6 +23,7 @@ interface College {
 
 export default function CollegeGrid({ filters }: { filters: any }) {
     const [page, setPage] = useState(1);
+    const { addToCompare, removeFromCompare, isInCompare } = useComparison();
 
     // Reset page when filters change
     useEffect(() => {
@@ -31,10 +33,22 @@ export default function CollegeGrid({ filters }: { filters: any }) {
     const { data, isLoading, isError } = useQuery({
         queryKey: ['colleges', filters, page],
         queryFn: async () => {
-            const params = new URLSearchParams(filters);
+            const params = new URLSearchParams();
+
+            // Map filters to backend schema paths
+            if (filters.search) params.append('search', filters.search);
+            if (filters.state) params.append('location.state', filters.state);
+            if (filters.exam) params.append('exams_required', filters.exam);
+
+            // Fees range
+            if (filters.minFees) params.append('fees[gte]', filters.minFees);
+            if (filters.maxFees) params.append('fees[lte]', filters.maxFees);
+
+            // Add pagination
             params.append('page', page.toString());
             params.append('limit', '8');
-            const res = await api.get(`/colleges?${params.toString()}`);
+
+            const res = await api.get(`/colleges?${decodeURIComponent(params.toString())}`);
             return res.data;
         },
         placeholderData: (previousData) => previousData, // Keep previous data while fetching new page
@@ -73,6 +87,15 @@ export default function CollegeGrid({ filters }: { filters: any }) {
                             <div className="absolute top-4 right-4 bg-white/90 backdrop-blur shadow-sm text-xs font-bold px-3 py-1 rounded-full text-indigo-900 flex items-center gap-1">
                                 ★ {college.restart_score}
                             </div>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    isInCompare(college._id) ? removeFromCompare(college._id) : addToCompare(college);
+                                }}
+                                className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full shadow-sm transition-all ${isInCompare(college._id) ? 'bg-indigo-600 text-white' : 'bg-white/90 text-gray-600 hover:bg-white'}`}
+                            >
+                                {isInCompare(college._id) ? '✓ Compare' : '+ Compare'}
+                            </button>
                         </div>
                         <CardContent className="p-6 flex-1 flex flex-col">
                             <div className="flex flex-wrap gap-2 mb-3">

@@ -72,7 +72,7 @@ export default function DashboardPage() {
     if (isError || !dashboard) return (
         <div className="min-h-screen flex items-center justify-center flex-col bg-gray-50 px-4">
             <p className="mb-4 text-gray-600 text-lg">Unable to load dashboard. Please login again.</p>
-            <button onClick={handleLogout} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all">Go to Login</button>
+            <Link href="/auth/login" onClick={() => Cookies.remove('token')} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all">Go to Login</Link>
         </div>
     );
 
@@ -137,7 +137,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Calendar */}
-                <MiniCalendar />
+                <MiniCalendar deadlines={dashboard.deadlines} />
 
                 {/* Quick Tools */}
                 <QuickTools />

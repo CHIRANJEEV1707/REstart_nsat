@@ -14,6 +14,7 @@ import exams from './routes/exams';
 import dashboard from './routes/dashboard';
 import saved from './routes/saved';
 import prep from './routes/prep';
+import alerts from './routes/alerts';
 
 // Load env vars
 dotenv.config();
@@ -49,6 +50,7 @@ app.use('/api/exams', exams);
 app.use('/api/dashboard', dashboard);
 app.use('/api/saved', saved);
 app.use('/api/prep', prep);
+app.use('/api/alerts', alerts);
 
 // Global Error Handler
 app.use(errorHandler);

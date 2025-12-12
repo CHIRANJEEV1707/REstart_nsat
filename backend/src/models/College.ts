@@ -17,7 +17,15 @@ const CollegeSchema = new mongoose.Schema({
         average_package: String,
         highest_package: String
     },
-    admission_process: [String] // Array of steps for "How to Get In"
+    admission_process: [String], // Array of steps for "How to Get In"
+
+    // International Fields
+    country: { type: String, default: 'India', index: true },
+    study_abroad_info: {
+        visa_requirements: [String],
+        english_proficiency: [String], // e.g. ["IELTS 7.0", "TOEFL 100"]
+        scholarships_available: [String]
+    }
 });
 
 // Full text search index

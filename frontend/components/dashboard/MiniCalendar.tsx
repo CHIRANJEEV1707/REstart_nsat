@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/Card";
 import { Calendar } from "lucide-react";
 
-export function MiniCalendar() {
+export function MiniCalendar({ deadlines }: { deadlines: any[] }) {
     const today = new Date();
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -34,17 +34,25 @@ export function MiniCalendar() {
                     ))}
                 </div>
 
-                {/* Upcoming Events Placeholder */}
+                {/* Upcoming Events */}
                 <div className="space-y-3">
-                    <div className="p-3 bg-amber-50 border border-amber-100 rounded-lg">
-                        <p className="text-xs font-bold text-amber-700 mb-1">JEE Main Reg Closing</p>
-                        <p className="text-[10px] text-amber-600">Tomorrow, 11:59 PM</p>
-                    </div>
-                    <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg opacity-60">
-                        <div className="flex flex-col items-center py-2">
-                            <span className="text-xs font-medium text-blue-400">No other deadlines</span>
+                    {deadlines && deadlines.length > 0 ? (
+                        deadlines.slice(0, 3).map((event: any) => (
+                            <div key={event._id} className="p-3 bg-amber-50 border border-amber-100 rounded-lg">
+                                <p className="text-xs font-bold text-amber-900 mb-1">{event.name}</p>
+                                <div className="flex justify-between items-center text-[10px] text-amber-700">
+                                    <span>{event.type}</span>
+                                    <span>{new Date(event.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg opacity-60">
+                            <div className="flex flex-col items-center py-2">
+                                <span className="text-xs font-medium text-blue-400">No upcoming deadlines</span>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </CardContent>
         </Card>

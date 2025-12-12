@@ -5,7 +5,7 @@ export function QuickTools() {
     const tools = [
         { name: 'Search', icon: Search, href: '/discover', color: 'bg-blue-100 text-blue-600' },
         { name: 'Exams', icon: GraduationCap, href: '/exams', color: 'bg-indigo-100 text-indigo-600' },
-        { name: 'Dates', icon: Calendar, href: '/exams', color: 'bg-amber-100 text-amber-600' },
+        { name: 'Dates', icon: Calendar, href: '/deadlines', color: 'bg-amber-100 text-amber-600' },
         { name: 'Saved', icon: Bookmark, href: '/saved', color: 'bg-pink-100 text-pink-600' },
         { name: 'Compare', icon: ArrowLeftRight, href: '/compare', color: 'bg-emerald-100 text-emerald-600' },
         { name: 'Global', icon: Globe, href: '/international', color: 'bg-cyan-100 text-cyan-600' },

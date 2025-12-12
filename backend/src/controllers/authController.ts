@@ -137,3 +137,53 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 };
+// @desc    Update user details
+// @route   PUT /api/auth/updatedetails
+export const updateDetails = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const fieldsToUpdate = {
+            name: req.body.name,
+            email: req.body.email,
+            state: req.body.state,
+            class_level: req.body.class_level,
+            target_exams: req.body.target_exams
+        };
+
+        // @ts-ignore
+        const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+            new: true,
+            runValidators: true
+        });
+
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Update password
+// @route   PUT /api/auth/updatepassword
+export const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // @ts-ignore
+        const user = await User.findById(req.user.id).select('+password');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        if (!(await user.matchPassword(req.body.currentPassword))) {
+            return res.status(401).json({ success: false, message: 'Incorrect current password' });
+        }
+
+        user.password = req.body.newPassword;
+        await user.save();
+
+        sendTokenResponse(user, 200, res);
+    } catch (error) {
+        next(error);
+    }
+};

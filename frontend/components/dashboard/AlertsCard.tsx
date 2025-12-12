@@ -27,7 +27,7 @@ export function AlertsCard({ alerts }: AlertsProps) {
 
                 <div className="space-y-4">
                     {alerts.map((alert) => (
-                        <div key={alert.id} className="flex gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                        <div key={alert.id} className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
                             {getIcon(alert.type)}
                             <div>
                                 <p className="text-sm text-gray-700 font-medium leading-relaxed">{alert.message}</p>

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/Card";
 import { MoveRight, Target, MapPin, IndianRupee } from "lucide-react";
 import Link from "next/link";
+import { useDashboard } from "@/context/DashboardContext";
 
 interface MatchSummaryProps {
     data: {
@@ -13,6 +14,7 @@ interface MatchSummaryProps {
 }
 
 export function MatchSummaryCard({ data, user }: MatchSummaryProps) {
+    const { setActiveView } = useDashboard();
     return (
         <Card className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-blue-500 border-none shadow-xl text-white relative overflow-hidden h-full">
             {/* Background Pattern */}
@@ -51,12 +53,12 @@ export function MatchSummaryCard({ data, user }: MatchSummaryProps) {
                     </div>
                 </div>
 
-                <Link
-                    href="/discover"
+                <button
+                    onClick={() => setActiveView('discover')}
                     className="flex-shrink-0 bg-white text-indigo-600 px-6 py-3 rounded-full font-bold shadow-lg hover:bg-gray-50 hover:scale-105 transition-all flex items-center gap-2"
                 >
                     View Top Matches <MoveRight size={18} />
-                </Link>
+                </button>
             </CardContent>
         </Card>
     );

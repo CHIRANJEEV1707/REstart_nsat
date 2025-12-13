@@ -7,11 +7,17 @@ export interface IUser extends Document {
     password: string;
     role: 'student' | 'admin';
     state?: string;
+    city?: string;
+    country?: string;
     class_level?: string;
     target_degree?: string;
+    college_type_aspiring?: string[];
+    preferred_countries?: string[];
     target_exams?: string[];
+    exam_scores?: { exam: string; score: string | number }[];
     budget_range?: { min: number; max: number };
     saved_colleges?: mongoose.Types.ObjectId[];
+    saved_international_colleges?: mongoose.Types.ObjectId[];
     createdAt: Date;
     updatedAt: Date;
     matchPassword(enteredPassword: string): Promise<boolean>;
@@ -25,13 +31,24 @@ const UserSchema = new Schema<IUser>({
 
     // Student Profile
     state: String,
+    city: String,
+    country: String,
     class_level: String, // e.g. "12th", "Dropper"
     target_degree: String, // e.g. "B.Tech"
+    college_type_aspiring: [String], // e.g. ["Engineering", "Research"]
+    preferred_countries: [String],
     target_exams: [String],
     budget_range: { min: Number, max: Number },
 
+    // Exam Scores
+    exam_scores: [{
+        exam: String,
+        score: { type: mongoose.Schema.Types.Mixed } // Allow string or number
+    }],
+
     // User Data
     saved_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'College' }],
+    saved_international_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'InternationalCollege' }],
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

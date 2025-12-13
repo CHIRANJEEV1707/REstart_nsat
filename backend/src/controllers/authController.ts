@@ -145,8 +145,15 @@ export const updateDetails = async (req: Request, res: Response, next: NextFunct
             name: req.body.name,
             email: req.body.email,
             state: req.body.state,
+            city: req.body.city,
+            country: req.body.country,
             class_level: req.body.class_level,
-            target_exams: req.body.target_exams
+            target_degree: req.body.target_degree,
+            college_type_aspiring: req.body.college_type_aspiring,
+            preferred_countries: req.body.preferred_countries,
+            target_exams: req.body.target_exams,
+            exam_scores: req.body.exam_scores,
+            budget_range: req.body.budget_range
         };
 
         // @ts-ignore

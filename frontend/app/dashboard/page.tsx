@@ -4,27 +4,50 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Cookies from 'js-cookie';
 
+// Context
+import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
+
 // Components
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { AnnouncementBar } from "@/components/dashboard/AnnouncementBar";
-import { MatchSummaryCard } from "@/components/dashboard/MatchSummaryCard";
-import { RecommendedCollegesCard } from "@/components/dashboard/RecommendedCollegesCard";
-import { DeadlinesCard } from "@/components/dashboard/DeadlinesCard";
-import { SavedCollegesCard } from "@/components/dashboard/SavedCollegesCard";
-import { CompareCard } from "@/components/dashboard/CompareCard";
-import { AlertsCard } from "@/components/dashboard/AlertsCard";
 import { MiniCalendar } from "@/components/dashboard/MiniCalendar";
 import { QuickTools } from "@/components/dashboard/QuickTools";
-import { GreetingSkeleton } from "@/components/dashboard/GreetingHeader";
-import Navbar from "@/components/Navbar"; // Fallback for mobile
+
+// Views
+import { OverviewView } from "@/components/dashboard/views/OverviewView";
+import { DiscoverView } from "@/components/dashboard/views/DiscoverView";
+import { SavedCollegesView } from "@/components/dashboard/views/SavedCollegesView";
+import { CompareView } from "@/components/dashboard/views/CompareView";
+import { DeadlinesView } from "@/components/dashboard/views/DeadlinesView";
+import { InternationalView } from "@/components/dashboard/views/InternationalView";
+import { ProfileView } from "@/components/dashboard/views/ProfileView";
+import { CollegeDetailsView } from "@/components/dashboard/views/CollegeDetailsView";
+import { InternationalCountryView } from "@/components/dashboard/views/InternationalCountryView";
+import { ExamDetailsView } from "@/components/dashboard/views/ExamDetailsView";
 
 export default function DashboardPage() {
+    return (
+        <DashboardProvider>
+            <DashboardContent />
+        </DashboardProvider>
+    );
+}
+
+function DashboardContent() {
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { activeView } = useDashboard();
+    const mainContentRef = React.useRef<HTMLElement>(null);
+
+    // Scroll to top when view changes, except when going back to discover
+    React.useEffect(() => {
+        if (mainContentRef.current && activeView !== 'discover' && activeView !== 'college-details') {
+            mainContentRef.current.scrollTop = 0;
+        }
+    }, [activeView]);
 
     const { data: dashboard, isLoading, isError } = useQuery({
         queryKey: ['dashboard'],
@@ -42,11 +65,6 @@ export default function DashboardPage() {
         } catch (err) {
             console.error(err);
         }
-    };
-
-    const handleLogout = () => {
-        Cookies.remove('token');
-        router.push('/auth/login');
     };
 
     if (isLoading) return (
@@ -97,64 +115,29 @@ export default function DashboardPage() {
             )}
 
             {/* B) Main Content Area (Feed) */}
-            <main className="flex-1 flex flex-col h-screen overflow-y-auto lg:pt-0 pt-16">
+            <main ref={mainContentRef} className="flex-1 flex flex-col h-screen overflow-y-auto lg:pt-0 pt-16">
 
-                {/* Announcement Bar */}
+                {/* View Switcher */}
+                {activeView === 'overview' && <OverviewView dashboard={dashboard} />}
 
-
-                <div className="p-6 md:p-8 max-w-5xl mx-auto w-full space-y-8 pb-20">
-
-                    {/* 1. College Fit Hero */}
-                    <div className="h-[300px]">
-                        <MatchSummaryCard data={dashboard.fit_overview} user={dashboard.user} />
-                    </div>
-                    {/* 2. Recommended Colleges Carousel */}
-                    <RecommendedCollegesCard colleges={dashboard.recommendations} />
-
-                    {/* 3. Deadlines & Updates Row */}
-                    <div className="grid md:grid-cols-2 gap-8">
-                        <DeadlinesCard deadlines={dashboard.deadlines} />
-                        <div className="space-y-8">
-                            <SavedCollegesCard colleges={dashboard.saved_colleges} count={dashboard.user.saved_count} />
-                        </div>
-                    </div>
-
+                {/*
+                    Keep DiscoverView mounted but hidden when not active to preserve
+                    filters and scroll position.
+                */}
+                <div style={{ display: activeView === 'discover' ? 'block' : 'none' }}>
+                    <DiscoverView />
                 </div>
+
+                {activeView === 'college-details' && <CollegeDetailsView />}
+                {activeView === 'international-country' && <InternationalCountryView />}
+                {activeView === 'exam-details' && <ExamDetailsView />}
+                {activeView === 'saved' && <SavedCollegesView />}
+                {activeView === 'compare' && <CompareView />}
+                {activeView === 'deadlines' && <DeadlinesView />}
+                {activeView === 'international' && <InternationalView />}
+                {activeView === 'profile' && <ProfileView />}
+
             </main>
-
-            {/* C) Right Sidebar (Tools & Utils) */}
-            <aside className="w-80 bg-white border-l border-gray-100 hidden xl:flex flex-col h-screen overflow-y-auto sticky top-0 p-6 space-y-8">
-
-                {/* Profile Widget */}
-                <div className="flex items-center gap-3 pb-6 border-b border-gray-100">
-                    <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
-                        {dashboard.user.name[0]}
-                    </div>
-                    <div>
-                        <h4 className="font-bold text-gray-900">{dashboard.user.name}</h4>
-                        <p className="text-xs text-gray-500">{dashboard.user.email}</p>
-                    </div>
-                </div>
-
-                {/* Calendar */}
-                <MiniCalendar deadlines={dashboard.deadlines} />
-
-                {/* Quick Tools */}
-                <QuickTools />
-
-                {/* Promo/Ad Space Placeholder */}
-                <div className="bg-gradient-to-r from-pink-500 to-rose-500 rounded-2xl p-6 text-white text-center">
-                    <h4 className="font-bold mb-2">Pro Prep Plan</h4>
-                    <p className="text-xs text-pink-100 mb-4 opacity-90">Unlock personalized study roadmaps generated by AI.</p>
-                    <button className="bg-white text-pink-600 text-xs font-bold px-4 py-2 rounded-full shadow-sm hover:bg-gray-50 transition-colors">
-                        Upgrade Now
-                    </button>
-                </div>
-
-                <div className="mt-auto text-xs text-center text-gray-400">
-                    © 2025 REstart. All rights reserved.
-                </div>
-            </aside>
 
         </div>
     );

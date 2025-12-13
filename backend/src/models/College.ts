@@ -21,6 +21,7 @@ const CollegeSchema = new mongoose.Schema({
 
     // International Fields
     country: { type: String, default: 'India', index: true },
+    image: { type: String }, // NEW: Hero image for the college card
     study_abroad_info: {
         visa_requirements: [String],
         english_proficiency: [String], // e.g. ["IELTS 7.0", "TOEFL 100"]

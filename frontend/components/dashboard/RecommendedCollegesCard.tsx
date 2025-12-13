@@ -2,13 +2,15 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/Card";
 import { Sparkles, ArrowRight, Gauge, IndianRupee, Heart, ArrowLeftRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+
+import { useDashboard } from "@/context/DashboardContext";
 
 interface RecommendedProps {
     colleges: any[];
 }
 
 export function RecommendedCollegesCard({ colleges }: RecommendedProps) {
+    const { setActiveView, openCollegeDetails } = useDashboard();
     return (
         <Card className="bg-white border-gray-100 shadow-sm hover:shadow-md transition-all">
             <CardContent className="p-6">
@@ -19,9 +21,9 @@ export function RecommendedCollegesCard({ colleges }: RecommendedProps) {
                         </div>
                         <CardTitle className="text-lg">Recommended For You</CardTitle>
                     </div>
-                    <Link href="/discover" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 hover:underline">
+                    <button onClick={() => setActiveView('discover')} className="text-sm font-bold text-indigo-600 hover:text-indigo-700 hover:underline">
                         Explore All
-                    </Link>
+                    </button>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-4">
@@ -56,9 +58,12 @@ export function RecommendedCollegesCard({ colleges }: RecommendedProps) {
                             </div>
 
                             <div className="flex gap-2 mt-auto">
-                                <Link href={`/college/${col._id}`} className="flex-1 py-2 text-center text-xs font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                                <button
+                                    onClick={() => openCollegeDetails(col._id, 'indian')}
+                                    className="flex-1 py-2 text-center text-xs font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+                                >
                                     View
-                                </Link>
+                                </button>
                                 <button className="p-2 rounded-lg bg-gray-50 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors" title="Compare">
                                     <ArrowLeftRight size={16} />
                                 </button>

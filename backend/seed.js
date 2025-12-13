@@ -168,6 +168,16 @@ const seedData = async () => {
 
         const branches = ["Technology", "Engineering", "Science", "Research"];
 
+        // NEW: Image Pool
+        const collegeImages = [
+            "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1592280771800-45cb49945204?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=1000&auto=format&fit=crop"
+        ];
+
         for (let i = 1; i <= 50; i++) {
             const cityObj = { ...cities[Math.floor(Math.random() * cities.length)] };
             let type = Math.random() > 0.4 ? "Private" : "Public"; // 60% Private, 40% Public
@@ -231,7 +241,8 @@ const seedData = async () => {
                     visa_requirements: ["Student Visa", "Proof of Funds"],
                     english_proficiency: ["IELTS 6.5+", "TOEFL 90+"],
                     scholarships_available: ["Merit Scholarship", "Need-based Aid"]
-                } : undefined
+                } : undefined,
+                image: collegeImages[Math.floor(Math.random() * collegeImages.length)]
             });
         }
 
@@ -248,7 +259,8 @@ const seedData = async () => {
             description: "IIT Bombay is recognized worldwide as a leader in the field of engineering education and research.",
             website: "https://www.iitb.ac.in",
             placement_stats: { average_package: "25 LPA", highest_package: "1.5 CR+" },
-            admission_process: ["Qualify JEE Main", "Crack JEE Advanced", "JoSAA Counseling"]
+            admission_process: ["Qualify JEE Main", "Crack JEE Advanced", "JoSAA Counseling"],
+            image: "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop"
         };
 
         colleges[1] = {
@@ -263,7 +275,8 @@ const seedData = async () => {
             description: "BITS Pilani is known for its flexible academic structure and strong alumni network.",
             website: "https://www.bits-pilani.ac.in",
             placement_stats: { average_package: "22 LPA", highest_package: "60 LPA" },
-            admission_process: ["Apply for BITSAT", "Score Priority Merit", "Counseling"]
+            admission_process: ["Apply for BITSAT", "Score Priority Merit", "Counseling"],
+            image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1000&auto=format&fit=crop"
         };
 
         colleges[2] = {
@@ -283,7 +296,8 @@ const seedData = async () => {
                 visa_requirements: ["F1 Visa"],
                 english_proficiency: ["TOEFL 100+"],
                 scholarships_available: ["Need-Blind Admission"]
-            }
+            },
+            image: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?q=80&w=1000&auto=format&fit=crop"
         };
 
         await College.insertMany(colleges);

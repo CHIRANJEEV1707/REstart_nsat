@@ -1,156 +1,115 @@
-"use client";
+"use strict";
 
-import { useState, useEffect } from 'react';
-import { useComparison } from "@/context/ComparisonContext";
-
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/axios';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
-import Link from 'next/link';
+import { AlertCircle } from 'lucide-react';
+import CollegeCard from './CollegeCard';
+import { College } from '@/types/college';
 
-interface College {
-    _id: string;
-    name: string;
-    location: { city: string; state: string };
-    badges: string[];
-    restart_score: number;
-    fees: number;
-    exams_required: string[];
-}
-
-export default function CollegeGrid({ filters }: { filters: any }) {
-    const [page, setPage] = useState(1);
-    const { addToCompare, removeFromCompare, isInCompare } = useComparison();
-
-    // Reset page when filters change
-    useEffect(() => {
-        setPage(1);
-    }, [filters]);
-
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ['colleges', filters, page],
+export default function CollegeGrid({ filters }: { filters: { search: string; country: string; exam: string } }) {
+    // Fetch all colleges once for client-side filtering (Simulating "instant" updates)
+    // In a real app with thousands of records, we'd debounce server-side search.
+    // Given the requirement for "instant" updates and "hundreds" (not millions) of colleges, exact client-side filtering is excellent.
+    const { data: responseData, isLoading, isError } = useQuery({
+        queryKey: ['colleges-all'],
         queryFn: async () => {
-            const params = new URLSearchParams();
-
-            // Map filters to backend schema paths
-            if (filters.search) params.append('search', filters.search);
-            if (filters.state) params.append('location.state', filters.state);
-            if (filters.exam) params.append('exams_required', filters.exam);
-
-            // Fees range
-            if (filters.minFees) params.append('fees[gte]', filters.minFees);
-            if (filters.maxFees) params.append('fees[lte]', filters.maxFees);
-
-            // Add pagination
-            params.append('page', page.toString());
-            params.append('limit', '8');
-
-            const res = await api.get(`/colleges?${decodeURIComponent(params.toString())}`);
+            // Fetch a large batch to simulate "all" for client-side filtering capabilities
+            const res = await api.get('/colleges?limit=200');
             return res.data;
         },
-        placeholderData: (previousData) => previousData, // Keep previous data while fetching new page
+        staleTime: 5 * 60 * 1000, // Keep fresh for 5 mins
     });
 
-    const handlePageChange = (newPage: number) => {
-        setPage(newPage);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    // Map Backend Data to Frontend Interface
+    const allColleges: College[] = useMemo(() => {
+        if (!responseData?.data) return [];
+        return responseData.data.map((item: any) => ({
+            _id: item._id,
+            collegeId: item._id,
+            name: item.name,
+            image: item.image,
+            location: item.location,
+            country: item.country,
+            fees: item.fees,
+            currency: item.country === 'India' ? 'INR' : 'USD', // Simple heuristic
+            exams_required: item.exams_required || [],
+            restart_score: item.restart_score,
+            badges: item.badges || [],
+            placement_stats: item.placement_stats,
+            financialSupportPercent: item.restart_score, // Mapping score to FS% as requested
+            tags: item.badges,
+            detailPageSlug: `/college/${item._id}`
+        }));
+    }, [responseData]);
 
-    if (isLoading && !data) {
+    // Derived State: Filter logic
+    const filteredColleges = useMemo(() => {
+        return allColleges.filter(college => {
+            // 1. Search Filter
+            if (filters.search) {
+                const searchLower = filters.search.toLowerCase();
+                const matchesName = college.name.toLowerCase().includes(searchLower);
+                const matchesCity = college.location.city.toLowerCase().includes(searchLower);
+                const matchesState = college.location.state.toLowerCase().includes(searchLower);
+                if (!matchesName && !matchesCity && !matchesState) return false;
+            }
+
+            // 2. Country Filter
+            if (filters.country && filters.country !== '') {
+                if (college.country !== filters.country) return false;
+            }
+
+            // 3. Exam Filter
+            if (filters.exam && filters.exam !== '') {
+                if (!college.exams_required.includes(filters.exam)) return false;
+            }
+
+            return true;
+        });
+    }, [allColleges, filters]);
+
+    if (isLoading) {
         return (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="h-96 w-full rounded-3xl" />)}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <Skeleton key={i} className="h-80 w-full rounded-xl" />)}
             </div>
         );
     }
 
-    if (isError) return <div className="text-red-500 text-center py-20">Failed to load colleges.</div>;
+    if (isError) return (
+        <div className="text-center py-20 bg-red-50/50 rounded-2xl border border-red-100 flex flex-col items-center">
+            <AlertCircle className="h-10 w-10 text-red-500 mb-3" />
+            <h3 className="text-red-900 font-semibold">Unable to load colleges</h3>
+            <p className="text-red-600 text-sm mt-1">Please try refreshing the page.</p>
+        </div>
+    );
 
-    if (data?.data.length === 0) {
+    if (filteredColleges.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 rounded-3xl">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">No colleges found</h3>
-                <p className="text-gray-500">Try adjusting your filters.</p>
+            <div className="text-center py-24 bg-gray-50/50 rounded-2xl border border-gray-200/50 border-dashed">
+                <div className="bg-gray-100 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AlertCircle className="text-gray-400" size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">No colleges found</h3>
+                <p className="text-gray-500 text-sm max-w-xs mx-auto">
+                    We couldn't find any colleges matching your criteria. Try clearing some filters.
+                </p>
             </div>
         )
     }
 
     return (
-        <div className="space-y-8">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {data?.data.map((college: College) => (
-                    <Card key={college._id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group flex flex-col h-full border-gray-200/60">
-                        <div className="h-32 bg-gradient-to-tr from-gray-100 to-gray-200 relative">
-                            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur shadow-sm text-xs font-bold px-3 py-1 rounded-full text-indigo-900 flex items-center gap-1">
-                                ★ {college.restart_score}
-                            </div>
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    isInCompare(college._id) ? removeFromCompare(college._id) : addToCompare({ _id: college._id, name: college.name, type: 'indian' });
-                                }}
-                                className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full shadow-sm transition-all ${isInCompare(college._id) ? 'bg-indigo-600 text-white' : 'bg-white/90 text-gray-600 hover:bg-white'}`}
-                            >
-                                {isInCompare(college._id) ? '✓ Compare' : '+ Compare'}
-                            </button>
-                        </div>
-                        <CardContent className="p-6 flex-1 flex flex-col">
-                            <div className="flex flex-wrap gap-2 mb-3">
-                                {college.badges.slice(0, 3).map(b => (
-                                    <Badge key={b} variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-100">{b}</Badge>
-                                ))}
-                                {college.badges.length > 3 && <Badge variant="outline" className="text-gray-400">+{college.badges.length - 3}</Badge>}
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-1 leading-tight group-hover:text-indigo-600 transition-colors">
-                                {college.name}
-                            </h3>
-                            <p className="text-sm text-gray-500 mb-6">{college.location.city}, {college.location.state}</p>
-
-                            <div className="mt-auto space-y-3 pt-4 border-t border-gray-100/50">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-gray-500">Fees</span>
-                                    <span className="font-semibold text-gray-900">₹{(college.fees / 100000).toFixed(1)}L / yr</span>
-                                </div>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-gray-500">Exams</span>
-                                    <span className="font-medium text-indigo-600 truncate max-w-[120px] text-right">{college.exams_required.join(', ')}</span>
-                                </div>
-                                <Button className="w-full mt-2" size="lg" asChild>
-                                    <Link href={`/college/${college._id}`}>View Details</Link>
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
+        <div className="space-y-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest pl-1">
+                Showing {filteredColleges.length} Colleges
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                {filteredColleges.map((college) => (
+                    <CollegeCard key={college.collegeId} college={college} />
                 ))}
             </div>
-
-            {/* Pagination Controls */}
-            {data?.pagination && (
-                <div className="flex justify-center items-center gap-4 pt-4 border-t border-gray-200">
-                    <Button
-                        variant="outline"
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={!data.pagination.prev}
-                        className="w-32"
-                    >
-                        Previous
-                    </Button>
-                    <span className="text-sm font-medium text-gray-600">
-                        Page {page}
-                    </span>
-                    <Button
-                        variant="outline"
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={!data.pagination.next}
-                        className="w-32"
-                    >
-                        Next
-                    </Button>
-                </div>
-            )}
         </div>
     );
 }

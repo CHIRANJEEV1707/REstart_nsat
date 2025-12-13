@@ -2,11 +2,16 @@ import express from 'express';
 import { getColleges, getCollege, getNewGenColleges, getInternationalColleges, getNewGenCollege, getInternationalCollege } from '../controllers/collegeController';
 
 import { getTrendingColleges } from '../controllers/trendingController';
+import { getRecommendations } from '../controllers/recommendationController';
+import { protect } from '../middleware/auth'; // Ensure this exists or use check
 
 const router = express.Router();
 
 router.route('/trending')
     .get(getTrendingColleges);
+
+router.route('/recommendations')
+    .get(protect, getRecommendations);
 
 router.route('/')
     .get(getColleges);

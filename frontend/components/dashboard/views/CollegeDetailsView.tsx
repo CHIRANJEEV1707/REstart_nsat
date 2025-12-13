@@ -27,42 +27,63 @@ export function CollegeDetailsView() {
             if (!id) throw new Error("Invalid college ID");
 
             // Determine endpoint based on type
-            const endpoint = type === 'international'
-                ? `/international-colleges/${id}`
-                : `/colleges/${id}`;
+            let endpoint = `/colleges/${id}`;
+            if (type === 'newgen') endpoint = `/colleges/new-gen/${id}`;
+            if (type === 'international') endpoint = `/colleges/international/${id}`;
 
             console.log("Fetching college from:", endpoint);
 
             const res = await api.get(endpoint);
             const data = res.data.data;
 
-            // Normalize data structure for UI if needed
-            if (selectedCollege.type === 'international') {
+            // Normalize data structure based on type
+            if (type === 'international') {
                 return {
                     ...data,
                     _id: data._id,
                     name: data.name,
-                    image: data.image,
+                    image: `https://flagcdn.com/w1600/${data.country_code?.toLowerCase() || 'us'}.png`, // Placeholder flag or image
                     location: {
                         city: data.city,
-                        state: data.country, // Mapping country to state slot for display uniformity, or handle separately
+                        state: data.country,
                         country: data.country
                     },
                     fees: data.tuition_fee_annual,
                     currency: 'USD',
                     exams_required: data.entrance_exams || [],
                     description: data.description,
-                    financialSupportPercent: 0, // Default or map if available
+                    financialSupportPercent: 0,
                     tags: data.badges || [],
-                    contact: {
-                        website: data.official_website
-                    },
+                    contact: { website: data.official_website },
                     ranking: data.global_ranking,
                     accreditation: data.uni_type,
-                    type: data.type || 'international'
+                    type: 'international'
                 };
             }
-            return data;
+
+            if (type === 'newgen') {
+                return {
+                    ...data,
+                    _id: data._id,
+                    name: data.name,
+                    image: data.image,
+                    location: {
+                        city: data.location || 'Bangalore', // Fallback or parse string
+                        state: 'India',
+                        country: 'India'
+                    },
+                    fees: data.fees, // Assuming fees might be added later, else undefined
+                    avg_package: data.avg_package, // Key for New-Gen
+                    currency: 'INR',
+                    exams_required: [data.admission_mode || 'NSAT'],
+                    description: data.description,
+                    tags: ['New-Gen', 'Tech-First'],
+                    contact: { website: data.website },
+                    type: 'newgen'
+                };
+            }
+
+            return { ...data, type: 'indian' };
         },
         enabled: !!selectedCollege?.id,
     });
@@ -183,7 +204,7 @@ export function CollegeDetailsView() {
             <div className="relative h-64 md:h-80 w-full rounded-2xl overflow-hidden shadow-lg group">
                 <Image
                     src={finalImageUrl}
-                    alt={college.name}
+                    alt={college.name || "College Image"}
                     fill
                     className="object-cover"
                     onError={() => setImageError(true)}
@@ -280,7 +301,10 @@ export function CollegeDetailsView() {
                         <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                             <h3 className="text-gray-500 font-medium text-sm mb-1">Total Annual Fees</h3>
                             <div className="text-3xl font-bold text-gray-900 mb-4">
-                                {formatFees(college.fees, college.currency)}
+                                {college.type === 'newgen' && college.avg_package
+                                    ? <span className="text-emerald-600">{college.avg_package} <span className="text-sm text-gray-500 font-normal">Avg Package</span></span>
+                                    : formatFees(college.fees, college.currency)
+                                }
                             </div>
                             <button className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-all shadow-md hover:shadow-lg mb-3">
                                 Apply Now

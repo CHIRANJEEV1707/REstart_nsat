@@ -7,6 +7,7 @@
     "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts",
     "seed": "ts-node src/seed.ts",
+    "seed:newgen": "ts-node src/seedNewGen.ts",
     "build": "tsc"
   },
   "keywords": [],

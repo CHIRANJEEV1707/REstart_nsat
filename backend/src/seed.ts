@@ -1,11 +1,13 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const connectDB = require('./src/config/db').default;
-const College = require('./src/models/College').default;
-const Exam = require('./src/models/Exam').default;
-const User = require('./src/models/User').default;
-const PrepPlan = require('./src/models/PrepPlan').default;
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import connectDB from './config/db';
+import College from './models/College';
+import Exam from './models/Exam';
+import User from './models/User';
+import PrepPlan from './models/PrepPlan';
+
+dotenv.config();
 
 const seedData = async () => {
     try {
@@ -141,8 +143,12 @@ const seedData = async () => {
         console.log(`Seeded ${createdExams.length} exams`);
 
         // Map exam codes to IDs for easier usage
-        const examMap = {};
-        createdExams.forEach(e => { examMap[e.code] = e._id; });
+        const examMap: Record<string, any> = {};
+        createdExams.forEach(e => {
+            if (e.code) {
+                examMap[e.code] = e._id;
+            }
+        });
 
         // -----------------------------------------------------
         // 2. SEED COLLEGES (50)
@@ -247,6 +253,7 @@ const seedData = async () => {
         }
 
         // Demo Overrides
+        // Demo Overrides
         colleges[0] = {
             name: "Indian Institute of Technology, Bombay",
             location: { city: "Mumbai", state: "Maharashtra" },
@@ -260,7 +267,10 @@ const seedData = async () => {
             website: "https://www.iitb.ac.in",
             placement_stats: { average_package: "25 LPA", highest_package: "1.5 CR+" },
             admission_process: ["Qualify JEE Main", "Crack JEE Advanced", "JoSAA Counseling"],
-            image: "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop",
+            // Trending
+            isTrending: true,
+            trendingScore: 98
         };
 
         colleges[1] = {
@@ -276,7 +286,10 @@ const seedData = async () => {
             website: "https://www.bits-pilani.ac.in",
             placement_stats: { average_package: "22 LPA", highest_package: "60 LPA" },
             admission_process: ["Apply for BITSAT", "Score Priority Merit", "Counseling"],
-            image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1000&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1000&auto=format&fit=crop",
+            // Trending
+            isTrending: true,
+            trendingScore: 95
         };
 
         colleges[2] = {
@@ -297,7 +310,10 @@ const seedData = async () => {
                 english_proficiency: ["TOEFL 100+"],
                 scholarships_available: ["Need-Blind Admission"]
             },
-            image: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?q=80&w=1000&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?q=80&w=1000&auto=format&fit=crop",
+            // Trending
+            isTrending: true,
+            trendingScore: 99
         };
 
         await College.insertMany(colleges);

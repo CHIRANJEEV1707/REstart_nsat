@@ -9,9 +9,6 @@ export const registerSchema = z.object({
         name: z.string().min(2, 'Name must be at least 2 characters'),
         email: z.string().email('Invalid email address'),
         password: z.string().min(6, 'Password must be at least 6 characters'),
-        state: z.string().optional(),
-        class_level: z.string().optional(),
-        target_exams: z.array(z.string()).optional(),
     })
 });
 
@@ -52,7 +49,8 @@ const sendTokenResponse = (user: any, statusCode: number, res: Response) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                onboardingCompleted: user.onboardingCompleted
             }
         });
 };
@@ -61,7 +59,7 @@ const sendTokenResponse = (user: any, statusCode: number, res: Response) => {
 // @route   POST /api/auth/signup
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name, email, password, state, class_level, target_exams } = req.body;
+        const { name, email, password } = req.body;
 
         // Check if user exists
         let user = await User.findOne({ email });
@@ -75,9 +73,8 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             name,
             email,
             password,
-            state,
-            class_level,
-            target_exams
+            onboardingCompleted: false, // Explicitly set to false
+            onboardingStep: 1 // Signup completed
         });
 
         sendTokenResponse(user, 201, res);
@@ -151,9 +148,15 @@ export const updateDetails = async (req: Request, res: Response, next: NextFunct
             target_degree: req.body.target_degree,
             college_type_aspiring: req.body.college_type_aspiring,
             preferred_countries: req.body.preferred_countries,
-            target_exams: req.body.target_exams,
+            // Map Map new inputs to legacy fields (and schema will handle sync if we add pre-save, but here we are doing explicit update)
+            target_exams: req.body.target_exams || req.body.interestedExams,
             exam_scores: req.body.exam_scores,
-            budget_range: req.body.budget_range
+            budget_range: req.body.budget_range || req.body.budgetINR || req.body.budgetUSD,
+
+            // Also update preferences struct types
+            'preferences.budgetUSD': req.body.budgetUSD,
+            'preferences.budgetINR': req.body.budgetINR,
+            'preferences.interestedExams': req.body.interestedExams || req.body.target_exams
         };
 
         // @ts-ignore

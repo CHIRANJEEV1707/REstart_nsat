@@ -10,7 +10,8 @@ import {
     Globe,
     User,
     LogOut,
-    GraduationCap
+    GraduationCap,
+    Sparkles
 } from "lucide-react";
 import Image from "next/image";
 import { useDashboard, DashboardView } from "@/context/DashboardContext";
@@ -29,11 +30,12 @@ export function Sidebar({ user, logout }: SidebarProps) {
 
     const navItems: { name: string; icon: any; view: DashboardView }[] = [
         { name: 'Dashboard', icon: LayoutDashboard, view: 'overview' },
-        { name: 'Discover Colleges', icon: Compass, view: 'discover' },
+        { name: 'Discover Colleges', icon: Compass, view: 'discover-indian' },
+        { name: 'International', icon: Globe, view: 'discover-international' },
+        { name: 'New-Gen Colleges', icon: Sparkles, view: 'discover-newgen' },
         { name: 'Saved Colleges', icon: Bookmark, view: 'saved' },
         { name: 'Compare Colleges', icon: ArrowLeftRight, view: 'compare' },
         { name: 'Exams & Deadlines', icon: CalendarDays, view: 'deadlines' },
-        { name: 'International', icon: Globe, view: 'international' },
     ];
 
     return (
@@ -77,15 +79,15 @@ export function Sidebar({ user, logout }: SidebarProps) {
                         key={item.name}
                         onClick={() => setActiveView(item.view)}
                         className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors group ${activeView === item.view
-                                ? 'bg-indigo-50 text-indigo-600'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600'
+                            ? 'bg-indigo-50 text-indigo-600'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600'
                             }`}
                     >
                         <item.icon
                             size={18}
                             className={`transition-colors ${activeView === item.view
-                                    ? 'text-indigo-600'
-                                    : 'text-gray-400 group-hover:text-indigo-600'
+                                ? 'text-indigo-600'
+                                : 'text-gray-400 group-hover:text-indigo-600'
                                 }`}
                         />
                         {item.name}
@@ -98,15 +100,15 @@ export function Sidebar({ user, logout }: SidebarProps) {
                 <button
                     onClick={() => setActiveView('profile')}
                     className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors group ${activeView === 'profile'
-                            ? 'bg-indigo-50 text-indigo-600'
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600'
+                        ? 'bg-indigo-50 text-indigo-600'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600'
                         }`}
                 >
                     <User
                         size={18}
                         className={`transition-colors ${activeView === 'profile'
-                                ? 'text-indigo-600'
-                                : 'text-gray-400 group-hover:text-indigo-600'
+                            ? 'text-indigo-600'
+                            : 'text-gray-400 group-hover:text-indigo-600'
                             }`}
                     />
                     Profile Settings

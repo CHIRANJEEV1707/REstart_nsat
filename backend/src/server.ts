@@ -57,6 +57,8 @@ import internationalColleges from './routes/internationalColleges';
 app.use('/api/international-colleges', internationalColleges);
 import compareRoutes from './routes/compare';
 app.use('/api/compare', compareRoutes);
+import newgenColleges from './routes/newgenColleges';
+app.use('/api/newgen-colleges', newgenColleges);
 
 // Global Error Handler
 app.use(errorHandler);

@@ -14,7 +14,27 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
         // Basic filtering (country, continent, etc.)
         let query = InternationalCollege.find(reqQuery);
 
-        // Range filters
+        // 1. Text Search
+        if (req.query.search) {
+            const searchRegex = new RegExp(req.query.search as string, 'i');
+            query = query.or([
+                { name: searchRegex },
+                { city: searchRegex },
+                { country: searchRegex },
+                { description: searchRegex }
+            ]);
+        }
+
+        // 2. Budget Filter (annual_fees)
+        // Mapped from minFee/maxFee to tuition_fee_annual
+        if (req.query.minFee || req.query.maxFee) {
+            const feeFilter: any = {};
+            if (req.query.minFee) feeFilter.$gte = Number(req.query.minFee);
+            if (req.query.maxFee) feeFilter.$lte = Number(req.query.maxFee);
+            query = query.where('tuition_fee_annual').equals(feeFilter);
+        }
+
+        // Legacy legacy support (remove if needed, but keeping for safety as per file read)
         if (req.query.min_tuition || req.query.max_tuition) {
             const tuitionFilter: any = {};
             if (req.query.min_tuition) tuitionFilter.$gte = Number(req.query.min_tuition);
@@ -22,6 +42,12 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
             query = query.where('tuition_fee_annual').equals(tuitionFilter);
         }
 
+        // 3. Exam Filter
+        if (req.query.exam) {
+            query = query.where('entrance_exams').in([req.query.exam]);
+        }
+
+        // Ranking Ranges
         if (req.query.min_ranking || req.query.max_ranking) {
             const rankingFilter: any = {};
             if (req.query.min_ranking) rankingFilter.$gte = Number(req.query.min_ranking);
@@ -29,7 +55,7 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
             query = query.where('global_ranking').equals(rankingFilter);
         }
 
-        // Exam requirement filters
+        // Exam requirement filters (explicit flags)
         if (req.query.sat_required === 'true') {
             query = query.or([
                 { entrance_exams: 'SAT' },

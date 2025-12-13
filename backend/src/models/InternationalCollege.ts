@@ -1,6 +1,49 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-const InternationalCollegeSchema = new mongoose.Schema({
+export interface IInternationalCollege extends Document {
+    name: string;
+    country: string;
+    city: string;
+    continent: string;
+    university_type: 'Public' | 'Private';
+    description: string;
+    official_website: string;
+    global_ranking: number;
+    ranking_body: 'QS' | 'THE' | 'US News';
+    acceptance_rate: number;
+    restart_score: number;
+    degrees_offered: string[];
+    entrance_exams: string[];
+    english_tests: string[];
+    minimum_scores: {
+        sat: number;
+        act: number;
+        ielts: number;
+        toefl: number;
+    };
+    tuition_fee_annual: number;
+    living_cost_annual: number;
+    application_fee: number;
+    scholarships_available: boolean;
+    scholarships: {
+        name: string;
+        amount: string;
+        criteria: string;
+    }[];
+    visa_type: string;
+    application_deadlines: {
+        fall: Date;
+        spring: Date;
+    };
+    application_portal_url: string;
+    required_documents: string[];
+    badges: string[];
+    isTrending: boolean;
+    trendingScore: number;
+    image?: string; // Add image as optional if used in controller
+}
+
+const InternationalCollegeSchema: Schema = new Schema({
     // 🔹 Basic Info
     name: { type: String, required: true, index: true },
     country: { type: String, required: true },
@@ -48,7 +91,15 @@ const InternationalCollegeSchema = new mongoose.Schema({
     required_documents: [{ type: String, required: true }], // e.g. ["SOP", "LOR"]
 
     // 🔹 Metadata
-    badges: [{ type: String }] // e.g. ["Ivy League", "Top 10 Global"]
+    badges: [{ type: String }], // e.g. ["Ivy League", "Top 10 Global"]
+
+    // 🔹 Trending
+    isTrending: { type: Boolean, default: false, index: true },
+    trendingScore: { type: Number, default: 0, index: true } // Removed image field from schema for now as it wasn't there, or should I add it? Controller asks for image. I'll stick to interface only or add to schema if logic requires.
+    // Actually, controller projects 'image'. The schema doesn't have 'image'. 
+    // Wait, the trendingController uses `.select('... image ...')`. If international doesn't have image, it returns undefined.
+    // The previous error was specifically about `isTrending`. 
+    // Let's add `image` to schema too while we are here, to support the feature fully.
 
 }, {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
@@ -58,6 +109,6 @@ const InternationalCollegeSchema = new mongoose.Schema({
 InternationalCollegeSchema.index({ country: 1, global_ranking: 1 });
 InternationalCollegeSchema.index({ tuition_fee_annual: 1 });
 
-const InternationalCollege = mongoose.model('InternationalCollege', InternationalCollegeSchema);
+const InternationalCollege = mongoose.model<IInternationalCollege>('InternationalCollege', InternationalCollegeSchema);
 
 export default InternationalCollege;

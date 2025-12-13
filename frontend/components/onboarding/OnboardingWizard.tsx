@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
-import { StepLocation } from './steps/StepLocation';
-import { StepAcademic } from './steps/StepAcademic';
-import { StepBudget } from './steps/StepBudget';
 import { StepCountries } from './steps/StepCountries';
+import { StepBudget } from './steps/StepBudget';
+import { StepAcademic } from './steps/StepAcademic';
 import { StepExams } from './steps/StepExams';
-import { StepExamSelection } from './steps/StepExamSelection'; // New component
+import { StepExamSelection } from './steps/StepExamSelection';
 import { StepReview } from './steps/StepReview';
+import { StepNewGenInterest } from './steps/StepNewGenInterest';
 import { Check, ChevronRight } from 'lucide-react';
 
 export type OnboardingData = {
@@ -22,6 +22,7 @@ export type OnboardingData = {
     budgetUSD: { min: number; max: number };
     interestedExams: string[];
     examScores: { exam: string; score: string }[];
+    newGenInterest: boolean;
 };
 
 const INITIAL_DATA: OnboardingData = {
@@ -33,10 +34,12 @@ const INITIAL_DATA: OnboardingData = {
     preferredCountries: [],
     budgetUSD: { min: 0, max: 50000 },
     interestedExams: [],
-    examScores: []
+    examScores: [],
+    newGenInterest: false
 };
 
 const STEPS = [
+    { title: 'New-Gen Colleges', component: StepNewGenInterest },
     { title: 'Study Destination', component: StepCountries },
     { title: 'Budget', component: StepBudget },
     { title: 'Academics', component: StepAcademic },
@@ -70,7 +73,11 @@ export function OnboardingWizard() {
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            await api.post('/user/onboarding', data);
+            // Save Step 3 (College Preferences)
+            await api.post('/user/onboarding', {
+                step: 3,
+                data: data
+            });
             router.push('/dashboard');
         } catch (error) {
             console.error('Onboarding failed:', error);
@@ -83,14 +90,14 @@ export function OnboardingWizard() {
     const CurrentComponent = STEPS[currentStep].component;
 
     return (
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-300">
             {/* Progress Bar */}
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div>
                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Step {currentStep + 1} of {STEPS.length}</span>
                     <h2 className="text-xl font-bold text-gray-900">{STEPS[currentStep].title}</h2>
                 </div>
-                <div className="flex space-x-1">
+                <div className="hidden sm:flex space-x-1">
                     {STEPS.map((_, idx) => (
                         <div key={idx} className={`h-2 w-8 rounded-full transition-colors ${idx <= currentStep ? 'bg-indigo-600' : 'bg-gray-200'}`} />
                     ))}
@@ -123,8 +130,6 @@ export function OnboardingWizard() {
                 ) : (
                     <button
                         onClick={nextStep}
-                        // Simply checking if we can proceed? Typically steps do validation internally but for now we keep it open or add basic checks.
-                        // For MVP we allow next. Ideally validate step before next.
                         className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg flex items-center space-x-2 transition-all"
                     >
                         <span>Next</span>

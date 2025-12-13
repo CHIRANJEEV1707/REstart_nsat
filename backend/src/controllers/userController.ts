@@ -2,36 +2,15 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 import { z } from 'zod';
 
-// Validation Schema for Onboarding
-const onboardingSchema = z.object({
-    city: z.string().optional(),
-    state: z.string().optional(),
-    country: z.string().min(1, 'Country is required'), // Default 'India' is sent
-    targetDegree: z.string().min(1, 'Target degree is required'),
-    aspiringCollegeType: z.array(z.string()).min(1, 'Select at least one college type'),
-    budgetUSD: z.object({
-        min: z.number().min(0),
-        max: z.number().min(0)
-    }),
-    preferredCountries: z.array(z.string()).min(0),
-    interestedExams: z.array(z.string()).optional(),
-    examScores: z.array(z.object({
-        exam: z.string(),
-        score: z.string()
-    })).optional()
-});
 
-// @desc    Save Onboarding Data
+
+// @desc    Save Onboarding Data (Progressive)
 // @route   POST /api/user/onboarding
 export const saveOnboarding = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // Validate input
-        const validatedData = onboardingSchema.parse(req.body);
-
-        // Find user and update
+        const { step } = req.body;
         // @ts-ignore
         const userId = req.user.id;
-
         const user = await User.findById(userId);
 
         if (!user) {
@@ -39,28 +18,76 @@ export const saveOnboarding = async (req: Request, res: Response, next: NextFunc
             return;
         }
 
-        // Update user profile and status
-        user.profile = validatedData;
+        if (step === 2) {
+            // Step 2: Personal Details
+            const step2Schema = z.object({
+                city: z.string().min(1, 'City is required'),
+                country: z.string().min(1, 'Country is required'),
+                phoneNumber: z.string().optional()
+            });
 
-        // Sync to legacy fields (Mapped where possible)
-        if (validatedData.city) user.city = validatedData.city;
-        if (validatedData.state) user.state = validatedData.state;
-        user.country = validatedData.country;
-        user.target_degree = validatedData.targetDegree;
-        user.college_type_aspiring = validatedData.aspiringCollegeType;
-        user.preferred_countries = validatedData.preferredCountries;
-        user.budget_range = validatedData.budgetUSD; // Use USD values for now in legacy
-        user.target_exams = validatedData.interestedExams;
-        user.exam_scores = validatedData.examScores;
+            const data = step2Schema.parse(req.body.data);
 
-        user.onboardingCompleted = true; // Use USD values for now in legacy
+            user.profile = {
+                ...user.profile,
+                country: data.country,
+                city: data.city,
+                phoneNumber: data.phoneNumber
+            };
 
-        await user.save();
+            // Sync legacy
+            user.country = data.country;
+            user.city = data.city;
+
+            user.onboardingStep = 2;
+            await user.save();
+
+        } else if (step === 3) {
+            // Step 3: College Preferences
+            const step3Schema = z.object({
+                targetDegree: z.string().min(1),
+                aspiringCollegeType: z.array(z.string()),
+                preferredCountries: z.array(z.string()),
+                budgetUSD: z.object({ min: z.number(), max: z.number() }).optional(),
+                budgetINR: z.object({ min: z.number(), max: z.number() }).optional(),
+                interestedExams: z.array(z.string()).optional(),
+                examScores: z.array(z.object({ exam: z.string(), score: z.string() })).optional(),
+                newGenInterest: z.boolean().optional()
+            });
+
+            const data = step3Schema.parse(req.body.data);
+
+            user.preferences = {
+                targetDegree: data.targetDegree,
+                aspiringCollegeType: data.aspiringCollegeType,
+                preferredCountries: data.preferredCountries,
+                budgetUSD: data.budgetUSD,
+                budgetINR: data.budgetINR,
+                interestedExams: data.interestedExams,
+                examScores: data.examScores,
+                newGenInterest: data.newGenInterest || false
+            };
+
+            // Sync legacy
+            user.target_degree = data.targetDegree;
+            user.college_type_aspiring = data.aspiringCollegeType;
+            user.preferred_countries = data.preferredCountries;
+            user.budget_range = data.budgetINR || data.budgetUSD;
+            user.target_exams = data.interestedExams;
+            user.exam_scores = data.examScores;
+
+            user.onboardingStep = 3;
+            user.onboardingCompleted = true;
+            await user.save();
+        } else {
+            res.status(400).json({ success: false, message: 'Invalid onboarding step' });
+            return;
+        }
 
         res.status(200).json({
             success: true,
             data: user,
-            message: 'Onboarding completed successfully'
+            message: `Onboarding step ${step} saved`
         });
 
     } catch (error) {

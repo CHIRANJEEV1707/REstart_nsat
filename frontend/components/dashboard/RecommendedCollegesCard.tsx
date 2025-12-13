@@ -21,7 +21,7 @@ export function RecommendedCollegesCard({ colleges }: RecommendedProps) {
                         </div>
                         <CardTitle className="text-lg">Recommended For You</CardTitle>
                     </div>
-                    <button onClick={() => setActiveView('discover')} className="text-sm font-bold text-indigo-600 hover:text-indigo-700 hover:underline">
+                    <button onClick={() => setActiveView('discover-indian')} className="text-sm font-bold text-indigo-600 hover:text-indigo-700 hover:underline">
                         Explore All
                     </button>
                 </div>

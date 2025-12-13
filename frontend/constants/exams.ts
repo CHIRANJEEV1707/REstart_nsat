@@ -4,32 +4,67 @@ export const EXAMS_BY_COUNTRY: Record<string, string[]> = {
         "JEE Advanced",
         "BITSAT",
         "VITEEE",
-        "CUET"
+        "COMEDK",
+        "WBJEE",
+        "MHTCET",
+        "CUET",
+        "NSAT"
     ],
     "United States": [
         "SAT",
         "ACT",
-        "AP Exams"
+        "AP Exams",
+        "TOEFL",
+        "IELTS"
     ],
     "United Kingdom": [
-        "GCSE",
+        "IELTS",
+        "UCAS",
         "A Levels",
-        "UCAS"
+        "IB"
     ],
     Canada: [
-        "OUAC",
         "IELTS",
         "TOEFL"
     ],
+    Germany: [
+        "IELTS",
+        "TestDaF",
+        "Goethe-Zertifikat"
+    ],
     Australia: [
-        "ATAR",
+        "IELTS",
+        "TOEFL",
+        "ATAR"
+    ],
+    Switzerland: [
         "IELTS"
     ],
-    Germany: [
-        "TestDaF",
-        "Goethe-Zertifikat",
+    Singapore: [
+        "SAT",
+        "IELTS"
+    ],
+    Ireland: [
+        "IELTS"
+    ],
+    "New Zealand": [
         "IELTS"
     ]
 };
+
+// Default exams to show on International page when no country is selected
+export const INTL_COMMON_EXAMS = [
+    "SAT",
+    "ACT",
+    "IELTS",
+    "TOEFL",
+    "AP Exams",
+    "A Levels",
+    "IB",
+    "UCAS",
+    "TestDaF",
+    "Goethe-Zertifikat",
+    "ATAR"
+];
 
 export const ALL_EXAMS = Array.from(new Set(Object.values(EXAMS_BY_COUNTRY).flat()));

@@ -26,7 +26,11 @@ const CollegeSchema = new mongoose.Schema({
         visa_requirements: [String],
         english_proficiency: [String], // e.g. ["IELTS 7.0", "TOEFL 100"]
         scholarships_available: [String]
-    }
+    },
+
+    // 🔹 Trending
+    isTrending: { type: Boolean, default: false, index: true },
+    trendingScore: { type: Number, default: 0, index: true }
 });
 
 // Full text search index

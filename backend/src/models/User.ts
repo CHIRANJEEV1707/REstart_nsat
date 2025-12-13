@@ -7,14 +7,22 @@ export interface IUser extends Document {
     password: string;
     role: 'student' | 'admin';
     onboardingCompleted: boolean;
+    onboardingStep: number;
     profile?: {
         city?: string;
         state?: string;
         country?: string;
+        phoneNumber?: string;
+    };
+    preferences?: {
         targetDegree?: string;
         aspiringCollegeType?: string[];
         preferredCountries?: string[];
         budgetUSD?: {
+            min: number;
+            max: number;
+        };
+        budgetINR?: {
             min: number;
             max: number;
         };
@@ -23,6 +31,7 @@ export interface IUser extends Document {
             exam: string;
             score: string;
         }[];
+        newGenInterest?: boolean;
     };
     // Legacy fields
     state?: string;
@@ -50,12 +59,18 @@ const UserSchema = new Schema<IUser>({
 
     // Onboarding Status
     onboardingCompleted: { type: Boolean, default: false },
+    onboardingStep: { type: Number, default: 0 }, // 0: Not started, 1: Signup Done, 2: Personal Details Done, 3: Completed
 
-    // Detailed Profile (New Structure)
+    // Personal Details
     profile: {
         city: String,
         state: String,
         country: String,
+        phoneNumber: String
+    },
+
+    // College Preferences
+    preferences: {
         targetDegree: String,
         aspiringCollegeType: [String],
         preferredCountries: [String],
@@ -63,11 +78,16 @@ const UserSchema = new Schema<IUser>({
             min: Number,
             max: Number
         },
+        budgetINR: {
+            min: Number,
+            max: Number
+        },
         interestedExams: [String],
         examScores: [{
             exam: String,
             score: String
-        }]
+        }],
+        newGenInterest: { type: Boolean, default: false }
     },
 
     // Legacy fields (kept for backward compatibility or direct access if needed, but should eventually migrate to profile)

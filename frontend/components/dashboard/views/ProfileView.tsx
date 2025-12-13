@@ -42,7 +42,7 @@ export function ProfileView() {
         college_type_aspiring: [] as string[],
         preferred_countries: [] as string[],
         exam_scores: [] as { exam: string, score: string }[],
-        budgetUSD: { min: 0, max: 0 },
+        budgetINR: { min: 0, max: 0 },
         interestedExams: [] as string[]
     });
 
@@ -59,13 +59,28 @@ export function ProfileView() {
                 college_type_aspiring: user.college_type_aspiring || [],
                 preferred_countries: user.preferred_countries || [],
                 exam_scores: user.exam_scores || [],
-                budgetUSD: user.budgetUSD || user.budget_range || { min: 0, max: 0 },
+                budgetINR: user.preferences?.budgetINR || user.budget_range || user.preferences?.budgetUSD || { min: 0, max: 0 },
                 interestedExams: user.interestedExams || user.target_exams || []
             });
         }
     }, [user]);
 
-    // ... (Mutation remains same)
+    // Update Profile Mutation
+    const updateProfileMutation = useMutation({
+        mutationFn: async (data: typeof formData) => {
+            const res = await api.put('/auth/updatedetails', data);
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['me'] });
+            setIsEditing(false);
+            // Optional: Add toast success here
+        },
+        onError: (error: any) => {
+            console.error("Failed to update profile", error);
+            // Optional: Add toast error here
+        }
+    });
 
     const handleSave = () => {
         // Backend expects budgetUSD, interestedExams
@@ -86,7 +101,7 @@ export function ProfileView() {
                 college_type_aspiring: user.college_type_aspiring || [],
                 preferred_countries: user.preferred_countries || [],
                 exam_scores: user.exam_scores || [],
-                budgetUSD: user.budgetUSD || user.budget_range || { min: 0, max: 0 },
+                budgetINR: user.preferences?.budgetINR || user.budget_range || user.preferences?.budgetUSD || { min: 0, max: 0 },
                 interestedExams: user.interestedExams || user.target_exams || []
             });
         }
@@ -303,25 +318,25 @@ export function ProfileView() {
                                     )}
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Budget Range (Annual USD)</label>
+                                    <label className="text-sm font-medium text-gray-700">Budget Range (Annual INR)</label>
                                     <div className="flex items-center gap-2">
                                         {isEditing ? (
                                             <>
                                                 <Input
                                                     type="number" placeholder="Min"
-                                                    value={formData.budgetUSD?.min || ''}
-                                                    onChange={e => setFormData({ ...formData, budgetUSD: { ...formData.budgetUSD, min: Number(e.target.value) } })}
+                                                    value={formData.budgetINR?.min || ''}
+                                                    onChange={e => setFormData({ ...formData, budgetINR: { ...formData.budgetINR, min: Number(e.target.value) } })}
                                                 />
                                                 <span className="text-gray-400">-</span>
                                                 <Input
                                                     type="number" placeholder="Max"
-                                                    value={formData.budgetUSD?.max || ''}
-                                                    onChange={e => setFormData({ ...formData, budgetUSD: { ...formData.budgetUSD, max: Number(e.target.value) } })}
+                                                    value={formData.budgetINR?.max || ''}
+                                                    onChange={e => setFormData({ ...formData, budgetINR: { ...formData.budgetINR, max: Number(e.target.value) } })}
                                                 />
                                             </>
                                         ) : (
                                             <p className="p-2 bg-gray-50 rounded-md text-gray-900 w-full">
-                                                {formData.budgetUSD?.min ? `$${formData.budgetUSD.min} - $${formData.budgetUSD.max}` : "Not Set"}
+                                                {formData.budgetINR?.min ? `₹${formData.budgetINR.min} - ₹${formData.budgetINR.max}` : "Not Set"}
                                             </p>
                                         )}
                                     </div>

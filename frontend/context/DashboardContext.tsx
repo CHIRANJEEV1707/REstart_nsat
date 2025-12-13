@@ -5,20 +5,22 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 // Define the available views in the dashboard
 export type DashboardView =
     | "overview"
-    | "discover"
+    | "discover-indian"      // Replaces 'discover'
+    | "discover-international" // Explicit view for International tab
+    | "discover-newgen"      // Explicit view for New-Gen tab
     | "college-details"
     | "saved"
     | "compare"
     | "deadlines"
-    | "international"
+    | "international" // Keeping for backward compatibility if needed, but likely replaced by discover-international
     | "international-country"
-    | "exams" // Assuming 'deadlines' is the view name for list, actually checking file it is "deadlines" in type definition below, keeping consistent
+    | "exams"
     | "exam-details"
     | "profile";
 
 interface SelectedCollege {
     id: string;
-    type: 'indian' | 'international';
+    type: 'indian' | 'international' | 'newgen';
 }
 
 interface DashboardContextType {
@@ -28,7 +30,7 @@ interface DashboardContextType {
     setSelectedCollege: (college: SelectedCollege | null) => void;
     // New navigation helpers
     previousView: DashboardView;
-    openCollegeDetails: (id: string, type?: 'indian' | 'international') => void;
+    openCollegeDetails: (id: string, type?: 'indian' | 'international' | 'newgen') => void;
     goBack: () => void;
     // International View State
     selectedInternationalCountry: string | null;
@@ -47,7 +49,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     const [selectedInternationalCountry, setSelectedInternationalCountry] = useState<string | null>(null);
     const [selectedExamId, setSelectedExamId] = useState<string | null>(null);
 
-    const openCollegeDetails = (id: string, type: 'indian' | 'international' = 'indian') => {
+    const openCollegeDetails = (id: string, type: 'indian' | 'international' | 'newgen' = 'indian') => {
         setPreviousView(activeView);
         setSelectedCollege({ id, type });
         setActiveView("college-details");
@@ -74,10 +76,26 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
                 setSelectedCollege(null);
                 return;
             }
+            // Return to specific tab based on college type
+            if (selectedCollege?.type === 'indian') {
+                setActiveView('discover-indian');
+                setSelectedCollege(null);
+                return;
+            }
+            if (selectedCollege?.type === 'international') {
+                setActiveView('discover-international');
+                setSelectedCollege(null);
+                return;
+            }
+            if (selectedCollege?.type === 'newgen') {
+                setActiveView('discover-newgen');
+                setSelectedCollege(null);
+                return;
+            }
         }
 
         if (activeView === 'international-country') {
-            setActiveView('international');
+            setActiveView('discover-international'); // Updated to new view name
             setSelectedInternationalCountry(null);
             return;
         }

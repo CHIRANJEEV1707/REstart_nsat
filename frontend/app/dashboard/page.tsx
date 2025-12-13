@@ -15,12 +15,14 @@ import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { MiniCalendar } from "@/components/dashboard/MiniCalendar";
 import { QuickTools } from "@/components/dashboard/QuickTools";
+import CompareTray from "@/components/dashboard/CompareTray";
 
 // Views
 import { OverviewView } from "@/components/dashboard/views/OverviewView";
-import { DiscoverView } from "@/components/dashboard/views/DiscoverView";
+import { DiscoverIndianView } from "@/components/dashboard/views/DiscoverIndianView"; // Renamed/New
+import { NewGenView } from "@/components/dashboard/views/NewGenView"; // New
 import { SavedCollegesView } from "@/components/dashboard/views/SavedCollegesView";
-import { CompareView } from "@/components/dashboard/views/CompareView";
+import CompareView from "@/components/dashboard/views/CompareView";
 import { DeadlinesView } from "@/components/dashboard/views/DeadlinesView";
 import { InternationalView } from "@/components/dashboard/views/InternationalView";
 import { ProfileView } from "@/components/dashboard/views/ProfileView";
@@ -44,7 +46,7 @@ function DashboardContent() {
 
     // Scroll to top when view changes, except when going back to discover
     React.useEffect(() => {
-        if (mainContentRef.current && activeView !== 'discover' && activeView !== 'college-details') {
+        if (mainContentRef.current && activeView !== 'discover-indian' && activeView !== 'college-details') {
             mainContentRef.current.scrollTop = 0;
         }
     }, [activeView]);
@@ -124,14 +126,29 @@ function DashboardContent() {
             <main ref={mainContentRef} className="flex-1 flex flex-col h-screen overflow-y-auto lg:pt-0 pt-16">
 
                 {/* View Switcher */}
+                {/* View Switcher */}
                 {activeView === 'overview' && <OverviewView dashboard={dashboard} />}
 
-                {/*
-                    Keep DiscoverView mounted but hidden when not active to preserve
-                    filters and scroll position.
+                {/* 
+                    Keep views mounted but hidden if needed for state preservation, 
+                    OR just render conditionally. 
+                    Given the requirement: "Switching tabs preserves scroll & filters", 
+                    we should try to keep them mounted or rely on Context/React Query cache.
+                    React Query cache is usually enough for data. 
+                    Scroll preservation might require hidden divs.
+                    For now, following the pattern of 'discover' being hidden/shown.
                 */}
-                <div style={{ display: activeView === 'discover' ? 'block' : 'none' }}>
-                    <DiscoverView />
+
+                <div style={{ display: activeView === 'discover-indian' ? 'block' : 'none' }}>
+                    <DiscoverIndianView />
+                </div>
+
+                <div style={{ display: activeView === 'discover-international' ? 'block' : 'none' }}>
+                    <InternationalView />
+                </div>
+
+                <div style={{ display: activeView === 'discover-newgen' ? 'block' : 'none' }}>
+                    <NewGenView />
                 </div>
 
                 {activeView === 'college-details' && <CollegeDetailsView />}
@@ -140,10 +157,14 @@ function DashboardContent() {
                 {activeView === 'saved' && <SavedCollegesView />}
                 {activeView === 'compare' && <CompareView />}
                 {activeView === 'deadlines' && <DeadlinesView />}
+                {/* Legacy view support if any */}
                 {activeView === 'international' && <InternationalView />}
                 {activeView === 'profile' && <ProfileView />}
 
             </main>
+
+            {/* Compare Tray (Global) */}
+            <CompareTray />
 
         </div>
     );

@@ -6,6 +6,25 @@ export interface IUser extends Document {
     email: string;
     password: string;
     role: 'student' | 'admin';
+    onboardingCompleted: boolean;
+    profile?: {
+        city?: string;
+        state?: string;
+        country?: string;
+        targetDegree?: string;
+        aspiringCollegeType?: string[];
+        preferredCountries?: string[];
+        budgetUSD?: {
+            min: number;
+            max: number;
+        };
+        interestedExams?: string[];
+        examScores?: {
+            exam: string;
+            score: string;
+        }[];
+    };
+    // Legacy fields
     state?: string;
     city?: string;
     country?: string;
@@ -29,21 +48,41 @@ const UserSchema = new Schema<IUser>({
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['student', 'admin'], default: 'student' },
 
-    // Student Profile
+    // Onboarding Status
+    onboardingCompleted: { type: Boolean, default: false },
+
+    // Detailed Profile (New Structure)
+    profile: {
+        city: String,
+        state: String,
+        country: String,
+        targetDegree: String,
+        aspiringCollegeType: [String],
+        preferredCountries: [String],
+        budgetUSD: {
+            min: Number,
+            max: Number
+        },
+        interestedExams: [String],
+        examScores: [{
+            exam: String,
+            score: String
+        }]
+    },
+
+    // Legacy fields (kept for backward compatibility or direct access if needed, but should eventually migrate to profile)
     state: String,
     city: String,
     country: String,
-    class_level: String, // e.g. "12th", "Dropper"
-    target_degree: String, // e.g. "B.Tech"
-    college_type_aspiring: [String], // e.g. ["Engineering", "Research"]
+    class_level: String,
+    target_degree: String,
+    college_type_aspiring: [String],
     preferred_countries: [String],
     target_exams: [String],
     budget_range: { min: Number, max: Number },
-
-    // Exam Scores
     exam_scores: [{
         exam: String,
-        score: { type: mongoose.Schema.Types.Mixed } // Allow string or number
+        score: { type: mongoose.Schema.Types.Mixed }
     }],
 
     // User Data
@@ -54,7 +93,6 @@ const UserSchema = new Schema<IUser>({
     updatedAt: { type: Date, default: Date.now }
 });
 
-// Update timestamp on save
 // Update timestamp on save
 UserSchema.pre('save', async function () {
     this.updatedAt = new Date();

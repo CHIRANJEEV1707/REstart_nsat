@@ -58,6 +58,12 @@ function DashboardContent() {
         retry: false
     });
 
+    React.useEffect(() => {
+        if (dashboard?.user && !dashboard.user.onboardingCompleted) {
+            router.replace('/onboarding');
+        }
+    }, [dashboard, router]);
+
     const logout = async () => {
         try {
             await api.post('/auth/logout');

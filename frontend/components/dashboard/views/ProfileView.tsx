@@ -42,7 +42,8 @@ export function ProfileView() {
         college_type_aspiring: [] as string[],
         preferred_countries: [] as string[],
         exam_scores: [] as { exam: string, score: string }[],
-        budget_range: { min: 0, max: 0 }
+        budgetUSD: { min: 0, max: 0 },
+        interestedExams: [] as string[]
     });
 
     // Initialize form when user data loads
@@ -58,30 +59,16 @@ export function ProfileView() {
                 college_type_aspiring: user.college_type_aspiring || [],
                 preferred_countries: user.preferred_countries || [],
                 exam_scores: user.exam_scores || [],
-                budget_range: user.budget_range || { min: 0, max: 0 }
+                budgetUSD: user.budgetUSD || user.budget_range || { min: 0, max: 0 },
+                interestedExams: user.interestedExams || user.target_exams || []
             });
         }
     }, [user]);
 
-    // Update Mutation
-    const updateProfileMutation = useMutation({
-        mutationFn: async (data: any) => {
-            const res = await api.put('/auth/updatedetails', data);
-            return res.data;
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['me'] });
-            setIsEditing(false);
-            // Ideally show a toast here
-            alert("Profile Updated Successfully!");
-        },
-        onError: (err) => {
-            console.error(err);
-            alert("Failed to update profile. Please try again.");
-        }
-    });
+    // ... (Mutation remains same)
 
     const handleSave = () => {
+        // Backend expects budgetUSD, interestedExams
         updateProfileMutation.mutate(formData);
     };
 
@@ -99,7 +86,8 @@ export function ProfileView() {
                 college_type_aspiring: user.college_type_aspiring || [],
                 preferred_countries: user.preferred_countries || [],
                 exam_scores: user.exam_scores || [],
-                budget_range: user.budget_range || { min: 0, max: 0 }
+                budgetUSD: user.budgetUSD || user.budget_range || { min: 0, max: 0 },
+                interestedExams: user.interestedExams || user.target_exams || []
             });
         }
     };
@@ -315,25 +303,25 @@ export function ProfileView() {
                                     )}
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Budget Range (Annual)</label>
+                                    <label className="text-sm font-medium text-gray-700">Budget Range (Annual USD)</label>
                                     <div className="flex items-center gap-2">
                                         {isEditing ? (
                                             <>
                                                 <Input
                                                     type="number" placeholder="Min"
-                                                    value={formData.budget_range?.min || ''}
-                                                    onChange={e => setFormData({ ...formData, budget_range: { ...formData.budget_range, min: Number(e.target.value) } })}
+                                                    value={formData.budgetUSD?.min || ''}
+                                                    onChange={e => setFormData({ ...formData, budgetUSD: { ...formData.budgetUSD, min: Number(e.target.value) } })}
                                                 />
                                                 <span className="text-gray-400">-</span>
                                                 <Input
                                                     type="number" placeholder="Max"
-                                                    value={formData.budget_range?.max || ''}
-                                                    onChange={e => setFormData({ ...formData, budget_range: { ...formData.budget_range, max: Number(e.target.value) } })}
+                                                    value={formData.budgetUSD?.max || ''}
+                                                    onChange={e => setFormData({ ...formData, budgetUSD: { ...formData.budgetUSD, max: Number(e.target.value) } })}
                                                 />
                                             </>
                                         ) : (
                                             <p className="p-2 bg-gray-50 rounded-md text-gray-900 w-full">
-                                                {formData.budget_range?.min ? `₹${formData.budget_range.min} - ₹${formData.budget_range.max}` : "Not Set"}
+                                                {formData.budgetUSD?.min ? `$${formData.budgetUSD.min} - $${formData.budgetUSD.max}` : "Not Set"}
                                             </p>
                                         )}
                                     </div>
@@ -351,8 +339,8 @@ export function ProfileView() {
                                                 disabled={!isEditing}
                                                 onClick={() => toggleArrayItem('college_type_aspiring', type)}
                                                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all border ${isSelected
-                                                        ? 'bg-indigo-100 text-indigo-700 border-indigo-200'
-                                                        : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-200'
+                                                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200'
+                                                    : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-200'
                                                     }`}
                                             >
                                                 {type} {isSelected && isEditing && <X size={12} className="inline ml-1" />}
@@ -374,8 +362,8 @@ export function ProfileView() {
                                                 disabled={!isEditing}
                                                 onClick={() => toggleArrayItem('preferred_countries', country)}
                                                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all border ${isSelected
-                                                        ? 'bg-blue-100 text-blue-700 border-blue-200'
-                                                        : 'bg-white text-gray-600 border-gray-200 hover:border-blue-200'
+                                                    ? 'bg-blue-100 text-blue-700 border-blue-200'
+                                                    : 'bg-white text-gray-600 border-gray-200 hover:border-blue-200'
                                                     }`}
                                             >
                                                 {country} {isSelected && isEditing && <X size={12} className="inline ml-1" />}

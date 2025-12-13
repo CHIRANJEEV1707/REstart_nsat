@@ -8,6 +8,7 @@ import logger from './utils/logger';
 
 // Route files
 // Route files
+import userRoutes from './routes/user';
 import auth from './routes/auth';
 import colleges from './routes/colleges';
 import exams from './routes/exams';
@@ -44,6 +45,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Mount routers
+app.use('/api/user', userRoutes);
 app.use('/api/auth', auth);
 app.use('/api/colleges', colleges);
 app.use('/api/exams', exams);

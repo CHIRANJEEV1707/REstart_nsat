@@ -81,6 +81,7 @@ export const getDashboardData = async (req: Request, res: Response) => {
                 user: {
                     name: user.name,
                     email: user.email,
+                    onboardingCompleted: user.onboardingCompleted,
                     saved_count: savedCount
                 },
                 fit_overview: fitOverview,

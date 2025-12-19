@@ -2,11 +2,22 @@ import { Request, Response } from 'express';
 import College from '../models/College';
 import NewGenCollege from '../models/NewGenCollege';
 import InternationalCollege from '../models/InternationalCollege';
+import logger from '../utils/logger';
+import cache from '../utils/cache';
 
 // @desc    Get top trending colleges across all categories
 // @route   GET /api/colleges/trending
 export const getTrendingColleges = async (req: Request, res: Response) => {
     try {
+        // Check cache first
+        const cacheKey = 'trending:colleges:all';
+        const cached = cache.get(cacheKey);
+
+        if (cached) {
+            logger.info('Returning trending colleges from cache');
+            return res.json(cached);
+        }
+
         // Fetch trending items from all collections concurrently
         const [traditional, newGen, international] = await Promise.all([
             College.find({ isTrending: true })
@@ -66,14 +77,19 @@ export const getTrendingColleges = async (req: Request, res: Response) => {
         // Limit to top 10
         const topTrending = allTrending.slice(0, 10);
 
-        res.status(200).json({
+        const response = {
             success: true,
             count: topTrending.length,
             data: topTrending
-        });
+        };
 
+        // Cache the response for 5 minutes
+        cache.set(cacheKey, response, 5 * 60 * 1000);
+        logger.info('Cached trending colleges for 5 minutes');
+
+        res.status(200).json(response);
     } catch (error) {
-        console.error('Error fetching trending colleges:', error);
+        logger.error('Error fetching trending colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

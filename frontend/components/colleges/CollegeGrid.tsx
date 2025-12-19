@@ -18,7 +18,15 @@ export default function CollegeGrid({
     type?: 'indian' | 'international' | 'newgen';
     onCardClick?: (collegeId: string) => void;
 }) {
-    const { openCollegeDetails } = useDashboard();
+    // Make useDashboard optional - component can work without it
+    let openCollegeDetails: ((id: string, type?: 'indian' | 'international' | 'newgen') => void) | undefined;
+    try {
+        const dashboard = useDashboard();
+        openCollegeDetails = dashboard.openCollegeDetails;
+    } catch (e) {
+        // Not in DashboardProvider context - that's okay
+        openCollegeDetails = undefined;
+    }
 
     // Fetch colleges
     const { data: responseData, isLoading, isError } = useQuery({
@@ -179,7 +187,7 @@ export default function CollegeGrid({
                             onClick={() => {
                                 if (onCardClick) {
                                     onCardClick(college.collegeId);
-                                } else {
+                                } else if (openCollegeDetails) {
                                     openCollegeDetails(college.collegeId, type);
                                 }
                             }}

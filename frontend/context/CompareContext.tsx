@@ -2,7 +2,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-// import { toast } from 'sonner'; // Removed unused import
+import toast from 'react-hot-toast';
 
 export type CollegeType = 'indian' | 'international' | 'newgen';
 
@@ -35,6 +35,7 @@ export function CompareProvider({ children }: { children: ReactNode }) {
                 setCompareItems(JSON.parse(saved));
             } catch (e) {
                 console.error("Failed to parse compare basket", e);
+                toast.error("Failed to load saved comparisons");
             }
         }
         setIsLoaded(true);
@@ -54,7 +55,7 @@ export function CompareProvider({ children }: { children: ReactNode }) {
             // If valid 'toast' is not imported, this might break. Let's assume standard behavior or just log for now?
             // The prompt mentioned "Clear error message".
             // We'll trust the user has sonner or use a fallback. Actually, let's use a safe console/alert fallback for this file to ensure it's robust.
-            alert("You can only compare up to 3 colleges.");
+            toast.error("You can only compare up to 3 colleges");
             return;
         }
 

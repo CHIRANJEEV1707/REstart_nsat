@@ -38,14 +38,13 @@ export default function LoginPage() {
             const res = await api.post('/auth/login', data);
 
             if (res.status === 200) {
-                const { onboardingCompleted } = res.data.data;
-
-                // Redirect based on onboarding status
-                if (onboardingCompleted) {
-                    window.location.href = '/dashboard';
-                } else {
-                    window.location.href = '/onboarding';
-                }
+                // Small delay to ensure cookie is set before redirect
+                // This prevents 401 errors on the next page
+                setTimeout(() => {
+                    // Always redirect to dashboard
+                    // Dashboard will handle onboarding redirect if needed
+                    router.replace('/dashboard');
+                }, 100);
             }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid credentials. Please try again.');

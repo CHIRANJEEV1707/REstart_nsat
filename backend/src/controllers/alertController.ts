@@ -7,8 +7,7 @@ import { generateAlerts } from '../utils/alertGenerator';
 // @route   GET /api/alerts
 export const getAlerts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // @ts-ignore
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user?._id);
         const today = new Date();
 
         // Fetch ALL upcoming exams to check for alerts (more comprehensive than dashboard which limits to 5)

@@ -3,6 +3,7 @@ import User from '../models/User';
 import College from '../models/College';
 import Exam from '../models/Exam';
 import { generateAlerts } from '../utils/alertGenerator';
+import logger from '../utils/logger';
 
 // @desc    Get dashboard metrics (Saved, Recommended, Deadlines, Alerts)
 // @route   GET /api/dashboard
@@ -11,16 +12,14 @@ import { generateAlerts } from '../utils/alertGenerator';
 // @route   GET /api/dashboard
 export const getDashboardData = async (req: Request, res: Response) => {
     try {
-        // @ts-ignore
-        if (!req.user || !req.user.id) {
+        if (!req.user || !req.user._id) {
             res.cookie('token', 'none', {
                 expires: new Date(Date.now() + 10 * 1000),
                 httpOnly: true
             });
             return res.status(401).json({ success: false, message: 'Not authorized' });
         }
-        // @ts-ignore
-        const user = await User.findById(req.user.id).populate('saved_colleges');
+        const user = await User.findById(req.user._id).populate('saved_colleges');
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
@@ -102,7 +101,7 @@ export const getDashboardData = async (req: Request, res: Response) => {
             }
         });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching dashboard data:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

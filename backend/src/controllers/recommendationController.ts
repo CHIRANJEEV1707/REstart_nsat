@@ -3,6 +3,7 @@ import User from '../models/User';
 import College from '../models/College';
 import NewGenCollege from '../models/NewGenCollege';
 import InternationalCollege from '../models/InternationalCollege';
+import logger from '../utils/logger';
 
 interface ScoredCollege {
     college: any;
@@ -13,9 +14,9 @@ interface ScoredCollege {
 
 // @desc    Get personalized college recommendations
 // @route   GET /api/colleges/recommendations
-export const getRecommendations = async (req: any, res: Response) => {
+export const getRecommendations = async (req: Request, res: Response) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user?._id;
         const user = await User.findById(userId);
 
         if (!user || !user.preferences) {
@@ -181,7 +182,7 @@ export const getRecommendations = async (req: any, res: Response) => {
         });
 
     } catch (error) {
-        console.error("Recommendation Error:", error);
+        logger.error('Error generating recommendations:', error);
         res.status(500).json({ success: false, message: "Server Error" });
     }
 };

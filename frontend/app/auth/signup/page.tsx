@@ -51,9 +51,12 @@ export default function SignupPage() {
             const res = await api.post('/auth/signup', payload);
 
             if (res.status === 201) {
-                // Successful signup -> Redirect to Smart Onboarding (Step 2: Personal Details)
-                // Backend sets onboardingStep=1. Frontend /onboarding checks this and shows step 2.
-                window.location.href = '/onboarding';
+                // Successful signup → Redirect to dashboard
+                // Dashboard will redirect to onboarding if needed
+                // Small delay to ensure cookie is set before redirect
+                setTimeout(() => {
+                    router.replace('/dashboard');
+                }, 100);
             }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Signup failed. Please try again.');

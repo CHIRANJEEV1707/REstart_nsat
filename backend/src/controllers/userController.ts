@@ -9,8 +9,7 @@ import { z } from 'zod';
 export const saveOnboarding = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { step } = req.body;
-        // @ts-ignore
-        const userId = req.user.id;
+        const userId = req.user?._id;
         const user = await User.findById(userId);
 
         if (!user) {
@@ -99,8 +98,7 @@ export const saveOnboarding = async (req: Request, res: Response, next: NextFunc
 // @route   GET /api/user/profile
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // @ts-ignore
-        const userId = req.user.id;
+        const userId = req.user?._id;
         const user = await User.findById(userId);
 
         if (!user) {

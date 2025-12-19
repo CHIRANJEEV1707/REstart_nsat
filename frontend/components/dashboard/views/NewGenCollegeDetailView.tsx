@@ -4,15 +4,13 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, CheckCircle, Heart, Share2, MapPin, Clock, Calendar, Briefcase, Code, Terminal, Zap, ChevronRight, X, Download, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { College } from "@/types/college";
+import api from "@/lib/axios";
+import toast from 'react-hot-toast';
 
 interface NewGenCollegeDetailViewProps {
     collegeId: string;
     onBack: () => void;
 }
-
-import api from "@/lib/axios";
-
-// ... existing imports ...
 
 export default function NewGenCollegeDetailView({ collegeId, onBack }: NewGenCollegeDetailViewProps) {
     // In a real app, useQuery to fetch details by ID. 
@@ -35,6 +33,7 @@ export default function NewGenCollegeDetailView({ collegeId, onBack }: NewGenCol
                 }
             } catch (error) {
                 console.error("Failed to fetch college", error);
+                toast.error("Failed to load college details");
             } finally {
                 setLoading(false);
             }

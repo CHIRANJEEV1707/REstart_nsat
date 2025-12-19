@@ -35,13 +35,8 @@ export default function Navbar() {
                     />
                 </Link>
 
-                <div className="hidden md:flex items-center gap-8 font-medium text-gray-600">
-                    <Link href="/" className="hover:text-indigo-600 transition-colors">Home</Link>
-                    <Link href="/discover" className="hover:text-indigo-600 transition-colors">Colleges</Link>
-                    <Link href="/exams" className="hover:text-indigo-600 transition-colors">Exams</Link>
 
-                    <Link href="/dashboard" className="hover:text-indigo-600 transition-colors">Dashboard</Link>
-                </div>
+                {/* Navigation links removed */}
 
                 <div className="flex items-center gap-4">
                     {isLoading ? (

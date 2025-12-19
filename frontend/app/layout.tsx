@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/lib/react-query";
 import { CompareProvider } from "@/context/CompareContext";
+import { ToastProvider } from "@/components/providers/ToastProvider";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { OfflineBanner } from "@/components/OfflineBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +34,17 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
-        <Providers>
-          <CompareProvider>{children}</CompareProvider>
-        </Providers>
+        <ErrorBoundary>
+          <OfflineBanner />
+          <Providers>
+            <CompareProvider>
+              <ToastProvider />
+              {children}
+            </CompareProvider>
+          </Providers>
+        </ErrorBoundary>
       </body>
     </html>
   );

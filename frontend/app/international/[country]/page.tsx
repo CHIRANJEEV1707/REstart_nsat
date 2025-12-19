@@ -9,14 +9,14 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/Badge";
-import { useComparison } from "@/context/ComparisonContext";
+import { useCompare } from "@/context/CompareContext";
 
 export default function CountryPage() {
     const params = useParams();
     const countryName = Array.isArray(params.country) ? params.country[0] : params.country;
     const decodedCountry = decodeURIComponent(countryName || '');
 
-    const { addToCompare, removeFromCompare, isInCompare } = useComparison();
+    const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
     const { data, isLoading } = useQuery({
         queryKey: ['international-colleges', 'country', decodedCountry],
@@ -62,7 +62,7 @@ export default function CountryPage() {
                                                     e.preventDefault();
                                                     isInCompare(college._id)
                                                         ? removeFromCompare(college._id)
-                                                        : addToCompare({ _id: college._id, name: college.name, type: 'international' });
+                                                        : addToCompare({ collegeId: college._id, name: college.name, collegeType: 'international' });
                                                 }}
                                                 className={`absolute top-4 right-4 text-xs font-bold px-3 py-1 rounded-full shadow-sm transition-all z-10 ${isInCompare(college._id) ? 'bg-indigo-600 text-white' : 'bg-white/90 text-gray-600 hover:bg-white'}`}
                                             >

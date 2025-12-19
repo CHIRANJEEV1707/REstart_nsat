@@ -21,10 +21,8 @@ export const loginSchema = z.object({
 
 // Helper: Sign JWT
 const signToken = (id: string) => {
-    if (!process.env.JWT_SECRET) {
-        throw new Error('JWT_SECRET is not defined in environment variables');
-    }
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    // JWT_SECRET is validated at server startup, so it's guaranteed to exist here
+    return jwt.sign({ id }, process.env.JWT_SECRET!, {
         expiresIn: '7d'
     });
 };
@@ -33,11 +31,13 @@ const signToken = (id: string) => {
 const sendTokenResponse = (user: any, statusCode: number, res: Response) => {
     const token = signToken(user._id);
 
+    // Secure cookie configuration
     const options = {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' as const : 'lax' as const
+        httpOnly: true, // Prevents client-side JavaScript access
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax') as 'strict' | 'lax', // 'lax' for dev (cross-origin), 'strict' for production
+        path: '/', // Make cookie available for all paths
     };
 
     res.status(statusCode)
@@ -113,8 +113,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 // @route   GET /api/auth/me
 export const getMe = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // @ts-ignore - req.user will be added by auth middleware later
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user?._id);
         res.status(200).json({ success: true, data: user });
     } catch (error) {
         next(error);
@@ -159,8 +158,7 @@ export const updateDetails = async (req: Request, res: Response, next: NextFunct
             'preferences.interestedExams': req.body.interestedExams || req.body.target_exams
         };
 
-        // @ts-ignore
-        const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+        const user = await User.findByIdAndUpdate(req.user?._id, fieldsToUpdate, {
             new: true,
             runValidators: true
         });
@@ -176,22 +174,26 @@ export const updateDetails = async (req: Request, res: Response, next: NextFunct
 
 // @desc    Update password
 // @route   PUT /api/auth/updatepassword
+// Note: For enhanced security, consider implementing email confirmation for password changes
+// This would prevent attackers from changing passwords even if they compromise a session
 export const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // @ts-ignore
-        const user = await User.findById(req.user.id).select('+password');
+        const user = await User.findById(req.user?._id).select('+password');
 
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
+        // Verify current password
         if (!(await user.matchPassword(req.body.currentPassword))) {
             return res.status(401).json({ success: false, message: 'Incorrect current password' });
         }
 
+        // Update password
         user.password = req.body.newPassword;
         await user.save();
 
+        // Send new token (logs out other sessions)
         sendTokenResponse(user, 200, res);
     } catch (error) {
         next(error);

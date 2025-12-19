@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import College from '../models/College';
 import InternationalCollege from '../models/InternationalCollege';
+import logger from '../utils/logger';
 
 // Helper to normalize Indian College data
 const normalizeIndianCollege = (col: any) => ({
@@ -63,7 +64,7 @@ export const compareColleges = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.error('Compare Error:', error);
+        logger.error('Error comparing colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

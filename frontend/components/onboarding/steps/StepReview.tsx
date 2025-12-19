@@ -21,8 +21,8 @@ export function StepReview({ data }: StepProps) {
                     </div>
                 </Section>
 
-                <Section title="Budget (Approx. USD)">
-                    ${data.budgetUSD.min.toLocaleString()} - ${data.budgetUSD.max.toLocaleString()}
+                <Section title="Budget (Approx. INR)">
+                    ₹{Math.round(data.budgetUSD.min / 0.012).toLocaleString()} - ₹{Math.round(data.budgetUSD.max / 0.012).toLocaleString()}
                 </Section>
 
                 <Section title="Preferred Countries">

@@ -53,12 +53,12 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>({
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, index: true },
     password: { type: String, required: true, select: false },
-    role: { type: String, enum: ['student', 'admin'], default: 'student' },
+    role: { type: String, enum: ['student', 'admin'], default: 'student', index: true },
 
     // Onboarding Status
-    onboardingCompleted: { type: Boolean, default: false },
+    onboardingCompleted: { type: Boolean, default: false, index: true },
     onboardingStep: { type: Number, default: 0 }, // 0: Not started, 1: Signup Done, 2: Personal Details Done, 3: Completed
 
     // Personal Details

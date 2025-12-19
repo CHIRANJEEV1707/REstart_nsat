@@ -10,12 +10,12 @@ import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useState } from "react";
 import Link from "next/link";
-import { useComparison } from "@/context/ComparisonContext";
+import { useCompare } from "@/context/CompareContext";
 
 export default function InternationalCollegeDetailPage() {
     const { id } = useParams();
     const [activeTab, setActiveTab] = useState("overview");
-    const { addToCompare, removeFromCompare, isInCompare } = useComparison();
+    const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
     const isCompared = isInCompare(id as string);
     const { data: response, isLoading, isError } = useQuery({
@@ -33,7 +33,7 @@ export default function InternationalCollegeDetailPage() {
         if (isCompared) {
             removeFromCompare(id as string);
         } else {
-            addToCompare({ _id: id as string, name: college?.name || 'College', type: 'international' });
+            addToCompare({ collegeId: id as string, name: college?.name || 'College', collegeType: 'international' });
         }
     };
 

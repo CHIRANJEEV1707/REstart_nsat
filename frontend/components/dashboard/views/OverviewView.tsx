@@ -43,10 +43,10 @@ export function OverviewView({ dashboard }: { dashboard: any }) {
         <div className="p-6 md:p-8 max-w-5xl mx-auto w-full space-y-8 pb-20 fade-in slide-in-from-bottom-2 duration-500 animate-in">
             {/* 1. College Fit Hero */}
             <div className="h-[300px]">
-                <MatchSummaryCard data={dashboard.fit_overview} user={dashboard.user} />
+                <MatchSummaryCard />
             </div>
             {/* 2. Recommended Colleges Carousel */}
-            <RecommendedCollegesCard colleges={dashboard.recommendations} />
+            <RecommendedCollegesCard />
 
             {/* 🆕 New-Gen Colleges Section */}
             {showNewGen && newGenColleges?.length > 0 && (

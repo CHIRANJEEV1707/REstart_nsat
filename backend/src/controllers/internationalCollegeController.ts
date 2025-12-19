@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import InternationalCollege from '../models/InternationalCollege';
+import logger from '../utils/logger';
 
 // @desc    Get all international colleges with filtering
 // @route   GET /api/international-colleges
@@ -100,7 +101,7 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
 
         res.status(200).json({ success: true, count: colleges.length, pagination, data: colleges });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching international colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -115,7 +116,7 @@ export const getInternationalCollege = async (req: Request, res: Response) => {
         }
         res.status(200).json({ success: true, data: college });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching international college by ID:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

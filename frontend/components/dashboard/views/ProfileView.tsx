@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
 import { User, MapPin, Mail, Calendar, GraduationCap, Globe, DollarSign, BookOpen, Plus, X, Save, Edit2 } from 'lucide-react';
 import { Skeleton } from "@/components/ui/Skeleton";
+import toast from 'react-hot-toast';
 
 // Options
 const TARGET_DEGREES = ["B.Tech", "B.E.", "B.Sc", "B.Des", "B.Arch", "MBBS", "BBA", "Other"];
@@ -74,11 +75,11 @@ export function ProfileView() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['me'] });
             setIsEditing(false);
-            // Optional: Add toast success here
+            toast.success("Profile updated successfully!");
         },
         onError: (error: any) => {
             console.error("Failed to update profile", error);
-            // Optional: Add toast error here
+            toast.error(error.response?.data?.message || "Failed to update profile");
         }
     });
 

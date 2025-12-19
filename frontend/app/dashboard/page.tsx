@@ -7,6 +7,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
 
 // Context
 import { DashboardProvider, useDashboard } from "@/context/DashboardContext";
@@ -16,6 +17,7 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { MiniCalendar } from "@/components/dashboard/MiniCalendar";
 import { QuickTools } from "@/components/dashboard/QuickTools";
 import CompareTray from "@/components/dashboard/CompareTray";
+import AuthButton from "@/components/ui/AuthButton";
 
 // Views
 import { OverviewView } from "@/components/dashboard/views/OverviewView";
@@ -29,11 +31,14 @@ import { ProfileView } from "@/components/dashboard/views/ProfileView";
 import { CollegeDetailsView } from "@/components/dashboard/views/CollegeDetailsView";
 import { InternationalCountryView } from "@/components/dashboard/views/InternationalCountryView";
 import { ExamDetailsView } from "@/components/dashboard/views/ExamDetailsView";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function DashboardPage() {
     return (
         <DashboardProvider>
-            <DashboardContent />
+            <ErrorBoundary>
+                <DashboardContent />
+            </ErrorBoundary>
         </DashboardProvider>
     );
 }
@@ -51,20 +56,43 @@ function DashboardContent() {
         }
     }, [activeView]);
 
-    const { data: dashboard, isLoading, isError } = useQuery({
+
+    // Step 1: Check authentication status FIRST
+    const { data: authUser, isLoading: isCheckingAuth, isError: authError } = useQuery({
+        queryKey: ['auth-check'],
+        queryFn: async () => {
+            const res = await api.get('/auth/me');
+            return res.data.data;
+        },
+        retry: false, // Don't retry on 401
+        staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    });
+
+    // Step 2: Only fetch dashboard data if authenticated
+    const { data: dashboard, isLoading: isDashboardLoading, isError: isDashboardError } = useQuery({
         queryKey: ['dashboard'],
         queryFn: async () => {
             const res = await api.get('/dashboard');
             return res.data.data;
         },
-        retry: false
+        retry: false, // Don't retry on 401
+        enabled: !!authUser, // Only run if user is authenticated
     });
 
+    // Redirect to login if auth check fails
     React.useEffect(() => {
-        if (dashboard?.user && !dashboard.user.onboardingCompleted) {
+        if (authError) {
+            console.log('[Dashboard] Auth check failed, redirecting to login');
+            router.replace('/auth/login');
+        }
+    }, [authError, router]);
+
+    // Redirect to onboarding if user hasn't completed it
+    React.useEffect(() => {
+        if (authUser && !authUser.onboardingCompleted) {
             router.replace('/onboarding');
         }
-    }, [dashboard, router]);
+    }, [authUser, router]);
 
     const logout = async () => {
         try {
@@ -72,8 +100,15 @@ function DashboardContent() {
             router.push('/auth/login');
         } catch (err) {
             console.error(err);
+            toast.error('Failed to logout. Please try again.');
         }
     };
+
+    // Show loading while checking auth or loading dashboard
+    const isLoading = isCheckingAuth || isDashboardLoading;
+
+    // Show error if dashboard fetch fails (auth error is handled by redirect)
+    const isError = isDashboardError;
 
     if (isLoading) return (
         <div className="min-h-screen bg-gray-50 flex">
@@ -98,7 +133,7 @@ function DashboardContent() {
     if (isError || !dashboard) return (
         <div className="min-h-screen flex items-center justify-center flex-col bg-gray-50 px-4">
             <p className="mb-4 text-gray-600 text-lg">Unable to load dashboard. Please login again.</p>
-            <Link href="/auth/login" onClick={() => Cookies.remove('token')} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all">Go to Login</Link>
+            <AuthButton />
         </div>
     );
 
@@ -106,7 +141,7 @@ function DashboardContent() {
         <div className="min-h-screen bg-gray-50 flex">
 
             {/* A) Left Sidebar (Desktop) */}
-            <Sidebar user={dashboard.user} logout={logout} />
+            <Sidebar user={authUser} logout={logout} />
 
             {/* Mobile Header (Visible only on mobile) */}
             <div className="lg:hidden fixed top-0 left-0 w-full z-50 bg-white border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
@@ -118,7 +153,7 @@ function DashboardContent() {
             {/* Mobile Sidebar Overlay */}
             {mobileMenuOpen && (
                 <div className="lg:hidden fixed inset-0 z-40 bg-white pt-20 px-6">
-                    <Sidebar user={dashboard.user} logout={logout} />
+                    <Sidebar user={authUser} logout={logout} />
                 </div>
             )}
 

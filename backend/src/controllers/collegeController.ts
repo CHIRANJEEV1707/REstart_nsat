@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import College from '../models/College';
 import NewGenCollege from '../models/NewGenCollege';
+import logger from '../utils/logger';
 import InternationalCollege from '../models/InternationalCollege';
 
 // @desc    Get all colleges with filtering
@@ -91,7 +92,7 @@ export const getColleges = async (req: Request, res: Response) => {
 
         res.status(200).json({ success: true, count: colleges.length, pagination, data: colleges });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -103,7 +104,7 @@ export const getNewGenColleges = async (req: Request, res: Response) => {
         const colleges = await NewGenCollege.find();
         res.status(200).json({ success: true, count: colleges.length, data: colleges });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching college by ID:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -118,7 +119,7 @@ export const getNewGenCollege = async (req: Request, res: Response) => {
         }
         res.status(200).json({ success: true, data: college });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching new-gen colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -151,7 +152,7 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
         const colleges = await query;
         res.status(200).json({ success: true, count: colleges.length, data: colleges });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching new-gen college by ID:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -166,7 +167,7 @@ export const getInternationalCollege = async (req: Request, res: Response) => {
         }
         res.status(200).json({ success: true, data: college });
     } catch (error) {
-        console.error(error);
+        logger.error('Error searching colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -181,7 +182,7 @@ export const getCollege = async (req: Request, res: Response) => {
         }
         res.status(200).json({ success: true, data: college });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching college filters:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

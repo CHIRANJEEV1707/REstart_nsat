@@ -3,6 +3,11 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
+    // Debug: Check if cookies are being received at all
+    console.log('=== AUTH MIDDLEWARE CALLED ===');
+    console.log('req.cookies:', req.cookies);
+    console.log('req.headers.cookie:', req.headers.cookie);
+
     let token;
 
     if (req.cookies.token) {
@@ -10,7 +15,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
     }
 
     if (!token) {
-        // @ts-ignore
+        console.log('[Auth] No token found in cookies');
         return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 
@@ -18,6 +23,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
         const user = await User.findById(decoded.id);
         if (!user) {
+            console.log('[Auth] User not found for decoded ID:', decoded.id);
             // Clear invalid cookie
             res.cookie('token', 'none', {
                 expires: new Date(Date.now() + 10 * 1000),
@@ -25,11 +31,11 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
             });
             return res.status(401).json({ success: false, message: 'Not authorized: User not found' });
         }
-        // @ts-ignore
+        console.log('[Auth] User authenticated:', user.email);
         req.user = user;
         next();
-    } catch (error) {
-        // @ts-ignore
+    } catch (error: any) {
+        console.log('[Auth] JWT verification failed:', error.message);
         return res.status(401).json({ success: false, message: 'Not authorized' });
     }
 };

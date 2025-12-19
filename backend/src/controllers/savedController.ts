@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import User from '../models/User';
 import College from '../models/College';
 import InternationalCollege from '../models/InternationalCollege';
+import logger from '../utils/logger';
 
 // @desc    Get saved colleges
 // @route   GET /api/saved
 export const getSavedColleges = async (req: Request, res: Response) => {
     try {
-        // @ts-ignore
-        const user = await User.findById(req.user.id)
+        const user = await User.findById(req.user?._id)
             .populate('saved_colleges')
             .populate('saved_international_colleges');
 
@@ -24,7 +24,7 @@ export const getSavedColleges = async (req: Request, res: Response) => {
 
         res.status(200).json({ success: true, count: allSaved.length, data: allSaved });
     } catch (error) {
-        console.error(error);
+        logger.error('Error fetching saved colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -53,7 +53,7 @@ export const saveCollege = async (req: Request, res: Response) => {
         if (!college) return res.status(404).json({ success: false, message: 'College not found' });
 
         // @ts-ignore
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user?.id);
         if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
         // Check if already saved and save
@@ -81,7 +81,7 @@ export const saveCollege = async (req: Request, res: Response) => {
 
         res.status(200).json({ success: true, message: 'College saved' });
     } catch (error) {
-        console.error(error);
+        logger.error('Error saving college:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -94,7 +94,7 @@ export const removeSavedCollege = async (req: Request, res: Response) => {
         const type = req.query.type || 'indian';
 
         // @ts-ignore
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user?.id);
         if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
         if (type === 'international') {
@@ -114,7 +114,7 @@ export const removeSavedCollege = async (req: Request, res: Response) => {
         await user.save();
         res.status(200).json({ success: true, message: 'College removed from saved list' });
     } catch (error) {
-        console.error(error);
+        logger.error('Error removing saved college:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

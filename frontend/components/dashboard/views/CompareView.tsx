@@ -7,6 +7,7 @@ import { useDashboard } from '@/context/DashboardContext';
 import api from '@/lib/axios';
 import { X, Check, Minus, Info, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import toast from 'react-hot-toast';
 
 // Normalized College Data Interface for Comparison
 interface NormalizedCollege {
@@ -56,6 +57,7 @@ export default function CompareView() {
                         return normalizeData(item, data);
                     } catch (err) {
                         console.error(`Failed to fetch ${item.collegeId}`, err);
+                        toast.error(`Failed to load ${item.name}`);
                         // Return partial data from basket if fetch fails
                         return {
                             id: item.collegeId,
@@ -78,6 +80,7 @@ export default function CompareView() {
                 setCollegeData(results);
             } catch (error) {
                 console.error("Compare fetch error", error);
+                toast.error("Failed to load comparison data");
             } finally {
                 setLoading(false);
             }

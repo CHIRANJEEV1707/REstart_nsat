@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 import { Loader2 } from 'lucide-react';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
-import { StepPersonalDetails } from '@/components/onboarding/StepPersonalDetails'; // We need to create this
+import { StepPersonalDetails } from '@/components/onboarding/StepPersonalDetails';
+import toast from 'react-hot-toast';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function OnboardingPage() {
     const router = useRouter();
@@ -23,22 +25,29 @@ export default function OnboardingPage() {
             const user = res.data.data;
 
             // If incomplete logic:
-            // If onboardingCompleted -> Dashboard
-            if (user.onboardingCompleted) {
+            if (!user.onboardingCompleted) {
+                // If not completed, check step
+                // Default to 1 (Just signed up) if not present
+                const currentStep = user.onboardingStep || 1;
+                setStep(currentStep);
+                setLoading(false);
+            } else {
+                // Already completed -> redirect to dashboard
                 router.replace('/dashboard');
+            }
+        } catch (error: any) {
+            console.error('Failed to load profile:', error);
+
+            // If 401, redirect to login (user not authenticated)
+            if (error.response?.status === 401) {
+                toast.error("Please log in to continue");
+                router.replace('/auth/login');
                 return;
             }
 
-            // If not completed, check step
-            // Default to 1 (Just signed up) if not present
-            const currentStep = user.onboardingStep || 1;
-            setStep(currentStep);
+            // For other errors, show error and stop loading
+            toast.error("Failed to load profile. Please try again.");
             setLoading(false);
-
-        } catch (error) {
-            console.error("Failed to fetch profile", error);
-            setLoading(false);
-            // Optional: redirect to login if 401
         }
     };
 
@@ -55,14 +64,16 @@ export default function OnboardingPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            {step === 1 && (
-                <StepPersonalDetails onComplete={handlePersonalDetailsComplete} />
-            )}
+        <ErrorBoundary>
+            <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                {step === 1 && (
+                    <StepPersonalDetails onComplete={handlePersonalDetailsComplete} />
+                )}
 
-            {(step === 2 || step === 0) && ( // Fallback to wizard if unknown or step 2
-                <OnboardingWizard />
-            )}
-        </div>
+                {(step === 2 || step === 0) && ( // Fallback to wizard if unknown or step 2
+                    <OnboardingWizard />
+                )}
+            </div>
+        </ErrorBoundary>
     );
 }

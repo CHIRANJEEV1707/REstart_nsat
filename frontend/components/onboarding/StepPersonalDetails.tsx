@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/axios';
 import { Loader2, ArrowRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface StepPersonalDetailsProps {
     onComplete: () => void;
@@ -29,8 +30,17 @@ export function StepPersonalDetails({ onComplete }: StepPersonalDetailsProps) {
                 data: formData
             });
             onComplete();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to save personal details", error);
+
+            // If 401, redirect to login (user not authenticated)
+            if (error.response?.status === 401) {
+                toast.error('Please log in to continue');
+                window.location.href = '/auth/login';
+                return;
+            }
+
+            toast.error("Failed to save details. Please try again.");
         } finally {
             setLoading(false);
         }

@@ -3,7 +3,7 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useComparison } from "@/context/ComparisonContext";
+import { useCompare } from "@/context/CompareContext";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import { Button } from "@/components/ui/Button";
@@ -11,19 +11,19 @@ import Link from "next/link";
 import { X } from "lucide-react";
 
 export default function ComparePage() {
-    const { selectedColleges, removeFromCompare } = useComparison();
+    const { compareItems, removeFromCompare } = useCompare();
 
     const { data: colleges = [], isLoading } = useQuery({
-        queryKey: ['compare-colleges', selectedColleges],
+        queryKey: ['compare-colleges', compareItems],
         queryFn: async () => {
-            if (selectedColleges.length === 0) return [];
-            const res = await api.post('/compare', { colleges: selectedColleges });
+            if (compareItems.length === 0) return [];
+            const res = await api.post('/compare', { colleges: compareItems });
             return res.data.data;
         },
-        enabled: selectedColleges.length > 0
+        enabled: compareItems.length > 0
     });
 
-    if (selectedColleges.length === 0) {
+    if (compareItems.length === 0) {
         return (
             <main className="min-h-screen bg-gray-50 flex flex-col">
                 <Navbar />
@@ -49,9 +49,9 @@ export default function ComparePage() {
                 <div className="flex justify-between items-end mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">Compare Colleges</h1>
-                        <p className="text-gray-500">Comparing {selectedColleges.length} colleges</p>
+                        <p className="text-gray-500">Comparing {compareItems.length} colleges</p>
                     </div>
-                    {selectedColleges.length >= 3 ? (
+                    {compareItems.length >= 3 ? (
                         <Button variant="outline" disabled>
                             + Add More
                         </Button>
@@ -92,7 +92,7 @@ export default function ComparePage() {
                                     </th>
                                 ))}
                                 {/* Fill empty slots if less than 3 */}
-                                {[...Array(Math.max(0, 3 - selectedColleges.length))].map((_, i) => (
+                                {[...Array(Math.max(0, 3 - compareItems.length))].map((_, i) => (
                                     <th key={i} className="p-4 min-w-[280px] border-b border-gray-100 bg-gray-50/30 rounded-t-xl align-middle text-center">
                                         <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center h-48">
                                             <p className="text-sm text-gray-400 font-medium mb-3">Add another college</p>

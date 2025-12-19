@@ -11,6 +11,7 @@ import { StepExamSelection } from './steps/StepExamSelection';
 import { StepReview } from './steps/StepReview';
 import { StepNewGenInterest } from './steps/StepNewGenInterest';
 import { Check, ChevronRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export type OnboardingData = {
     city: string;
@@ -32,7 +33,7 @@ const INITIAL_DATA: OnboardingData = {
     targetDegree: '',
     aspiringCollegeType: [],
     preferredCountries: [],
-    budgetUSD: { min: 0, max: 50000 },
+    budgetUSD: { min: 0, max: 0 },
     interestedExams: [],
     examScores: [],
     newGenInterest: false
@@ -79,9 +80,17 @@ export function OnboardingWizard() {
                 data: data
             });
             router.push('/dashboard');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Onboarding failed:', error);
-            alert('Something went wrong. Please try again.');
+
+            // If 401, redirect to login (user not authenticated)
+            if (error.response?.status === 401) {
+                toast.error('Please log in to continue');
+                router.push('/auth/login');
+                return;
+            }
+
+            toast.error('Failed to complete onboarding. Please try again.');
         } finally {
             setIsSubmitting(false);
         }

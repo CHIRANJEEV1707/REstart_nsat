@@ -182,13 +182,13 @@ export function CollegeDetailsView() {
                         onClick={() => saveMutation.mutate()}
                         disabled={saveMutation.isPending}
                         className={`
-                            flex items - center gap - 2 px - 4 py - 2 rounded - lg font - bold text - sm shadow - sm transition - all border
+                            flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition-all border
                             ${isSaved
                                 ? 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
                                 : 'bg-white border-gray-200 text-gray-700 hover:text-rose-600 hover:border-rose-200'
                             }
                             ${saveMutation.isPending ? 'opacity-70 cursor-wait' : ''}
-`}
+                        `}
                     >
                         <Heart size={18} className={isSaved ? "fill-current" : ""} />
                         {isSaved ? "Saved" : "Save College"}

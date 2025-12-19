@@ -1,10 +1,17 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
+import './types/express-augmentation'; // Load Express type augmentation
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db';
 import { errorHandler } from './middleware/errorMiddleware';
 import logger from './utils/logger';
+import { validateEnv, validateOptionalEnv } from './utils/validateEnv';
+import { requestLogger } from './middleware/requestLogger';
+import { apiLimiter } from './middleware/rateLimiter';
+import { swaggerUi, swaggerSpec } from './config/swagger';
+import helmet from 'helmet';
+import corsPackage from 'cors';
 
 // Route files
 // Route files
@@ -20,29 +27,63 @@ import alerts from './routes/alerts';
 // Load env vars
 dotenv.config();
 
-// Connect to database
-connectDB();
+// Validate required environment variables
+try {
+    validateEnv();
+    validateOptionalEnv();
+} catch (error: any) {
+    logger.error('Server startup failed: ' + error.message);
+    process.exit(1);
+}
 
 const app: Express = express();
 
-// Middleware
-// Manual CORS Middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "http://localhost:3000");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
+// Security Middleware
+// Helmet - Sets various HTTP headers for security
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+        },
+    },
+    crossOriginEmbedderPolicy: false, // Disable for development
+}));
 
-    // Intercept OPTIONS method
-    if (req.method === 'OPTIONS') {
-        res.sendStatus(200);
-        return;
-    }
-    next();
-});
+// CORS Configuration - Strictly validate allowed origins
+const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:3000', // Development
+];
+
+app.use(corsPackage({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            logger.warn(`CORS blocked request from origin: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true, // Allow cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+}));
 
 app.use(express.json());
 app.use(cookieParser());
+
+// Request logging
+app.use(requestLogger);
+
+// Apply rate limiting to all routes
+app.use('/api/', apiLimiter);
+
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Mount routers
 app.use('/api/user', userRoutes);
@@ -65,6 +106,23 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => {
-    logger.info(`Server running on port ${PORT}`);
-});
+// Initialize server
+const startServer = async () => {
+    try {
+        // Connect to database
+        await connectDB();
+
+        // Start server
+        app.listen(PORT, () => {
+            logger.info(`Server running on port ${PORT}`);
+        });
+    } catch (error: any) {
+        logger.error(`Failed to start server: ${error.message}`);
+        // Start server anyway to allow health checks
+        app.listen(PORT, () => {
+            logger.warn(`Server running on port ${PORT} (Database connection failed)`);
+        });
+    }
+};
+
+startServer();

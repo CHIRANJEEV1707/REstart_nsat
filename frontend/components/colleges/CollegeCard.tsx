@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/Button";
 import { MapPin, Globe, Banknote, IndianRupee, Heart, ArrowRight } from "lucide-react";
 import { College } from "@/types/college";
 import { useCompare } from "@/context/CompareContext";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '@/lib/axios';
 
 interface CollegeCardProps {
     college: College;
@@ -11,6 +13,37 @@ interface CollegeCardProps {
 
 export default function CollegeCard({ college, variant, onClick }: CollegeCardProps) {
     const { addToCompare, isInCompare, compareItems } = useCompare();
+    const queryClient = useQueryClient();
+
+    // Fetch Saved Colleges to check if current one is saved
+    const { data: savedResponse } = useQuery({
+        queryKey: ['saved-colleges'],
+        queryFn: async () => {
+            const res = await api.get('/saved');
+            return res.data;
+        }
+    });
+
+    const isSaved = savedResponse?.data?.some((c: any) => c._id === college.collegeId || c.collegeId === college.collegeId);
+
+    // Save/Unsave Mutation
+    const saveMutation = useMutation({
+        mutationFn: async (e: React.MouseEvent) => {
+            e.stopPropagation();
+            if (isSaved) {
+                await api.delete(`/saved/${college.collegeId}?type=${variant === 'traditional' ? 'indian' : variant}`);
+            } else {
+                await api.post('/saved', {
+                    collegeId: college.collegeId,
+                    collegeType: variant === 'traditional' ? 'indian' : variant
+                });
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['saved-colleges'] });
+            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+        }
+    });
 
     // Styles based on variant
     const getCardStyle = () => {
@@ -95,8 +128,12 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
                     {/* Top Right Save */}
                     <div className="absolute top-4 right-4 z-20">
-                        <button className="p-2 rounded-full bg-black/40 backdrop-blur-md text-white/70 hover:text-pink-500 hover:bg-black/60 transition-all">
-                            <Heart size={16} />
+                        <button
+                            onClick={(e) => saveMutation.mutate(e)}
+                            disabled={saveMutation.isPending}
+                            className={`p-2 rounded-full backdrop-blur-md transition-all ${isSaved ? 'bg-rose-500/20 text-rose-500' : 'bg-black/40 text-white/70 hover:text-pink-500 hover:bg-black/60'}`}
+                        >
+                            <Heart size={16} className={isSaved ? "fill-current" : ""} />
                         </button>
                     </div>
                 </div>
@@ -171,8 +208,12 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                 </div>
 
                 <div className="absolute top-2 right-2">
-                    <button className="p-1.5 rounded-full shadow-sm transition-colors bg-white/80 text-gray-400 hover:text-pink-500">
-                        <Heart size={14} />
+                    <button
+                        onClick={(e) => saveMutation.mutate(e)}
+                        disabled={saveMutation.isPending}
+                        className={`p-1.5 rounded-full shadow-sm transition-colors ${isSaved ? 'bg-rose-50 text-rose-500' : 'bg-white/80 text-gray-400 hover:text-pink-500'}`}
+                    >
+                        <Heart size={14} className={isSaved ? "fill-current" : ""} />
                     </button>
                 </div>
             </div>

@@ -1,15 +1,10 @@
 import express from 'express';
-import { createPlan, getMyPlan } from '../controllers/prepController';
+import { createPrepPlan, getMyPlan } from '../controllers/prepController';
 import { protect } from '../middleware/auth';
 
 const router = express.Router();
 
-router.use(protect);
-
-router.route('/plans')
-    .post(createPlan);
-
-router.route('/plans/my')
-    .get(getMyPlan);
+router.post('/plans', protect, createPrepPlan);
+router.get('/plans/my', protect, getMyPlan);
 
 export default router;

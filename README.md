@@ -2,8 +2,6 @@
 
 *A smart, clean, AI-friendly web app helping PCM students find the right engineering college — without the chaos.*
 
-> Think “Zomato for engineering colleges,” but with prep plans, reminders, and actually useful filters.
-
 ---
 
 ## **Overview**

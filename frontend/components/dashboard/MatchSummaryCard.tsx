@@ -72,7 +72,7 @@ export function MatchSummaryCard() {
                     <div className="flex items-center gap-6 mt-6">
                         {/* AVG FIT SCORE */}
                         <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                            <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
                                 <span className="font-bold text-lg">{Math.round(meta.avgFitScore)}%</span>
                             </div>
                             <span className="text-xs text-indigo-100 leading-tight">Avg Fit<br />Score</span>
@@ -97,8 +97,14 @@ export function MatchSummaryCard() {
                 </div>
 
                 <Button
-                    onClick={() => setActiveView('discover')}
-                    className="flex-shrink-0 bg-white text-indigo-600 px-6 py-6 rounded-full font-bold shadow-lg hover:bg-gray-50 hover:scale-105 transition-all flex items-center gap-2 text-base"
+                    onClick={() => {
+                        if (meta.preferredCountry === 'India') {
+                            setActiveView('discover-indian');
+                        } else {
+                            setActiveView('discover-international');
+                        }
+                    }}
+                    className="h-auto flex-shrink-0 bg-white text-indigo-600 px-6 py-4 rounded-full font-bold shadow-lg hover:bg-gray-50 hover:scale-105 transition-all flex items-center gap-2 text-base"
                 >
                     View Top Matches <ArrowRight size={18} />
                 </Button>

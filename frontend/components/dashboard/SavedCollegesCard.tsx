@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Bookmark, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useDashboard } from "@/context/DashboardContext";
+import { useRouter } from "next/navigation";
 
 interface SavedCollegesProps {
     colleges: any[];
@@ -10,7 +11,9 @@ interface SavedCollegesProps {
 }
 
 export function SavedCollegesCard({ colleges, count }: SavedCollegesProps) {
-    const { setActiveView, openCollegeDetails } = useDashboard();
+    const { openCollegeDetails } = useDashboard();
+    const router = useRouter();
+
     return (
         <Card className="bg-white border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
             <CardContent className="p-6 flex-1 flex flex-col">
@@ -29,7 +32,7 @@ export function SavedCollegesCard({ colleges, count }: SavedCollegesProps) {
                         colleges.slice(0, 3).map((col) => (
                             <div
                                 key={col._id}
-                                onClick={() => openCollegeDetails(col._id, col.type || 'indian')}
+                                onClick={() => openCollegeDetails(col._id)}
                                 className="p-3 rounded-xl bg-gray-50 border border-gray-100 hover:border-pink-100 hover:bg-pink-50/50 transition-colors group cursor-pointer"
                             >
                                 <div className="flex justify-between items-start mb-2">
@@ -51,7 +54,7 @@ export function SavedCollegesCard({ colleges, count }: SavedCollegesProps) {
                     )}
                 </div>
 
-                <button onClick={() => setActiveView('saved')} className="mt-6 flex items-center justify-center w-full py-2.5 text-sm font-semibold text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
+                <button onClick={() => router.push('/saved')} className="mt-6 flex items-center justify-center w-full py-2.5 text-sm font-semibold text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
                     View All Saved <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
             </CardContent>

@@ -7,16 +7,15 @@ interface RankResponse {
     category: string;
 }
 
-export function useCollegeRank(id: string) {
-    return useQuery<RankResponse>({
-        queryKey: ['college-rank', id],
+export function useCollegeRank(collegeId: string | undefined) {
+    return useQuery({
+        queryKey: ['college-rank', collegeId],
         queryFn: async () => {
-            // Avoid fetching if ID is invalid or during hydration mismatch 
-            if (!id) return null;
-            const res = await api.get(`/colleges/${id}/rank`);
-            return res.data.data;
+            if (!collegeId) return null;
+            const { data } = await api.get<RankResponse>(`/colleges/${collegeId}/rank`);
+            return data;
         },
-        enabled: !!id,
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        enabled: !!collegeId,
+        retry: false,
     });
 }

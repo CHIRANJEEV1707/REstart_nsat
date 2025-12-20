@@ -22,6 +22,12 @@ export const getSavedColleges = async (req: Request, res: Response) => {
 
         const allSaved = [...indianColleges, ...internationalColleges];
 
+
+
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+
         res.status(200).json({ success: true, count: allSaved.length, data: allSaved });
     } catch (error) {
         logger.error('Error fetching saved colleges:', error);

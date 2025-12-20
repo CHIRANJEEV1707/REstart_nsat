@@ -23,4 +23,5 @@ export interface College {
     detailPageSlug?: string;
     admission_mode?: string;
     global_ranking?: number | string;
+    rank?: number;
 }

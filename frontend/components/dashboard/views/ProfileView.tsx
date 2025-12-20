@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/axios';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -22,15 +23,8 @@ export function ProfileView() {
     const [isEditing, setIsEditing] = useState(false);
 
     // Fetch User Data
-    const { data: userRes, isLoading } = useQuery({
-        queryKey: ['me'],
-        queryFn: async () => {
-            const res = await api.get('/auth/me');
-            return res.data;
-        }
-    });
-
-    const user = userRes?.data;
+    // Auth Context
+    const { user, isLoading } = useAuth();
 
     // Form State
     const [formData, setFormData] = useState({
@@ -73,7 +67,7 @@ export function ProfileView() {
             return res.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['me'] });
+            queryClient.invalidateQueries({ queryKey: ['auth-user'] });
             setIsEditing(false);
             toast.success("Profile updated successfully!");
         },

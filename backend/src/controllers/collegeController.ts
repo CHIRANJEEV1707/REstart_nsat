@@ -4,6 +4,18 @@ import NewGenCollege from '../models/NewGenCollege';
 import logger from '../utils/logger';
 import InternationalCollege from '../models/InternationalCollege';
 
+// Helper to parse "15 LPA" or "₹15,00,000" to number
+const parsePackage = (pkg: string | null | undefined): number | null => {
+    if (!pkg) return null;
+    const numeric = parseFloat(pkg.replace(/[^0-9.]/g, ''));
+    if (isNaN(numeric)) return null;
+    if (pkg.toLowerCase().includes('lpa')) return numeric * 100000;
+    return numeric; // Assuming raw number if no LPA
+};
+
+
+// @desc    Get all colleges with filtering & pagination
+// @route   GET /api/colleges
 // @desc    Get all colleges with filtering & pagination
 // @route   GET /api/colleges
 export const getColleges = async (req: Request, res: Response) => {
@@ -78,12 +90,13 @@ export const getColleges = async (req: Request, res: Response) => {
         query = College.find(filterQuery);
 
         // Sorting
-        // Priority: isTrending (desc), trendingScore (desc), restart_score (desc)
+        // Priority: restart_score (desc) for meaningful ranking
         if (req.query.sort) {
             const sortBy = (req.query.sort as string).split(',').join(' ');
             query = query.sort(sortBy);
         } else {
-            query = query.sort({ isTrending: -1, trendingScore: -1, restart_score: -1 });
+            // Updated default sort for ranking consistency
+            query = query.sort({ restart_score: -1 });
         }
 
         // Pagination
@@ -100,6 +113,13 @@ export const getColleges = async (req: Request, res: Response) => {
         // Executing query
         const colleges = await query;
 
+        // Add Rank
+        // Rank = (Page - 1) * Limit + Index + 1
+        const collegesWithRank = colleges.map((college, index) => ({
+            ...college.toObject(),
+            rank: startIndex + index + 1
+        }));
+
         // Pagination result object
         const pagination: any = {
             page,
@@ -112,9 +132,9 @@ export const getColleges = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            count: colleges.length,
+            count: collegesWithRank.length,
             pagination,
-            data: colleges
+            data: collegesWithRank
         });
     } catch (error) {
         logger.error('Error fetching colleges:', error);
@@ -126,10 +146,42 @@ export const getColleges = async (req: Request, res: Response) => {
 // @route   GET /api/colleges/new-gen
 export const getNewGenColleges = async (req: Request, res: Response) => {
     try {
-        const colleges = await NewGenCollege.find();
-        res.status(200).json({ success: true, count: colleges.length, data: colleges });
+        // Simple pagination for New-Gen as well to support ranking logic
+        const page = parseInt(req.query.page as string, 10) || 1;
+        const limit = parseInt(req.query.limit as string, 10) || 12;
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const total = await NewGenCollege.countDocuments();
+
+        const colleges = await NewGenCollege.find()
+            .sort({ restart_score: -1 }) // Ensure consistent ranking order
+            .skip(startIndex)
+            .limit(limit);
+
+        // Add Rank
+        const collegesWithRank = colleges.map((college, index) => ({
+            ...college.toObject(),
+            rank: startIndex + index + 1
+        }));
+
+        const pagination = {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            hasNext: endIndex < total,
+            hasPrev: startIndex > 0
+        };
+
+        res.status(200).json({
+            success: true,
+            count: collegesWithRank.length,
+            pagination,
+            data: collegesWithRank
+        });
     } catch (error) {
-        logger.error('Error fetching college by ID:', error);
+        logger.error('Error fetching new-gen colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -208,7 +260,8 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
         query = query.select('name location country fees exams_required restart_score image isTrending trendingScore study_abroad_info');
 
         // Sorting
-        query = query.sort({ isTrending: -1, trendingScore: -1, restart_score: -1 });
+        // Force restart_score for ranking
+        query = query.sort({ restart_score: -1 });
 
         // Pagination
         const page = parseInt(req.query.page as string, 10) || 1;
@@ -221,6 +274,24 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
 
         // Execute Query
         const colleges = await query;
+
+        // Add Rank
+        const collegesWithRank = colleges.map((college, index) => {
+            const collegeObj = college.toObject();
+            let roi = null;
+
+            // Calculate ROI (assuming annual fees * 4 for degree cost)
+            const avgPackage = parsePackage(collegeObj.placement_stats?.average_package);
+            if (avgPackage && collegeObj.fees) {
+                roi = parseFloat((avgPackage / (collegeObj.fees * 4)).toFixed(2));
+            }
+
+            return {
+                ...collegeObj,
+                rank: startIndex + index + 1,
+                roi
+            };
+        });
 
         // Pagination Result
         const pagination = {
@@ -235,7 +306,7 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
         res.status(200).json({
             success: true,
             pagination,
-            data: colleges
+            data: collegesWithRank
         });
     } catch (error) {
         logger.error('Error fetching international colleges:', error);
@@ -286,6 +357,8 @@ export const getCollege = async (req: Request, res: Response) => {
             return res.status(404).json({ success: false, message: 'College not found' });
         }
 
+
+
         // 4. Normalize Data to Strict "UnifiedCollege" Shape
         let normalizedCollege: any = {
             _id: college._id,
@@ -299,6 +372,7 @@ export const getCollege = async (req: Request, res: Response) => {
             trendingScore: college.trendingScore || 0,
             reviews_count: 120, // Placeholder/Real count if implemented
             rating: 4.5, // Placeholder/Real
+            roi: null, // Default
         };
 
         // Specific Normalization based on Source
@@ -309,6 +383,13 @@ export const getCollege = async (req: Request, res: Response) => {
             normalizedCollege.exams_required = college.exams_required || [];
             normalizedCollege.placement_stats = college.placement_stats;
             normalizedCollege.admission_process = college.admission_process;
+
+            // ROI Calculation
+            const avgPackage = parsePackage(college.placement_stats?.average_package);
+            if (avgPackage && college.fees) {
+                // 4-Year Degree ROI = Avg Package / (Annual Fees * 4)
+                normalizedCollege.roi = parseFloat((avgPackage / (college.fees * 4)).toFixed(2));
+            }
         }
         else if (source === 'International') {
             normalizedCollege.type = 'International';
@@ -336,6 +417,16 @@ export const getCollege = async (req: Request, res: Response) => {
             normalizedCollege.cohortDetails = college.cohortDetails;
             normalizedCollege.curriculumFocus = college.curriculumFocus;
             normalizedCollege.placementSupport = college.placementSupport;
+
+            // ROI Calculation (New-Gen often has avg_package in root or derived from placementSupport)
+            // Assuming avg_package is available directly or we parse from placement text.
+            // Using placeholder logic if schema varies, but for now assuming similar pattern or standardized 'avg_package' field if added.
+            const avgPackage = parsePackage(college.avg_package || (college.placementSupport?.[0] || ''));
+            // Note: 'avg_package' might need to be added to NewGen schema explicitly if not present, 
+            // but using what's available or null.
+            if (avgPackage && college.fees?.amountINR) {
+                normalizedCollege.roi = parseFloat((avgPackage / college.fees.amountINR).toFixed(1));
+            }
         }
 
         // 5. Dynamic "Why" Tags (Universal Logic)
@@ -352,86 +443,6 @@ export const getCollege = async (req: Request, res: Response) => {
 
     } catch (error) {
         logger.error('Error fetching university college details:', error);
-        res.status(500).json({ success: false, message: 'Server Error' });
-    }
-};
-
-// @desc    Get College Rank
-// @route   GET /api/colleges/:id/rank
-export const getCollegeRank = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        let college: any = null;
-        let category = 'Other';
-        let collection: any = College;
-        let queryFilter: any = {};
-
-        // 1. Determine Category & Collection
-        const indianCollege = await College.findById(id);
-        if (indianCollege) {
-            college = indianCollege;
-            if (indianCollege.name.includes("Indian Institute of Technology") || indianCollege.name.includes("IIT")) {
-                category = "IIT";
-                queryFilter = { name: { $regex: /Indian Institute of Technology|IIT/ } };
-            } else if (indianCollege.name.includes("National Institute of Technology") || indianCollege.name.includes("NIT")) {
-                category = "NIT";
-                queryFilter = { name: { $regex: /National Institute of Technology|NIT/ } };
-            } else if (indianCollege.type === 'GFTI') {
-                category = "GFTI";
-                queryFilter = { type: 'GFTI' };
-            } else {
-                category = indianCollege.type || "Traditional";
-                queryFilter = { type: indianCollege.type };
-            }
-        }
-
-        if (!college) {
-            const intlCollege = await InternationalCollege.findById(id);
-            if (intlCollege) {
-                college = intlCollege;
-                category = "International";
-                collection = InternationalCollege;
-                queryFilter = { country: { $ne: 'India' } };
-            }
-        }
-
-        if (!college) {
-            const newGenCollege = await NewGenCollege.findById(id);
-            if (newGenCollege) {
-                college = newGenCollege;
-                category = "New-Gen";
-                collection = NewGenCollege;
-                queryFilter = {};
-            }
-        }
-
-        if (!college) {
-            return res.status(404).json({ success: false, message: 'College not found' });
-        }
-
-        // 2. Fetch all in category & Sort
-        const myScore = college.restart_score || 0;
-
-        // Count how many have strictly greater score
-        const betterCollegesCount = await collection.countDocuments({
-            ...queryFilter,
-            restart_score: { $gt: myScore }
-        });
-
-        const rank = betterCollegesCount + 1;
-        const total = await collection.countDocuments(queryFilter);
-
-        res.status(200).json({
-            success: true,
-            data: {
-                rank,
-                total,
-                category
-            }
-        });
-
-    } catch (error) {
-        logger.error('Error fetching ranking:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

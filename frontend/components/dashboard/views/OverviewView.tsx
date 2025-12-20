@@ -1,6 +1,7 @@
 "use client";
 
 import { useDashboard } from "@/context/DashboardContext";
+import { useRouter } from "next/navigation";
 import { MatchSummaryCard } from "@/components/dashboard/MatchSummaryCard";
 import { RecommendedCollegesCard } from "@/components/dashboard/RecommendedCollegesCard";
 import { DeadlinesCard } from "@/components/dashboard/DeadlinesCard";
@@ -12,7 +13,8 @@ import { Sparkles, Globe } from "lucide-react";
 
 export function OverviewView({ dashboard }: { dashboard: any }) {
     // Note: If you need to switch views from here (e.g. "View All" buttons), use useDashboard()
-    const { setActiveView, openCollegeDetails } = useDashboard();
+    const router = useRouter();
+    const { openCollegeDetails } = useDashboard();
 
     // Preference Checks
     const showNewGen = dashboard.user.preferences?.newGenInterest || dashboard.user.preferences?.aspiringCollegeType?.includes("New-Gen");
@@ -61,7 +63,7 @@ export function OverviewView({ dashboard }: { dashboard: any }) {
                                 <CollegeCard
                                     college={col}
                                     variant="newgen"
-                                    onClick={() => openCollegeDetails(col._id, 'newgen')}
+                                    onClick={() => openCollegeDetails(col._id)}
                                 />
                             </div>
                         ))}
@@ -82,7 +84,7 @@ export function OverviewView({ dashboard }: { dashboard: any }) {
                                 <CollegeCard
                                     college={col}
                                     variant="international"
-                                    onClick={() => openCollegeDetails(col._id, 'international')}
+                                    onClick={() => openCollegeDetails(col._id)}
                                 />
                             </div>
                         ))}
@@ -98,7 +100,7 @@ export function OverviewView({ dashboard }: { dashboard: any }) {
                         Wait, SavedCollegesCard likely has a "View All" link. We need to handle that. 
                         Ideally, we refactor SavedCollegesCard to accept an onClick or we just wrap it.
                     */}
-                    <div className="relative group" onClick={() => setActiveView("saved")}>
+                    <div className="relative group">
                         <SavedCollegesCard colleges={dashboard.saved_colleges} count={dashboard.user.saved_count} />
                         {/* Overlay to intercept click if needed, or just better to refactor the card itself */}
                     </div>

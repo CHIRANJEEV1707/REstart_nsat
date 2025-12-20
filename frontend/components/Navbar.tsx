@@ -4,22 +4,10 @@ import Link from 'next/link';
 import NextImage from 'next/image';
 
 
-import { useQuery } from '@tanstack/react-query';
-import api from '@/lib/axios';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Navbar() {
-    const { data: user, isLoading } = useQuery({
-        queryKey: ['user'],
-        queryFn: async () => {
-            try {
-                const res = await api.get('/auth/me');
-                return res.data.data;
-            } catch (err) {
-                return null;
-            }
-        },
-        retry: false,
-    });
+    const { user, isLoading } = useAuth();
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100">

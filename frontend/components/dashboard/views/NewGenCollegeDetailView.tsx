@@ -96,7 +96,7 @@ export default function NewGenCollegeDetailView({ collegeId, onBack }: NewGenCol
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight">
                             Learn by building. <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
-                                Pay after placement.
+                                Industry-ready.
                             </span>
                         </h1>
 
@@ -182,7 +182,7 @@ export default function NewGenCollegeDetailView({ collegeId, onBack }: NewGenCol
                         <div className="space-y-6">
                             <div className="flex justify-between items-center py-4 border-b border-indigo-500/10">
                                 <span className="text-slate-300">Tuition Model</span>
-                                <span className="text-white font-bold text-right">Pay After Placement / <br /> Income Share Agreement</span>
+                                <span className="text-white font-bold text-right">Income Share Agreement</span>
                             </div>
                             <div className="flex justify-between items-center py-4 border-b border-indigo-500/10">
                                 <span className="text-slate-300">Min. Guarantee</span>

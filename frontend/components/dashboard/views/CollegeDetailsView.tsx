@@ -4,40 +4,37 @@ import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Globe, Mail, Phone, Share2, Heart } from 'lucide-react';
 import Image from 'next/image';
 import { useDashboard } from '@/context/DashboardContext';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { useParams, useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
 
 export function CollegeDetailsView() {
-    const { setActiveView, selectedCollege, goBack } = useDashboard();
+    const params = useParams();
+    const id = params?.id as string;
+    const router = useRouter();
+    const { toggleSaveCollege, savedColleges } = useDashboard();
     const [imageError, setImageError] = useState(false);
-    const queryClient = useQueryClient();
 
-    // 1. Fetch College Details based on type
+    const goBack = () => router.back();
+
+    // 1. Fetch College Details
     const { data: college, isLoading, isError } = useQuery({
-        queryKey: ['college', selectedCollege?.id, selectedCollege?.type],
+        queryKey: ['college', id],
         queryFn: async () => {
-            if (!selectedCollege?.id) return null;
+            if (!id) return null;
 
-            const id = selectedCollege.id.trim();
-            const type = (selectedCollege.type || 'indian').trim();
-
-            if (!id) throw new Error("Invalid college ID");
-
-            // Determine endpoint based on type
-            let endpoint = `/colleges/${id}`;
-            if (type === 'newgen') endpoint = `/colleges/new-gen/${id}`;
-            if (type === 'international') endpoint = `/colleges/international/${id}`;
-
-            console.log("Fetching college from:", endpoint);
-
-            const res = await api.get(endpoint);
+            console.log("Fetching college from:", `/colleges/${id}`);
+            const res = await api.get(`/colleges/${id}`);
             const data = res.data.data;
 
-            // Normalize data structure based on type
-            if (type === 'international') {
+            // Determine type from response if available, or infer
+            const type = data.type || (data.country && data.country !== 'India' ? 'international' : 'indian');
+
+            // Normalize data structure based on type is handled by backend now mostly, but ensuring frontend consistency:
+            if (type === 'international' || (data.country && data.country !== 'India')) {
                 return {
                     ...data,
                     _id: data._id,
@@ -49,78 +46,31 @@ export function CollegeDetailsView() {
                         country: data.country
                     },
                     fees: data.fees || data.tuition_fee_annual,
-                    currency: 'INR', // We converted to INR in seed
+                    currency: 'INR',
                     exams_required: data.exams_required || data.entrance_exams || [],
-                    description: data.description,
-                    financialSupportPercent: 0,
-                    tags: data.badges || [],
-                    contact: { website: data.website || data.official_website },
-                    ranking: data.global_ranking,
-                    accreditation: data.uni_type || data.type,
-                    type: 'international',
-                    study_abroad_info: data.study_abroad_info,
-                    admission_process: data.admission_process
+                    type: 'international'
                 };
             }
 
             if (type === 'newgen') {
                 return {
                     ...data,
-                    _id: data._id,
-                    name: data.name,
-                    image: data.image,
-                    location: {
-                        city: data.location || 'Bangalore', // Fallback or parse string
-                        state: 'India',
-                        country: 'India'
-                    },
-                    fees: data.fees, // Assuming fees might be added later, else undefined
-                    avg_package: data.avg_package, // Key for New-Gen
-                    currency: 'INR',
-                    exams_required: [data.admission_mode || 'NSAT'],
-                    description: data.description,
-                    tags: ['New-Gen', 'Tech-First'],
-                    contact: { website: data.website },
                     type: 'newgen'
                 };
             }
 
             return { ...data, type: 'indian' };
         },
-        enabled: !!selectedCollege?.id,
+        enabled: !!id,
     });
 
-    // 2. Fetch Saved Colleges to check if current one is saved
-    const { data: savedResponse } = useQuery({
-        queryKey: ['saved-colleges'],
-        queryFn: async () => {
-            const res = await api.get('/saved');
-            return res.data;
-        }
-    });
+    const isSaved = savedColleges.includes(id);
 
-    const isSaved = savedResponse?.data?.some((c: any) => c._id === selectedCollege?.id);
-
-    // 3. Save/Unsave Mutation
-    const saveMutation = useMutation({
-        mutationFn: async () => {
-            if (!selectedCollege) return;
-
-            if (isSaved) {
-                // Delete
-                // Delete
-                await api.delete(`/saved/${selectedCollege.id}?type=${selectedCollege.type || 'indian'}`);
-            } else {
-                // Save
-                await api.post('/saved', { collegeId: selectedCollege.id, collegeType: selectedCollege.type });
-            }
-        },
-        onSuccess: () => {
-            // Invalidate to refresh UI
-            queryClient.invalidateQueries({ queryKey: ['saved-colleges'] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-        }
-    });
+    // 3. Save/Unsave Handler
+    const handleSave = () => {
+        if (!college) return;
+        toggleSaveCollege(id, college.type || 'indian');
+    };
 
 
     if (isLoading) {
@@ -181,15 +131,13 @@ export function CollegeDetailsView() {
                 </button>
                 <div className="flex gap-2">
                     <button
-                        onClick={() => saveMutation.mutate()}
-                        disabled={saveMutation.isPending}
+                        onClick={handleSave}
                         className={`
                             flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition-all border
                             ${isSaved
                                 ? 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
                                 : 'bg-white border-gray-200 text-gray-700 hover:text-rose-600 hover:border-rose-200'
                             }
-                            ${saveMutation.isPending ? 'opacity-70 cursor-wait' : ''}
                         `}
                     >
                         <Heart size={18} className={isSaved ? "fill-current" : ""} />
@@ -258,9 +206,9 @@ export function CollegeDetailsView() {
 
                     {/* Quick Stats Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <Card className="p-4 bg-indigo-50/50 border-indigo-100 flex flex-col items-center justify-center text-center">
-                            <span className="text-indigo-600 font-bold text-lg">{college.ranking || "#12"}</span>
-                            <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">Ranking</span>
+                        <Card className="p-4 bg-[#0085ff]/5 border-blue-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-[#0085ff] font-bold text-lg">{college.restart_score ? `${college.restart_score} / 10` : "N/A"}</span>
+                            <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">RESTART SCORE</span>
                         </Card>
                         <Card className="p-4 bg-emerald-50/50 border-emerald-100 flex flex-col items-center justify-center text-center">
                             <span className="text-emerald-600 font-bold text-lg">{college.accreditation || "NAAC A++"}</span>
@@ -270,9 +218,9 @@ export function CollegeDetailsView() {
                             <span className="text-amber-600 font-bold text-lg">94%</span>
                             <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">Placement</span>
                         </Card>
-                        <Card className="p-4 bg-rose-50/50 border-rose-100 flex flex-col items-center justify-center text-center">
-                            <span className="text-rose-600 font-bold text-lg">24:1</span>
-                            <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">Ratio</span>
+                        <Card className="p-4 bg-blue-50/60 border-blue-100 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow">
+                            <span className="text-[#0085ff] font-bold text-lg">{college.roi ? `${college.roi}x` : "N/A"}</span>
+                            <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">4-Year ROI</span>
                         </Card>
                     </div>
 

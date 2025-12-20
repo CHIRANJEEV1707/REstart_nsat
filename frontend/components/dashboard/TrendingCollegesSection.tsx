@@ -68,7 +68,7 @@ export function TrendingCollegesSection() {
                             if (college.category === 'New-Gen') viewType = 'newgen';
                             if (college.category === 'International') viewType = 'international';
 
-                            openCollegeDetails(college._id, viewType);
+                            openCollegeDetails(college._id);
                         }}
                     />
                 ))}

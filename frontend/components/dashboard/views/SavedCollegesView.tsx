@@ -6,17 +6,29 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Trash2, ArrowUpRight } from 'lucide-react';
 import { useDashboard } from "@/context/DashboardContext";
+import { useRouter } from "next/navigation";
 
 export function SavedCollegesView() {
     const queryClient = useQueryClient();
-    const { setActiveView, openCollegeDetails } = useDashboard();
+    const router = useRouter();
+    const { openCollegeDetails } = useDashboard();
 
     const { data: response, isLoading } = useQuery({
         queryKey: ['saved-colleges'],
         queryFn: async () => {
-            const res = await api.get('/saved');
+            const res = await api.get('/saved', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                }
+            });
             return res.data;
-        }
+        },
+        staleTime: 0,
+        gcTime: 0,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
     });
 
     const removeMutation = useMutation({
@@ -55,7 +67,7 @@ export function SavedCollegesView() {
                                 </div>
                                 <div className="flex gap-3 mt-4">
                                     <Button
-                                        onClick={() => openCollegeDetails(college._id, college.type || 'indian')}
+                                        onClick={() => openCollegeDetails(college._id)}
                                         className="flex-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 shadow-none font-semibold"
                                     >
                                         View Details
@@ -76,7 +88,7 @@ export function SavedCollegesView() {
             ) : (
                 <div className="text-center py-20 bg-white rounded-3xl border border-gray-100">
                     <h2 className="text-xl font-bold text-gray-400 mb-4">No colleges saved yet</h2>
-                    <Button onClick={() => setActiveView("discover-indian")}>
+                    <Button onClick={() => router.push('/indian-colleges')}>
                         Find Colleges
                     </Button>
                 </div>

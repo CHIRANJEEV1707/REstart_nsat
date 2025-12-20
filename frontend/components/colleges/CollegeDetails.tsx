@@ -90,11 +90,9 @@ export default function CollegeDetails({ id, onBack }: { id: string; onBack: () 
     const isInternational = college.type === 'International';
     const isNewGen = college.type === 'New-Gen';
 
-    // Restart Score Color
+    // Restart Score Color - Enforce Brand Blue
     const rScore = college.restart_score || 0;
-    const scoreColor = rScore >= 9.0 ? 'text-emerald-600 bg-emerald-50 border-emerald-200'
-        : rScore >= 7.5 ? 'text-indigo-600 bg-indigo-50 border-indigo-200'
-            : 'text-amber-600 bg-amber-50 border-amber-200';
+    const scoreColor = 'text-[#0085ff] bg-[#0085ff]/5 border-blue-100';
 
     return (
         <div className="animate-in fade-in duration-500 pb-20 bg-gray-50/50 min-h-screen">
@@ -194,15 +192,15 @@ export default function CollegeDetails({ id, onBack }: { id: string; onBack: () 
 
                     {/* WHY THIS COLLEGE */}
                     {college.why && college.why.length > 0 && (
-                        <div className="bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-6 border border-indigo-100/50">
+                        <div className="bg-gradient-to-br from-[#0085ff]/5 to-white rounded-2xl p-6 border border-blue-100">
                             <h3 className="font-semibold text-gray-900 flex items-center gap-2 mb-4">
-                                <Sparkles className="w-5 h-5 text-indigo-600" />
+                                <Sparkles className="w-5 h-5 text-[#0085ff]" />
                                 Why we recommend this
                             </h3>
                             <div className="flex flex-wrap gap-3">
                                 {college.why.map((tag, idx) => (
-                                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white shadow-sm border border-indigo-100 text-sm font-medium text-indigo-700">
-                                        <CheckCircle2 className="w-4 h-4 text-indigo-500" />
+                                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white shadow-sm border border-blue-100 text-sm font-medium text-[#0085ff]">
+                                        <CheckCircle2 className="w-4 h-4 text-[#0085ff]" />
                                         {tag}
                                     </span>
                                 ))}

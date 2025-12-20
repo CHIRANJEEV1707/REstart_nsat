@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/lib/react-query";
 import { CompareProvider } from "@/context/CompareContext";
 import { ToastProvider } from "@/components/providers/ToastProvider";
+import { AuthProvider } from "@/context/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OfflineBanner } from "@/components/OfflineBanner";
 
@@ -39,10 +40,12 @@ export default function RootLayout({
         <ErrorBoundary>
           <OfflineBanner />
           <Providers>
-            <CompareProvider>
-              <ToastProvider />
-              {children}
-            </CompareProvider>
+            <AuthProvider>
+              <CompareProvider>
+                <ToastProvider />
+                {children}
+              </CompareProvider>
+            </AuthProvider>
           </Providers>
         </ErrorBoundary>
       </body>

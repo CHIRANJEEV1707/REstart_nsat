@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/Button";
 import { ArrowRight, Target, IndianRupee, MapPin } from "lucide-react";
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Card, CardContent } from "@/components/ui/Card";
-import { useDashboard } from "@/context/DashboardContext";
+import { useRouter } from 'next/navigation';
 
 export function MatchSummaryCard() {
-    const { setActiveView } = useDashboard();
+    const router = useRouter();
 
     const { data, isLoading } = useQuery({
         queryKey: ['dashboard-recommendations'],
@@ -99,8 +99,7 @@ export function MatchSummaryCard() {
 
                 <Button
                     onClick={() => {
-                        // Safe fallback logic
-                        setActiveView('discover-indian');
+                        router.push('/indian-colleges');
                     }}
                     className="h-auto flex-shrink-0 bg-white text-indigo-600 px-6 py-4 rounded-full font-bold shadow-lg hover:bg-gray-50 hover:scale-105 transition-all flex items-center gap-2 text-base"
                 >

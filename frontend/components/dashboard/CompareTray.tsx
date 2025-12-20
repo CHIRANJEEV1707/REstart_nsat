@@ -4,10 +4,11 @@ import { useCompare } from '@/context/CompareContext';
 import { useDashboard } from '@/context/DashboardContext';
 import { X, ArrowRight, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useRouter } from "next/navigation";
 
 export default function CompareTray() {
     const { compareItems, removeFromCompare, clearCompare } = useCompare();
-    const { setActiveView } = useDashboard();
+    const router = useRouter();
 
     // Only show if 2 or more items are in the basket
     if (compareItems.length < 2) return null;
@@ -54,7 +55,7 @@ export default function CompareTray() {
                         Clear All
                     </button>
                     <Button
-                        onClick={() => setActiveView('compare')}
+                        onClick={() => router.push('/compare')}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 h-auto rounded-lg shadow-lg hover:shadow-indigo-500/25 transition-all"
                     >
                         Compare Now <ArrowRight size={14} className="ml-2" />

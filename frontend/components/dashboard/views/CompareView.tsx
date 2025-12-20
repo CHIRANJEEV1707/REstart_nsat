@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { useCompare, CompareItem } from '@/context/CompareContext';
 import { useDashboard } from '@/context/DashboardContext';
+import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 import { X, Check, Minus, Info, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -27,8 +28,9 @@ interface NormalizedCollege {
 }
 
 export default function CompareView() {
-    const { compareItems, removeFromCompare } = useCompare();
-    const { setActiveView, openCollegeDetails } = useDashboard();
+    const { removeFromCompare, compareItems } = useCompare();
+    const { openCollegeDetails } = useDashboard();
+    const router = useRouter();
     const [collegeData, setCollegeData] = useState<NormalizedCollege[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -134,7 +136,7 @@ export default function CompareView() {
                     Add at least 2 colleges to see a detailed side-by-side comparison.
                     You can add Indian, International, or New-Gen colleges.
                 </p>
-                <Button onClick={() => setActiveView('discover-indian')}>
+                <Button onClick={() => router.push('/indian-colleges')}>
                     Browse Colleges
                 </Button>
             </div>
@@ -159,7 +161,7 @@ export default function CompareView() {
                         Analyzing {collegeData.length} colleges across {new Set(collegeData.map(c => c.type)).size} categories
                     </p>
                 </div>
-                <Button variant="outline" onClick={() => setActiveView('discover-indian')}>
+                <Button variant="outline" onClick={() => router.push('/indian-colleges')}>
                     + Add More
                 </Button>
             </div>
@@ -293,7 +295,7 @@ export default function CompareView() {
                             <td className="p-4 border-r border-gray-50 sticky left-0 bg-white z-10"></td>
                             {collegeData.map(c => (
                                 <td key={c.id} className="p-4">
-                                    <Button onClick={() => openCollegeDetails(c.id, c.type as any)} className="w-full text-xs">
+                                    <Button onClick={() => openCollegeDetails(c.id)} className="w-full text-xs">
                                         View Full Profile <ArrowRight size={12} className="ml-1" />
                                     </Button>
                                 </td>

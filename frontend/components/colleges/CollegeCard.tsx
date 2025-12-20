@@ -4,7 +4,8 @@ import { College } from "@/types/college";
 import { useCompare } from "@/context/CompareContext";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
-import { useCollegeRank } from '@/hooks/useCollegeRank';
+import Link from 'next/link';
+
 
 interface CollegeCardProps {
     college: College;
@@ -20,15 +21,25 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     const { data: savedResponse } = useQuery({
         queryKey: ['saved-colleges'],
         queryFn: async () => {
-            const res = await api.get('/saved');
+            const res = await api.get('/saved', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                }
+            });
             return res.data;
-        }
+        },
+        staleTime: 0,
+        gcTime: 0,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
     });
 
     const isSaved = savedResponse?.data?.some((c: any) => c._id === college.collegeId || c.collegeId === college.collegeId);
 
     // Fetch Rank
-    const { data: rankData, isLoading: isRankLoading } = useCollegeRank(college.collegeId || (college as any)._id);
+
 
     // Save/Unsave Mutation
     const saveMutation = useMutation({
@@ -74,24 +85,31 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     };
 
     const getCTA = () => {
+        const linkHref = `/college/${college.collegeId}`;
         switch (variant) {
             case 'newgen':
                 return (
-                    <Button onClick={onClick} className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-0">
-                        Explore Path <ArrowRight size={14} className="ml-2" />
-                    </Button>
+                    <Link href={linkHref} className="w-full">
+                        <Button className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-0">
+                            Explore Path <ArrowRight size={14} className="ml-2" />
+                        </Button>
+                    </Link>
                 );
             case 'international':
                 return (
-                    <Button onClick={onClick} variant="outline" className="w-full border-blue-200 text-blue-700 hover:bg-blue-50">
-                        View Details
-                    </Button>
+                    <Link href={linkHref} className="w-full">
+                        <Button variant="outline" className="w-full border-blue-200 text-blue-700 hover:bg-blue-50">
+                            View Details
+                        </Button>
+                    </Link>
                 );
             default:
                 return (
-                    <Button onClick={onClick} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                        View Details
-                    </Button>
+                    <Link href={linkHref} className="w-full">
+                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
+                            View Details
+                        </Button>
+                    </Link>
                 );
         }
     };
@@ -163,28 +181,32 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     </div>
 
                     {/* Fees / Model */}
-                    <div className="flex items-center gap-2 text-sm text-emerald-400 font-medium mb-6">
-                        <Banknote size={16} />
-                        <span>
-                            {(!college.fees || college.fees === 0) ? "Pay after placement" : `₹${college.fees.toLocaleString()}`}
-                        </span>
-                    </div>
+                    {(college.fees && college.fees > 0) ? (
+                        <div className="flex items-center gap-2 text-sm text-emerald-400 font-medium mb-6">
+                            <Banknote size={16} />
+                            <span>
+                                ₹{college.fees.toLocaleString()}
+                            </span>
+                        </div>
+                    ) : null}
 
                     {/* Buttons */}
                     <div className="mt-auto grid grid-cols-2 gap-2">
-                        <Button
-                            variant="ghost"
-                            onClick={onClick}
-                            className="w-full text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700 text-xs h-9"
-                        >
-                            View Details
-                        </Button>
-                        <Button
-                            onClick={onClick}
-                            className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-0 shadow-lg shadow-indigo-500/20 text-xs h-9 px-2"
-                        >
-                            Explore Program <ArrowRight size={12} className="ml-1" />
-                        </Button>
+                        <Link href={`/college/${college.collegeId}`} className="w-full">
+                            <Button
+                                variant="ghost"
+                                className="w-full text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700 text-xs h-9"
+                            >
+                                View Details
+                            </Button>
+                        </Link>
+                        <Link href={`/college/${college.collegeId}`} className="w-full">
+                            <Button
+                                className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-0 shadow-lg shadow-indigo-500/20 text-xs h-9 px-2"
+                            >
+                                Explore Program <ArrowRight size={12} className="ml-1" />
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -237,15 +259,15 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     {/* Tags logic */}
                     {variant === 'international' && (
                         <span className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md">
-                            {!isRankLoading && rankData ? `#${rankData.rank} in ${rankData.category}` : (college.global_ranking ? `Rank #${college.global_ranking}` : 'Rank N/A')}
+                            {college.rank ? `#${college.rank} in International` : (college.global_ranking ? `Rank #${college.global_ranking}` : 'Rank N/A')}
                         </span>
                     )}
-                    {(variant === 'traditional' || variant === 'newgen') && !isRankLoading && rankData && (
+                    {variant === 'traditional' && college.rank && (
                         <span className="text-[10px] px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md font-medium border border-indigo-100">
-                            #{rankData.rank} in {rankData.category}
+                            #{college.rank} in India
                         </span>
                     )}
-                    {variant === 'traditional' && college.badges?.[0] && !rankData && (
+                    {variant === 'traditional' && college.badges?.[0] && !college.rank && (
                         <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md">
                             {college.badges[0]}
                         </span>

@@ -200,7 +200,7 @@ export default function CollegeGrid({
                                 if (onCardClick) {
                                     onCardClick(college.collegeId);
                                 } else if (openCollegeDetails) {
-                                    openCollegeDetails(college.collegeId, type);
+                                    openCollegeDetails(college.collegeId);
                                 }
                             }}
                         />

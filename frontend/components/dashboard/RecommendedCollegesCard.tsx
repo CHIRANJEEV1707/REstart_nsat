@@ -78,7 +78,7 @@ export function RecommendedCollegesCard() {
                                 let viewType: 'indian' | 'international' | 'newgen' = 'indian';
                                 if (isNewGen) viewType = 'newgen';
                                 if (isInternational) viewType = 'international';
-                                openCollegeDetails(college._id, viewType);
+                                openCollegeDetails(college._id);
                             }}
                         >
                             {/* Image Header with Fit Score */}

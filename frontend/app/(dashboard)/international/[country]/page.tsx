@@ -6,18 +6,15 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/Badge";
-import { useDashboard } from "@/context/DashboardContext";
 import { ArrowLeft } from "lucide-react";
+import { useRouter, useParams } from "next/navigation";
+import Link from 'next/link';
 
-export function InternationalCountryView() {
-    const {
-        selectedInternationalCountry,
-        goBack,
-        openCollegeDetails,
-        setActiveView
-    } = useDashboard();
-
-    const countryName = selectedInternationalCountry || '';
+export default function InternationalCountryPage() {
+    const router = useRouter();
+    const params = useParams();
+    // decodeURIComponent is theoretically handled by Next.js params, but explicit decoding for safety if the param comes raw
+    const countryName = params.country ? decodeURIComponent(params.country as string) : '';
 
     const { data: response, isLoading } = useQuery({
         queryKey: ['international-colleges', 'country', countryName],
@@ -34,8 +31,8 @@ export function InternationalCountryView() {
     if (!countryName) {
         return (
             <div className="flex flex-col items-center justify-center h-full p-20">
-                <p className="text-gray-500 mb-4">No country selected.</p>
-                <Button onClick={goBack}>Go Back</Button>
+                <p className="text-gray-500 mb-4">No country specified.</p>
+                <Button onClick={() => router.back()}>Go Back</Button>
             </div>
         )
     }
@@ -43,14 +40,12 @@ export function InternationalCountryView() {
     return (
         <div className="p-6 md:p-8 max-w-7xl mx-auto w-full pb-20 fade-in slide-in-from-bottom-2 duration-500 animate-in">
             <div className="mb-10">
-                <button
-                    onClick={() => {
-                        setActiveView('international'); // Explicitly go back to list
-                    }}
+                <Link
+                    href="/international"
                     className="text-indigo-600 font-bold mb-4 inline-flex items-center gap-2 hover:underline"
                 >
                     <ArrowLeft size={16} /> Back to Countries
-                </button>
+                </Link>
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">Study in {countryName}</h1>
                 <p className="text-gray-600">Top universities, admission requirements, and scholarship info.</p>
             </div>
@@ -100,7 +95,7 @@ export function InternationalCountryView() {
 
                                         <Button
                                             className="w-full mt-auto bg-indigo-600 hover:bg-indigo-700 text-white"
-                                            onClick={() => openCollegeDetails(college._id, 'international')}
+                                            onClick={() => router.push(`/college/${college._id}`)}
                                         >
                                             View Details
                                         </Button>

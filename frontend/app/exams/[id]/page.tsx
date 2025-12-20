@@ -7,6 +7,8 @@ import api from "@/lib/axios";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function ExamDetailPage() {
     const { id } = useParams();
@@ -42,9 +44,15 @@ export default function ExamDetailPage() {
             <Navbar />
             <div className="max-w-4xl mx-auto pt-32 pb-20 px-6">
                 <div className="mb-10">
-                    <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">{exam.code}</span>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-6">{exam.name}</h1>
-                    <p className="text-xl text-gray-600 leading-relaxed">{exam.description}</p>
+                    <Link href="/exams-deadlines" className="inline-flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition-colors">
+                        <ArrowLeft size={20} className="mr-2" />
+                        Back to Exams
+                    </Link>
+                    <div>
+                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">{exam.code}</span>
+                        <h1 className="text-4xl font-bold text-gray-900 mb-6">{exam.name}</h1>
+                        <p className="text-xl text-gray-600 leading-relaxed">{exam.description}</p>
+                    </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8 mb-12">

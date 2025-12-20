@@ -30,7 +30,7 @@ export function Sidebar({ user, logout }: SidebarProps) {
 
     const navItems: { name: string; icon: any; view: DashboardView }[] = [
         { name: 'Dashboard', icon: LayoutDashboard, view: 'overview' },
-        { name: 'Discover Colleges', icon: Compass, view: 'discover-indian' },
+        { name: 'Indian Colleges', icon: Compass, view: 'discover-indian' },
         { name: 'International', icon: Globe, view: 'discover-international' },
         { name: 'New-Gen Colleges', icon: Sparkles, view: 'discover-newgen' },
         { name: 'Saved Colleges', icon: Bookmark, view: 'saved' },

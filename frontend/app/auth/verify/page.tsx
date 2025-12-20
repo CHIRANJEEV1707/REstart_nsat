@@ -5,7 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import api from '@/lib/axios';
 import { Card } from '@/components/ui/Card';
 
-export default function VerifyPage() {
+import { Suspense } from 'react';
+
+function VerifyContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const token = searchParams.get('token');
@@ -34,5 +36,13 @@ export default function VerifyPage() {
                 <h2 className="text-xl font-bold text-gray-900">{status}</h2>
             </Card>
         </div>
+    );
+}
+
+export default function VerifyPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50">Loading...</div>}>
+            <VerifyContent />
+        </Suspense>
     );
 }

@@ -76,7 +76,7 @@ export function SavedCollegesView() {
             ) : (
                 <div className="text-center py-20 bg-white rounded-3xl border border-gray-100">
                     <h2 className="text-xl font-bold text-gray-400 mb-4">No colleges saved yet</h2>
-                    <Button onClick={() => setActiveView("discover")}>
+                    <Button onClick={() => setActiveView("discover-indian")}>
                         Find Colleges
                     </Button>
                 </div>

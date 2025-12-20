@@ -12,9 +12,9 @@ export function MatchSummaryCard() {
     const { setActiveView } = useDashboard();
 
     const { data, isLoading } = useQuery({
-        queryKey: ['recommendations'],
+        queryKey: ['dashboard-recommendations'],
         queryFn: async () => {
-            const res = await api.get('/colleges/recommendations');
+            const res = await api.get('/recommendations/dashboard');
             return res.data;
         },
         staleTime: 5 * 60 * 1000
@@ -31,8 +31,9 @@ export function MatchSummaryCard() {
     }
 
     const meta = data?.meta;
+    const count = data?.topMatches?.length || 0;
 
-    if (!meta || meta.totalMatches === 0) {
+    if (!meta || count === 0) {
         return (
             <Card className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-blue-500 border-none shadow-xl text-white relative overflow-hidden h-full">
                 <CardContent className="p-8 relative z-10 flex flex-col justify-center items-center text-center h-full">
@@ -62,24 +63,24 @@ export function MatchSummaryCard() {
                     </div>
 
                     <h2 className="text-3xl font-bold mb-2">
-                        You matched with <span className="text-white border-b-2 border-yellow-400 pb-0.5">{meta.totalMatches} Colleges</span>
+                        You matched with <span className="text-white border-b-2 border-yellow-400 pb-0.5">{count} Colleges</span>
                     </h2>
 
                     <p className="text-indigo-100 max-w-md">
-                        Based on your preference for <strong>{meta.preferredCountry}</strong> and budget.
+                        Based on your preference for <strong>{meta.preferredCountry || 'your goals'}</strong> and budget.
                     </p>
 
                     <div className="flex items-center gap-6 mt-6">
                         {/* AVG FIT SCORE */}
                         <div className="flex items-center gap-2">
                             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
-                                <span className="font-bold text-lg">{Math.round(meta.avgFitScore)}%</span>
+                                <span className="font-bold text-lg">{Math.round(meta.avgMatch || 0)}%</span>
                             </div>
-                            <span className="text-xs text-indigo-100 leading-tight">Avg Fit<br />Score</span>
+                            <span className="text-xs text-indigo-100 leading-tight">Avg Match<br />Score</span>
                         </div>
 
                         {/* BUDGET MATCH */}
-                        <div className={`flex items-center gap-2 ${!meta.budgetMatched ? 'opacity-50' : ''}`} title={!meta.budgetMatched ? "Some colleges exceed your budget" : "Within Budget"}>
+                        <div className={`flex items-center gap-2 ${!meta.budgetMatch ? 'opacity-50' : ''}`} title={!meta.budgetMatch ? "Some colleges exceed your budget" : "Within Budget"}>
                             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
                                 <IndianRupee size={16} />
                             </div>
@@ -87,22 +88,19 @@ export function MatchSummaryCard() {
                         </div>
 
                         {/* LOCATION MATCH */}
-                        <div className={`flex items-center gap-2 ${!meta.locationMatched ? 'opacity-50' : ''}`}>
+                        <div className={`flex items-center gap-2 ${!meta.locationMatch ? 'opacity-50' : ''}`}>
                             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
                                 <MapPin size={16} />
                             </div>
-                            <span className="text-xs text-indigo-100 leading-tight">Loc<br />Pref</span>
+                            <span className="text-xs text-indigo-100 leading-tight">Loc<br />Match</span>
                         </div>
                     </div>
                 </div>
 
                 <Button
                     onClick={() => {
-                        if (meta.preferredCountry === 'India') {
-                            setActiveView('discover-indian');
-                        } else {
-                            setActiveView('discover-international');
-                        }
+                        // Safe fallback logic
+                        setActiveView('discover-indian');
                     }}
                     className="h-auto flex-shrink-0 bg-white text-indigo-600 px-6 py-4 rounded-full font-bold shadow-lg hover:bg-gray-50 hover:scale-105 transition-all flex items-center gap-2 text-base"
                 >

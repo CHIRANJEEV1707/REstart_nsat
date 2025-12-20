@@ -2,6 +2,9 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '@/lib/axios';
+
 // Define the available views in the dashboard
 export type DashboardView =
     | "overview"
@@ -28,6 +31,9 @@ interface DashboardContextType {
     setActiveView: (view: DashboardView) => void;
     selectedCollege: SelectedCollege | null;
     setSelectedCollege: (college: SelectedCollege | null) => void;
+    // Saved Colleges
+    savedColleges: string[];
+    toggleSaveCollege: (id: string, type?: string) => void;
     // New navigation helpers
     previousView: DashboardView;
     openCollegeDetails: (id: string, type?: 'indian' | 'international' | 'newgen') => void;
@@ -43,6 +49,7 @@ interface DashboardContextType {
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
+    const queryClient = useQueryClient();
     const [activeView, setActiveView] = useState<DashboardView>("overview");
     const [previousView, setPreviousView] = useState<DashboardView>("overview");
     const [selectedCollege, setSelectedCollege] = useState<SelectedCollege | null>(null);
@@ -65,6 +72,41 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         setPreviousView(activeView);
         setSelectedExamId(id);
         setActiveView("exam-details");
+    };
+
+    // --- Saved Colleges Logic ---
+    const { data: savedResponse } = useQuery({
+        queryKey: ['saved-colleges'],
+        queryFn: async () => {
+            const res = await api.get('/saved');
+            return res.data;
+        }
+    });
+
+    const savedColleges = savedResponse?.data?.map((c: any) => c.collegeId || c._id) || [];
+
+    const saveMutation = useMutation({
+        mutationFn: async ({ id, type }: { id: string; type: string }) => {
+            const isSaved = savedColleges.includes(id);
+            if (isSaved) {
+                await api.delete(`/saved/${id}?type=${type}`);
+            } else {
+                await api.post('/saved', {
+                    collegeId: id,
+                    collegeType: type
+                });
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['saved-colleges'] });
+            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+            // Also invalidate individual college details if needed, though they might not depend on this directly
+            queryClient.invalidateQueries({ queryKey: ['college-details'] });
+        }
+    });
+
+    const toggleSaveCollege = (id: string, type: string = 'indian') => {
+        saveMutation.mutate({ id, type });
     };
 
     const goBack = () => {
@@ -119,6 +161,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             setActiveView,
             selectedCollege,
             setSelectedCollege,
+            savedColleges,
+            toggleSaveCollege,
             previousView,
             openCollegeDetails,
             goBack,

@@ -8,6 +8,9 @@
     "dev": "nodemon src/server.ts",
     "seed": "ts-node src/seed.ts",
     "seed:newgen": "ts-node src/seedNewGen.ts",
+    "seed:iits": "ts-node src/seedIITs.ts",
+    "seed:nits": "ts-node src/seedNITs.ts",
+    "seed:indian": "ts-node src/seedIndianColleges.ts",
     "build": "tsc"
   },
   "keywords": [],

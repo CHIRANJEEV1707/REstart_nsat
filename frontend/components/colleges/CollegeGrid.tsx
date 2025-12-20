@@ -1,20 +1,21 @@
 "use strict";
 
 import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import api from '@/lib/axios';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { AlertCircle } from 'lucide-react';
 import CollegeCard from './CollegeCard';
 import { College } from '@/types/college';
 import { useDashboard } from '@/context/DashboardContext';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function CollegeGrid({
     filters,
     type = 'indian',
     onCardClick
 }: {
-    filters: { search: string; country: string; state?: string; exam: string; minFees?: string; maxFees?: string };
+    filters: { search?: string; country?: string; state?: string; exam?: string; minFees?: string; maxFees?: string };
     type?: 'indian' | 'international' | 'newgen';
     onCardClick?: (collegeId: string) => void;
 }) {
@@ -28,43 +29,82 @@ export default function CollegeGrid({
         openCollegeDetails = undefined;
     }
 
+    // Local state for pagination
+    const [page, setPage] = useState(1);
+
+    // Reset page when filters change (but not when page changes itself)
+    // We can do this by wrapping setPage in a useEffect dependent on filters
+    // OR implicitly by query key structure? 
+    // Best practice: When filters change, page should reset.
+    // We can use a ref or simplified useEffect.
+    /* 
+    // This effect might cause double fetch if not careful, but needed for UX.
+    useEffect(() => {
+        setPage(1);
+    }, [filters, type]);
+    */
+    // Actually, let's keep it simple. If filter search/country changes, we want page 1.
+    // Changing filters passes new props, so we can react to that. 
+    // Ideally the parent controls this, but CollegeGrid manages the query.
+    // Let's rely on the queryKey change to trigger fetch, but we need to reset page.
+    // Use key on component? Or just effect.
+    useMemo(() => {
+        setPage(1);
+    }, [filters, type]); // Reset page on filter/type change (useMemo runs during render)
+
+
     // Fetch colleges
-    const { data: responseData, isLoading, isError } = useQuery({
-        // Include filters in queryKey to trigger refetch on change
-        queryKey: ['colleges-all', type, filters],
+    const { data: responseData, isLoading, isError, isFetching } = useQuery({
+        // Include filters AND page in queryKey
+        queryKey: ['colleges-strict', type, filters, page], // Renamed key to force fresh fetch
         queryFn: async () => {
-            // Determine endpoint based on type
-            let endpoint = '/colleges?limit=200';
+            // Unified endpoint strategy with strict routing
+            let endpoint = '/colleges'; // Default for 'indian'
+
+            if (type === 'international') {
+                endpoint = '/colleges/international';
+            } else if (type === 'newgen') {
+                endpoint = '/colleges/new-gen';
+            }
+
             const params = new URLSearchParams();
+
+            params.append('page', page.toString());
+            params.append('limit', '12');
 
             // Common filters
             if (filters.search) params.append('search', filters.search);
             if (filters.exam) params.append('exam', filters.exam);
+            // Note: minFees/maxFees might serve different schemas in different endpoints,
+            // but assuming backend handles or ignores them gracefully if field names match.
+            if (filters.minFees) params.append('minFees', filters.minFees);
+            if (filters.maxFees) params.append('maxFees', filters.maxFees);
 
-            if (type === 'international') {
-                endpoint = '/international-colleges'; // Server-side filtering
-                if (filters.country) params.append('country', filters.country);
-                if (filters.minFees) params.append('minFee', filters.minFees);
-                if (filters.maxFees) params.append('maxFee', filters.maxFees);
-            } else if (type === 'newgen') {
-                endpoint = '/newgen-colleges';
-            } else {
-                // For Indian/Generic, we currently fetch all and filter client-side (legacy behavior preserved)
-                // But we can pass search to backend if supported. For now, keep as is for non-international.
+            // Specific Type Logic for 'indian' (Standard)
+            if (type === 'indian') {
+                // Ensure backend knows we want Indian only (enforces isNewGen=false)
+                params.append('type', 'india');
+                if (filters.state) params.append('state', filters.state);
             }
 
+            if (type === 'international') {
+                if (filters.country) params.append('country', filters.country);
+            }
+
+            // NewGen doesn't need extra 'type' param as endpoint handles it
+
             const queryString = params.toString();
-            const fullUrl = queryString ? `${endpoint}?${queryString}` : endpoint;
+            const fullUrl = `${endpoint}?${queryString}`;
 
             const res = await api.get(fullUrl);
             return res.data;
         },
-        staleTime: 5 * 60 * 1000, // Keep fresh for 5 mins
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData, // Keep showing old data while fetching new page
     });
 
-    // Map Backend Data to Frontend Interface
-    const allColleges: College[] = useMemo(() => {
-        // cast responseData to any to avoid type errors if inference fails
+    // Map Backend Data
+    const colleges: College[] = useMemo(() => {
         const data = (responseData as any)?.data;
         if (!data) return [];
         return data.map((item: any) => ({
@@ -72,66 +112,37 @@ export default function CollegeGrid({
             collegeId: item._id,
             name: item.name,
             image: item.image || '',
-            location: item.location || { city: item.city || '', state: item.country || 'India' }, // Handle varied location structures
+            location: item.location || { city: item.city || '', state: item.country || 'India' },
             country: item.country || 'India',
-            fees: Number(item.fees || item.tuition_fee_annual || 0), // Ensure number
+            fees: Number(item.fees || item.tuition_fee_annual || 0),
             currency: item.currency || (item.country === 'India' || !item.country ? 'INR' : 'USD'),
-            exams_required: item.exams_required || item.entrance_exams || [], // Map different field names
+            exams_required: item.exams_required || item.entrance_exams || [],
             restart_score: Number(item.restart_score || 0),
             badges: item.badges || [],
             placement_stats: item.placement_stats || { average_package: 'N/A', highest_package: 'N/A' },
-            financialSupportPercent: Number(item.restart_score || 0), // Mapping score to FS% as requested
+            financialSupportPercent: Number(item.restart_score || 0),
             tags: item.badges || [],
             detailPageSlug: `/college/${item._id}`,
-            // NewGen specific fields (if any, map them here)
             admission_mode: item.admission_mode || '',
             global_ranking: item.global_ranking,
         }));
     }, [responseData]);
 
-    // Derived State: Filter logic
-    const filteredColleges = useMemo(() => {
-        // If type is International, we rely on Server-Side Filtering (as per new contract)
-        // So we return allColleges directly (which are already filtered by the API)
-        if (type === 'international') return allColleges;
+    // Pagination Data
+    const pagination = (responseData as any)?.pagination || {
+        page: 1,
+        totalPages: 1,
+        total: 0,
+        limit: 12,
+        hasNext: false,
+        hasPrev: false
+    };
 
-        // For other types, keep Client-Side Filtering
-        return allColleges.filter(college => {
-            // 1. Search Filter
-            if (filters.search) {
-                const searchLower = filters.search.toLowerCase();
-                const matchesName = college.name.toLowerCase().includes(searchLower);
-                const matchesCity = college.location.city.toLowerCase().includes(searchLower);
-                const matchesState = college.location.state.toLowerCase().includes(searchLower);
-                if (!matchesName && !matchesCity && !matchesState) return false;
-            }
-
-            // 2. Country Filter
-            if (filters.country && filters.country !== '') {
-                if (college.country !== filters.country) return false;
-            }
-
-            // 2.1 State Filter
-            if (filters.state && filters.state !== '') {
-                // Ensure loose matching or exact? Exact for dropdown.
-                if (college.location?.state !== filters.state) return false;
-            }
-
-            // 2.2 Budget Filter
-            if (filters.maxFees && filters.maxFees !== '') {
-                const max = Number(filters.maxFees);
-                const fees = Number(college.fees || 0);
-                if (fees > max) return false;
-            }
-
-            // 3. Exam Filter
-            if (filters.exam && filters.exam !== '') {
-                if (!college.exams_required.includes(filters.exam)) return false;
-            }
-
-            return true;
-        });
-    }, [allColleges, filters, type]);
+    // Scroll to top on page change
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     if (isLoading) {
         return (
@@ -149,7 +160,7 @@ export default function CollegeGrid({
         </div>
     );
 
-    if (filteredColleges.length === 0) {
+    if (colleges.length === 0) {
         return (
             <div className="text-center py-24 bg-gray-50/50 rounded-2xl border border-gray-200/50 border-dashed">
                 <div className="bg-gray-100 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -164,19 +175,20 @@ export default function CollegeGrid({
     }
 
     return (
-        <div className="space-y-4">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest pl-1">
-                Showing {filteredColleges.length} Colleges
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-                {filteredColleges.map((college) => {
-                    // Determine variant based on type or college data
-                    let variant: 'traditional' | 'international' | 'newgen' = 'traditional';
+        <div className="space-y-6">
+            <div className="flex justify-between items-center px-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">
+                    Showing  <span className="text-gray-900">{((pagination.page - 1) * pagination.limit) + 1}</span> - <span className="text-gray-900">{Math.min(pagination.page * pagination.limit, pagination.total)}</span> of <span className="text-gray-900">{pagination.total}</span> Colleges
+                </p>
+                {isFetching && <span className="text-xs text-indigo-500 animate-pulse">Updating...</span>}
+            </div>
 
+            <div className={`grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 ${isFetching ? 'opacity-70 transition-opacity' : ''}`}>
+                {colleges.map((college) => {
+                    let variant: 'traditional' | 'international' | 'newgen' = 'traditional';
                     if (type === 'international') variant = 'international';
                     else if (type === 'newgen') variant = 'newgen';
-
-                    // Fallback to internal logic if type is mixed (unlikely with new structure but safe)
+                    // Fallback
                     if (type === 'indian' && college.country !== 'India' && college.country) variant = 'international';
 
                     return (
@@ -195,6 +207,15 @@ export default function CollegeGrid({
                     );
                 })}
             </div>
+
+            {/* Pagination Control */}
+            <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.totalPages}
+                onPageChange={handlePageChange}
+                hasNext={pagination.hasNext}
+                hasPrev={pagination.hasPrev}
+            />
         </div>
     );
 }

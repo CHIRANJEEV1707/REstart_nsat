@@ -23,6 +23,7 @@ import dashboard from './routes/dashboard';
 import saved from './routes/saved';
 import prep from './routes/prep';
 import alerts from './routes/alerts';
+import recommendationRoutes from './routes/recommendationRoutes';
 
 // Load env vars
 dotenv.config();
@@ -100,6 +101,7 @@ import compareRoutes from './routes/compare';
 app.use('/api/compare', compareRoutes);
 import newgenColleges from './routes/newgenColleges';
 app.use('/api/newgen-colleges', newgenColleges);
+app.use('/api/recommendations', recommendationRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

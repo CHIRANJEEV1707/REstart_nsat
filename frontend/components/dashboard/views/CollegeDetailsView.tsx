@@ -42,22 +42,24 @@ export function CollegeDetailsView() {
                     ...data,
                     _id: data._id,
                     name: data.name,
-                    image: `https://flagcdn.com/w1600/${data.country_code?.toLowerCase() || 'us'}.png`, // Placeholder flag or image
+                    image: data.image || `https://flagcdn.com/w1600/${data.country?.slice(0, 2).toLowerCase() || 'us'}.png`,
                     location: {
-                        city: data.city,
-                        state: data.country,
+                        city: data.location?.city || data.city || 'Unknown',
+                        state: data.location?.state || data.country || 'International',
                         country: data.country
                     },
-                    fees: data.tuition_fee_annual,
-                    currency: 'USD',
-                    exams_required: data.entrance_exams || [],
+                    fees: data.fees || data.tuition_fee_annual,
+                    currency: 'INR', // We converted to INR in seed
+                    exams_required: data.exams_required || data.entrance_exams || [],
                     description: data.description,
                     financialSupportPercent: 0,
                     tags: data.badges || [],
-                    contact: { website: data.official_website },
+                    contact: { website: data.website || data.official_website },
                     ranking: data.global_ranking,
-                    accreditation: data.uni_type,
-                    type: 'international'
+                    accreditation: data.uni_type || data.type,
+                    type: 'international',
+                    study_abroad_info: data.study_abroad_info,
+                    admission_process: data.admission_process
                 };
             }
 
@@ -290,6 +292,69 @@ export function CollegeDetailsView() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Study Abroad Section (International Only) */}
+                    {college.type === 'international' && college.study_abroad_info && (
+                        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                <Globe size={20} className="text-blue-500" />
+                                Study Abroad Information
+                            </h2>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {/* Visa */}
+                                <div>
+                                    <h3 className="font-bold text-gray-800 mb-2">Visa Requirements</h3>
+                                    <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
+                                        {college.study_abroad_info.visa_requirements?.map((req: string, i: number) => (
+                                            <li key={i}>{req}</li>
+                                        )) || <li>Check embassy website</li>}
+                                    </ul>
+                                </div>
+
+                                {/* Language */}
+                                <div>
+                                    <h3 className="font-bold text-gray-800 mb-2">English Proficiency</h3>
+                                    <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
+                                        {college.study_abroad_info.english_proficiency?.map((req: string, i: number) => (
+                                            <li key={i}>{req}</li>
+                                        )) || <li>IELTS/TOEFL required</li>}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {/* Scholarships */}
+                            <div className="mt-6 pt-6 border-t border-gray-100">
+                                <h3 className="font-bold text-gray-800 mb-2">Available Scholarships</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {college.study_abroad_info.scholarships_available?.map((sch: string, i: number) => (
+                                        <Badge key={i} variant="outline" className="border-blue-200 text-blue-700 bg-blue-50">
+                                            {sch}
+                                        </Badge>
+                                    )) || <span className="text-gray-500 text-sm">Contact university for aid</span>}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Admission Process (if available) */}
+                    {college.admission_process && college.admission_process.length > 0 && (
+                        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6">Admission Process</h2>
+                            <div className="space-y-4">
+                                {college.admission_process.map((step: string, index: number) => (
+                                    <div key={index} className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                                            {index + 1}
+                                        </div>
+                                        <div className="pt-1">
+                                            <p className="text-gray-700 font-medium">{step}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                 </div>
 

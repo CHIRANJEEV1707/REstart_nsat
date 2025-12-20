@@ -1,188 +1,227 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
 import College from '../models/College';
 import NewGenCollege from '../models/NewGenCollege';
-import InternationalCollege from '../models/InternationalCollege';
+import User, { IUser } from '../models/User';
 import logger from '../utils/logger';
 
-interface ScoredCollege {
-    college: any;
-    fitScore: number;
-    reasons: string[];
-    type: 'Traditional' | 'New-Gen' | 'International';
+// Helper interface for normalized college object
+interface NormalizedCollege {
+    _id: any;
+    name: string;
+    fees: number;
+    country: string;
+    restart_score: number;
+    exams_required: string[];
+    isNewGen: boolean;
+    isTrending: boolean;
+    image?: string;
+    location?: { city: string; state: string };
+    type?: string;
+    // Computed fields
+    matchPercentage?: number; // Renamed from fitScore
+    why?: string[];          // Renamed from allReasons
+    matchReason?: string;
 }
 
-// @desc    Get personalized college recommendations
-// @route   GET /api/colleges/recommendations
-export const getRecommendations = async (req: Request, res: Response) => {
+// @desc    Get dashboard recommendations with strict shape
+// @route   GET /api/recommendations/dashboard
+// @desc    Get dashboard recommendations with strict shape
+// @route   GET /api/recommendations/dashboard
+// @desc    Get dashboard recommendations with strict shape
+// @route   GET /api/recommendations/dashboard
+export const getDashboardRecommendations = async (req: Request, res: Response) => {
     try {
         const userId = req.user?._id;
         const user = await User.findById(userId);
 
+        // Strict Requirement: Handle new user / incomplete profile
         if (!user || !user.preferences) {
-            // Fallback: If no profile/preferences, return generic popular colleges
-            // For now, let's just return top ranked/trending as a fallback
             return res.status(200).json({
-                success: true,
-                isGeneric: true,
-                message: "Profile incomplete. Showing generic recommendations.",
-                data: []
+                topMatches: [],
+                meta: { avgMatch: 0, budgetMatch: false, locationMatch: false }
             });
         }
 
         const prefs = user.preferences;
+        const budgetRange = prefs.budgetINR || { min: 0, max: 10000000 };
+        const budgetMax = budgetRange.max;
+        const preferredCountries = prefs.preferredCountries || ['India'];
+        const interestedExams = [...(prefs.interestedExams || []), ...(prefs.examScores?.map(e => e.exam) || [])];
+        const userState = user.profile?.state || user.state;
+        const userCountry = user.profile?.country || user.country || 'India';
 
-        // 1. Fetch eligible colleges from all sources
-        // Optimization: Apply Hard Filters at DB level if possible to reduce memory usage
-        // But for "Type" preference, we fetch conditionally
+        // Weights (System defaults as user model doesn't have custom weights yet)
+        const W_BUDGET = 0.35;
+        const W_RESTART = 0.30;
+        const W_EXAM = 0.20;
+        const W_LOCATION = 0.15;
 
-        let promiseArr = [];
-        const typesWanted = prefs.aspiringCollegeType || [];
+        // Fetch Candidates (Unchanged logic for gathering pool - we filter STRICTLY later)
+        const wantNewGen = prefs.newGenInterest || prefs.aspiringCollegeType?.includes('New-Gen');
+        const wantInternational = preferredCountries.some(c => c !== 'India');
+        const wantIndian = preferredCountries.includes('India');
 
-        // Always fetch traditional if types not specified or includes 'Engineering'/'Traditional' etc
-        // For simplicity, fetch all traditional unless explicitly excluded (logic can be refined)
-        promiseArr.push(College.find().lean());
+        let candidates: NormalizedCollege[] = [];
 
-        // Fetch New-Gen if interested
-        if (prefs.newGenInterest || typesWanted.includes('New-Gen')) {
-            promiseArr.push(NewGenCollege.find().lean());
+        if (wantIndian) {
+            const colleges = await College.find({
+                country: 'India',
+                isNewGen: { $ne: true },
+                // Slight pre-filter to avoid fetching unlikely matches, but true filter is below
+                fees: { $lte: budgetMax * 1.2 }
+            }).select('name fees country restart_score exams_required isNewGen isTrending image location type');
+            candidates.push(...colleges as any);
         }
 
-        // Fetch International if desired
-        if (prefs.preferredCountries && prefs.preferredCountries.some(c => c !== 'India')) {
-            promiseArr.push(InternationalCollege.find().lean());
+        if (wantInternational) {
+            const foreignCountries = preferredCountries.filter(c => c !== 'India');
+            const countryFilter = foreignCountries.length > 0 ? { $in: foreignCountries } : { $ne: 'India' };
+            const colleges = await College.find({
+                country: countryFilter,
+                fees: { $lte: budgetMax * 1.2 }
+            }).select('name fees country restart_score exams_required isNewGen isTrending image location type');
+            candidates.push(...colleges as any);
         }
 
-        const predictions = await Promise.all(promiseArr);
-        const allColleges = predictions.flat();
+        if (wantNewGen) {
+            const colleges = await NewGenCollege.find({ 'fees.amountINR': { $lte: budgetMax * 1.2 } });
+            const normalizedNewGen = colleges.map(c => ({
+                _id: c._id,
+                name: c.name,
+                fees: c.fees.amountINR,
+                country: c.location.country,
+                restart_score: 8.5,
+                exams_required: c.examsAccepted || [],
+                isNewGen: true,
+                isTrending: c.isTrending,
+                image: c.image,
+                location: c.location,
+                type: 'New-Gen'
+            }));
+            candidates.push(...normalizedNewGen as any);
+        }
 
-        // 2. Score Each College
-        const scored: ScoredCollege[] = allColleges.map((col: any) => {
-            let score = 0;
+        // 2. Score & Filter Candidates
+        const scoredCandidates = candidates.map(college => {
+            // Data Integrity Check (Strict Rule: "If any field is missing -> exclude")
+            if (!college.image || !college.location?.city || !college.location?.state) {
+                return null;
+            }
+
+            let budgetScore = 0;
+            let examScore = 0;
+            let restartScoreVal = 0;
+            let locationScore = 0;
             const reasons: string[] = [];
-            const isInternational = !!col.tuition_fee_annual; // loose check
 
-            // --- A. Budget Match (30 pts) ---
-            const annualFee = isInternational ? (col.tuition_fee_annual * 84) : (col.fees || col.amountINR || 0); // Convert USD approx if needed, or better handle currencies. Assuming user budgetUSD for international.
+            // A. Budget Scoring
+            if (college.fees <= budgetMax) {
+                budgetScore = 100;
+            } else if (college.fees <= budgetMax * 1.10) {
+                budgetScore = 70; // Within 10% buffer
+            } else {
+                budgetScore = 0;
+            }
+            if (budgetScore >= 90) reasons.push("Perfect Budget Fit");
 
-            // Logic: Compare against user budget
-            // If isInternational, use budgetUSD. If Indian, use budgetINR.
-            let budgetMax = 0;
-            if (isInternational && prefs.budgetUSD) {
-                budgetMax = prefs.budgetUSD.max * 84; // Convert to INR for standardized Score logic, usually international users think in lakhs too or dollar. 
-                // Let's stick to matching currencies.
-                const userMaxUSD = prefs.budgetUSD.max;
-                if (col.tuition_fee_annual <= userMaxUSD) {
-                    score += 30;
-                    reasons.push("Within Budget");
-                } else if (col.tuition_fee_annual <= userMaxUSD * 1.2) {
-                    score += 15; // Slightly over
-                }
-            } else if (!isInternational && prefs.budgetINR) {
-                budgetMax = prefs.budgetINR.max;
-                if (annualFee <= budgetMax) {
-                    score += 30;
-                    reasons.push("Within Budget");
-                } else if (annualFee <= budgetMax * 1.2) {
-                    score += 15;
-                }
+            // B. Exam Scoring
+            const required = college.exams_required || [];
+            if (required.length === 0) {
+                // Or should this be 0? Prompt says: "Any overlap -> 100, None -> 0". 
+                // If no exams required, it technically "overlaps" with availability? 
+                // Let's assume if college requires NONE, it's accessible -> 100.
+                examScore = 100;
+            } else {
+                const hasOverlap = required.some(ex => interestedExams.some(uEx => uEx.toLowerCase() === ex.toLowerCase()));
+                examScore = hasOverlap ? 100 : 0;
+            }
+            if (examScore === 100) reasons.push("Exam Match");
+
+            // C. Restart Score
+            // Normalize restart_score / 10 * 100
+            restartScoreVal = ((college.restart_score || 0) / 10) * 100;
+            if ((college.restart_score || 0) >= 9.0) reasons.push("High Restart Score");
+
+            // D. Location Scoring
+            const collegeState = college.location.state;
+            const collegeCountry = college.country;
+
+            if (collegeState && userState && collegeState.toLowerCase() === userState.toLowerCase()) {
+                locationScore = 100;
+                reasons.push("Location Match");
+            } else if (collegeCountry && userCountry && collegeCountry.toLowerCase() === userCountry.toLowerCase()) {
+                locationScore = 60;
+                // If it's 60, does it get a tag? Prompt: "if (locationScore >= 60) why.push...". Yes.
+                reasons.push("Location Match");
+            } else {
+                locationScore = 0;
             }
 
-            // --- B. Country Match (25 pts) ---
-            const collegeCountry = col.country || 'India';
-            if (prefs.preferredCountries?.includes(collegeCountry)) {
-                score += 25;
-                reasons.push("Preferred Country");
-            }
+            // TOTAL SCORE
+            const totalScore = (
+                (budgetScore * W_BUDGET) +
+                (examScore * W_EXAM) +
+                (restartScoreVal * W_RESTART) +
+                (locationScore * W_LOCATION)
+            );
 
-            // --- C. Exam Match (30 pts) ---
-            // If user has taken an exam accepted by college
-            const userExams = prefs.interestedExams || [];
-            const userExamScores = prefs.examScores || [];
-
-            // Normalize college exams (some use exams_required, examsAccepted, entrance_exams)
-            const collegeExams: string[] = col.exams_required || col.examsAccepted || col.entrance_exams || [];
-
-            const hasTakenExam = userExams.some(e => collegeExams.includes(e));
-            if (hasTakenExam) {
-                score += 30;
-                reasons.push("Exam Match");
-                // Bonus: if score cutoff known? (Leaving for V2)
-            } else if (collegeExams.length === 0) {
-                // No exams required?
-                score += 10;
-            }
-
-            // --- D. Type/Category Match (15 pts) ---
-            // Check based on model or fields
-            let colType = 'Traditional';
-            if (isInternational) colType = 'International';
-            if (col.category === 'New-Gen') colType = 'New-Gen';
-
-            if (typesWanted.includes(colType) || (colType === 'Traditional' && typesWanted.length === 0)) {
-                score += 15;
-            }
+            // REJECT if < 70
+            if (totalScore < 70) return null;
 
             return {
-                college: col,
-                fitScore: score,
-                reasons: reasons,
-                type: colType as any
+                ...college,
+                matchPercentage: Math.round(totalScore),
+                why: reasons.slice(0, 4), // Max 4 tags
+                location: college.location
             };
-        });
+        }).filter(Boolean) as NormalizedCollege[]; // Filter out nulls
 
-        // 3. Sort & Filter
-        // Filter out very low scores? e.g. < 30
-        const topPicks = scored
-            .filter(s => s.fitScore > 20)
-            .sort((a, b) => b.fitScore - a.fitScore)
-            .slice(0, 6);
+        // 3. Sort & Diversity
+        scoredCandidates.sort((a, b) => (b.matchPercentage || 0) - (a.matchPercentage || 0));
 
-        // 4. Normalize Response
-        const responseData = topPicks.map(item => ({
-            _id: item.college._id,
-            name: item.college.name,
-            image: item.college.image || '',
-            location: item.college.location || { city: item.college.city, state: item.college.country },
-            country: item.college.country || 'India',
-            fitScore: item.fitScore,
-            matchReason: item.reasons[0] || 'Good Fit', // Primary reason
-            allReasons: item.reasons,
-            type: item.type,
-            fees: item.college.fees || item.college.tuition_fee_annual || item.college.amountINR
-        }));
+        // Rule: Max 1 college per city AND Unique Images
+        const cityMap = new Set<string>();
+        const imageMap = new Set<string>();
+        const finalMatches: any[] = [];
 
-        // 5. Compute Meta for Hero Section
-        const totalMatches = responseData.length;
-        const avgFitScore = totalMatches > 0
-            ? responseData.reduce((acc, curr) => acc + curr.fitScore, 0) / totalMatches
-            : 0;
+        for (const c of scoredCandidates) {
+            const city = c.location?.city || 'Unknown';
+            const img = c.image || '';
 
-        const budgetMatched = responseData.some(r => r.allReasons.includes("Within Budget"));
-        const locationMatched = responseData.some(r => r.allReasons.includes("Preferred Country"));
+            // Check City Uniqueness
+            const isCityUnique = !cityMap.has(city) || city === 'Unknown';
+            // Check Image Uniqueness (if image exists)
+            const isImageUnique = !img || !imageMap.has(img);
 
-        let preferredCountry = "India";
-        if (prefs.preferredCountries && prefs.preferredCountries.length > 0) {
-            preferredCountry = prefs.preferredCountries.length === 1
-                ? prefs.preferredCountries[0]
-                : "your selected countries";
+            if (isCityUnique && isImageUnique) {
+                if (city !== 'Unknown') cityMap.add(city);
+                if (img) imageMap.add(img);
+                finalMatches.push(c);
+            }
+            if (finalMatches.length >= 6) break;
         }
 
+        const topMatches = finalMatches;
+
+        // 4. Meta Stats
+        const avgMatch = topMatches.length > 0
+            ? Math.round(topMatches.reduce((acc, c) => acc + (c.matchPercentage || 0), 0) / topMatches.length)
+            : 0;
+
+        const budgetMatch = topMatches.some(c => c.fees <= budgetMax);
+        const locationMatch = topMatches.some(c => c.location?.state === userState || c.country === userCountry);
+
         res.status(200).json({
-            success: true,
+            topMatches, // Strict JSON shape
             meta: {
-                totalMatches,
-                avgFitScore,
-                budgetMatched,
-                locationMatched,
-                preferredCountry
-            },
-            data: responseData,
-            recommendations: responseData
+                avgMatch,
+                budgetMatch,
+                locationMatch
+            }
         });
 
     } catch (error) {
-        logger.error('Error generating recommendations:', error);
-        res.status(500).json({ success: false, message: "Server Error" });
+        logger.error('Error fetching dashboard recommendations:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

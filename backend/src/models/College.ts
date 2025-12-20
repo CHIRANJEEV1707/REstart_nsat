@@ -6,7 +6,7 @@ const CollegeSchema = new mongoose.Schema({
         state: { type: String, required: true },
         city: { type: String, required: true }
     },
-    type: { type: String, enum: ['Public', 'Private'], required: true },
+    type: { type: String, enum: ['Public', 'Private', 'IIIT', 'GFTI', 'Public Research University', 'Public Research Institute', 'Public Deemed University', 'Private Deemed University', 'Deemed University', 'Central University', 'Institute of National Importance', 'State University', 'University Department', 'Central Institute', 'State-Aided Autonomous', 'State University Campus', 'State Government College', 'State Government Aided', 'Private Autonomous', 'Private University'], required: true },
     fees: { type: Number, required: true }, // Annual fee in INR
     exams_required: [{ type: String, index: true }], // e.g. ["JEE Main", "MHT CET"]
     restart_score: { type: Number, min: 0, max: 10, index: true },
@@ -21,6 +21,7 @@ const CollegeSchema = new mongoose.Schema({
 
     // International Fields
     country: { type: String, default: 'India', index: true },
+    isNewGen: { type: Boolean, default: false, index: true }, // NEW: To strictly separate New-Gen from Traditional
     image: { type: String }, // NEW: Hero image for the college card
     study_abroad_info: {
         visa_requirements: [String],

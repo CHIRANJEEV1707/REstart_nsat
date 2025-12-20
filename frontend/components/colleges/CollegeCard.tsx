@@ -4,6 +4,7 @@ import { College } from "@/types/college";
 import { useCompare } from "@/context/CompareContext";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
+import { useCollegeRank } from '@/hooks/useCollegeRank';
 
 interface CollegeCardProps {
     college: College;
@@ -25,6 +26,9 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     });
 
     const isSaved = savedResponse?.data?.some((c: any) => c._id === college.collegeId || c.collegeId === college.collegeId);
+
+    // Fetch Rank
+    const { data: rankData, isLoading: isRankLoading } = useCollegeRank(college.collegeId || (college as any)._id);
 
     // Save/Unsave Mutation
     const saveMutation = useMutation({
@@ -233,10 +237,15 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     {/* Tags logic */}
                     {variant === 'international' && (
                         <span className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md">
-                            Rank #{college.global_ranking || 'N/A'}
+                            {!isRankLoading && rankData ? `#${rankData.rank} in ${rankData.category}` : (college.global_ranking ? `Rank #${college.global_ranking}` : 'Rank N/A')}
                         </span>
                     )}
-                    {variant === 'traditional' && college.badges?.[0] && (
+                    {(variant === 'traditional' || variant === 'newgen') && !isRankLoading && rankData && (
+                        <span className="text-[10px] px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md font-medium border border-indigo-100">
+                            #{rankData.rank} in {rankData.category}
+                        </span>
+                    )}
+                    {variant === 'traditional' && college.badges?.[0] && !rankData && (
                         <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md">
                             {college.badges[0]}
                         </span>

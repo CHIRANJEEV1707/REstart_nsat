@@ -4,7 +4,7 @@ import NewGenCollege from '../models/NewGenCollege';
 import logger from '../utils/logger';
 import InternationalCollege from '../models/InternationalCollege';
 
-// @desc    Get all colleges with filtering
+// @desc    Get all colleges with filtering & pagination
 // @route   GET /api/colleges
 export const getColleges = async (req: Request, res: Response) => {
     try {
@@ -13,27 +13,36 @@ export const getColleges = async (req: Request, res: Response) => {
         // Copy req.query
         const reqQuery = { ...req.query };
 
-        // Fields to exclude
-        const removeFields = ['select', 'sort', 'page', 'limit'];
+        // Fields to exclude from direct query matching
+        const removeFields = ['select', 'sort', 'page', 'limit', 'type'];
         removeFields.forEach(param => delete reqQuery[param]);
 
-        // Create query string for advanced filtering (gt, gte, etc - if needed later)
+        // Create query string for advanced filtering (gt, gte, etc)
         let queryStr = JSON.stringify(reqQuery);
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
         const filterQuery = JSON.parse(queryStr);
 
+        // 1. Dynamic Type Filtering
+        // type=india -> country: 'India' AND isNewGen != true
+        // type=international -> country: { $ne: 'India' }
+        const type = req.query.type as string;
+        if (type === 'india') {
+            filterQuery.country = 'India';
+            filterQuery.isNewGen = { $ne: true }; // STRICT rule: No New-Gen in Indian section
+        } else if (type === 'international') {
+            filterQuery.country = { $ne: 'India' };
+        } else if (req.query.country) {
+            // If explicit country passed, respect it (already in filterQuery via reqQuery)
+        }
+
         // Feature 1: Map loose 'state' to 'location.state'
         if (req.query.state) {
             filterQuery['location.state'] = req.query.state;
-            delete filterQuery.state; // clean up if necessary, though reqQuery excluded it? No, we need to handle it.
-            // Actually reqQuery still has it if not removed.
-            // But we prefer explicit mapping over loose.
+            delete filterQuery.state;
         }
 
         // Feature 2: Map loose 'exam' to 'exams_required' (array check)
-        // If the user sends ?exam=JEE, it matches if JEE is in exams_required array. 
-        // Mongoose find({ exams_required: 'val' }) handles this automatically for array fields.
         if (req.query.exam) {
             filterQuery['exams_required'] = req.query.exam;
             delete filterQuery.exam;
@@ -44,53 +53,69 @@ export const getColleges = async (req: Request, res: Response) => {
             filterQuery.fees = {};
             if (req.query.minFees) filterQuery.fees.$gte = Number(req.query.minFees);
             if (req.query.maxFees) filterQuery.fees.$lte = Number(req.query.maxFees);
-
             delete filterQuery.minFees;
             delete filterQuery.maxFees;
         }
 
-        // Finding resource
-        // If searching text
+        // Feature 4: Text Search
         if (req.query.search) {
-            // Text search score sorting could be added here
-            query = College.find({
-                ...filterQuery,
-                $text: { $search: req.query.search as string }
-            });
-        } else {
-            query = College.find(filterQuery);
+            // Combine limits with text search
+            const searchRegex = new RegExp(req.query.search as string, 'i');
+            const searchOr = [
+                { name: searchRegex },
+                { 'location.city': searchRegex },
+                { 'location.state': searchRegex }
+            ];
+            // Add to filterQuery
+            // If we already have filters, we need $and
+            // But simpler approach for now: merge
+            // Use explicit $or at top level
+            // NOTE: Mongoose/MongoDB structure: { ...filters, $or: [...] }
+            filterQuery.$or = searchOr;
         }
 
+        // Build Query
+        query = College.find(filterQuery);
+
         // Sorting
+        // Priority: isTrending (desc), trendingScore (desc), restart_score (desc)
         if (req.query.sort) {
             const sortBy = (req.query.sort as string).split(',').join(' ');
             query = query.sort(sortBy);
         } else {
-            query = query.sort('-restart_score');
+            query = query.sort({ isTrending: -1, trendingScore: -1, restart_score: -1 });
         }
 
         // Pagination
         const page = parseInt(req.query.page as string, 10) || 1;
-        const limit = parseInt(req.query.limit as string, 10) || 10;
+        const limit = parseInt(req.query.limit as string, 10) || 12; // Default 12 per page
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
-        const total = await College.countDocuments();
+
+        // Count total documents matching filter
+        const total = await College.countDocuments(filterQuery);
 
         query = query.skip(startIndex).limit(limit);
 
         // Executing query
         const colleges = await query;
 
-        // Pagination result
-        const pagination: any = {};
-        if (endIndex < total) {
-            pagination.next = { page: page + 1, limit };
-        }
-        if (startIndex > 0) {
-            pagination.prev = { page: page - 1, limit };
-        }
+        // Pagination result object
+        const pagination: any = {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            hasNext: endIndex < total,
+            hasPrev: startIndex > 0
+        };
 
-        res.status(200).json({ success: true, count: colleges.length, pagination, data: colleges });
+        res.status(200).json({
+            success: true,
+            count: colleges.length,
+            pagination,
+            data: colleges
+        });
     } catch (error) {
         logger.error('Error fetching colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
@@ -124,7 +149,7 @@ export const getNewGenCollege = async (req: Request, res: Response) => {
     }
 };
 
-// @desc    Get International Colleges
+// @desc    Get International Colleges (from College collection)
 // @route   GET /api/colleges/international
 export const getInternationalColleges = async (req: Request, res: Response) => {
     try {
@@ -133,26 +158,87 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
         // Copy req.query
         const reqQuery = { ...req.query };
 
-        // Fields to exclude
+        // Fields to exclude from direct matching
         const removeFields = ['select', 'sort', 'page', 'limit'];
         removeFields.forEach(param => delete reqQuery[param]);
 
-        // Filtering by country if passed
+        // Base filter: Country is NOT India
+        const filterQuery: any = { ...reqQuery, country: { $ne: 'India' } };
+
+        // 1. Country Filtering (if explicitly requested)
         if (req.query.country) {
-            // @ts-ignore
-            reqQuery.country = { $in: req.query.country.split(',') };
+            const countries = (req.query.country as string).split(',');
+            if (countries.includes('India')) {
+                return res.status(400).json({ success: false, message: 'This endpoint is for non-Indian colleges only.' });
+            }
+            filterQuery.country = { $in: countries };
         }
 
-        // Create query string
-        let queryStr = JSON.stringify(reqQuery);
-        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+        // 2. Budget Range (minFees, maxFees)
+        if (req.query.minFees || req.query.maxFees) {
+            filterQuery.fees = {};
+            if (req.query.minFees) filterQuery.fees.$gte = Number(req.query.minFees);
+            if (req.query.maxFees) filterQuery.fees.$lte = Number(req.query.maxFees);
+            delete filterQuery.minFees;
+            delete filterQuery.maxFees;
+        }
 
-        query = InternationalCollege.find(JSON.parse(queryStr));
+        // 3. Exams Filtering
+        if (req.query.exam) {
+            filterQuery['exams_required'] = req.query.exam;
+            delete filterQuery.exam;
+        }
 
+        // 4. Text Search
+        if (req.query.search) {
+            const searchRegex = new RegExp(req.query.search as string, 'i');
+            filterQuery.$or = [
+                { name: searchRegex },
+                { 'location.city': searchRegex },
+                { 'location.state': searchRegex },
+                { country: searchRegex }
+            ];
+            delete filterQuery.search;
+        }
+
+        // Build Query
+        query = College.find(filterQuery);
+
+        // Select specific fields
+        query = query.select('name location country fees exams_required restart_score image isTrending trendingScore study_abroad_info');
+
+        // Sorting
+        query = query.sort({ isTrending: -1, trendingScore: -1, restart_score: -1 });
+
+        // Pagination
+        const page = parseInt(req.query.page as string, 10) || 1;
+        const limit = parseInt(req.query.limit as string, 10) || 12; // Default 12
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        const total = await College.countDocuments(filterQuery);
+
+        query = query.skip(startIndex).limit(limit);
+
+        // Execute Query
         const colleges = await query;
-        res.status(200).json({ success: true, count: colleges.length, data: colleges });
+
+        // Pagination Result
+        const pagination = {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            hasNext: endIndex < total,
+            hasPrev: startIndex > 0
+        };
+
+        res.status(200).json({
+            success: true,
+            pagination,
+            data: colleges
+        });
     } catch (error) {
-        logger.error('Error fetching new-gen college by ID:', error);
+        logger.error('Error fetching international colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -172,17 +258,180 @@ export const getInternationalCollege = async (req: Request, res: Response) => {
     }
 };
 
-// @desc    Get single college
+// @desc    Get single college (Universal: Searches Indian, International, New-Gen)
 // @route   GET /api/colleges/:id
 export const getCollege = async (req: Request, res: Response) => {
     try {
-        const college = await College.findById(req.params.id);
+        const { id } = req.params;
+        let college: any = null;
+        let source = '';
+
+        // 1. Try Finding in Indian/General Colleges
+        college = await College.findById(id);
+        if (college) source = 'Indian';
+
+        // 2. If not found, try International
+        if (!college) {
+            college = await InternationalCollege.findById(id);
+            if (college) source = 'International';
+        }
+
+        // 3. If not found, try New-Gen
+        if (!college) {
+            college = await NewGenCollege.findById(id);
+            if (college) source = 'NewGen';
+        }
+
         if (!college) {
             return res.status(404).json({ success: false, message: 'College not found' });
         }
-        res.status(200).json({ success: true, data: college });
+
+        // 4. Normalize Data to Strict "UnifiedCollege" Shape
+        let normalizedCollege: any = {
+            _id: college._id,
+            name: college.name,
+            description: college.description,
+            website: college.website || college.official_website,
+            image: college.image || "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop", // Fallback if absolutely missing
+            restart_score: college.restart_score || 0,
+            badges: college.badges || [],
+            isTrending: college.isTrending || false,
+            trendingScore: college.trendingScore || 0,
+            reviews_count: 120, // Placeholder/Real count if implemented
+            rating: 4.5, // Placeholder/Real
+        };
+
+        // Specific Normalization based on Source
+        if (source === 'Indian') {
+            normalizedCollege.type = college.isNewGen ? 'New-Gen' : (college.country === 'India' ? 'Indian' : 'International'); // Handle mixed data in College schema
+            normalizedCollege.location = college.location ? { ...college.location, country: college.country || 'India' } : { city: 'Unknown', country: 'India' };
+            normalizedCollege.fees = college.fees;
+            normalizedCollege.exams_required = college.exams_required || [];
+            normalizedCollege.placement_stats = college.placement_stats;
+            normalizedCollege.admission_process = college.admission_process;
+        }
+        else if (source === 'International') {
+            normalizedCollege.type = 'International';
+            normalizedCollege.location = {
+                city: college.city,
+                state: college.state || '', // International schema might keep state elsewhere or not have it
+                country: college.country
+            };
+            // Convert USD fees to INR for display consistency if needed, or keep raw. Keeping raw number for now.
+            // Or better: keep it generic and frontend handles currency symbol based on country.
+            normalizedCollege.fees = college.tuition_fee_annual;
+            normalizedCollege.currency = 'USD'; // Flag for frontend
+            normalizedCollege.exams_required = [...(college.entrance_exams || []), ...(college.english_tests || [])];
+            normalizedCollege.study_abroad_info = {
+                visa_requirements: [college.visa_type], // Simplified
+                scholarships: college.scholarships_available ? 'Available' : 'None',
+                ...college.toObject() // Pass mostly everything for detailed view
+            };
+        }
+        else if (source === 'NewGen') {
+            normalizedCollege.type = 'New-Gen';
+            normalizedCollege.location = college.location;
+            normalizedCollege.fees = college.fees?.amountINR;
+            normalizedCollege.exams_required = college.examsAccepted || [];
+            normalizedCollege.cohortDetails = college.cohortDetails;
+            normalizedCollege.curriculumFocus = college.curriculumFocus;
+            normalizedCollege.placementSupport = college.placementSupport;
+        }
+
+        // 5. Dynamic "Why" Tags (Universal Logic)
+        // Note: Ideally User context is needed for strict personalization (Budget, Exams). 
+        // For public page, we show generic strengths.
+        const whyTags = [];
+        if (normalizedCollege.restart_score >= 9.0) whyTags.push('High RESTART Score');
+        if (normalizedCollege.isTrending) whyTags.push('Trending Now');
+        if (normalizedCollege.fees < 200000 && normalizedCollege.type === 'Indian') whyTags.push('Best Value'); // Generic budget rule
+
+        normalizedCollege.why = whyTags;
+
+        res.status(200).json({ success: true, data: normalizedCollege });
+
     } catch (error) {
-        logger.error('Error fetching college filters:', error);
+        logger.error('Error fetching university college details:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// @desc    Get College Rank
+// @route   GET /api/colleges/:id/rank
+export const getCollegeRank = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        let college: any = null;
+        let category = 'Other';
+        let collection: any = College;
+        let queryFilter: any = {};
+
+        // 1. Determine Category & Collection
+        const indianCollege = await College.findById(id);
+        if (indianCollege) {
+            college = indianCollege;
+            if (indianCollege.name.includes("Indian Institute of Technology") || indianCollege.name.includes("IIT")) {
+                category = "IIT";
+                queryFilter = { name: { $regex: /Indian Institute of Technology|IIT/ } };
+            } else if (indianCollege.name.includes("National Institute of Technology") || indianCollege.name.includes("NIT")) {
+                category = "NIT";
+                queryFilter = { name: { $regex: /National Institute of Technology|NIT/ } };
+            } else if (indianCollege.type === 'GFTI') {
+                category = "GFTI";
+                queryFilter = { type: 'GFTI' };
+            } else {
+                category = indianCollege.type || "Traditional";
+                queryFilter = { type: indianCollege.type };
+            }
+        }
+
+        if (!college) {
+            const intlCollege = await InternationalCollege.findById(id);
+            if (intlCollege) {
+                college = intlCollege;
+                category = "International";
+                collection = InternationalCollege;
+                queryFilter = { country: { $ne: 'India' } };
+            }
+        }
+
+        if (!college) {
+            const newGenCollege = await NewGenCollege.findById(id);
+            if (newGenCollege) {
+                college = newGenCollege;
+                category = "New-Gen";
+                collection = NewGenCollege;
+                queryFilter = {};
+            }
+        }
+
+        if (!college) {
+            return res.status(404).json({ success: false, message: 'College not found' });
+        }
+
+        // 2. Fetch all in category & Sort
+        const myScore = college.restart_score || 0;
+
+        // Count how many have strictly greater score
+        const betterCollegesCount = await collection.countDocuments({
+            ...queryFilter,
+            restart_score: { $gt: myScore }
+        });
+
+        const rank = betterCollegesCount + 1;
+        const total = await collection.countDocuments(queryFilter);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                rank,
+                total,
+                category
+            }
+        });
+
+    } catch (error) {
+        logger.error('Error fetching ranking:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

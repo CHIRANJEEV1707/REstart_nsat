@@ -1,9 +1,13 @@
 "use strict";
-const express = require('express');
-const { getExams, getExam } = require('../controllers/examController');
-const router = express.Router();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const examController_1 = require("../controllers/examController");
+const router = express_1.default.Router();
 router.route('/')
-    .get(getExams);
+    .get(examController_1.getExams);
 router.route('/:id')
-    .get(getExam);
-module.exports = router;
+    .get(examController_1.getExam);
+exports.default = router;

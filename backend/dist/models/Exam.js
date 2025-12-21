@@ -1,6 +1,10 @@
 "use strict";
-const mongoose = require('mongoose');
-const ExamSchema = new mongoose.Schema({
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = __importDefault(require("mongoose"));
+const ExamSchema = new mongoose_1.default.Schema({
     name: { type: String, required: true },
     code: { type: String, unique: true }, // e.g. JEEMAIN
     description: String,
@@ -14,4 +18,5 @@ const ExamSchema = new mongoose.Schema({
     syllabus_url: String,
     website: String
 });
-module.exports = mongoose.model('Exam', ExamSchema);
+const Exam = mongoose_1.default.model('Exam', ExamSchema);
+exports.default = Exam;

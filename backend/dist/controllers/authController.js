@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.getMe = exports.login = exports.register = exports.loginSchema = exports.registerSchema = void 0;
+exports.updatePassword = exports.updateDetails = exports.logout = exports.getMe = exports.login = exports.register = exports.loginSchema = exports.registerSchema = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const zod_1 = require("zod");
@@ -13,9 +13,6 @@ exports.registerSchema = zod_1.z.object({
         name: zod_1.z.string().min(2, 'Name must be at least 2 characters'),
         email: zod_1.z.string().email('Invalid email address'),
         password: zod_1.z.string().min(6, 'Password must be at least 6 characters'),
-        state: zod_1.z.string().optional(),
-        class_level: zod_1.z.string().optional(),
-        target_exams: zod_1.z.array(zod_1.z.string()).optional(),
     })
 });
 exports.loginSchema = zod_1.z.object({
@@ -26,9 +23,7 @@ exports.loginSchema = zod_1.z.object({
 });
 // Helper: Sign JWT
 const signToken = (id) => {
-    if (!process.env.JWT_SECRET) {
-        throw new Error('JWT_SECRET is not defined in environment variables');
-    }
+    // JWT_SECRET is validated at server startup, so it's guaranteed to exist here
     return jsonwebtoken_1.default.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '7d'
     });
@@ -36,11 +31,13 @@ const signToken = (id) => {
 // Helper: Send Token Response
 const sendTokenResponse = (user, statusCode, res) => {
     const token = signToken(user._id);
+    // Secure cookie configuration
     const options = {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+        httpOnly: true, // Prevents client-side JavaScript access
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax'), // 'lax' for dev (cross-origin), 'strict' for production
+        path: '/', // Make cookie available for all paths
     };
     res.status(statusCode)
         .cookie('token', token, options)
@@ -51,7 +48,8 @@ const sendTokenResponse = (user, statusCode, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role,
+            onboardingCompleted: user.onboardingCompleted
         }
     });
 };
@@ -59,7 +57,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @route   POST /api/auth/signup
 const register = async (req, res, next) => {
     try {
-        const { name, email, password, state, class_level, target_exams } = req.body;
+        const { name, email, password } = req.body;
         // Check if user exists
         let user = await User_1.default.findOne({ email });
         if (user) {
@@ -71,9 +69,8 @@ const register = async (req, res, next) => {
             name,
             email,
             password,
-            state,
-            class_level,
-            target_exams
+            onboardingCompleted: false, // Explicitly set to false
+            onboardingStep: 1 // Signup completed
         });
         sendTokenResponse(user, 201, res);
     }
@@ -110,8 +107,7 @@ exports.login = login;
 // @route   GET /api/auth/me
 const getMe = async (req, res, next) => {
     try {
-        // @ts-ignore - req.user will be added by auth middleware later
-        const user = await User_1.default.findById(req.user.id);
+        const user = await User_1.default.findById(req.user?._id);
         res.status(200).json({ success: true, data: user });
     }
     catch (error) {
@@ -134,3 +130,65 @@ const logout = (req, res, next) => {
     }
 };
 exports.logout = logout;
+// @desc    Update user details
+// @route   PUT /api/auth/updatedetails
+const updateDetails = async (req, res, next) => {
+    try {
+        const fieldsToUpdate = {
+            name: req.body.name,
+            email: req.body.email,
+            state: req.body.state,
+            city: req.body.city,
+            country: req.body.country,
+            class_level: req.body.class_level,
+            target_degree: req.body.target_degree,
+            college_type_aspiring: req.body.college_type_aspiring,
+            preferred_countries: req.body.preferred_countries,
+            // Map Map new inputs to legacy fields (and schema will handle sync if we add pre-save, but here we are doing explicit update)
+            target_exams: req.body.target_exams || req.body.interestedExams,
+            exam_scores: req.body.exam_scores,
+            budget_range: req.body.budget_range || req.body.budgetINR || req.body.budgetUSD,
+            // Also update preferences struct types
+            'preferences.budgetUSD': req.body.budgetUSD,
+            'preferences.budgetINR': req.body.budgetINR,
+            'preferences.interestedExams': req.body.interestedExams || req.body.target_exams
+        };
+        const user = await User_1.default.findByIdAndUpdate(req.user?._id, fieldsToUpdate, {
+            new: true,
+            runValidators: true
+        });
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.updateDetails = updateDetails;
+// @desc    Update password
+// @route   PUT /api/auth/updatepassword
+// Note: For enhanced security, consider implementing email confirmation for password changes
+// This would prevent attackers from changing passwords even if they compromise a session
+const updatePassword = async (req, res, next) => {
+    try {
+        const user = await User_1.default.findById(req.user?._id).select('+password');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        // Verify current password
+        if (!(await user.matchPassword(req.body.currentPassword))) {
+            return res.status(401).json({ success: false, message: 'Incorrect current password' });
+        }
+        // Update password
+        user.password = req.body.newPassword;
+        await user.save();
+        // Send new token (logs out other sessions)
+        sendTokenResponse(user, 200, res);
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.updatePassword = updatePassword;

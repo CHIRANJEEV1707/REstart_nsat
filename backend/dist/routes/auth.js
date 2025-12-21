@@ -5,12 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authController_1 = require("../controllers/authController");
-// import { protect } from '../middleware/auth'; // Placeholder for auth middleware
+const auth_1 = require("../middleware/auth");
 const validate_1 = require("../middleware/validate");
+const rateLimiter_1 = require("../middleware/rateLimiter");
 const router = express_1.default.Router();
-router.post('/signup', (0, validate_1.validate)(authController_1.registerSchema), authController_1.register);
-router.post('/login', (0, validate_1.validate)(authController_1.loginSchema), authController_1.login);
+// Apply rate limiting to auth endpoints
+router.post('/signup', rateLimiter_1.authLimiter, (0, validate_1.validate)(authController_1.registerSchema), authController_1.register);
+router.post('/login', rateLimiter_1.authLimiter, (0, validate_1.validate)(authController_1.loginSchema), authController_1.login);
 router.post('/logout', authController_1.logout);
-// router.get('/me', protect, getMe); 
-router.get('/me', authController_1.getMe); // Temporarily unprotected until auth middleware is also refactored
+router.get('/me', auth_1.protect, authController_1.getMe);
+router.put('/updatedetails', auth_1.protect, authController_1.updateDetails);
+router.put('/updatepassword', auth_1.protect, authController_1.updatePassword);
 exports.default = router;

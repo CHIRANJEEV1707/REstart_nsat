@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { useDashboard } from "@/context/DashboardContext";
+// import { useDashboard } from "@/context/DashboardContext"; // Removed unused import
 
 interface Exam {
     _id: string;
@@ -17,7 +17,7 @@ interface Exam {
 }
 
 export function DeadlinesView() {
-    const { openExamDetails } = useDashboard();
+    // const { openExamDetails } = useDashboard(); // Removed unused hook
     const { data: response, isLoading } = useQuery({
         queryKey: ['exams'],
         queryFn: async () => {
@@ -59,12 +59,12 @@ export function DeadlinesView() {
                                             {new Date(exam.dates?.exam_date_start).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                                         </p>
                                     </div>
-                                    <button
-                                        onClick={() => openExamDetails(exam._id)}
+                                    <Link
+                                        href={`/exams/${exam._id}`}
                                         className="text-indigo-600 font-bold text-sm hover:underline"
                                     >
                                         View Details
-                                    </button>
+                                    </Link>
                                 </div>
                             </CardContent>
                         </Card>

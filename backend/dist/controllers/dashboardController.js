@@ -1,49 +1,71 @@
 "use strict";
-const User = require('../models/User');
-const College = require('../models/College');
-const Exam = require('../models/Exam');
-const PrepPlan = require('../models/PrepPlan');
-// @desc    Get dashboard metrics (Saved, Recommended, Plan)
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDashboardData = void 0;
+const User_1 = __importDefault(require("../models/User"));
+const College_1 = __importDefault(require("../models/College"));
+const Exam_1 = __importDefault(require("../models/Exam"));
+const alertGenerator_1 = require("../utils/alertGenerator");
+const logger_1 = __importDefault(require("../utils/logger"));
+// @desc    Get dashboard metrics (Saved, Recommended, Deadlines, Alerts)
 // @route   GET /api/dashboard
 // @desc    Get dashboard metrics (Saved, Recommended, Deadlines, Alerts)
 // @route   GET /api/dashboard
-exports.getDashboardData = async (req, res) => {
+const getDashboardData = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).populate('saved_colleges');
-        // 1. Recommendations (Mock Fit Score)
+        if (!req.user || !req.user._id) {
+            res.cookie('token', 'none', {
+                expires: new Date(Date.now() + 10 * 1000),
+                httpOnly: true
+            });
+            return res.status(401).json({ success: false, message: 'Not authorized' });
+        }
+        const user = await User_1.default.findById(req.user._id).populate('saved_colleges');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        // 1. Recommendations (Fit Score based on restart_score)
         let rawRecommendations = [];
         if (user.state) {
-            rawRecommendations = await College.find({ 'location.state': user.state }).limit(3);
+            rawRecommendations = await College_1.default.find({ 'location.state': user.state }).sort('-restart_score').limit(3);
         }
         else {
-            rawRecommendations = await College.find().sort('-restart_score').limit(3);
+            rawRecommendations = await College_1.default.find().sort('-restart_score').limit(3);
         }
-        const recommendations = rawRecommendations.map(col => ({
+        // If not enough recommendations from state, fill with top colleges
+        if (rawRecommendations.length < 3) {
+            const moreColleges = await College_1.default.find({ _id: { $nin: rawRecommendations.map((c) => c._id) } }).sort('-restart_score').limit(3 - rawRecommendations.length);
+            rawRecommendations = [...rawRecommendations, ...moreColleges];
+        }
+        const recommendations = rawRecommendations.map((col) => ({
             _id: col._id,
             name: col.name,
-            logo: col.images?.[0] || '/college-placeholder.png', // Fallback
-            fit_score: Math.floor(Math.random() * (98 - 85) + 85), // Random score 85-98
-            fees: col.fees?.btech ? `₹${col.fees.btech.toLocaleString()}/yr` : '₹1.5L/yr', // Mock or real
-            exam: col.exams_required?.[0] || 'JEE Main'
+            logo: '/college-placeholder.png', // Placeholder until image field exists
+            fit_score: Math.round((col.restart_score || 0) * 10), // Convert 0-10 scale to percentage
+            fees: col.fees ? `₹${col.fees.toLocaleString()}/yr` : 'N/A',
+            exam: col.exams_required?.[0] || 'Merit'
         }));
         // 2. Deadlines (Upcoming Exams)
         let upcomingExams = [];
-        if (user.target_exams && user.target_exams.length > 0) {
-            upcomingExams = await Exam.find({ name: { $in: user.target_exams } });
-        }
-        else {
-            upcomingExams = await Exam.find().sort('dates.exam_date_start').limit(5);
-        }
-        // 3. Mock Alerts (Static for now)
-        const alerts = [
-            { id: 1, type: 'info', message: 'JEE Main 2025 Registration closes in 15 days.' },
-            { id: 2, type: 'success', message: 'New scholarship "Merit First" is available for your profile.' },
-            { id: 3, type: 'warning', message: 'VITEEE exam dates have been updated.' }
-        ];
+        const today = new Date();
+        // Find exams with upcoming dates
+        upcomingExams = await Exam_1.default.find({
+            $or: [
+                { 'dates.registration_end': { $gte: today } },
+                { 'dates.exam_date_start': { $gte: today } }
+            ]
+        }).sort('dates.registration_end').limit(5);
+        // ... (imports)
+        // inside getDashboardData
+        // 3. Dynamic Alerts
+        const alerts = (0, alertGenerator_1.generateAlerts)(user, upcomingExams);
         // 4. Fit Overview (Calculated)
+        const savedCount = user.saved_colleges ? user.saved_colleges.length : 0;
         const fitOverview = {
-            total_matches: recommendations.length + 12, // Mock count
-            score_range: '85% - 92%'
+            total_matches: rawRecommendations.length,
+            score_range: recommendations.length > 0 ? `${Math.min(...recommendations.map(r => r.fit_score))}% - ${Math.max(...recommendations.map(r => r.fit_score))}%` : 'N/A'
         };
         res.status(200).json({
             success: true,
@@ -51,28 +73,30 @@ exports.getDashboardData = async (req, res) => {
                 user: {
                     name: user.name,
                     email: user.email,
-                    saved_count: user.saved_colleges.length
+                    onboardingCompleted: user.onboardingCompleted,
+                    saved_count: savedCount
                 },
                 fit_overview: fitOverview,
-                saved_colleges: user.saved_colleges.map(c => ({
+                saved_colleges: user.saved_colleges ? user.saved_colleges.map((c) => ({
                     _id: c._id,
                     name: c.name,
-                    tags: ['Good Fit', 'High ROI'], // Mock tags for UI
-                    location: `${c.location.city}, ${c.location.state}`
-                })),
+                    tags: c.badges || [],
+                    location: c.location ? `${c.location.city}, ${c.location.state}` : 'Unknown'
+                })) : [],
                 recommendations,
-                deadlines: upcomingExams.map(e => ({
+                deadlines: upcomingExams.map((e) => ({
                     _id: e._id,
                     name: e.name,
                     date: e.dates.registration_end || e.dates.exam_date_start,
-                    type: 'Registration'
+                    type: e.dates.registration_end > today ? 'Registration' : 'Exam Date'
                 })),
                 alerts
             }
         });
     }
     catch (error) {
-        console.error(error);
+        logger_1.default.error('Error fetching dashboard data:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
+exports.getDashboardData = getDashboardData;

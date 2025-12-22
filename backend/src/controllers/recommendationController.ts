@@ -45,10 +45,11 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
         const prefs = user.preferences;
 
         // Map new preferences to logic variables
-        const budgetMax = prefs.budgetMax || 10000000;
+        // Use budget from new schema, fallback to legacy
+        const budgetMax = prefs.budget?.amount || prefs.budgetMax || 10000000;
         const preferredCountries = prefs.preferredCountries || ['India'];
-        // Use examsGiven from new schema, fallback to interestedExams/legacy
-        const examsGiven = prefs.examsGiven || prefs.interestedExams || [];
+        // Use exams from new schema (mapped to names), fallback to legacy top-level target_exams
+        const examsGiven = prefs.examScores?.map(e => e.exam) || user.target_exams || [];
 
         // Use user profile state or legacy state
         const userState = user.profile?.state || user.state || 'Delhi'; // Fallback to avoid empty matches if unknown

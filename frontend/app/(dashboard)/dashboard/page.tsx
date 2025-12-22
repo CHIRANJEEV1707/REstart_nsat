@@ -11,12 +11,20 @@ import api from "@/lib/axios";
 import { Sparkles, Globe, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import AuthButton from "@/components/ui/AuthButton";
 
 export default function DashboardPage() {
     const { user } = useAuth();
     const router = useRouter();
-    const { openCollegeDetails } = useDashboard(); // This now pushes to router
+    const { openCollegeDetails } = useDashboard();
+
+    // Redirect if onboarding not complete
+    useEffect(() => {
+        if (user && !user.onboardingCompleted) {
+            router.replace('/onboarding');
+        }
+    }, [user, router]);
 
     // Check Auth - although AuthGuard handles this, keeping it robust for data fetching
     const { data: dashboard, isLoading: isDashboardLoading, isError } = useQuery({

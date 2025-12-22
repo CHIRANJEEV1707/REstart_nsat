@@ -38,12 +38,14 @@ export default function LoginPage() {
             const res = await api.post('/auth/login', data);
 
             if (res.status === 200) {
-                // Small delay to ensure cookie is set before redirect
-                // This prevents 401 errors on the next page
+                const isComplete = res.data.data.onboardingCompleted;
                 setTimeout(() => {
-                    // Always redirect to dashboard
-                    // Dashboard will handle onboarding redirect if needed
-                    router.replace('/dashboard');
+                    // Check completion status and redirect
+                    if (isComplete) {
+                        router.replace('/dashboard');
+                    } else {
+                        router.replace('/onboarding');
+                    }
                 }, 100);
             }
         } catch (err: any) {

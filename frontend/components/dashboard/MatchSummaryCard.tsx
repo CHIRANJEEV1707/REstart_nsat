@@ -42,7 +42,11 @@ export function MatchSummaryCard() {
                     <p className="text-indigo-200 mb-6 max-w-sm">
                         Complete your profile and set preferences to get personalized AI recommendations.
                     </p>
-                    <Button variant="secondary" className="bg-white text-indigo-600 hover:bg-gray-100">
+                    <Button
+                        variant="secondary"
+                        className="bg-white text-indigo-600 hover:bg-gray-100"
+                        onClick={() => router.push('/onboarding?edit=true')}
+                    >
                         Update Preferences
                     </Button>
                 </CardContent>

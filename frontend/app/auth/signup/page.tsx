@@ -51,11 +51,9 @@ export default function SignupPage() {
             const res = await api.post('/auth/signup', payload);
 
             if (res.status === 201) {
-                // Successful signup → Redirect to dashboard
-                // Dashboard will redirect to onboarding if needed
-                // Small delay to ensure cookie is set before redirect
+                // Successful signup → Redirect to onboarding (MANDATORY)
                 setTimeout(() => {
-                    router.replace('/dashboard');
+                    router.replace('/onboarding');
                 }, 100);
             }
         } catch (err: any) {

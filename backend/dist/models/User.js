@@ -43,61 +43,72 @@ const UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true, index: true },
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['student', 'admin'], default: 'student', index: true },
-    // Onboarding Status
     onboardingCompleted: { type: Boolean, default: false, index: true },
-    onboardingStep: { type: Number, default: 0 }, // 0: Not started, 1: Signup Done, 2: Personal Details Done, 3: Completed
-    // Personal Details
+    onboardingStep: { type: Number, default: 0 },
     profile: {
         city: String,
         state: String,
         country: String,
         phoneNumber: String
     },
-    // College Preferences
     preferences: {
-        targetDegree: String,
-        aspiringCollegeType: [String],
+        goal: String,
+        // New Strict Budget Schema
+        budget: {
+            currency: {
+                type: String,
+                enum: ['INR', 'USD'],
+                default: 'INR'
+            },
+            amount: {
+                type: Number,
+                required: false // Validated in controller
+            }
+        },
         preferredCountries: [String],
-        budgetUSD: {
-            min: Number,
-            max: Number
+        preferredStates: [String],
+        collegeTypes: [String],
+        // New Strict Degree Schema (Multi-select)
+        targetDegree: {
+            type: [String],
+            default: []
         },
-        budgetINR: {
-            min: Number,
-            max: Number
-        },
-        interestedExams: [String],
+        // New Strict Exam Scores
         examScores: [{
-                exam: String,
-                score: String
+                exam: { type: String, required: true },
+                score: { type: Number, required: true, min: 0 },
+                fullMarks: { type: Number, required: true, min: 1 },
+                rank: { type: Number },
+                _id: false
             }],
-        newGenInterest: { type: Boolean, default: false }
+        newGenInterest: { type: Boolean, default: false },
+        collegeTypePreference: {
+            type: String,
+            enum: ["prefer_new_gen", "neutral", "prefer_traditional"],
+            default: null
+        }
     },
-    // Legacy fields (kept for backward compatibility or direct access if needed, but should eventually migrate to profile)
+    // Legacy / top-level fields
     state: String,
     city: String,
     country: String,
     class_level: String,
-    target_degree: String,
+    target_degree: {
+        type: [String], // Updated to array
+        default: []
+    },
     college_type_aspiring: [String],
     preferred_countries: [String],
     target_exams: [String],
-    budget_range: { min: Number, max: Number },
-    exam_scores: [{
-            exam: String,
-            score: { type: mongoose_1.default.Schema.Types.Mixed }
-        }],
-    // User Data
     saved_colleges: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'College' }],
     saved_international_colleges: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'InternationalCollege' }],
+    saved_newgen_colleges: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'NewGenCollege' }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });
-// Update timestamp on save
 UserSchema.pre('save', async function () {
     this.updatedAt = new Date();
 });
-// Encrypt password using bcrypt
 UserSchema.pre('save', async function () {
     if (!this.isModified('password')) {
         return;
@@ -105,7 +116,6 @@ UserSchema.pre('save', async function () {
     const salt = await bcryptjs_1.default.genSalt(10);
     this.password = await bcryptjs_1.default.hash(this.password, salt);
 });
-// Match user entered password to hashed password in database
 UserSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcryptjs_1.default.compare(enteredPassword, this.password);
 };

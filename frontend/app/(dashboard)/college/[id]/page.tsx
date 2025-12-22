@@ -136,9 +136,9 @@ export default function CollegeDetailPage() {
                         <div className="flex-shrink-0">
                             {/* Placeholder for college logo or simple score badge if needed, kept minimal as requested */}
                             <div className="flex flex-col items-end">
-                                <div className="text-sm text-gray-500 font-medium mb-1">REstart Score</div>
+                                <div className="text-sm text-gray-500 font-medium mb-1">RESTART Score</div>
                                 <div className="flex items-baseline">
-                                    <span className="text-4xl font-bold text-gray-900">{college.restart_score}</span>
+                                    <span className="text-4xl font-bold text-gray-900">{college.restart_score ? college.restart_score.toFixed(1) : 'N/A'}</span>
                                     <span className="text-lg text-gray-400 font-medium">/10</span>
                                 </div>
                             </div>
@@ -148,12 +148,15 @@ export default function CollegeDetailPage() {
 
                 {/* Key Stats Grid - Dashboard Style */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                    <DashboardStatCard
-                        icon={<Award className="w-5 h-5 text-indigo-600" />}
-                        label="Ranking"
-                        value={college.global_ranking ? `#${college.global_ranking}` : "N/A"}
-                        subtext={isInternational ? "Global Rank" : "National Rank"}
-                    />
+                    {/* RESTART Score Card (Replaced Ranking) */}
+                    <div className="rounded-xl border p-4 bg-[#0085ff]/10 border-[#0085ff]/20 flex flex-col items-center justify-center text-center h-full">
+                        <span className="text-[#0085ff] font-bold text-2xl">
+                            {college.restart_score ? college.restart_score.toFixed(1) : 'N/A'}
+                        </span>
+                        <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mt-1">
+                            RESTART Score
+                        </span>
+                    </div>
                     <DashboardStatCard
                         icon={<DollarSign className="w-5 h-5 text-green-600" />}
                         label="Avg Package / Salary"
@@ -185,8 +188,8 @@ export default function CollegeDetailPage() {
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
                                         className={`pb-3 text-sm font-medium capitalize transition-all border-b-2 whitespace-nowrap ${activeTab === tab
-                                                ? 'border-indigo-600 text-indigo-600'
-                                                : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'
+                                            ? 'border-indigo-600 text-indigo-600'
+                                            : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'
                                             }`}
                                     >
                                         {tab}

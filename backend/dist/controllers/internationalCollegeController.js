@@ -77,7 +77,7 @@ const getInternationalColleges = async (req, res) => {
             query = query.sort(sortBy);
         }
         else {
-            query = query.sort('global_ranking'); // Default sort by ranking
+            query = query.sort({ restart_score: -1 }); // Default sort by RESTART Score
         }
         // Pagination
         const page = parseInt(req.query.page, 10) || 1;

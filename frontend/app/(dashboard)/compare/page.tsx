@@ -68,8 +68,8 @@ export default function ComparePage() {
                                         <X size={16} />
                                     </button>
                                     <div className="mb-3">
-                                        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full mb-2 inline-block">
-                                            {col.ranking || 'N/A'}
+                                        <span className="text-xs font-bold text-[#0085ff] bg-[#0085ff]/10 border border-[#0085ff]/20 px-2 py-1 rounded-full mb-2 inline-block">
+                                            Score: {col.restart_score ? col.restart_score.toFixed(1) : 'N/A'}
                                         </span>
                                         <h3 className="text-xl font-bold text-gray-900 leading-tight">
                                             <Link href={`/college/${col._id}`} className="hover:underline">

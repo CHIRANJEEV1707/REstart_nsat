@@ -23,13 +23,13 @@ const getTrendingColleges = async (req, res) => {
         // Fetch trending items from all collections concurrently
         const [traditional, newGen, international] = await Promise.all([
             College_1.default.find({ isTrending: true })
-                .select('name location type image trendingScore badges fees placement_stats')
+                .select('name location type image trendingScore badges fees placement_stats restart_score')
                 .lean(),
             NewGenCollege_1.default.find({ isTrending: true })
-                .select('name location category image trendingScore fees placementSupport examsAccepted')
+                .select('name location category image trendingScore fees placementSupport examsAccepted restart_score')
                 .lean(),
             InternationalCollege_1.default.find({ isTrending: true })
-                .select('name city country university_type image trendingScore tuition_fee_annual global_ranking')
+                .select('name city country university_type image trendingScore tuition_fee_annual global_ranking restart_score')
                 .lean()
         ]);
         // Normalize data structure for the frontend
@@ -41,7 +41,7 @@ const getTrendingColleges = async (req, res) => {
             image: col.image,
             category: 'Traditional',
             trendingScore: col.trendingScore || 0,
-            metric: col.placement_stats?.highest_package ? `Highest: ${col.placement_stats.highest_package}` : 'Top Ranked',
+            metric: col.restart_score ? `Score: ${col.restart_score.toFixed(1)}/10` : (col.placement_stats?.highest_package ? `Highest: ${col.placement_stats.highest_package}` : 'Top Choice'),
             type: col.type
         }));
         const normalizedNewGen = newGen.map((col) => ({
@@ -52,7 +52,7 @@ const getTrendingColleges = async (req, res) => {
             image: col.image,
             category: 'New-Gen',
             trendingScore: col.trendingScore || 0,
-            metric: col.placementSupport?.averageCTC ? `Avg: ₹${(col.placementSupport.averageCTC / 100000).toFixed(1)} LPA` : 'Placement Guaranteed',
+            metric: col.restart_score ? `Score: ${col.restart_score.toFixed(1)}/10` : (col.placementSupport?.averageCTC ? `Avg: ₹${(col.placementSupport.averageCTC / 100000).toFixed(1)} LPA` : 'Placement Guaranteed'),
             type: 'New-Gen'
         }));
         const normalizedInternational = international.map((col) => ({
@@ -63,7 +63,7 @@ const getTrendingColleges = async (req, res) => {
             image: col.image || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
             category: 'International',
             trendingScore: col.trendingScore || 0,
-            metric: col.global_ranking ? `Global Rank #${col.global_ranking}` : 'Top University',
+            metric: col.restart_score ? `Score: ${col.restart_score.toFixed(1)}/10` : 'Top University',
             type: col.university_type
         }));
         // Merge and Sort

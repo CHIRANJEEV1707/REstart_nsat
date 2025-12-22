@@ -39,6 +39,10 @@ try {
 
 const app: Express = express();
 
+// Trust proxy headers (needed behind Codespaces/Vercel proxies)
+// Fixes express-rate-limit error when 'X-Forwarded-For' is present
+app.set('trust proxy', 1);
+
 // Security Middleware
 // Helmet - Sets various HTTP headers for security
 app.use(helmet({
@@ -107,6 +111,15 @@ app.use('/api/compare', compareRoutes);
 import newgenColleges from './routes/newgenColleges';
 app.use('/api/newgen-colleges', newgenColleges);
 app.use('/api/recommendations', recommendationRoutes);
+
+// Simple health endpoints for debugging
+app.get('/', (req: Request, res: Response) => {
+    res.status(200).json({ status: 'ok', service: 'backend', env: process.env.NODE_ENV });
+});
+
+app.get('/api', (req: Request, res: Response) => {
+    res.status(200).json({ status: 'ok', base: '/api' });
+});
 
 // Global Error Handler
 app.use(errorHandler);

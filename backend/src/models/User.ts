@@ -15,37 +15,54 @@ export interface IUser extends Document {
         phoneNumber?: string;
     };
     preferences?: {
-        targetDegree?: string;
-        aspiringCollegeType?: string[];
+        goal?: 'BTech' | 'MS' | 'MBA'; // Deprecated?
+
+        // New Strict Budget
+        budget?: {
+            currency: 'INR' | 'USD';
+            amount: number;
+        };
+
         preferredCountries?: string[];
-        budgetUSD?: {
-            min: number;
-            max: number;
-        };
-        budgetINR?: {
-            min: number;
-            max: number;
-        };
-        interestedExams?: string[];
+        preferredStates?: string[];
+
+        // New Strict Exam Scores
         examScores?: {
             exam: string;
-            score: string;
+            score: number;
+            fullMarks: number;
+            rank?: number;
         }[];
+
+        collegeTypes?: string[];
+
+        // New Multi-Select Degree
+        targetDegree?: string[];
+
         newGenInterest?: boolean;
+        collegeTypePreference?: 'prefer_new_gen' | 'neutral' | 'prefer_traditional';
+
+        // Legacy fields to be potentially removed or kept for backward compat if needed
+        budgetMin?: number;
+        budgetMax?: number;
     };
-    // Legacy fields
+
+    // Flattened Legacy fields (some parts of app might still read these)
     state?: string;
     city?: string;
     country?: string;
     class_level?: string;
-    target_degree?: string;
+
+    // Updated to Array
+    target_degree?: string[];
+
     college_type_aspiring?: string[];
     preferred_countries?: string[];
     target_exams?: string[];
-    exam_scores?: { exam: string; score: string | number }[];
-    budget_range?: { min: number; max: number };
+
     saved_colleges?: mongoose.Types.ObjectId[];
     saved_international_colleges?: mongoose.Types.ObjectId[];
+    saved_newgen_colleges?: mongoose.Types.ObjectId[];
     createdAt: Date;
     updatedAt: Date;
     matchPassword(enteredPassword: string): Promise<boolean>;
@@ -57,11 +74,9 @@ const UserSchema = new Schema<IUser>({
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['student', 'admin'], default: 'student', index: true },
 
-    // Onboarding Status
     onboardingCompleted: { type: Boolean, default: false, index: true },
-    onboardingStep: { type: Number, default: 0 }, // 0: Not started, 1: Signup Done, 2: Personal Details Done, 3: Completed
+    onboardingStep: { type: Number, default: 0 },
 
-    // Personal Details
     profile: {
         city: String,
         state: String,
@@ -69,56 +84,76 @@ const UserSchema = new Schema<IUser>({
         phoneNumber: String
     },
 
-    // College Preferences
     preferences: {
-        targetDegree: String,
-        aspiringCollegeType: [String],
+        goal: String,
+
+        // New Strict Budget Schema
+        budget: {
+            currency: {
+                type: String,
+                enum: ['INR', 'USD'],
+                default: 'INR'
+            },
+            amount: {
+                type: Number,
+                required: false // Validated in controller
+            }
+        },
+
         preferredCountries: [String],
-        budgetUSD: {
-            min: Number,
-            max: Number
+        preferredStates: [String],
+        collegeTypes: [String],
+
+        // New Strict Degree Schema (Multi-select)
+        targetDegree: {
+            type: [String],
+            default: []
         },
-        budgetINR: {
-            min: Number,
-            max: Number
-        },
-        interestedExams: [String],
+
+        // New Strict Exam Scores
         examScores: [{
-            exam: String,
-            score: String
+            exam: { type: String, required: true },
+            score: { type: Number, required: true, min: 0 },
+            fullMarks: { type: Number, required: true, min: 1 },
+            rank: { type: Number },
+            _id: false
         }],
-        newGenInterest: { type: Boolean, default: false }
+
+        newGenInterest: { type: Boolean, default: false },
+        collegeTypePreference: {
+            type: String,
+            enum: ["prefer_new_gen", "neutral", "prefer_traditional"],
+            default: null
+        }
     },
 
-    // Legacy fields (kept for backward compatibility or direct access if needed, but should eventually migrate to profile)
+    // Legacy / top-level fields
     state: String,
     city: String,
     country: String,
     class_level: String,
-    target_degree: String,
+
+    target_degree: {
+        type: [String], // Updated to array
+        default: []
+    },
+
     college_type_aspiring: [String],
     preferred_countries: [String],
     target_exams: [String],
-    budget_range: { min: Number, max: Number },
-    exam_scores: [{
-        exam: String,
-        score: { type: mongoose.Schema.Types.Mixed }
-    }],
 
-    // User Data
     saved_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'College' }],
     saved_international_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'InternationalCollege' }],
+    saved_newgen_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'NewGenCollege' }],
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });
 
-// Update timestamp on save
 UserSchema.pre('save', async function () {
     this.updatedAt = new Date();
 });
 
-// Encrypt password using bcrypt
 UserSchema.pre('save', async function () {
     if (!this.isModified('password')) {
         return;
@@ -127,7 +162,6 @@ UserSchema.pre('save', async function () {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Match user entered password to hashed password in database
 UserSchema.methods.matchPassword = async function (enteredPassword: string): Promise<boolean> {
     return await bcrypt.compare(enteredPassword, this.password);
 };

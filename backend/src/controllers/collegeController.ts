@@ -26,7 +26,7 @@ export const getColleges = async (req: Request, res: Response) => {
         const reqQuery = { ...req.query };
 
         // Fields to exclude from direct query matching
-        const removeFields = ['select', 'sort', 'page', 'limit', 'type'];
+        const removeFields = ['select', 'sort', 'page', 'limit', 'type', 'search'];
         removeFields.forEach(param => delete reqQuery[param]);
 
         // Create query string for advanced filtering (gt, gte, etc)
@@ -95,7 +95,7 @@ export const getColleges = async (req: Request, res: Response) => {
             const sortBy = (req.query.sort as string).split(',').join(' ');
             query = query.sort(sortBy);
         } else {
-            // Updated default sort for ranking consistency
+            // Default sort by RESTART Score
             query = query.sort({ restart_score: -1 });
         }
 
@@ -113,13 +113,6 @@ export const getColleges = async (req: Request, res: Response) => {
         // Executing query
         const colleges = await query;
 
-        // Add Rank
-        // Rank = (Page - 1) * Limit + Index + 1
-        const collegesWithRank = colleges.map((college, index) => ({
-            ...college.toObject(),
-            rank: startIndex + index + 1
-        }));
-
         // Pagination result object
         const pagination: any = {
             page,
@@ -132,9 +125,9 @@ export const getColleges = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            count: collegesWithRank.length,
+            count: colleges.length,
             pagination,
-            data: collegesWithRank
+            data: colleges
         });
     } catch (error) {
         logger.error('Error fetching colleges:', error);
@@ -146,24 +139,30 @@ export const getColleges = async (req: Request, res: Response) => {
 // @route   GET /api/colleges/new-gen
 export const getNewGenColleges = async (req: Request, res: Response) => {
     try {
-        // Simple pagination for New-Gen as well to support ranking logic
+        // Simple pagination
         const page = parseInt(req.query.page as string, 10) || 1;
         const limit = parseInt(req.query.limit as string, 10) || 12;
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
-        const total = await NewGenCollege.countDocuments();
+        const filterQuery: any = {};
 
-        const colleges = await NewGenCollege.find()
-            .sort({ restart_score: -1 }) // Ensure consistent ranking order
+        // Feature: Text Search
+        if (req.query.search) {
+            const searchRegex = new RegExp(req.query.search as string, 'i');
+            filterQuery.$or = [
+                { name: searchRegex },
+                { 'location.city': searchRegex },
+                { 'location.state': searchRegex }
+            ];
+        }
+
+        const total = await NewGenCollege.countDocuments(filterQuery);
+
+        const colleges = await NewGenCollege.find(filterQuery)
+            .sort({ restart_score: -1 })
             .skip(startIndex)
             .limit(limit);
-
-        // Add Rank
-        const collegesWithRank = colleges.map((college, index) => ({
-            ...college.toObject(),
-            rank: startIndex + index + 1
-        }));
 
         const pagination = {
             page,
@@ -176,10 +175,12 @@ export const getNewGenColleges = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            count: collegesWithRank.length,
+            count: colleges.length,
             pagination,
-            data: collegesWithRank
+            data: colleges
         });
+
+
     } catch (error) {
         logger.error('Error fetching new-gen colleges:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
@@ -275,8 +276,8 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
         // Execute Query
         const colleges = await query;
 
-        // Add Rank
-        const collegesWithRank = colleges.map((college, index) => {
+        // Add Data
+        const collegesWithData = colleges.map((college) => {
             const collegeObj = college.toObject();
             let roi = null;
 
@@ -288,7 +289,6 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
 
             return {
                 ...collegeObj,
-                rank: startIndex + index + 1,
                 roi
             };
         });
@@ -306,7 +306,7 @@ export const getInternationalColleges = async (req: Request, res: Response) => {
         res.status(200).json({
             success: true,
             pagination,
-            data: collegesWithRank
+            data: collegesWithData
         });
     } catch (error) {
         logger.error('Error fetching international colleges:', error);

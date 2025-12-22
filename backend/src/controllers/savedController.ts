@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User from '../models/User';
 import College from '../models/College';
 import InternationalCollege from '../models/InternationalCollege';
+import NewGenCollege from '../models/NewGenCollege';
 import logger from '../utils/logger';
 
 // @desc    Get saved colleges
@@ -10,7 +11,8 @@ export const getSavedColleges = async (req: Request, res: Response) => {
     try {
         const user = await User.findById(req.user?._id)
             .populate('saved_colleges')
-            .populate('saved_international_colleges');
+            .populate('saved_international_colleges')
+            .populate('saved_newgen_colleges');
 
         if (!user) {
             return res.status(200).json({ success: true, count: 0, data: [] });
@@ -19,10 +21,9 @@ export const getSavedColleges = async (req: Request, res: Response) => {
         // Add type to each college object
         const indianColleges = (user.saved_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'indian' }));
         const internationalColleges = (user.saved_international_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'international' }));
+        const newGenColleges = (user.saved_newgen_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'newgen' }));
 
-        const allSaved = [...indianColleges, ...internationalColleges];
-
-
+        const allSaved = [...indianColleges, ...internationalColleges, ...newGenColleges];
 
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         res.setHeader('Pragma', 'no-cache');
@@ -35,11 +36,16 @@ export const getSavedColleges = async (req: Request, res: Response) => {
     }
 };
 
-// @desc    Save a college
+// @desc    Toggle save college (Add/Remove)
 // @route   POST /api/saved
 export const saveCollege = async (req: Request, res: Response) => {
     try {
-        const { collegeId, collegeType } = req.body; // collegeType: 'indian' | 'international'
+        let { collegeId, collegeType } = req.body; // collegeType: 'indian' | 'international' | 'newgen'
+
+        // If collegeId provided in params (POST /:id) legacy support
+        if (req.params.id) {
+            collegeId = req.params.id;
+        }
 
         if (!collegeId) {
             return res.status(400).json({ success: false, message: 'College ID is required' });
@@ -48,77 +54,78 @@ export const saveCollege = async (req: Request, res: Response) => {
         // Default to indian if not specified
         const type = collegeType || 'indian';
 
-        // Check if college exists
-        let college;
+        // Check if college exists in the correct collection
+        let collegeExists = false;
         if (type === 'international') {
-            college = await InternationalCollege.findById(collegeId);
+            const count = await InternationalCollege.countDocuments({ _id: collegeId });
+            collegeExists = count > 0;
+        } else if (type === 'newgen') {
+            const count = await NewGenCollege.countDocuments({ _id: collegeId });
+            collegeExists = count > 0;
         } else {
-            college = await College.findById(collegeId);
+            const count = await College.countDocuments({ _id: collegeId });
+            collegeExists = count > 0;
         }
 
-        if (!college) return res.status(404).json({ success: false, message: 'College not found' });
+        if (!collegeExists) {
+            return res.status(404).json({ success: false, message: 'College not found' });
+        }
 
         // @ts-ignore
-        const user = await User.findById(req.user?.id);
+        const user = await User.findById(req.user?._id);
         if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-        // Check if already saved and save
-        if (type === 'international') {
-            // @ts-ignore
-            if (user.saved_international_colleges?.some(id => id.toString() === collegeId)) {
-                return res.status(400).json({ success: false, message: 'College already saved' });
-            }
-            // @ts-ignore
-            if (!user.saved_international_colleges) user.saved_international_colleges = [];
-            // @ts-ignore
-            user.saved_international_colleges.push(collegeId);
+        const targetArray = type === 'international' ? 'saved_international_colleges'
+            : type === 'newgen' ? 'saved_newgen_colleges'
+                : 'saved_colleges';
+
+        // Check if already saved
+        // @ts-ignore
+        const currentList = user[targetArray] || [];
+        // @ts-ignore
+        const isSaved = currentList.some(id => id.toString() === collegeId);
+
+        if (isSaved) {
+            // Remove
+            await User.updateOne(
+                { _id: req.user?._id },
+                { $pull: { [targetArray]: collegeId } }
+            );
+            return res.status(200).json({ success: true, saved: false, message: 'College removed' });
         } else {
-            // @ts-ignore
-            if (user.saved_colleges?.some(id => id.toString() === collegeId)) {
-                return res.status(400).json({ success: false, message: 'College already saved' });
-            }
-            // @ts-ignore
-            if (!user.saved_colleges) user.saved_colleges = [];
-            // @ts-ignore
-            user.saved_colleges.push(collegeId);
+            // Add
+            await User.updateOne(
+                { _id: req.user?._id },
+                { $addToSet: { [targetArray]: collegeId } }
+            );
+            return res.status(200).json({ success: true, saved: true, message: 'College saved' });
         }
 
-        await user.save();
-
-        res.status(200).json({ success: true, message: 'College saved' });
     } catch (error) {
-        logger.error('Error saving college:', error);
+        logger.error('Error toggling saved college:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
 
-// @desc    Remove saved college
-// @route   DELETE /api/saved/:id?type=indian
+// @desc    Remove saved college (Legacy/Explicit Delete)
+// @route   DELETE /api/saved/:id
 export const removeSavedCollege = async (req: Request, res: Response) => {
+    // Forward logic to saveCollege or keep explicit delete
+    // For now, repurpose logic or keep strict delete
     try {
         const collegeId = req.params.id;
         const type = req.query.type || 'indian';
 
-        // @ts-ignore
-        const user = await User.findById(req.user?.id);
-        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        const updateField = type === 'international' ? 'saved_international_colleges'
+            : type === 'newgen' ? 'saved_newgen_colleges'
+                : 'saved_colleges';
 
-        if (type === 'international') {
-            // @ts-ignore
-            if (user.saved_international_colleges) {
-                // @ts-ignore
-                user.saved_international_colleges = user.saved_international_colleges.filter(id => id.toString() !== collegeId);
-            }
-        } else {
-            // @ts-ignore
-            if (user.saved_colleges) {
-                // @ts-ignore
-                user.saved_colleges = user.saved_colleges.filter(id => id.toString() !== collegeId);
-            }
-        }
+        await User.updateOne(
+            { _id: req.user?._id },
+            { $pull: { [updateField]: collegeId } }
+        );
 
-        await user.save();
-        res.status(200).json({ success: true, message: 'College removed from saved list' });
+        res.status(200).json({ success: true, saved: false, message: 'College removed' });
     } catch (error) {
         logger.error('Error removing saved college:', error);
         res.status(500).json({ success: false, message: 'Server Error' });

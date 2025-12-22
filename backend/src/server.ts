@@ -57,8 +57,8 @@ const allowedOrigins = [
     'http://localhost:3000', // Development
 ];
 
-app.use(corsPackage({
-    origin: (origin, callback) => {
+const corsOptions = {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
@@ -70,9 +70,14 @@ app.use(corsPackage({
         }
     },
     credentials: true, // Allow cookies
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
-}));
+};
+
+app.use(corsPackage(corsOptions));
+
+// Handle preflight requests for all routes using regex to avoid parser errors
+app.options(/.*/, corsPackage(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());

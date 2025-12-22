@@ -43,21 +43,30 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
         }
 
         const prefs = user.preferences;
-        const budgetRange = prefs.budgetINR || { min: 0, max: 10000000 };
-        const budgetMax = budgetRange.max;
+
+        // Map new preferences to logic variables
+        const budgetMax = prefs.budgetMax || 10000000;
         const preferredCountries = prefs.preferredCountries || ['India'];
-        const interestedExams = [...(prefs.interestedExams || []), ...(prefs.examScores?.map(e => e.exam) || [])];
-        const userState = user.profile?.state || user.state;
+        // Use examsGiven from new schema, fallback to interestedExams/legacy
+        const examsGiven = prefs.examsGiven || prefs.interestedExams || [];
+
+        // Use user profile state or legacy state
+        const userState = user.profile?.state || user.state || 'Delhi'; // Fallback to avoid empty matches if unknown
         const userCountry = user.profile?.country || user.country || 'India';
 
-        // Weights (System defaults as user model doesn't have custom weights yet)
+        // Weights
         const W_BUDGET = 0.35;
         const W_RESTART = 0.30;
         const W_EXAM = 0.20;
         const W_LOCATION = 0.15;
 
-        // Fetch Candidates (Unchanged logic for gathering pool - we filter STRICTLY later)
-        const wantNewGen = prefs.newGenInterest || prefs.aspiringCollegeType?.includes('New-Gen');
+        // Fetch Candidates...
+        const wantNewGen = prefs.goal === 'BTech'; // simplified assumption or check other flags
+        // Actually, let's keep the existing logic for fetching but update the Filtering/Scoring loop
+
+        const collegeTypePreference = prefs.collegeTypePreference || 'neutral'; // 'prefer_new_gen', 'neutral', 'prefer_traditional'
+
+        // 1. Fetch Candidates
         const wantInternational = preferredCountries.some(c => c !== 'India');
         const wantIndian = preferredCountries.includes('India');
 
@@ -67,8 +76,7 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
             const colleges = await College.find({
                 country: 'India',
                 isNewGen: { $ne: true },
-                // Slight pre-filter to avoid fetching unlikely matches, but true filter is below
-                fees: { $lte: budgetMax * 1.2 }
+                fees: { $lte: budgetMax * 1.5 } // increased buffer for fetching
             }).select('name fees country restart_score exams_required isNewGen isTrending image location type');
             candidates.push(...colleges as any);
         }
@@ -78,33 +86,43 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
             const countryFilter = foreignCountries.length > 0 ? { $in: foreignCountries } : { $ne: 'India' };
             const colleges = await College.find({
                 country: countryFilter,
-                fees: { $lte: budgetMax * 1.2 }
+                fees: { $lte: budgetMax * 1.5 }
             }).select('name fees country restart_score exams_required isNewGen isTrending image location type');
             candidates.push(...colleges as any);
         }
 
-        if (wantNewGen) {
-            const colleges = await NewGenCollege.find({ 'fees.amountINR': { $lte: budgetMax * 1.2 } });
-            const normalizedNewGen = colleges.map(c => ({
-                _id: c._id,
-                name: c.name,
-                fees: c.fees.amountINR,
-                country: c.location.country,
-                restart_score: 8.5,
-                exams_required: c.examsAccepted || [],
-                isNewGen: true,
-                isTrending: c.isTrending,
-                image: c.image,
-                location: c.location,
-                type: 'New-Gen'
-            }));
+        // New Gen fetching logic
+        // Strict Rule: If 'prefer_traditional', DO NOT fetch NewGen for dashboard (exclude from primary)
+        // If 'prefer_new_gen' or 'neutral', DO fetch.
+        if (collegeTypePreference !== 'prefer_traditional') {
+            const colleges = await NewGenCollege.find({ 'fees.amountINR': { $lte: budgetMax * 1.5 } });
+
+            const normalizedNewGen = colleges.map(c => {
+                // Boost Logic: If prefer_new_gen, boost base score by 20% (approx +2 points on 10 scale or handled in scoring)
+                // Let's boost raw score here slightly if needed or just flag it
+                let baseScore = 8.5;
+
+                return {
+                    _id: c._id,
+                    name: c.name,
+                    fees: c.fees.amountINR,
+                    country: c.location.country,
+                    restart_score: baseScore,
+                    exams_required: c.examsAccepted || [],
+                    isNewGen: true,
+                    isTrending: c.isTrending,
+                    image: c.image,
+                    location: c.location,
+                    type: 'New-Gen'
+                };
+            });
             candidates.push(...normalizedNewGen as any);
         }
 
         // 2. Score & Filter Candidates
         const scoredCandidates = candidates.map(college => {
-            // Data Integrity Check (Strict Rule: "If any field is missing -> exclude")
-            if (!college.image || !college.location?.city || !college.location?.state) {
+            // Data Integrity Check
+            if (!college.image || !college.location?.city) {
                 return null;
             }
 
@@ -114,45 +132,55 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
             let locationScore = 0;
             const reasons: string[] = [];
 
-            // A. Budget Scoring
+            // A. Budget Scoring (35%)
             if (college.fees <= budgetMax) {
                 budgetScore = 100;
-            } else if (college.fees <= budgetMax * 1.10) {
-                budgetScore = 70; // Within 10% buffer
+            } else if (college.fees <= budgetMax * 1.20) {
+                budgetScore = 50;
             } else {
                 budgetScore = 0;
             }
-            if (budgetScore >= 90) reasons.push("Perfect Budget Fit");
+            if (budgetScore === 100) reasons.push("Within Budget");
 
-            // B. Exam Scoring
+            // B. Exam Scoring (20%)
             const required = college.exams_required || [];
             if (required.length === 0) {
-                // Or should this be 0? Prompt says: "Any overlap -> 100, None -> 0". 
-                // If no exams required, it technically "overlaps" with availability? 
-                // Let's assume if college requires NONE, it's accessible -> 100.
-                examScore = 100;
+                examScore = 100; // No exams required -> Good match
             } else {
-                const hasOverlap = required.some(ex => interestedExams.some(uEx => uEx.toLowerCase() === ex.toLowerCase()));
+                // Check intersection
+                const hasOverlap = required.some(ex => examsGiven.some((uEx: string) => uEx.toLowerCase() === ex.toLowerCase()));
                 examScore = hasOverlap ? 100 : 0;
             }
-            if (examScore === 100) reasons.push("Exam Match");
+            if (examScore === 100 && required.length > 0) reasons.push("Exam Match");
 
-            // C. Restart Score
-            // Normalize restart_score / 10 * 100
+            // C. Restart Score (30%)
+            // Normalize: 10 -> 100, 0 -> 0.
             restartScoreVal = ((college.restart_score || 0) / 10) * 100;
-            if ((college.restart_score || 0) >= 9.0) reasons.push("High Restart Score");
 
-            // D. Location Scoring
-            const collegeState = college.location.state;
-            const collegeCountry = college.country;
+            // Apply Preference Boost
+            if (college.isNewGen && collegeTypePreference === 'prefer_new_gen') {
+                restartScoreVal = Math.min(restartScoreVal * 1.20, 100); // +20% Boost, capped at 100
+                reasons.push("New-Gen Fit");
+            }
 
-            if (collegeState && userState && collegeState.toLowerCase() === userState.toLowerCase()) {
+            if ((college.restart_score || 0) >= 8.5 || (college.isNewGen && collegeTypePreference === 'prefer_new_gen')) {
+                // Push reason if high score OR explicit preference match
+                if (!reasons.includes("New-Gen Fit") && (college.restart_score || 0) >= 8.5) reasons.push("High Score");
+            }
+
+            // D. Location Scoring (15%)
+            // Match Country first
+            if (college.country.toLowerCase() === 'india' && preferredCountries.includes('India')) {
+                // Check state
+                if (college.location.state && prefs.preferredStates?.includes(college.location.state)) {
+                    locationScore = 100;
+                    reasons.push("State Match");
+                } else {
+                    locationScore = 50; // Country match but not state
+                }
+            } else if (preferredCountries.includes(college.country)) {
                 locationScore = 100;
-                reasons.push("Location Match");
-            } else if (collegeCountry && userCountry && collegeCountry.toLowerCase() === userCountry.toLowerCase()) {
-                locationScore = 60;
-                // If it's 60, does it get a tag? Prompt: "if (locationScore >= 60) why.push...". Yes.
-                reasons.push("Location Match");
+                reasons.push("Country Match");
             } else {
                 locationScore = 0;
             }
@@ -165,16 +193,16 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
                 (locationScore * W_LOCATION)
             );
 
-            // REJECT if < 70
-            if (totalScore < 70) return null;
+            // Log for debug (optional, can remove later)
+            // if (college.name === 'Specific College') console.log(college.name, totalScore);
 
             return {
                 ...college,
                 matchPercentage: Math.round(totalScore),
-                why: reasons.slice(0, 4), // Max 4 tags
+                why: reasons.slice(0, 3),
                 location: college.location
             };
-        }).filter(Boolean) as NormalizedCollege[]; // Filter out nulls
+        }).filter(Boolean) as NormalizedCollege[];
 
         // 3. Sort & Diversity
         scoredCandidates.sort((a, b) => (b.matchPercentage || 0) - (a.matchPercentage || 0));

@@ -8,9 +8,11 @@ const savedController_1 = require("../controllers/savedController");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.use(auth_1.protect); // All routes protected
+// Mount routes
 router.route('/')
     .get(savedController_1.getSavedColleges)
-    .post(savedController_1.saveCollege);
+    .post(savedController_1.saveCollege); // This handles POST /api/saved
 router.route('/:id')
+    .post(savedController_1.saveCollege) // Legacy
     .delete(savedController_1.removeSavedCollege);
 exports.default = router;

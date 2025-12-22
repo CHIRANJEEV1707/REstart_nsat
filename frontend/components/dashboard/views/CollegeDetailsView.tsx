@@ -206,10 +206,10 @@ export function CollegeDetailsView() {
 
                     {/* Quick Stats Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <Card className="p-4 bg-[#0085ff]/5 border-blue-100 flex flex-col items-center justify-center text-center">
-                            <span className="text-[#0085ff] font-bold text-lg">{college.restart_score ? `${college.restart_score} / 10` : "N/A"}</span>
-                            <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">RESTART SCORE</span>
-                        </Card>
+                        <div className="rounded-3xl border p-4 bg-[#0085ff]/10 border-[#0085ff]/20 flex flex-col items-center justify-center text-center">
+                            <span className="text-[#0085ff] font-bold text-xl">{college.restart_score ? college.restart_score.toFixed(1) : "N/A"}</span>
+                            <span className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">RESTART Score</span>
+                        </div>
                         <Card className="p-4 bg-emerald-50/50 border-emerald-100 flex flex-col items-center justify-center text-center">
                             <span className="text-emerald-600 font-bold text-lg">{college.accreditation || "NAAC A++"}</span>
                             <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">Grade</span>

@@ -9,6 +9,7 @@ import { Search, MapPin, GraduationCap, RotateCcw, Filter, IndianRupee } from 'l
 import { SUPPORTED_COUNTRIES } from '@/constants/countries';
 import { EXAMS_BY_COUNTRY, ALL_EXAMS, INTL_COMMON_EXAMS } from '@/constants/exams';
 import { INDIAN_STATES } from '@/constants/states';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface FiltersPanelProps {
     onFilterChange: (filters: any) => void;
@@ -33,7 +34,42 @@ export default function FiltersPanel({ onFilterChange, viewType = 'generic' }: F
         maxFees: ''
     });
 
+    // Debounce the search term
+    const debouncedSearch = useDebounce(localFilters.search, 500);
+
     const isIndianView = viewType === 'indian';
+
+    // Trigger onFilterChange only when debouncedSearch or other filters change
+    useEffect(() => {
+        // We only want to trigger this when debouncedSearch actually changes, 
+        // OR when other non-search filters change.
+        // However, localFilters contains the *immediate* search value, which we don't want to send.
+        // So we construct the filters payload using debouncedSearch.
+
+        const filtersPayload = {
+            ...localFilters,
+            search: debouncedSearch
+        };
+
+        // There's a subtle issue here: standard filters (dropdowns) update localFilters immediately.
+        // If we only listen to `debouncedSearch`, dropdown changes won't trigger updates until search changes?
+        // No, we need to distinguish between "search updated" and "other filters updated".
+        // BUT, simplified approach:
+        // We can just call onFilterChange inside this effect, dependent on [debouncedSearch, localFilters.country, localFilters.state, ...]
+        // But `localFilters` object reference changes on every edit.
+        // Better: `handleChange` updates state. The Effect listens to specific dependencies.
+
+        onFilterChange(filtersPayload);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        debouncedSearch,
+        localFilters.country,
+        localFilters.state,
+        localFilters.exam,
+        localFilters.minFees,
+        localFilters.maxFees
+    ]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -48,7 +84,8 @@ export default function FiltersPanel({ onFilterChange, viewType = 'generic' }: F
         }
 
         setLocalFilters(newFilters);
-        onFilterChange(newFilters);
+        // REMOVED immediate onFilterChange(newFilters) call here. 
+        // The useEffect above captures changes.
     };
 
     const handleReset = () => {
@@ -61,7 +98,15 @@ export default function FiltersPanel({ onFilterChange, viewType = 'generic' }: F
             maxFees: ''
         };
         setLocalFilters(resetState);
-        onFilterChange(resetState);
+        // onFilterChange(resetState); // The useEffect will catch this change too because the dependencies will verify.
+        // Actually, for instant reset feedback, we might want to force it or let the effect handle it.
+        // Steps: 
+        // 1. setLocalFilters(resetState) -> triggers re-render
+        // 2. useEffect sees [debouncedSearch (eventually), resetState.country, ...]
+        // Problem: debouncedSearch will lag behind. 
+        // However, if we reset, we might want to clear immediately.
+        // Let's rely on the effect for consistency, or manually call it if lag is annoying.
+        // For search clearing, the lag is fine or we can optimize later.
     };
 
     // Derived Lists
@@ -168,7 +213,7 @@ export default function FiltersPanel({ onFilterChange, viewType = 'generic' }: F
 
                                 const newFilters = { ...localFilters, minFees: min, maxFees: max };
                                 setLocalFilters(newFilters);
-                                onFilterChange(newFilters);
+                                // useEffect handles propagation
                             }}
                         >
                             <option value="">Any Budget</option>

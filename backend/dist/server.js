@@ -55,7 +55,7 @@ const allowedOrigins = [
     process.env.FRONTEND_URL || 'http://localhost:3000',
     'http://localhost:3000', // Development
 ];
-app.use((0, cors_1.default)({
+const corsOptions = {
     origin: (origin, callback) => {
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin)
@@ -69,25 +69,16 @@ app.use((0, cors_1.default)({
         }
     },
     credentials: true, // Allow cookies
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
-}));
+};
+app.use((0, cors_1.default)(corsOptions));
+// Handle preflight requests for all routes using regex to avoid parser errors
+app.options(/.*/, (0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 // Request logging
 app.use(requestLogger_1.requestLogger);
-// Database Connection Middleware (for Serverless/Vercel)
-app.use(async (req, res, next) => {
-    if (process.env.VERCEL) { // Optional optimization: run only on serverless environment if flagged, or just always run check
-        try {
-            await (0, db_1.default)();
-        }
-        catch (err) {
-            logger_1.default.error('Database connection failed in middleware');
-        }
-    }
-    next();
-});
 // Apply rate limiting to all routes
 app.use('/api/', rateLimiter_1.apiLimiter);
 // Swagger API Documentation

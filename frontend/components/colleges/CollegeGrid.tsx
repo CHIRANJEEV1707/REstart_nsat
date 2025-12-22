@@ -124,7 +124,7 @@ export default function CollegeGrid({
             tags: item.badges || [],
             detailPageSlug: `/college/${item._id}`,
             admission_mode: item.admission_mode || '',
-            global_ranking: item.global_ranking,
+            // global_ranking: item.global_ranking, // Ranking removed
         }));
     }, [responseData]);
 

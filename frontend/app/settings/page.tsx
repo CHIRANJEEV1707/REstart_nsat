@@ -47,7 +47,7 @@ export default function SettingsPage() {
         try {
             await api.post('/auth/logout');
             Cookies.remove('token');
-            router.push('/auth/login');
+            router.push('/');
         } catch (error) {
             console.error(error);
             toast.error("Failed to logout. Please try again.");

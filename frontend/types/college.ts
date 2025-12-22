@@ -22,6 +22,6 @@ export interface College {
     tags?: string[]; // mapped from badges
     detailPageSlug?: string;
     admission_mode?: string;
-    global_ranking?: number | string;
-    rank?: number;
+    // global_ranking?: number | string; // Deprecated
+    // rank?: number; // Deprecated
 }

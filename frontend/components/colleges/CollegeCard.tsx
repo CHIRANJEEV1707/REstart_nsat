@@ -5,6 +5,9 @@ import { useCompare } from "@/context/CompareContext";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import { useSavedColleges } from '@/hooks/useSavedColleges';
 
 
 interface CollegeCardProps {
@@ -15,50 +18,34 @@ interface CollegeCardProps {
 
 export default function CollegeCard({ college, variant, onClick }: CollegeCardProps) {
     const { addToCompare, isInCompare, compareItems } = useCompare();
-    const queryClient = useQueryClient();
+    // Auth
+    const { isAuthenticated } = useAuth();
+    const router = useRouter();
 
-    // Fetch Saved Colleges to check if current one is saved
-    const { data: savedResponse } = useQuery({
-        queryKey: ['saved-colleges'],
-        queryFn: async () => {
-            const res = await api.get('/saved', {
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                }
-            });
-            return res.data;
-        },
-        staleTime: 0,
-        gcTime: 0,
-        refetchOnMount: true,
-        refetchOnWindowFocus: true,
-    });
+    // Saved Colleges Hook
+    const { isSaved, saveCollege, removeCollege, isSaving, isRemoving } = useSavedColleges();
 
-    const isSaved = savedResponse?.data?.some((c: any) => c._id === college.collegeId || c.collegeId === college.collegeId);
+    const effectiveId = college.collegeId || college._id;
+    const isCollegeSaved = isSaved(effectiveId);
 
-    // Fetch Rank
+    // Save/Unsave Handler
+    const handleSaveToggle = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
 
-
-    // Save/Unsave Mutation
-    const saveMutation = useMutation({
-        mutationFn: async (e: React.MouseEvent) => {
-            e.stopPropagation();
-            if (isSaved) {
-                await api.delete(`/saved/${college.collegeId}?type=${variant === 'traditional' ? 'indian' : variant}`);
-            } else {
-                await api.post('/saved', {
-                    collegeId: college.collegeId,
-                    collegeType: variant === 'traditional' ? 'indian' : variant
-                });
-            }
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['saved-colleges'] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+        if (!isAuthenticated) {
+            router.push('/auth/login');
+            return;
         }
-    });
+
+        const type = variant === 'traditional' ? 'indian' : variant;
+
+        if (isCollegeSaved) {
+            removeCollege({ id: effectiveId, type });
+        } else {
+            saveCollege({ id: effectiveId, type });
+        }
+    };
 
     // Styles based on variant
     const getCardStyle = () => {
@@ -151,11 +138,11 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     {/* Top Right Save */}
                     <div className="absolute top-4 right-4 z-20">
                         <button
-                            onClick={(e) => saveMutation.mutate(e)}
-                            disabled={saveMutation.isPending}
-                            className={`p-2 rounded-full backdrop-blur-md transition-all ${isSaved ? 'bg-rose-500/20 text-rose-500' : 'bg-black/40 text-white/70 hover:text-pink-500 hover:bg-black/60'}`}
+                            onClick={handleSaveToggle}
+                            disabled={isSaving || isRemoving}
+                            className={`p-2 rounded-full backdrop-blur-md transition-all ${isCollegeSaved ? 'bg-rose-500/20 text-rose-500' : 'bg-black/40 text-white/70 hover:text-pink-500 hover:bg-black/60'}`}
                         >
-                            <Heart size={16} className={isSaved ? "fill-current" : ""} />
+                            <Heart size={16} className={isCollegeSaved ? "fill-current" : ""} />
                         </button>
                     </div>
                 </div>
@@ -176,7 +163,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     <div className="mb-4">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium">
                             {/* Logic to pick a tag or default */}
-                            {college.tags?.[0] || "Placement-First"}
+                            {college.tags?.[0] || "Industry-Led"}
                         </span>
                     </div>
 
@@ -235,11 +222,11 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
                 <div className="absolute top-2 right-2">
                     <button
-                        onClick={(e) => saveMutation.mutate(e)}
-                        disabled={saveMutation.isPending}
-                        className={`p-1.5 rounded-full shadow-sm transition-colors ${isSaved ? 'bg-rose-50 text-rose-500' : 'bg-white/80 text-gray-400 hover:text-pink-500'}`}
+                        onClick={handleSaveToggle}
+                        disabled={isSaving || isRemoving}
+                        className={`p-1.5 rounded-full shadow-sm transition-colors ${isCollegeSaved ? 'bg-rose-50 text-rose-500' : 'bg-white/80 text-gray-400 hover:text-pink-500'}`}
                     >
-                        <Heart size={14} className={isSaved ? "fill-current" : ""} />
+                        <Heart size={14} className={isCollegeSaved ? "fill-current" : ""} />
                     </button>
                 </div>
             </div>
@@ -257,17 +244,12 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
                 <div className="flex flex-wrap gap-2 mb-3">
                     {/* Tags logic */}
-                    {variant === 'international' && (
-                        <span className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md">
-                            {college.rank ? `#${college.rank} in International` : (college.global_ranking ? `Rank #${college.global_ranking}` : 'Rank N/A')}
-                        </span>
-                    )}
-                    {variant === 'traditional' && college.rank && (
-                        <span className="text-[10px] px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md font-medium border border-indigo-100">
-                            #{college.rank} in India
-                        </span>
-                    )}
-                    {variant === 'traditional' && college.badges?.[0] && !college.rank && (
+                    {/* RESTART Score (Universal) */}
+                    <span className="text-[10px] px-2 py-0.5 bg-[#0085ff]/10 text-[#0085ff] rounded-md font-bold border border-[#0085ff]/20 flex items-center gap-1">
+                        RESTART Score: {college.restart_score ? college.restart_score.toFixed(1) : 'N/A'}
+                    </span>
+
+                    {variant === 'traditional' && college.badges?.[0] && (
                         <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md">
                             {college.badges[0]}
                         </span>

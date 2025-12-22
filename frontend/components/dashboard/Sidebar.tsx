@@ -24,7 +24,7 @@ export function Sidebar() {
     const handleLogout = async () => {
         try {
             await logout();
-            router.push('/auth/login');
+            router.push('/');
         } catch (err) {
             console.error(err);
         }

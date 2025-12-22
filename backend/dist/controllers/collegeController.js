@@ -29,7 +29,7 @@ const getColleges = async (req, res) => {
         // Copy req.query
         const reqQuery = { ...req.query };
         // Fields to exclude from direct query matching
-        const removeFields = ['select', 'sort', 'page', 'limit', 'type'];
+        const removeFields = ['select', 'sort', 'page', 'limit', 'type', 'search'];
         removeFields.forEach(param => delete reqQuery[param]);
         // Create query string for advanced filtering (gt, gte, etc)
         let queryStr = JSON.stringify(reqQuery);
@@ -94,7 +94,7 @@ const getColleges = async (req, res) => {
             query = query.sort(sortBy);
         }
         else {
-            // Updated default sort for ranking consistency
+            // Default sort by RESTART Score
             query = query.sort({ restart_score: -1 });
         }
         // Pagination
@@ -107,12 +107,6 @@ const getColleges = async (req, res) => {
         query = query.skip(startIndex).limit(limit);
         // Executing query
         const colleges = await query;
-        // Add Rank
-        // Rank = (Page - 1) * Limit + Index + 1
-        const collegesWithRank = colleges.map((college, index) => ({
-            ...college.toObject(),
-            rank: startIndex + index + 1
-        }));
         // Pagination result object
         const pagination = {
             page,
@@ -124,9 +118,9 @@ const getColleges = async (req, res) => {
         };
         res.status(200).json({
             success: true,
-            count: collegesWithRank.length,
+            count: colleges.length,
             pagination,
-            data: collegesWithRank
+            data: colleges
         });
     }
     catch (error) {
@@ -139,21 +133,26 @@ exports.getColleges = getColleges;
 // @route   GET /api/colleges/new-gen
 const getNewGenColleges = async (req, res) => {
     try {
-        // Simple pagination for New-Gen as well to support ranking logic
+        // Simple pagination
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 12;
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
-        const total = await NewGenCollege_1.default.countDocuments();
-        const colleges = await NewGenCollege_1.default.find()
-            .sort({ restart_score: -1 }) // Ensure consistent ranking order
+        const filterQuery = {};
+        // Feature: Text Search
+        if (req.query.search) {
+            const searchRegex = new RegExp(req.query.search, 'i');
+            filterQuery.$or = [
+                { name: searchRegex },
+                { 'location.city': searchRegex },
+                { 'location.state': searchRegex }
+            ];
+        }
+        const total = await NewGenCollege_1.default.countDocuments(filterQuery);
+        const colleges = await NewGenCollege_1.default.find(filterQuery)
+            .sort({ restart_score: -1 })
             .skip(startIndex)
             .limit(limit);
-        // Add Rank
-        const collegesWithRank = colleges.map((college, index) => ({
-            ...college.toObject(),
-            rank: startIndex + index + 1
-        }));
         const pagination = {
             page,
             limit,
@@ -164,9 +163,9 @@ const getNewGenColleges = async (req, res) => {
         };
         res.status(200).json({
             success: true,
-            count: collegesWithRank.length,
+            count: colleges.length,
             pagination,
-            data: collegesWithRank
+            data: colleges
         });
     }
     catch (error) {
@@ -253,8 +252,8 @@ const getInternationalColleges = async (req, res) => {
         query = query.skip(startIndex).limit(limit);
         // Execute Query
         const colleges = await query;
-        // Add Rank
-        const collegesWithRank = colleges.map((college, index) => {
+        // Add Data
+        const collegesWithData = colleges.map((college) => {
             const collegeObj = college.toObject();
             let roi = null;
             // Calculate ROI (assuming annual fees * 4 for degree cost)
@@ -264,7 +263,6 @@ const getInternationalColleges = async (req, res) => {
             }
             return {
                 ...collegeObj,
-                rank: startIndex + index + 1,
                 roi
             };
         });
@@ -280,7 +278,7 @@ const getInternationalColleges = async (req, res) => {
         res.status(200).json({
             success: true,
             pagination,
-            data: collegesWithRank
+            data: collegesWithData
         });
     }
     catch (error) {

@@ -8,17 +8,20 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: #0085ff;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
+
   /* Forcing light mode base for the landing page as per 'Bright, positive colors' request, 
      but keeping dark variables available if user toggles manually later. 
      The components already use specific colors (bg-white, text-gray-900) to ensure the look.
   */
   :root {
-    --background: #ffffff; /* Override dark mode default for consistency with design req */
+    --background: #ffffff;
+    /* Override dark mode default for consistency with design req */
     --foreground: #171717;
   }
 }

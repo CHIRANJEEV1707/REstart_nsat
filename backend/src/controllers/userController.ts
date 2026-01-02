@@ -161,7 +161,10 @@ export const savePreferences = async (req: Request, res: Response, next: NextFun
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.user?._id;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate({
+            path: 'purchasedBundles.bundleId',
+            model: 'Bundle'
+        });
 
         if (!user) {
             res.status(404).json({ success: false, message: 'User not found' });
@@ -176,6 +179,7 @@ export const getProfile = async (req: Request, res: Response, next: NextFunction
                 onboardingCompleted: user.onboardingCompleted,
                 profile: user.profile,
                 preferences: user.preferences,
+                purchasedBundles: user.purchasedBundles
             }
         });
     } catch (error) {

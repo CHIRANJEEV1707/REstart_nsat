@@ -63,6 +63,16 @@ export interface IUser extends Document {
     saved_colleges?: mongoose.Types.ObjectId[];
     saved_international_colleges?: mongoose.Types.ObjectId[];
     saved_newgen_colleges?: mongoose.Types.ObjectId[];
+
+    purchasedBundles: {
+        bundleId: mongoose.Types.ObjectId;
+        purchasedAt: Date;
+        orderId: string;
+        paymentId: string;
+    }[];
+
+    failedLoginAttempts: number;
+    lockUntil: Date | null;
     createdAt: Date;
     updatedAt: Date;
     matchPassword(enteredPassword: string): Promise<boolean>;
@@ -146,6 +156,17 @@ const UserSchema = new Schema<IUser>({
     saved_international_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'InternationalCollege' }],
     saved_newgen_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'NewGenCollege' }],
 
+    purchasedBundles: [{
+        bundleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bundle' },
+        purchasedAt: { type: Date, default: Date.now },
+        orderId: String,
+        paymentId: String,
+        _id: false
+    }],
+
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockUntil: { type: Date, default: null },
+
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });
@@ -158,7 +179,7 @@ UserSchema.pre('save', async function () {
     if (!this.isModified('password')) {
         return;
     }
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
 });
 

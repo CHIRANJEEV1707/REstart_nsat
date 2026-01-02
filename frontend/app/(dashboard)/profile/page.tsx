@@ -8,6 +8,7 @@ import api from '@/lib/axios';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import Link from 'next/link';
 import { Loader2, Save, User, MapPin, BookOpen, GraduationCap, Plus, Trash2, Check, Sparkles, Scale, Landmark } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -33,8 +34,53 @@ export default function ProfilePage() {
 
             <PersonalInfoSection user={user} />
             <PreferencesSection user={user} />
+            <PurchasedBundlesSection user={user} />
             <ExamScoresSection user={user} />
         </div>
+    );
+}
+
+function PurchasedBundlesSection({ user }: { user: any }) {
+    const purchasedBundles = user?.purchasedBundles || [];
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5" /> Purchased Bundles
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                {purchasedBundles && purchasedBundles.length > 0 ? (
+                    <div className="grid gap-4 md:grid-cols-2">
+                        {purchasedBundles.map((pb: any) => {
+                            const bundle = pb.bundleId;
+                            // Check if bundle is populated (it should be)
+                            if (!bundle) return null;
+
+                            return (
+                                <div key={pb._id || bundle._id} className="p-4 rounded-xl border border-gray-100 bg-gray-50 flex flex-col transition-colors hover:border-blue-200 hover:bg-blue-50/50">
+                                    <h4 className="font-bold text-lg mb-1 text-gray-900">{bundle.title}</h4>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <p className="text-sm text-gray-500 font-medium">{bundle.exam}</p>
+                                        <span className="text-xs text-gray-400">
+                                            Purchased on {new Date(pb.purchasedAt).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <Link href={`/prep/${bundle.slug}`} className="mt-auto">
+                                        <Button variant="outline" size="sm" className="w-full bg-white hover:bg-blue-600 hover:text-white border-blue-200 text-blue-700">
+                                            Access Content
+                                        </Button>
+                                    </Link>
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <p className="text-sm text-gray-500 italic text-center py-4">No Bundle</p>
+                )}
+            </CardContent>
+        </Card>
     );
 }
 
@@ -234,7 +280,12 @@ function PreferencesSection({ user }: { user: any }) {
                 {/* Budget */}
                 <div className="max-w-xs">
                     <label className="text-sm font-medium mb-1 block">Max Budget ({isIndia ? 'INR' : 'USD'})</label>
-                    <Input type="number" value={formData.budgetMax} onChange={e => setFormData({ ...formData, budgetMax: Number(e.target.value) })} />
+                    <Input
+                        type="number"
+                        placeholder={isIndia ? "e.g. 500000" : "e.g. 10000"}
+                        value={formData.budgetMax || ''}
+                        onChange={e => setFormData({ ...formData, budgetMax: e.target.value ? Number(e.target.value) : 0 })}
+                    />
                 </div>
 
                 {/* College Types */}

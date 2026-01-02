@@ -10,7 +10,8 @@ import {
     Globe,
     User,
     LogOut,
-    Sparkles
+    Sparkles,
+    ScrollText
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
@@ -37,6 +38,7 @@ export function Sidebar() {
         { name: 'New-Gen Colleges', icon: Sparkles, href: '/new-gen' },
         { name: 'Saved Colleges', icon: Bookmark, href: '/saved' },
         { name: 'Compare Colleges', icon: ArrowLeftRight, href: '/compare' },
+        { name: 'Prep', icon: ScrollText, href: '/prep' },
         { name: 'Exams & Deadlines', icon: CalendarDays, href: '/exams-deadlines' },
     ];
 
@@ -70,7 +72,14 @@ export function Sidebar() {
                         </div>
                         <div className="flex justify-between">
                             <span>Goal:</span>
-                            <span className="font-medium text-gray-700">{user.target_degree || 'B.Tech'}</span>
+                            <span
+                                className="font-medium text-gray-700 truncate max-w-[150px] text-right"
+                                title={Array.isArray(user.target_degree) ? user.target_degree.join(', ') : user.target_degree}
+                            >
+                                {Array.isArray(user.target_degree)
+                                    ? user.target_degree.join(', ')
+                                    : (user.target_degree || 'Not Set')}
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,8 @@ export const validateEnv = (): void => {
         JWT_SECRET: process.env.JWT_SECRET,
         MONGO_URI: process.env.MONGO_URI,  // Changed from MONGODB_URI to match .env file
         NODE_ENV: process.env.NODE_ENV,
+        RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+        RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
     };
 
     const missingVars: string[] = [];

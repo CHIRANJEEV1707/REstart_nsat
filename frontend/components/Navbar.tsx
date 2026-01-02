@@ -30,11 +30,11 @@ export default function Navbar() {
                     {isLoading ? (
                         <div className="w-24 h-10 bg-gray-200 animate-pulse rounded-full"></div>
                     ) : user ? (
-                        <Link href="/dashboard" className="hidden md:block px-6 py-2.5 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg text-sm">
+                        <Link href="/dashboard" className="hidden md:block px-6 py-2.5 rounded-full bg-primary text-white font-semibold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg text-sm">
                             Dashboard
                         </Link>
                     ) : (
-                        <Link href="/auth/login" className="hidden md:block px-6 py-2.5 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg text-sm">
+                        <Link href="/auth/login" className="hidden md:block px-6 py-2.5 rounded-full bg-primary text-white font-semibold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg text-sm">
                             Login
                         </Link>
                     )}

@@ -1,3 +1,5 @@
+import TestimonialsCarousel from './TestimonialsCarousel';
+
 export default function Testimonials() {
     const testimonials = [
         {
@@ -30,21 +32,8 @@ export default function Testimonials() {
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Built for Students, by Students.</h2>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8">
-                    {testimonials.map((t, i) => (
-                        <div key={i} className="p-8 rounded-3xl bg-gray-50 border border-gray-100 flex flex-col">
-                            <div className="mb-6 flex items-center gap-4">
-                                <div className={`w-12 h-12 rounded-full ${t.color} flex items-center justify-center text-white font-bold text-xl`}>
-                                    {t.initial}
-                                </div>
-                                <div>
-                                    <div className="font-bold text-gray-900">{t.author}</div>
-                                    <div className="text-sm text-gray-500">{t.role}</div>
-                                </div>
-                            </div>
-                            <p className="text-lg text-gray-700 italic leading-relaxed">"{t.quote}"</p>
-                        </div>
-                    ))}
+                <div className="px-4">
+                    <TestimonialsCarousel />
                 </div>
             </div>
         </section>

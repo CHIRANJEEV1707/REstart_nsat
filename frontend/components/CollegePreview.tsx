@@ -39,7 +39,7 @@ export default function CollegePreview() {
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Top Colleges</h2>
                         <p className="text-lg text-gray-600">Explore trusted engineering institutes based on real data.</p>
                     </div>
-                    <Link href="/colleges" className="hidden md:flex items-center text-indigo-600 font-semibold hover:text-indigo-700">
+                    <Link href="/auth/login" className="hidden md:flex items-center text-indigo-600 font-semibold hover:text-indigo-700">
                         View All Colleges <span className="ml-2">→</span>
                     </Link>
                 </div>
@@ -79,7 +79,7 @@ export default function CollegePreview() {
                                             {/* Show first exam */}
                                             <span className="font-semibold text-indigo-600">{college.exams_required[0] || 'Direct'}</span>
                                         </div>
-                                        <Link href={`/colleges/${college._id}`} className="block w-full mt-4 py-3 rounded-xl bg-gray-900 text-white font-medium hover:bg-indigo-600 transition-colors text-center">
+                                        <Link href="/auth/login" className="block w-full mt-4 py-3 rounded-xl bg-gray-900 text-white font-medium hover:bg-indigo-600 transition-colors text-center">
                                             View Details
                                         </Link>
                                     </div>
@@ -90,7 +90,7 @@ export default function CollegePreview() {
                 )}
 
                 <div className="mt-12 text-center md:hidden">
-                    <Link href="/colleges" className="inline-flex items-center text-indigo-600 font-bold">
+                    <Link href="/auth/login" className="inline-flex items-center text-indigo-600 font-bold">
                         View All Colleges →
                     </Link>
                 </div>

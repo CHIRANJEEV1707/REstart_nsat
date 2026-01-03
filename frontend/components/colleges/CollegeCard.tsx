@@ -277,21 +277,21 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                 <Button
                     onClick={(e) => {
                         e.stopPropagation();
-                        if (isInCompare(college.collegeId)) {
+                        if (isInCompare(effectiveId)) {
                             return;
                         }
                         addToCompare({
-                            collegeId: college.collegeId,
+                            collegeId: effectiveId,
                             collegeType: variant === 'traditional' ? 'indian' : variant,
                             name: college.name,
                             image: college.image
                         });
                     }}
-                    disabled={isInCompare(college.collegeId) || compareItems.length >= 3}
+                    disabled={isInCompare(effectiveId) || compareItems.length >= 3}
                     variant="outline"
-                    className={`flex-1 border-gray-200 ${isInCompare(college.collegeId) ? 'bg-green-50 text-green-700 border-green-200' : ''}`}
+                    className={`flex-1 border-gray-200 ${isInCompare(effectiveId) ? 'bg-green-50 text-green-700 border-green-200' : ''}`}
                 >
-                    {isInCompare(college.collegeId) ? '✓ Added' : '+ Compare'}
+                    {isInCompare(effectiveId) ? '✓ Added' : '+ Compare'}
                 </Button>
                 <div className="flex-1">
                     {getCTA()}

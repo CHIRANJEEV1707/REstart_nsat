@@ -11,7 +11,7 @@ export default function CTABanner() {
                             Join thousands of students using REstart to find their dream college and crack their exams.
                         </p>
                         <Link
-                            href="/explore"
+                            href="/auth/login"
                             className="inline-block bg-white text-indigo-600 font-bold text-lg px-10 py-4 rounded-xl hover:bg-gray-50 hover:scale-105 transition-all shadow-lg"
                         >
                             Explore Colleges Now

@@ -20,7 +20,7 @@ export default function Hero() {
                                 Start Exploring
                             </Link>
                             <Link
-                                href="/exams"
+                                href="/auth/login"
                                 className="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-xl font-bold text-lg hover:bg-gray-50 transition-all"
                             >
                                 View Exams

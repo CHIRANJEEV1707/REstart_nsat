@@ -23,7 +23,6 @@ import colleges from './routes/colleges';
 import exams from './routes/exams';
 import dashboard from './routes/dashboard';
 import saved from './routes/saved';
-import prep from './routes/prep';
 import alerts from './routes/alerts';
 import recommendationRoutes from './routes/recommendationRoutes';
 
@@ -139,7 +138,6 @@ app.use('/api/colleges', colleges);
 app.use('/api/exams', exams);
 app.use('/api/dashboard', dashboard);
 app.use('/api/saved', saved);
-app.use('/api/prep', prep);
 app.use('/api/alerts', alerts);
 import internationalColleges from './routes/internationalColleges';
 app.use('/api/international-colleges', internationalColleges);

@@ -42,10 +42,19 @@ router.post('/create', protect, async (req: any, res: Response) => {
         const options = {
             amount: bundle.price * 100, // Amount in paise
             currency: bundle.currency,
-            receipt: `receipt_${userId}_${Date.now()}`,
+            receipt: `rcpt_${Date.now()}_${Math.floor(Math.random() * 1000)}`, // Unique & < 40 chars
         };
 
-        const razorpayOrder = await razorpay.orders.create(options);
+        let razorpayOrder;
+        try {
+            razorpayOrder = await razorpay.orders.create(options);
+        } catch (rzpError: any) {
+            console.error("Razorpay Order Creation Error:", rzpError);
+            return res.status(rzpError.statusCode || 400).json({
+                message: 'Razorpay order creation failed',
+                error: rzpError.error?.description || rzpError.message
+            });
+        }
 
         // Save local Order record
         const order = await Order.create({
@@ -67,13 +76,11 @@ router.post('/create', protect, async (req: any, res: Response) => {
 
     } catch (error: any) {
         console.error("Error creating order:", error);
-        res.status(500).json({ message: 'Server Error', error: error.message });
+        res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 });
 
-// @desc    Verify Razorpay Payment Signature
-// @route   POST /api/orders/verify
-// @access  Private
+
 router.post('/verify', protect, async (req: any, res: Response) => {
     try {
         const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;

@@ -218,8 +218,8 @@ export default function OnboardingPage() {
                                                         else setPreferredCountries([...preferredCountries, country]);
                                                     }}
                                                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${preferredCountries.includes(country)
-                                                            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 transform scale-105'
-                                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 transform scale-105'
+                                                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                         }`}
                                                 >
                                                     {country}
@@ -261,8 +261,8 @@ export default function OnboardingPage() {
                                                                 else setTargetDegree([...targetDegree, degree]);
                                                             }}
                                                             className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all ${targetDegree.includes(degree)
-                                                                    ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                                                                    : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
+                                                                ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                                                                : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
                                                                 }`}
                                                         >
                                                             {degree}

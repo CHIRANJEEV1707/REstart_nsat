@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useSavedColleges } from '@/hooks/useSavedColleges';
+import { toast } from "sonner";
 
 
 interface CollegeCardProps {
@@ -25,19 +26,25 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     // Saved Colleges Hook
     const { isSaved, saveCollege, removeCollege, isSaving, isRemoving } = useSavedColleges();
 
+    // ID Logic: Prefer collegeId (normalized), fallback to _id
     const effectiveId = college.collegeId || college._id;
+
+    // Check if saved
     const isCollegeSaved = isSaved(effectiveId);
 
     // Save/Unsave Handler
-    const handleSaveToggle = (e: React.MouseEvent) => {
+    const handleToggleSave = (e: React.MouseEvent) => {
+        // Critical: Stop propagation to prevent card click navigation
         e.stopPropagation();
         e.preventDefault();
 
         if (!isAuthenticated) {
+            toast.error("Please login to save colleges");
             router.push('/auth/login');
             return;
         }
 
+        // Determine correct type for API
         const type = variant === 'traditional' ? 'indian' : variant;
 
         if (isCollegeSaved) {
@@ -103,14 +110,12 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
     const getLocation = () => {
         if (variant === 'international') {
-            return `${college.location.city}, ${college.country}`;
+            return `${college.location.city || ''}, ${college.country || ''}`;
         }
-        return `${college.location.city}, ${college.location.state}`;
+        return `${college.location.city || ''}, ${college.location.state || ''}`;
     };
 
     if (variant === 'newgen') {
-
-
         return (
             <div className="group relative p-0 rounded-2xl border border-slate-800 bg-slate-950 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 transition-all flex flex-col h-full overflow-hidden">
                 {/* 1. Top Section: Image with Overlay */}
@@ -138,9 +143,10 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     {/* Top Right Save */}
                     <div className="absolute top-4 right-4 z-20">
                         <button
-                            onClick={handleSaveToggle}
+                            onClick={handleToggleSave}
                             disabled={isSaving || isRemoving}
                             className={`p-2 rounded-full backdrop-blur-md transition-all ${isCollegeSaved ? 'bg-rose-500/20 text-rose-500' : 'bg-black/40 text-white/70 hover:text-pink-500 hover:bg-black/60'}`}
+                            title={isCollegeSaved ? "Remove from saved" : "Save college"}
                         >
                             <Heart size={16} className={isCollegeSaved ? "fill-current" : ""} />
                         </button>
@@ -222,9 +228,10 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
                 <div className="absolute top-2 right-2">
                     <button
-                        onClick={handleSaveToggle}
+                        onClick={handleToggleSave}
                         disabled={isSaving || isRemoving}
-                        className={`p-1.5 rounded-full shadow-sm transition-colors ${isCollegeSaved ? 'bg-rose-50 text-rose-500' : 'bg-white/80 text-gray-400 hover:text-pink-500'}`}
+                        className={`p-1.5 rounded-full shadow-sm transition-colors ${isCollegeSaved ? 'bg-rose-50 text-rose-500 ring-1 ring-rose-200' : 'bg-white/80 text-gray-400 hover:text-pink-500 ring-1 ring-gray-100'}`}
+                        title={isCollegeSaved ? "Remove from saved" : "Save college"}
                     >
                         <Heart size={14} className={isCollegeSaved ? "fill-current" : ""} />
                     </button>
@@ -234,7 +241,9 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
             {/* Content */}
             <div className="flex-1 mb-4">
                 <h3 className="font-bold text-lg mb-1 line-clamp-2 text-gray-900 group-hover:text-indigo-600">
-                    {college.name}
+                    <Link href={`/college/${college.collegeId}`}>
+                        {college.name}
+                    </Link>
                 </h3>
 
                 <div className="flex items-center text-xs mb-3 text-gray-500">

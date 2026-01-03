@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from '@/lib/axios';
 import { Button } from '@/components/ui/Button';
@@ -25,7 +25,7 @@ interface ExamScore {
     year?: number;
 }
 
-export default function OnboardingPage() {
+function OnboardingContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
@@ -428,5 +428,13 @@ export default function OnboardingPage() {
                 </Card>
             </div>
         </div>
+    );
+}
+
+export default function OnboardingPage() {
+    return (
+        <Suspense fallback={<div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin text-indigo-600" size={32} /></div>}>
+            <OnboardingContent />
+        </Suspense>
     );
 }

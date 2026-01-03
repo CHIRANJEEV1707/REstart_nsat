@@ -21,17 +21,30 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
     };
 
     try {
+        // DEBUG: Log tokens received
+        console.log(`[Auth] Header: ${req.headers.authorization ? 'Present' : 'Missing'}, Cookie: ${req.cookies.token ? 'Present' : 'Missing'}`);
+        if (token) console.log(`[Auth] Token used: ${token.substring(0, 10)}...`);
+
         if (token) {
             // Try to verify Access Token
-            const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-            const user = await User.findById(decoded.id);
-            if (user) {
-                return setAuthorizedUser(user);
+            try {
+                const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+                const user = await User.findById(decoded.id);
+                if (user) {
+                    return setAuthorizedUser(user);
+                } else {
+                    console.log('[Auth] Token Valid but User Not Found in DB');
+                }
+            } catch (e: any) {
+                console.log(`[Auth] Token Verify Failed: ${e.message}`);
             }
+        } else {
+            console.log('[Auth] No Header Token found');
         }
 
         // If Access Token is invalid/missing, try Refresh Token
         if (req.cookies.refreshToken) {
+            console.log('[Auth] Attempting Refresh Token...');
             try {
                 const decodedRefresh: any = jwt.verify(req.cookies.refreshToken, process.env.JWT_SECRET || 'secret');
                 const user = await User.findById(decodedRefresh.id);
@@ -57,11 +70,14 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
                     return setAuthorizedUser(user);
                 }
             } catch (refreshError) {
-                // Squelch refresh error, will return 401 below
+                console.log('[Auth] Refresh Token Failed');
             }
+        } else {
+            console.log('[Auth] No Refresh Token Cookie found');
         }
 
         // Neither token worked
+        console.log('[Auth] Returning 401 - Final Fallback');
         return res.status(401).json({ success: false, message: 'Not authorized' });
 
     } catch (error: any) {

@@ -132,7 +132,7 @@ export default function ComparePage() {
                         ) : (
                             <>
                                 <Row label="Institute Type" data={colleges} render={(c) => <span className="capitalize">{c.institute_type || c.type}</span>} />
-                                <Row label="Annual Fees" data={colleges} render={(c) => `₹${c.fees?.toLocaleString() || 'N/A'}`} />
+                                <Row label="Annual Fees" data={colleges} render={(c) => `${c.fees?.toLocaleString() || 'N/A'}`} />
                                 <Row label="Exams Required" data={colleges} render={(c) => (
                                     <div className="text-sm text-gray-700">{Array.isArray(c.exams_required) ? c.exams_required.join(', ') : (c.exams || 'None')}</div>
                                 )} />

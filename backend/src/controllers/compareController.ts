@@ -63,9 +63,9 @@ export const compareColleges = async (req: Request, res: Response) => {
             return res.status(400).json({ success: false, message: 'No colleges selected' });
         }
 
-        const indianIds = colleges.filter((c: any) => c.type === 'indian' || c.type === 'traditional').map((c: any) => c._id);
-        const newGenIds = colleges.filter((c: any) => c.type === 'newgen').map((c: any) => c._id);
-        const internationalIds = colleges.filter((c: any) => c.type === 'international').map((c: any) => c._id);
+        const indianIds = colleges.filter((c: any) => (c.collegeType || c.type) === 'indian' || (c.collegeType || c.type) === 'traditional').map((c: any) => c.collegeId || c._id);
+        const newGenIds = colleges.filter((c: any) => (c.collegeType || c.type) === 'newgen').map((c: any) => c.collegeId || c._id);
+        const internationalIds = colleges.filter((c: any) => (c.collegeType || c.type) === 'international').map((c: any) => c.collegeId || c._id);
 
         const [indianColleges, newGenColleges, internationalColleges] = await Promise.all([
             College.find({ _id: { $in: indianIds } }),

@@ -32,7 +32,10 @@ export function CompareProvider({ children }: { children: ReactNode }) {
         const saved = localStorage.getItem('restart_compare_basket');
         if (saved) {
             try {
-                setCompareItems(JSON.parse(saved));
+                const parsed = JSON.parse(saved);
+                // Filter out invalid items (e.g., missing collegeId) that might have been added due to previous bugs
+                const validItems = Array.isArray(parsed) ? parsed.filter((i: any) => i.collegeId) : [];
+                setCompareItems(validItems);
             } catch (e) {
                 console.error("Failed to parse compare basket", e);
                 toast.error("Failed to load saved comparisons");

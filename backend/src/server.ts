@@ -158,6 +158,14 @@ app.get('/', (req: Request, res: Response) => {
     res.status(200).json({ status: 'ok', service: 'backend', env: process.env.NODE_ENV });
 });
 
+app.head('/', (req, res) => {
+    res.status(200).end();
+});
+
+app.head('/api', (req, res) => {
+    res.status(200).end();
+});
+
 app.get('/api', (req: Request, res: Response) => {
     res.status(200).json({ status: 'ok', base: '/api' });
 });

@@ -30,18 +30,34 @@ const api = axios.create({
     withCredentials: true, // Important for cookies
 });
 
-// Add a response interceptor
+// Request Interceptor: Inject JWT if present (fallback for when cookies fail or in dev)
+api.interceptors.request.use((config) => {
+    // Only access localStorage on the client side
+    if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token'); // or 'accessToken' depending on your login logic
+        if (token && config.headers) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+    }
+    return config;
+});
+
+// Response Interceptor: Handle 401 globally
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    (error: any) => {
         if (error.response && error.response.status === 401) {
             console.log('[Axios] 401 Unauthorized detected.');
             // Remove the invalid token cookie
             if (typeof window !== 'undefined') {
                 Cookies.remove('token');
+                localStorage.removeItem('token');
+
+                // Redirect if not already on login page
+                if (!window.location.pathname.includes('/auth/login')) {
+                    window.location.href = '/auth/login';
+                }
             }
-            // Let the component handle the error and show appropriate UI
-            // The dashboard page has error handling that shows a login button
         }
         return Promise.reject(error);
     }

@@ -1,283 +1,143 @@
-# **REstart — Engineering College Discovery Platform**
+# **REstart — The Future of College Discovery**
 
-*A smart, clean, AI-friendly web app helping PCM students find the right engineering college — without the chaos.*
+*A smart, data-driven platform helping students find their dream engineering college — globally.*
 
 ---
 
 ## **Overview**
 
-REstart is a web application built for PCM (Physics, Chemistry, Math) students to **discover engineering colleges**, understand **eligibility**, track **exam timelines**, and access **PCM prep guidance** — all in one chill, student-friendly interface.
+**REstart** is a comprehensive educational platform designed to simplify the chaotic college admission process. Whether you are targeting top **Indian Institutes (IITs/NITs)** or looking for **International Universities**, REstart provides intelligent discovery, personalized recommendations, and structured prep bundles.
 
-The MVP focuses on:
-
-* Smooth login → discover → compare → learn flow
-* Rich filters + SEO-optimized college pages
-* Exam pages with real timelines
-* PCM weekly prep plans
-* Save, shortlist & reminders
-* Clean, responsive UI
-
-(Yes, we actually built something students will *want* to use.)
+Built with a performance-first mindset, the platform integrates seamless **Authentication**, **Payments**, and **Real-time Search** to deliver a premium user experience.
 
 ---
 
-## **Core Features**
+## **Key Features**
 
-### **College Discovery**
+### 🎓 **College Discovery**
+*   **Indian Colleges**: extensive database of IITs, NITs, and private institutions.
+*   **International Universities**: Global coverage for study-abroad aspirants.
+*   **Smart Filtering**: Filter by Fee range, Location, Exams accepted, and more.
 
-* Real-time filters: degree, ratings, fees, location, exams
-* Smart ranking based on profile fit & cost
-* REstart Score with transparent logic
-* Infinite scroll, skeleton loaders, no jank
+### 📝 **Exam Tracking**
+*   Detailed pages for **JEE Main, JEE Advanced, SAT**, and other medical/engineering entrance exams.
+*   Timelines, Eligibility criteria, and Important dates.
 
-### **College Detail Pages**
+### 💼 **Prep Bundles & Payments**
+*   **Premium Study Materials**: Purchase tailored prep bundles for specific exams.
+*   **Razorpay Integration**: Secure, seamless checkout experience for Indian users.
+*   **Order History**: Track purchases and access content instantly.
 
-* Overview
-* Eligibility & Required Exams
-* Fees & Scholarships
-* Important Dates
-* Reviews (Phase 2)
-* Automatically-generated “How to Get In” checklist
+### 👤 **Personalized Onboarding**
+*   **Smart Profiling**: Collects user preferences (Budget, Country, Target Degree) to tailor recommendations.
+*   **Dashboard**: A personalized hub showing saved colleges, application status, and recommendations.
 
-### **Exams Module**
-
-* JEE Main, JEE Advanced, state CETs, institute-level exams
-* Eligibility, pattern, syllabus snapshots
-* Important dates with reminder support
-
-### **PCM Prep Guidance**
-
-* Weekly structured plans (6–12 weeks)
-* Physics, Chemistry, Math goal breakdown
-* Task-based progress tracking
-* Mock test & resource links
-
-### **Saved Colleges + Reminders**
-
-* Save/unsave in one click
-* Email reminders for deadlines
-* Dashboard for quick access
-
-### **Admin Panel (Phase 2)**
-
-* College & exam CMS
-* Date management
-* Review moderation
-* Bulk import
+### 🔐 **Security & Auth**
+*   **Hybrid Auth**: Supports both **HttpOnly Cookies** (Production) and **Bearer Tokens** (Mobility).
+*   **Security Hardening**: Rate limiting, Helmet headers, Mongo Sanitize, and CSRF protection.
 
 ---
 
 ## **Tech Stack**
 
 ### **Frontend**
-
-* Next.js (App Router)
-* React + TypeScript
-* TailwindCSS
-* TanStack Query
-* NextAuth (Magic Link + Google)
+*   **Framework**: Next.js 14 (App Router)
+*   **Styling**: TailwindCSS + Lucide Icons
+*   **State/Data**: React Hooks, Axios
+*   **Validation**: Zod + React Hook Form
+*   **Deployment**: Vercel
 
 ### **Backend**
-
-* Node.js + Express
-* MongoDB (Mongoose)
-* Redis (caching & rate limiting)
-* SendGrid/SES (magic links + reminders)
-
-### **Infra**
-
-* Vercel (frontend)
-* Render/EC2 (backend)
-* MongoDB Atlas
-* S3-compatible storage
-* GitHub Actions for CI/CD
+*   **Runtime**: Node.js + Express
+*   **Database**: MongoDB (Mongoose)
+*   **Authentication**: JWT (JSON Web Tokens) with Refresh/Access token rotation.
+*   **Security**: `helmet`, `cors`, `express-mongo-sanitize`, `csrf-csrf`
+*   **Payments**: Razorpay Node.js SDK
+*   **Deployment**: Render
 
 ---
 
 ## **Project Structure**
 
 ```
-/frontend
-  README.md
-  frontend.md
-  src/
-    app/
-    components/
-    hooks/
-    lib/
-    styles/
-
-/backend
-  README.md
-  backend.md
-  src/
-    models/
-    controllers/
-    routes/
-    services/
-    utils/
+├── frontend/               # Next.js Application
+│   ├── app/                # App Router Pages (explore, exams, auth, dashboard)
+│   ├── components/         # Reusable UI Components
+│   ├── lib/                # Utilities (axios setup, constants)
+│   └── public/             # Static Assets
+│
+├── backend/                # Node.js Express API
+│   ├── src/
+│   │   ├── config/         # DB & Swagger Config
+│   │   ├── controllers/    # Business Logic
+│   │   ├── middleware/     # Auth, Error, Security, Logging
+│   │   ├── models/         # Mongoose Schemas (User, College, Order, Bundle)
+│   │   ├── routes/         # API Routes
+│   │   └── utils/          # Helpers
 ```
 
 ---
 
-## **Authentication Flow**
+## **Getting Started**
 
-* Email magic link (no OTP if link verified — clean and frictionless)
-* Google OAuth (fallback)
-* Sessions stored as secure httpOnly cookies
+### **Prerequisites**
+*   Node.js (v18+)
+*   MongoDB URI
+*   Razorpay API Keys
 
----
-
-## **API Overview**
-
-Mapped from PRD contracts:
-
-| Method | Endpoint            | Description        |
-| ------ | ------------------- | ------------------ |
-| POST   | `/api/auth/login`   | Send magic link    |
-| POST   | `/api/auth/verify`  | Verify login       |
-| GET    | `/api/colleges`     | Filter & search    |
-| GET    | `/api/colleges/:id` | College detail     |
-| GET    | `/api/exams`        | Fetch exams        |
-| POST   | `/api/prep/plans`   | Start prep plan    |
-| POST   | `/api/reminders`    | Add reminder       |
-| GET    | `/api/saved`        | Get saved colleges |
-
----
-
-## **Data Model**
-
-(Straight from PRD — simplified for README)
-
-### User
-
-```
-id, name, email, state, class_level,
-target_degree, target_exams[], budget_min/max
-```
-
-### College
-
-```
-id, name, description, state, city,
-accreditation, type, exams_required[],
-fees, scholarships, restart_score,
-reviews_avg, ratings_count
-```
-
-### Exam
-
-```
-id, code, name, overview, eligibility,
-dates { registration_open, exam_date, ... }
-```
-
-### PrepPlan
-
-```
-id, user_id, exam_id, weeks[], status
-```
-
----
-
-## **Ranking Logic**
-
-Based on PRD scoring formula:
-
-```
-score =
-  w1 * profile_fit +
-  w2 * restart_score +
-  w3 * cost_fit +
-  w4 * popularity +
-  w5 * review_quality
-```
-
-Admin can tweak weights.
-Search is full-text + filtered + ranked.
-
----
-
-## **Reminder System**
-
-Cron-driven:
-
-* T-7, T-3, T-1 → Registration closing reminders
-* T-0 → Exam day reminder
-* Weekly → Prep plan updates
-
-Reminders delivered via email + in-app events.
-
----
-
-## **Quality & Performance**
-
-Targets (from PRD):
-
-* LCP < 2.5s
-* TTFB < 800ms
-* 99.5% uptime
-* Mobile-first UX
-* WCAG 2.2 AA compliant
-
----
-
-## **Roadmap**
-
-### **Phase 1 (MVP)**
-
-* Auth
-* College Discovery
-* College Detail Pages
-* Exams Module
-* Prep Guidance
-* Save + Reminders
-
-### **Phase 2**
-
-* Reviews + moderation
-* Admin CMS
-* PDF print-friendly pages
-
-### **Phase 3**
-
-* Comparisons
-* User communities
-* Advanced analytics
-
----
-
-## **Local Development**
-
-### Frontend
-
-```
-cd frontend
-npm install
-npm run dev
-```
-
-### Backend
-
-```
+### **1. Backend Setup**
+```bash
 cd backend
 npm install
+
+# Create .env file
+# PORT=5001
+# MONGO_URI=...
+# JWT_SECRET=...
+# FRONTEND_URL=http://localhost:3000
+
 npm run dev
 ```
 
-Environment variables:
+### **2. Frontend Setup**
+```bash
+cd frontend
+npm install
 
-* MongoDB URI
-* JWT secret
-* Email provider keys
-* Redis URL
-* Public website domain
+# Create .env file
+# NEXT_PUBLIC_API_URL=http://localhost:5001/api
+
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+---
+
+## **API Documentation**
+
+The Backend includes auto-generated Swagger documentation.
+Once running, visit:
+`http://localhost:5001/api-docs`
+
+**Core Endpoints:**
+*   `POST /api/auth/register` - Create account
+*   `POST /api/auth/login` - Login
+*   `GET  /api/colleges` - Search colleges
+*   `GET  /api/exams` - List exams
+*   `POST /api/orders/create` - Initialize Payment
+*   `POST /api/orders/verify` - Verify Payment
 
 ---
 
 ## **Contributing**
 
-Pull requests welcome.
-Follow the commit style: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
+1.  Fork the repository.
+2.  Create a feature branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your changes.
+4.  Push to the branch.
+5.  Open a Pull Request.
 
 ---
+
+**Built by CodeMaverick-143**

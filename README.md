@@ -281,7 +281,3 @@ Pull requests welcome.
 Follow the commit style: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 
 ---
-
-## **License**
-
-MIT — go wild.

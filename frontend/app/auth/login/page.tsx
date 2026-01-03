@@ -38,6 +38,11 @@ export default function LoginPage() {
             const res = await api.post('/auth/login', data);
 
             if (res.status === 200) {
+                // Save token to localStorage for fallback if cookies fail
+                if (res.data.accessToken) {
+                    localStorage.setItem('token', res.data.accessToken);
+                }
+
                 const isComplete = res.data.data.onboardingCompleted;
                 setTimeout(() => {
                     // Check completion status and redirect

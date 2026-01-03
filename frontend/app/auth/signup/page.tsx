@@ -51,6 +51,11 @@ export default function SignupPage() {
             const res = await api.post('/auth/signup', payload);
 
             if (res.status === 201) {
+                // Save token to localStorage for fallback
+                if (res.data.accessToken) {
+                    localStorage.setItem('token', res.data.accessToken);
+                }
+
                 // Successful signup → Redirect to onboarding (MANDATORY)
                 setTimeout(() => {
                     router.replace('/onboarding');

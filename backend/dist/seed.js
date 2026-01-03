@@ -9,7 +9,7 @@ const db_1 = __importDefault(require("./config/db"));
 const College_1 = __importDefault(require("./models/College"));
 const Exam_1 = __importDefault(require("./models/Exam"));
 const User_1 = __importDefault(require("./models/User"));
-const PrepPlan_1 = __importDefault(require("./models/PrepPlan"));
+const Bundle_1 = __importDefault(require("./models/Bundle"));
 dotenv_1.default.config();
 const seedData = async () => {
     try {
@@ -19,7 +19,7 @@ const seedData = async () => {
         await College_1.default.deleteMany({});
         await Exam_1.default.deleteMany({});
         await User_1.default.deleteMany({});
-        await PrepPlan_1.default.deleteMany({});
+        await Bundle_1.default.deleteMany({});
         // -----------------------------------------------------
         // 1. SEED EXAMS
         // -----------------------------------------------------
@@ -329,42 +329,49 @@ const seedData = async () => {
         const createdUsers = await User_1.default.insertMany(usersData);
         console.log(`Seeded ${createdUsers.length} users`);
         // -----------------------------------------------------
-        // 4. SEED PREP PLANS (Minimal)
+        // 4. SEED BUNDLES
         // -----------------------------------------------------
-        console.log('Seeding Prep Plans...');
-        const prepPlans = [];
-        // Assign a prep plan to first 5 users
-        for (let i = 0; i < 5; i++) {
-            const user = createdUsers[i];
-            // Assign JEE Main as default target
-            prepPlans.push({
-                user: user._id,
-                exam: examMap["JEEMAIN"],
-                status: 'active',
-                weeks: [
-                    {
-                        weekNumber: 1,
-                        subjects: {
-                            Physics: ["Kinematics", "Laws of Motion"],
-                            Chemistry: ["Atomic Structure", "Mole Concept"],
-                            Math: ["Sets", "Quadratic Equations"]
-                        },
-                        completed: true
-                    },
-                    {
-                        weekNumber: 2,
-                        subjects: {
-                            Physics: ["Work Power Energy"],
-                            Chemistry: ["Periodic Table"],
-                            Math: ["Sequences and Series"]
-                        },
-                        completed: false
-                    }
-                ]
-            });
-        }
-        await PrepPlan_1.default.insertMany(prepPlans);
-        console.log(`Seeded ${prepPlans.length} prep plans`);
+        console.log('Seeding Bundles...');
+        const bundles = [
+            {
+                title: 'JEE Mains Complete Prep',
+                slug: 'jee-mains-complete',
+                description: 'Comprehensive preparation for JEE Mains with full syllabus coverage, mock tests, and doubt solving.',
+                exam: 'JEE Mains',
+                tags: ['Physics', 'Chemistry', 'Maths', 'Mock Tests'],
+                features: ['200+ Video Lectures', '50+ Mock Tests', '24/7 Doubt Support', 'Performance Analytics'],
+                price: 4999,
+                currency: 'INR',
+                validityDays: 365,
+                isActive: true,
+            },
+            {
+                title: 'BITSAT Speed Booster',
+                slug: 'bitsat-speed-booster',
+                description: 'Crash course designed to improve your speed and accuracy for BITSAT.',
+                exam: 'BITSAT',
+                tags: ['Crash Course', 'Speed Training', 'English & LR'],
+                features: ['Timed Practice Sessions', 'English & Logic Reasoning Module', '10 Full-length Mocks', 'Shortcut Tricks Workshop'],
+                price: 2499,
+                currency: 'INR',
+                validityDays: 180,
+                isActive: true,
+            },
+            {
+                title: 'NSAT Complete Prep – Interview + Mocks',
+                slug: 'nsat-complete-interview-mock',
+                description: 'The ultimate package: Basic prep, Interview prep, and full-length Mock Tests.',
+                exam: 'NSAT',
+                tags: ['NSAT', 'Interview Prep', 'Mock Tests'],
+                features: ['All Interview Features', '10 Full-length Mock Tests', 'Detailed Performance Analysis', 'Personalized Feedback'],
+                price: 800,
+                currency: 'INR',
+                validityDays: 365,
+                isActive: true,
+            }
+        ];
+        await Bundle_1.default.insertMany(bundles);
+        console.log(`Seeded ${bundles.length} bundles`);
         console.log('Seed complete');
         process.exit(0);
     }

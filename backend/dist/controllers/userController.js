@@ -134,7 +134,10 @@ exports.savePreferences = savePreferences;
 const getProfile = async (req, res, next) => {
     try {
         const userId = req.user?._id;
-        const user = await User_1.default.findById(userId);
+        const user = await User_1.default.findById(userId).populate({
+            path: 'purchasedBundles.bundleId',
+            model: 'Bundle'
+        });
         if (!user) {
             res.status(404).json({ success: false, message: 'User not found' });
             return;
@@ -147,6 +150,7 @@ const getProfile = async (req, res, next) => {
                 onboardingCompleted: user.onboardingCompleted,
                 profile: user.profile,
                 preferences: user.preferences,
+                purchasedBundles: user.purchasedBundles
             }
         });
     }

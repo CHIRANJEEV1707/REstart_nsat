@@ -12,7 +12,12 @@ exports.registerSchema = zod_1.z.object({
     body: zod_1.z.object({
         name: zod_1.z.string().min(2, 'Name must be at least 2 characters'),
         email: zod_1.z.string().email('Invalid email address'),
-        password: zod_1.z.string().min(6, 'Password must be at least 6 characters'),
+        password: zod_1.z.string()
+            .min(8, 'Password must be at least 8 characters')
+            .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+            .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+            .regex(/[0-9]/, 'Password must contain at least one number')
+            .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character')
     })
 });
 exports.loginSchema = zod_1.z.object({
@@ -21,29 +26,41 @@ exports.loginSchema = zod_1.z.object({
         password: zod_1.z.string().min(1, 'Password is required'),
     })
 });
-// Helper: Sign JWT
-const signToken = (id) => {
-    // JWT_SECRET is validated at server startup, so it's guaranteed to exist here
+// Helper: Sign Access Token (15 min)
+const signAccessToken = (id) => {
+    return jsonwebtoken_1.default.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '15m'
+    });
+};
+// Helper: Sign Refresh Token (7 days)
+const signRefreshToken = (id) => {
     return jsonwebtoken_1.default.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '7d'
     });
 };
 // Helper: Send Token Response
 const sendTokenResponse = (user, statusCode, res) => {
-    const token = signToken(user._id);
-    // Secure cookie configuration
-    const options = {
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-        httpOnly: true, // Prevents client-side JavaScript access
-        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-        sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax'), // 'lax' for dev (cross-origin), 'strict' for production
-        path: '/', // Make cookie available for all paths
+    const accessToken = signAccessToken(user._id);
+    const refreshToken = signRefreshToken(user._id);
+    // Common Cookie Options
+    const commonOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax'),
+        path: '/',
     };
     res.status(statusCode)
-        .cookie('token', token, options)
+        .cookie('token', accessToken, {
+        ...commonOptions,
+        expires: new Date(Date.now() + 15 * 60 * 1000), // 15 min
+    })
+        .cookie('refreshToken', refreshToken, {
+        ...commonOptions,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    })
         .json({
         success: true,
-        token,
+        accessToken, // Optional: send back if frontend needs to store in memory (though cookies handled it)
         data: {
             _id: user._id,
             name: user.name,
@@ -90,11 +107,37 @@ const login = async (req, res, next) => {
             res.status(401).json({ success: false, message: 'Invalid credentials' });
             return;
         }
+        // Check Lockout
+        if (user.lockUntil && user.lockUntil > new Date()) {
+            res.status(429).json({
+                success: false,
+                message: 'Account locked due to multiple failed login attempts. Please try again later.'
+            });
+            return;
+        }
         // Check if password matches
         const isMatch = await user.matchPassword(password);
         if (!isMatch) {
+            // Increment Failed Attempts
+            user.failedLoginAttempts += 1;
+            // Lock if >= 5
+            if (user.failedLoginAttempts >= 5) {
+                user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // Lock for 15 mins
+                user.failedLoginAttempts = 0; // Reset counter after locking? Or keep it? keeping it ensures subsequent fails extend? 
+                // Standard: limit reached -> lock. Reset attempts is optional but clean. 
+                // Let's reset attempts only on successful login, 
+                // but here since we locked, we can leave it or reset. 
+                // Resetting it allows clean slate after 15 mins.
+            }
+            await user.save();
             res.status(401).json({ success: false, message: 'Invalid credentials' });
             return;
+        }
+        // Success - Reset Login Attempts
+        if (user.failedLoginAttempts > 0 || user.lockUntil) {
+            user.failedLoginAttempts = 0;
+            user.lockUntil = null;
+            await user.save();
         }
         sendTokenResponse(user, 200, res);
     }

@@ -103,6 +103,15 @@ const UserSchema = new mongoose_1.Schema({
     saved_colleges: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'College' }],
     saved_international_colleges: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'InternationalCollege' }],
     saved_newgen_colleges: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'NewGenCollege' }],
+    purchasedBundles: [{
+            bundleId: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'Bundle' },
+            purchasedAt: { type: Date, default: Date.now },
+            orderId: String,
+            paymentId: String,
+            _id: false
+        }],
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockUntil: { type: Date, default: null },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });
@@ -113,7 +122,7 @@ UserSchema.pre('save', async function () {
     if (!this.isModified('password')) {
         return;
     }
-    const salt = await bcryptjs_1.default.genSalt(10);
+    const salt = await bcryptjs_1.default.genSalt(12);
     this.password = await bcryptjs_1.default.hash(this.password, salt);
 });
 UserSchema.methods.matchPassword = async function (enteredPassword) {

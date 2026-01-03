@@ -53,8 +53,14 @@ api.interceptors.response.use(
                 Cookies.remove('token');
                 localStorage.removeItem('token');
 
-                // Redirect if not already on login page
-                if (!window.location.pathname.includes('/auth/login')) {
+                // Define protected paths that require login
+                const protectedPaths = ['/dashboard', '/admin', '/saved', '/prep'];
+                const currentPath = window.location.pathname;
+
+                // Only redirect if explicitly on a protected path
+                const isProtected = protectedPaths.some(path => currentPath.startsWith(path));
+
+                if (isProtected && !currentPath.includes('/auth/login')) {
                     window.location.href = '/auth/login';
                 }
             }

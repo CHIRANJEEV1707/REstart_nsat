@@ -15,6 +15,7 @@ import helmet from 'helmet';
 import corsPackage from 'cors';
 import { doubleCsrf } from "csrf-csrf"; // New Import
 import { globalLimiter, helmetConfig, mongoSanitizeMiddleware } from './middleware/security'; // New Imports
+import compression from 'compression';
 
 // Route files
 import userRoutes from './routes/user';
@@ -42,6 +43,9 @@ const app: Express = express();
 
 // Trust proxy headers (needed behind Codespaces/Vercel proxies)
 app.set('trust proxy', 1);
+
+// Standard Middleware
+app.use(compression());
 
 // --- SECURITY MIDDLEWARE ---
 

@@ -20,12 +20,10 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:5001',
-                description: 'Development server',
-            },
-            {
-                url: 'https://api.restart.com',
-                description: 'Production server',
+                url: process.env.NODE_ENV === 'production'
+                    ? 'https://re-start-54vr.onrender.com'
+                    : `http://localhost:${process.env.PORT || 5001}`,
+                description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server',
             },
         ],
         components: {
@@ -102,7 +100,14 @@ const options = {
             },
         ],
     },
-    apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
+    apis: [
+        process.env.NODE_ENV === 'production'
+            ? './dist/routes/*.js'
+            : './src/routes/*.ts',
+        process.env.NODE_ENV === 'production'
+            ? './dist/controllers/*.js'
+            : './src/controllers/*.ts'
+    ],
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 exports.swaggerSpec = swaggerSpec;

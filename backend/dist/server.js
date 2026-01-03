@@ -17,6 +17,7 @@ const swagger_1 = require("./config/swagger");
 const cors_1 = __importDefault(require("cors"));
 const csrf_csrf_1 = require("csrf-csrf"); // New Import
 const security_1 = require("./middleware/security"); // New Imports
+const compression_1 = __importDefault(require("compression"));
 // Route files
 const user_1 = __importDefault(require("./routes/user"));
 const auth_1 = __importDefault(require("./routes/auth"));
@@ -40,12 +41,14 @@ catch (error) {
 const app = (0, express_1.default)();
 // Trust proxy headers (needed behind Codespaces/Vercel proxies)
 app.set('trust proxy', 1);
+// Standard Middleware
+app.use((0, compression_1.default)());
 // --- SECURITY MIDDLEWARE ---
 // 1. Helmet (Security Headers) - Replaces default app.use(helmet(...))
 app.use(security_1.helmetConfig);
 // 2. CORS - strictly validate options
 const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
+    process.env.FRONTEND_URL || 'https://letsrestart.vercel.app',
     'http://localhost:3000', // Development
 ];
 const corsOptions = {
@@ -82,7 +85,7 @@ const { doubleCsrfProtection, generateCsrfToken } = (0, csrf_csrf_1.doubleCsrf)(
     cookieName: "x-csrf-token",
     cookieOptions: {
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         secure: process.env.NODE_ENV === "production",
         path: "/",
     },

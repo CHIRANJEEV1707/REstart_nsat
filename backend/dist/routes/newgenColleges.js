@@ -23,13 +23,10 @@ router.get('/', async (req, res) => {
 // Get single New-Gen college
 router.get('/:id', async (req, res) => {
     try {
-        console.log(`[DEBUG] Fetching NewGen college with ID: ${req.params.id}`);
         if (!mongoose_1.default.Types.ObjectId.isValid(req.params.id)) {
-            console.log(`[DEBUG] Invalid ObjectId: ${req.params.id}`);
             return res.status(400).json({ success: false, message: 'Invalid College ID Format' });
         }
         const college = await NewGenCollege_1.default.findById(req.params.id);
-        console.log(`[DEBUG] Found college:`, college ? college.name : 'null');
         if (!college) {
             return res.status(404).json({ success: false, message: 'College not found' });
         }

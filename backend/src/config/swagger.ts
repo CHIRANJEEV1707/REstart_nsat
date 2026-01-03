@@ -14,12 +14,10 @@ const options: swaggerJsdoc.Options = {
         },
         servers: [
             {
-                url: 'http://localhost:5001',
-                description: 'Development server',
-            },
-            {
-                url: 'https://re-start-54vr.onrender.com',
-                description: 'Production server',
+                url: process.env.NODE_ENV === 'production'
+                    ? 'https://re-start-54vr.onrender.com'
+                    : `http://localhost:${process.env.PORT || 5001}`,
+                description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server',
             },
         ],
         components: {

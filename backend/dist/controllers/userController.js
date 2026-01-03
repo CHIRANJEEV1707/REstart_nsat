@@ -164,12 +164,9 @@ exports.getProfile = getProfile;
 const updateProfile = async (req, res, next) => {
     try {
         const userId = req.user?._id;
-        console.log(`[updateProfile] HIT for user: ${userId}`);
-        console.log(`[updateProfile] Body:`, req.body);
         const { name, phone, address } = req.body; // Expect address = { city, state, country }
         const user = await User_1.default.findById(userId);
         if (!user) {
-            console.log(`[updateProfile] User not found`);
             return res.status(404).json({ success: false, message: 'User not found' });
         }
         if (name)
@@ -196,9 +193,7 @@ const updateProfile = async (req, res, next) => {
         // Mongoose might not detect deep changes in some cases, though usually it does for schema fields.
         // Marking modified just in case if profile was undefined initially.
         user.markModified('profile');
-        console.log(`[updateProfile] Saving user...`);
         await user.save();
-        console.log(`[updateProfile] Saved.`);
         res.status(200).json({
             success: true,
             message: 'Profile updated successfully',

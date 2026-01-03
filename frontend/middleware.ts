@@ -14,16 +14,16 @@ export function middleware(request: NextRequest) {
     const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
 
     // 1. If trying to access protected route without token -> Redirect to login
-    if (isProtectedRoute && !token) {
-        const url = new URL('/auth/login', request.url)
-        // Optional: add ?from=... to redirect back
-        return NextResponse.redirect(url)
-    }
+    // if (isProtectedRoute && !token) {
+    //     const url = new URL('/auth/login', request.url)
+    //     // Optional: add ?from=... to redirect back
+    //     return NextResponse.redirect(url)
+    // }
 
     // 2. If trying to access auth route WITH token -> Redirect to dashboard
-    if (isAuthRoute && token) {
-        return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
+    // if (isAuthRoute && token) {
+    //     return NextResponse.redirect(new URL('/dashboard', request.url))
+    // }
 
     return NextResponse.next()
 }

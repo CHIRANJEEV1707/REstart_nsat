@@ -50,7 +50,7 @@ app.use(helmetConfig);
 
 // 2. CORS - strictly validate options
 const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
+    process.env.FRONTEND_URL || 'https://letsrestart.vercel.app',
     'http://localhost:3000', // Development
 ];
 
@@ -92,7 +92,7 @@ const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
     cookieName: "x-csrf-token",
     cookieOptions: {
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         secure: process.env.NODE_ENV === "production",
         path: "/",
     },

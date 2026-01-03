@@ -47,7 +47,7 @@ const sendTokenResponse = (user: any, statusCode: number, res: Response) => {
     const commonOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax') as 'strict' | 'lax',
+        sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'strict' | 'lax' | 'none',
         path: '/',
     };
 

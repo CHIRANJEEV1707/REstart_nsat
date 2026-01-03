@@ -18,7 +18,7 @@ const options: swaggerJsdoc.Options = {
                 description: 'Development server',
             },
             {
-                url: 'https://api.restart.com',
+                url: 'https://re-start-54vr.onrender.com',
                 description: 'Production server',
             },
         ],

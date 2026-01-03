@@ -274,25 +274,27 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
             {/* Actions */}
             <div className="mt-auto pt-4 border-t border-dashed border-gray-200/50 flex gap-2">
-                <Button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (isInCompare(effectiveId)) {
-                            return;
-                        }
-                        addToCompare({
-                            collegeId: effectiveId,
-                            collegeType: variant === 'traditional' ? 'indian' : variant,
-                            name: college.name,
-                            image: college.image
-                        });
-                    }}
-                    disabled={isInCompare(effectiveId) || compareItems.length >= 3}
-                    variant="outline"
-                    className={`flex-1 border-gray-200 ${isInCompare(effectiveId) ? 'bg-green-50 text-green-700 border-green-200' : ''}`}
-                >
-                    {isInCompare(effectiveId) ? '✓ Added' : '+ Compare'}
-                </Button>
+                <div className="flex-1" title={compareItems.length >= 3 && !isInCompare(effectiveId) ? "You can only compare up to 3 colleges. Remove one to add this." : ""}>
+                    <Button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (isInCompare(effectiveId)) {
+                                return;
+                            }
+                            addToCompare({
+                                collegeId: effectiveId,
+                                collegeType: variant === 'traditional' ? 'indian' : variant,
+                                name: college.name,
+                                image: college.image
+                            });
+                        }}
+                        disabled={isInCompare(effectiveId) || compareItems.length >= 3}
+                        variant="outline"
+                        className={`w-full border-gray-200 ${isInCompare(effectiveId) ? 'bg-green-50 text-green-700 border-green-200' : ''}`}
+                    >
+                        {isInCompare(effectiveId) ? '✓ Added' : '+ Compare'}
+                    </Button>
+                </div>
                 <div className="flex-1">
                     {getCTA()}
                 </div>

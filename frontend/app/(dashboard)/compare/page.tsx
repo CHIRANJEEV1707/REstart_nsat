@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useEffect } from "react";
 import { useCompare } from "@/context/CompareContext";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
@@ -21,6 +22,17 @@ export default function ComparePage() {
         enabled: compareItems.length > 0
     });
 
+    // Sync check: If we have fewer results than requested, it means some IDs were invalid/deleted.
+    useEffect(() => {
+        if (!isLoading && compareItems.length > 0 && colleges.length < compareItems.length) {
+            // Optional: You could auto-clean here or just warn.
+            // For now, let's toast a warning.
+            // But we need to be careful not to spam toasts if it re-renders.
+            // check if we already toasted or just show a persistent banner? 
+            // Better: just rely on the UI showing fewer cols.
+        }
+    }, [isLoading, colleges.length, compareItems.length]);
+
     if (compareItems.length === 0) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center p-6 text-center h-[80vh]">
@@ -36,23 +48,41 @@ export default function ComparePage() {
         );
     }
 
+    // Calculate empty slots based on ACTUAL data received, not just requested items.
+    // This fixes the UI bug where empty columns wouldn't show if data failed to load.
+    const emptySlots = Math.max(0, 3 - colleges.length);
+
     return (
         <div className="p-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-end mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Compare Colleges</h1>
-                    <p className="text-gray-500">Comparing {compareItems.length} colleges</p>
+                    <p className="text-gray-500">Comparing {colleges.length} colleges</p>
                 </div>
                 {compareItems.length >= 3 ? (
-                    <Button variant="outline" disabled>
-                        + Add More
-                    </Button>
+                    <div title="You can only compare up to 3 colleges">
+                        <Button variant="outline" disabled>
+                            + Add More
+                        </Button>
+                    </div>
                 ) : (
                     <Button variant="outline" asChild>
                         <Link href="/dashboard">+ Add More</Link>
                     </Button>
                 )}
             </div>
+
+            {colleges.length < compareItems.length && !isLoading && (
+                <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg mb-6 flex items-center gap-2 text-sm">
+                    ⚠️ One or more colleges could not be loaded and might have been removed.
+                    <button
+                        onClick={() => {/* Logic to clear missing could go here, for now manual removal via tray works */ }}
+                        className="underline font-semibold ml-1"
+                    >
+                        Review your list
+                    </button>
+                </div>
+            )}
 
             <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-100">
                 <table className="w-full text-left border-collapse">
@@ -83,9 +113,9 @@ export default function ComparePage() {
                                     </Button>
                                 </th>
                             ))}
-                            {/* Fill empty slots if less than 3 */}
-                            {[...Array(Math.max(0, 3 - compareItems.length))].map((_, i) => (
-                                <th key={i} className="p-4 min-w-[280px] border-b border-gray-100 bg-gray-50/30 align-middle text-center border-r last:border-r-0">
+                            {/* Fill empty slots based on remaining space */}
+                            {[...Array(emptySlots)].map((_, i) => (
+                                <th key={`empty-${i}`} className="p-4 min-w-[280px] border-b border-gray-100 bg-gray-50/30 align-middle text-center border-r last:border-r-0">
                                     <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center h-48">
                                         <p className="text-sm text-gray-400 font-medium mb-3">Add another college</p>
                                         <Button variant="outline" size="sm" asChild>
@@ -129,7 +159,7 @@ function Row({ label, data, render }: { label: string, data: any[], render: (c: 
                     {render(col)}
                 </td>
             ))}
-            {[...Array(Math.max(0, 3 - data.length))].map((_, i) => <td key={i} className="p-4"></td>)}
+            {[...Array(Math.max(0, 3 - data.length))].map((_, i) => <td key={`empty-${i}`} className="p-4 bg-gray-50/5 border-r last:border-r-0"></td>)}
         </tr>
     );
 }

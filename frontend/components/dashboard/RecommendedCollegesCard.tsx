@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState, useEffect } from "react";
 import api from '@/lib/axios';
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Button } from "@/components/ui/Button";
 
 // --- Types & Contract ---
 type RecommendedCollege = {
@@ -13,7 +14,7 @@ type RecommendedCollege = {
     slug: string;
     city: string;
     stateOrCountry: string;
-    restartScore: number;    // 0–100 or 0-10 normalized
+    restartScore: number;    // 0–100
     annualFeesINR: number;   // raw number in INR
     type: "INTERNATIONAL" | "TRADITIONAL" | "NEW-GEN";
     imageUrl?: string;
@@ -21,16 +22,18 @@ type RecommendedCollege = {
 
 // --- Helpers ---
 
-function scoreToTenScale(score: number): string {
-    // Input might be 0-10 or 0-100. Normalize to 0-10 string with 1 decimal.
-    // Assuming backend might send 0-100 based on previous context, but let's be safe.
-    // If score > 10, assume it's out of 100.
-    const normalized = score > 10 ? score / 10 : score;
-    return normalized.toFixed(1);
+function scoreToTenScale(score: number | undefined): string {
+    if (score === undefined || score === null || score === 0) return "N/A";
+
+    // Normalize: If > 10, likely out of 100, so divide by 10.
+    const validScore = score > 10 ? score / 10 : score;
+    return validScore.toFixed(1); // "8.9", "10.0"
 }
 
-function formatFeesINR(amount: number): string {
-    if (!amount) return "N/A";
+function formatFeesINR(amount: number | undefined): string {
+    if (!amount || amount === 0) return "Fees not available";
+
+    // Indian Lakh notation: 45,00,000
     return new Intl.NumberFormat('en-IN').format(amount);
 }
 
@@ -57,12 +60,8 @@ function getCtaConfig(type: RecommendedCollege["type"]): { cta: string; ctaVaria
 
 async function getRecommendedCollegesForUser(userId: string): Promise<RecommendedCollege[]> {
     try {
-        // Calling the verified backend endpoint
         const response = await api.get('/recommendations/dashboard');
         const data = response.data;
-
-        // Map backend response (NormalizedCollege[]) to UI contract (RecommendedCollege[])
-        // Ensure we handle the "topMatches" structure if that's what backend returns
         const matches = data.topMatches || [];
 
         return matches.map((item: any) => {
@@ -71,20 +70,29 @@ async function getRecommendedCollegesForUser(userId: string): Promise<Recommende
             if (item.type === 'New-Gen' || item.isNewGen) safeType = "NEW-GEN";
             else if (item.type === 'International' || (item.country && item.country !== 'India')) safeType = "INTERNATIONAL";
 
+            // Safe property access
+            const name = item.name || "Unknown College";
+            const effectiveId = item.collegeId || item._id;
+
+            // Location Construction
+            const city = item.location?.city || item.city || "Unknown City";
+            const stateOrCountry = item.country === 'India'
+                ? (item.location?.state || item.state || 'India')
+                : item.country || "International";
+
             return {
-                id: item._id,
-                name: item.name,
-                slug: item._id, // Using ID as slug for now as per app pattern
-                city: item.location?.city || item.city || "Unknown",
-                stateOrCountry: item.country === 'India'
-                    ? (item.location?.state || item.state || 'India')
-                    : item.country,
-                restartScore: item.restart_score || 0,
-                annualFeesINR: item.fees || 0,
+                id: effectiveId,
+                name: name,
+                slug: effectiveId, // Using ID as slug
+                city: city,
+                stateOrCountry: stateOrCountry,
+                restartScore: item.restart_score || item.score || 0,
+                annualFeesINR: item.fees || item.annualFees || 0,
                 type: safeType,
                 imageUrl: item.image
             };
-        });
+        }).filter((c: RecommendedCollege) => c.name !== "Unknown College"); // Filter out completely broken items
+
     } catch (error) {
         console.error("Failed to fetch recommendations:", error);
         throw error;
@@ -129,12 +137,15 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
     // Empty / No User State
     if (!userId) {
         return (
-            <div className="w-full py-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+            <div className="w-full py-12 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                 <Sparkles className="w-8 h-8 text-gray-300 mx-auto mb-3" />
                 <h3 className="text-gray-900 font-semibold">Sign in for recommendations</h3>
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-gray-500 text-sm mt-1 mb-4">
                     Sign in or complete your profile to see personalized college recommendations.
                 </p>
+                <Link href="/auth/login">
+                    <Button variant="outline" size="sm">Sign In</Button>
+                </Link>
             </div>
         );
     }
@@ -151,8 +162,8 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
 
             {/* Error State */}
             {error && (
-                <div className="p-4 rounded-xl bg-red-50 text-red-600 text-sm border border-red-100">
-                    Failed to load recommendations. Please try refreshing.
+                <div className="p-4 rounded-xl bg-red-50 text-red-600 text-sm border border-red-100 flex items-center justify-center">
+                    Failed to load recommendations. Please refresh the page.
                 </div>
             )}
 
@@ -160,15 +171,15 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
             {loading && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-[380px] rounded-2xl border border-gray-100 bg-white overflow-hidden">
+                        <div key={i} className="h-[420px] rounded-2xl border border-gray-100 bg-white overflow-hidden">
                             <Skeleton className="h-48 w-full" />
                             <div className="p-5 space-y-4">
-                                <Skeleton className="h-6 w-3/4" />
-                                <Skeleton className="h-4 w-1/2" />
-                                <div className="flex gap-2">
+                                <Skeleton className="h-6 w-3/4 rounded-md" />
+                                <Skeleton className="h-4 w-1/2 rounded-md" />
+                                <div className="flex gap-2 pt-2">
                                     <Skeleton className="h-6 w-24 rounded-full" />
                                 </div>
-                                <div className="pt-4 flex gap-3">
+                                <div className="pt-6 flex gap-3 mt-auto">
                                     <Skeleton className="h-10 w-full rounded-xl" />
                                     <Skeleton className="h-10 w-full rounded-xl" />
                                 </div>
@@ -178,16 +189,21 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                 </div>
             )}
 
-            {/* Empty State (loaded but no results) */}
+            {/* Empty State (Loaded but no results) */}
             {!loading && !error && colleges.length === 0 && (
-                <div className="w-full py-12 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
-                    <div className="inline-flex p-3 bg-gray-50 rounded-full mb-4">
-                        <Sparkles className="w-6 h-6 text-gray-400" />
+                <div className="w-full py-16 text-center bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center">
+                    <div className="inline-flex p-4 bg-indigo-50 rounded-full mb-4 ring-1 ring-indigo-100">
+                        <Sparkles className="w-8 h-8 text-indigo-500" />
                     </div>
-                    <h3 className="text-gray-900 font-bold text-lg">No recommendations yet</h3>
-                    <p className="text-gray-500 mt-2 max-w-sm mx-auto text-sm">
-                        Update your profile, goals, and budget preferences to get better matches tailored to you.
+                    <h3 className="text-gray-900 font-bold text-xl mb-2">No recommendations yet</h3>
+                    <p className="text-gray-500 max-w-sm mx-auto text-sm mb-6 px-4">
+                        We need a bit more info to find your perfect match. Update your profile preferences to get started.
                     </p>
+                    <Link href="/profile">
+                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6">
+                            Update Profile
+                        </Button>
+                    </Link>
                 </div>
             )}
 
@@ -197,6 +213,12 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                     {colleges.map((college) => {
                         const styles = getTypeStyles(college.type);
                         const { cta, ctaVariant } = getCtaConfig(college.type);
+
+                        // Formatting
+                        const feeDisplay = formatFeesINR(college.annualFeesINR);
+                        const scoreDisplay = scoreToTenScale(college.restartScore);
+                        const locationDisplay = `${college.city}, ${college.stateOrCountry}`;
+                        const fallbackImage = "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=80"; // Default Uni Image
 
                         return (
                             <div
@@ -212,13 +234,25 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                                             src={college.imageUrl}
                                             alt={college.name}
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            onError={(e) => {
+                                                // Fallback on error logic could go here, or handled by simpler check
+                                                (e.target as HTMLImageElement).src = fallbackImage;
+                                            }}
                                         />
                                     ) : (
-                                        <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300 font-bold text-4xl">
-                                            {college.name && college.name.length > 0 ? college.name.charAt(0) : '?'}
+                                        // Fallback Gradient Design
+                                        <div className="w-full h-full bg-gradient-to-br from-indigo-900 to-slate-800 flex items-center justify-center relative">
+                                            <span className="text-white/20 text-9xl font-bold absolute -bottom-8 -right-4 select-none">
+                                                {college.name?.charAt(0) || 'C'}
+                                            </span>
+                                            <span className="text-white font-bold text-5xl relative z-10 shadow-sm">
+                                                {college.name?.charAt(0) || 'C'}
+                                            </span>
                                         </div>
                                     )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60" />
+
+                                    {/* Gradient Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 pointer-events-none" />
 
                                     {/* Badge */}
                                     <div className="absolute top-3 left-3">
@@ -241,32 +275,39 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                                 {/* Content Body */}
                                 <div className="flex flex-col flex-1 p-5">
                                     {/* Title */}
-                                    <h3 className="font-bold text-lg leading-tight text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
-                                        <Link href={`/college/${college.slug}`} className="line-clamp-2">
+                                    <h3
+                                        className="font-bold text-lg leading-tight text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2 min-h-[1.5em]"
+                                        title={college.name}
+                                    >
+                                        <Link href={`/college/${college.slug}`}>
                                             {college.name}
                                         </Link>
                                     </h3>
 
                                     {/* Location */}
-                                    <div className="flex items-center text-xs font-medium text-gray-500 mb-4">
-                                        <MapPin size={13} className="mr-1.5 text-gray-400" />
-                                        {college.city}, {college.stateOrCountry}
+                                    <div className="flex items-center text-xs font-medium text-gray-500 mb-4 truncate" title={locationDisplay}>
+                                        <MapPin size={13} className="mr-1.5 text-gray-400 shrink-0" />
+                                        <span className="truncate">{locationDisplay}</span>
                                     </div>
 
                                     {/* Metrics Pills */}
                                     <div className="flex flex-wrap items-center gap-2 mb-4">
                                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">
-                                            RESTART Score: <span className="text-indigo-900">{scoreToTenScale(college.restartScore)}</span>
+                                            RESTART Score: <span className="text-indigo-900">{scoreDisplay}</span>
                                         </span>
                                     </div>
 
                                     {/* Fees */}
-                                    <div className="mt-auto flex items-baseline gap-1 text-gray-700 text-sm font-medium mb-5">
+                                    <div className="mt-auto flex items-baseline gap-1 text-gray-700 text-sm font-medium mb-6">
                                         <div className="flex items-center text-gray-400">
-                                            <IndianRupee size={14} />
+                                            <IndianRupee size={15} />
                                         </div>
-                                        <span className="text-gray-900 font-bold text-base">{formatFeesINR(college.annualFeesINR)}</span>
-                                        <span className="text-gray-400 text-xs font-normal">/ yr</span>
+                                        <span className={`font-bold ${college.annualFeesINR > 0 ? "text-lg text-gray-900" : "text-sm text-gray-500"}`}>
+                                            {feeDisplay}
+                                        </span>
+                                        {college.annualFeesINR > 0 && (
+                                            <span className="text-gray-400 text-xs font-normal">/ yr</span>
+                                        )}
                                     </div>
 
                                     {/* Action Buttons */}

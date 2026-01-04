@@ -56,63 +56,87 @@ function getCtaConfig(type: RecommendedCollege["type"]): { cta: string; ctaVaria
 
 async function getRecommendedCollegesForUser(userId: string): Promise<RecommendedCollege[]> {
     try {
-        console.log('[DEBUG] Fetching recommendations...');
+        console.log('[DEBUG] 🚀 Fetching recommendations for userId:', userId);
 
-        // Correct endpoint verified from MatchSummaryCard and Backend Controller
         const response = await api.get('/recommendations/dashboard');
+        console.log('[DEBUG] ✅ Raw API Response:', response);
+        console.log('[DEBUG] 📦 Response Data:', response.data);
+
         const data = response.data;
 
-        // Controller returns: { topMatches: NormalizedCollege[], meta: ... }
-        let matches = data.topMatches || [];
+        // Backend returns `topMatches`
+        const matches = data.topMatches || data.recommendations || [];
+        console.log('[DEBUG] 🎯 Extracted matches:', matches);
+        console.log('[DEBUG] 📊 Match count:', matches.length);
 
-        // Handle alternative structures just in case
-        if (!matches.length) {
-            matches = data.recommendations || data.colleges || data.data || [];
+        if (matches.length === 0) {
+            console.warn('[DEBUG] ⚠️ API returned ZERO matches!');
+            console.log('[DEBUG] 🔍 Full response structure:', JSON.stringify(data, null, 2));
         }
 
-        console.log(`[DEBUG] Found ${matches.length} raw matches`);
-
         const mapped = matches.map((item: any) => {
-            // Determine type safely
-            let safeType: RecommendedCollege["type"] = "TRADITIONAL";
-            if (item.type === 'New-Gen' || item.isNewGen) safeType = "NEW-GEN";
-            else if (item.type === 'International' || (item.country && item.country !== 'India')) safeType = "INTERNATIONAL";
+            // console.log('[DEBUG] 🔄 Mapping college:', item);
 
-            // Safe property access based on NormalizedCollege interface
-            // Interface: { name, fees, country, restart_score, image, location: { city, state } }
-            const name = item.name || "Unknown College";
-            const effectiveId = item._id || item.collegeId || item.id;
+            // Mapping based on Algorithm Doc & Controller
+            const effectiveId = item.collegeId || item._id || item.id;
+            const name = item.collegeName || item.name || "Unknown College";
 
-            // Location Construction
-            const city = item.location?.city || item.city || "Unknown City";
-            const stateOrCountry = item.country === 'India'
-                ? (item.location?.state || item.state || 'India')
-                : item.country || "International";
+            // Location
+            const city = item.city || item.location?.city || "Unknown City";
+            let stateOrCountry: string;
+            if (item.country === 'India') {
+                stateOrCountry = item.state || item.location?.state || 'India';
+            } else {
+                stateOrCountry = item.country || 'International';
+            }
 
-            return {
+            // Scores & Fees
+            const restartScore = item.restart_score || item.score || 0;
+            const fees = item.fees || item.annualFees || item.tuition || 0;
+
+            // Type Determination
+            let type: RecommendedCollege["type"] = "TRADITIONAL";
+            if (item.isNewGen || item.type === 'New-Gen') {
+                type = "NEW-GEN";
+            } else if (item.country && item.country !== 'India') {
+                type = "INTERNATIONAL";
+            }
+
+            const result: RecommendedCollege = {
                 id: effectiveId,
                 name: name,
-                slug: effectiveId, // Using ID as slug
+                slug: item.slug || effectiveId,
                 city: city,
                 stateOrCountry: stateOrCountry,
-                restartScore: item.restart_score || item.score || 0,
-                annualFeesINR: item.fees || item.annualFees || 0,
-                type: safeType,
-                imageUrl: item.image
+                restartScore: restartScore,
+                annualFeesINR: fees,
+                type: type,
+                imageUrl: item.image || item.imageUrl
             };
+
+            // console.log('[DEBUG] ✨ Mapped result:', result);
+            return result;
         });
 
         // Filter out invalid items
         const filtered = mapped.filter((c: RecommendedCollege) => {
-            return c.name && c.name !== "Unknown College" && c.name.trim() !== "";
+            const isValid = c.name && c.name !== "Unknown College" && c.name.trim() !== "";
+            if (!isValid) {
+                console.warn('[DEBUG] ⛔ Filtering out invalid college:', c);
+            }
+            return isValid;
         });
 
-        console.log(`[DEBUG] Returning ${filtered.length} valid colleges`);
+        console.log('[DEBUG] ✅ Final filtered colleges:', filtered.length);
+        return filtered;
 
-        // Return top 6 to match banner
-        return filtered.slice(0, 6);
-    } catch (error) {
-        console.error("Failed to fetch recommendations:", error);
+    } catch (error: any) {
+        console.error('[DEBUG] ❌ API Error:', error);
+        console.error('[DEBUG] 🔍 Error details:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
+        });
         throw error;
     }
 }
@@ -134,6 +158,9 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
             return;
         }
 
+        console.log('[API] Attempting to fetch from:', '/recommendations/dashboard');
+        console.log('[API] With userId:', userId);
+
         let mounted = true;
         setLoading(true);
         setError(false);
@@ -141,8 +168,13 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
         getRecommendedCollegesForUser(userId)
             .then(data => {
                 if (mounted) {
-                    // Directly set data, NO MOCK FALLBACK
-                    setColleges(data);
+                    if (data.length === 0) {
+                        console.warn('[DEBUG] Algorithm returned 0 matches');
+                        console.log('[DEBUG] User likely needs to complete profile');
+                        setColleges([]);
+                    } else {
+                        setColleges(data);
+                    }
                     setLoading(false);
                 }
             })
@@ -180,6 +212,8 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                 <h2 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2.5">
                     <Sparkles className="w-5 h-5 text-indigo-600" />
                     Recommended for You
+                    {/* Dev Mode Indicator */}
+                    {/* <span className="text-[10px] bg-gray-100 text-gray-500 px-1 py-0.5 rounded">DEBUG ACTIVE</span> */}
                 </h2>
             </div>
 
@@ -222,6 +256,12 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                     <p className="text-gray-500 max-w-sm mx-auto text-sm mb-6 px-4">
                         We need a bit more info to find your perfect match. Update your profile preferences to get started.
                     </p>
+                    {/* Debug Hint */}
+                    <div className="hidden border border-gray-200 bg-gray-50 p-2 text-xs text-gray-500 rounded mt-4 max-w-xs text-left">
+                        <p className="font-bold">Debugging Info:</p>
+                        <p>User ID: {userId.slice(0, 8)}...</p>
+                        <p>Check console for [DEBUG] logs.</p>
+                    </div>
                     <Link href="/profile">
                         <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6">
                             Update Profile

@@ -180,7 +180,7 @@ function PreferencesSection({ user }: { user: any }) {
     const prefs = user.preferences || {};
     const [formData, setFormData] = useState({
         goal: prefs.goal || '',
-        budgetMax: prefs.budgetMax || 0,
+        budgetMax: prefs.budget?.amount || prefs.budgetMax || 0,
         preferredCountries: prefs.preferredCountries || [],
         collegeTypes: prefs.collegeTypes || [],
         examsInterested: prefs.examsInterested || [],
@@ -191,12 +191,16 @@ function PreferencesSection({ user }: { user: any }) {
 
     const mutation = useMutation({
         mutationFn: async (data: any) => {
-            // We need to send full payload expected by savePreferences or partial?
-            // savePreferences logic merges, so partial is okay-ish but it validates 'preferredCountries' as required.
-            // Ensure we send all necessary fields.
+            // We need to send full payload expected by savePreferences
+            // properly formatting budget and ensuring all arrays are present
             await api.post('/user/preferences', {
-                ...prefs, // keep existing fields that we might not edit here? Or just what we have.
+                ...prefs,
                 ...data,
+                budget: {
+                    amount: Number(data.budgetMax),
+                    currency: isIndia ? 'INR' : 'USD'
+                },
+                collegeTypes: data.collegeTypes,
                 // ensure optional fields are valid
             });
         },

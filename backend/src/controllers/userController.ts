@@ -101,6 +101,8 @@ export const savePreferences = async (req: Request, res: Response, next: NextFun
                 rank: z.number().optional()
             })).optional(),
 
+            collegeTypes: z.array(z.string()).optional(),
+
             // Keeping these for now as they might come from other steps or defaults
             preferredCountries: z.array(z.string()).min(1, "At least one country is required"),
             preferredStates: z.array(z.string()).optional(),
@@ -126,6 +128,7 @@ export const savePreferences = async (req: Request, res: Response, next: NextFun
             targetDegree: data.targetDegree,
             budget: data.budget,
             examScores: data.examScores || [],
+            collegeTypes: data.collegeTypes || [],
             preferredCountries: data.preferredCountries,
             preferredStates: data.preferredStates || [],
             collegeTypePreference: data.collegeTypePreference,

@@ -2,12 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/axios';
-import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { ChevronRight, Sparkles, MapPin, CheckCircle2 } from "lucide-react";
-import Image from "next/image";
+import { Sparkles } from "lucide-react";
 import { useDashboard } from '@/context/DashboardContext';
 import { Skeleton } from '@/components/ui/Skeleton';
+import CollegeCard from "@/components/colleges/CollegeCard";
 
 export function RecommendedCollegesCard() {
     const { openCollegeDetails } = useDashboard();
@@ -54,78 +53,23 @@ export function RecommendedCollegesCard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recommendations.slice(0, 3).map((college: any, idx: number) => {
-                    // Dynamic Badge Color
-                    const matchScore = college.matchPercentage || 0;
-                    let badgeColor = "bg-gray-500";
-                    if (matchScore >= 90) badgeColor = "bg-emerald-500";
-                    else if (matchScore >= 80) badgeColor = "bg-yellow-500"; // Updated threshold 80-89
-
-                    // Category Image Fallback (No single static image)
-                    const isInternational = college.type === 'International' || (college.country && college.country !== 'India');
-                    const isNewGen = college.type === 'New-Gen';
-                    const fallbackImage = isInternational
-                        ? "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop"
-                        : isNewGen
-                            ? "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1000&auto=format&fit=crop"
-                            : "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000&auto=format&fit=crop";
+                {recommendations.slice(0, 3).map((college: any) => {
+                    // Determine variant based on type
+                    let variant: 'traditional' | 'international' | 'newgen' = 'traditional';
+                    if (college.type === 'New-Gen' || college.isNewGen) variant = 'newgen';
+                    else if (college.type === 'International' || (college.country && college.country !== 'India')) variant = 'international';
 
                     return (
-                        <Card
-                            key={college._id || idx}
-                            className="overflow-hidden hover:shadow-lg transition-all duration-300 group cursor-pointer border-indigo-50/50 bg-white"
-                            onClick={() => {
-                                let viewType: 'indian' | 'international' | 'newgen' = 'indian';
-                                if (isNewGen) viewType = 'newgen';
-                                if (isInternational) viewType = 'international';
-                                openCollegeDetails(college._id);
+                        <CollegeCard
+                            key={college._id}
+                            college={{
+                                ...college,
+                                collegeId: college._id, // Normalize ID for card
+                                tags: college.why // Pass reasons as tags
                             }}
-                        >
-                            {/* Image Header with Fit Score */}
-                            <div className="relative h-40">
-                                <Image
-                                    src={college.image || fallbackImage}
-                                    alt={college.name || "College"}
-                                    fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-                                {/* Match Percentage Badge */}
-                                <div className={`absolute top-3 right-3 ${badgeColor} text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 backdrop-blur-sm bg-opacity-90`}>
-                                    <Sparkles size={11} fill="currentColor" />
-                                    {matchScore}% Match
-                                </div>
-
-                                <div className="absolute bottom-3 left-4 right-4">
-                                    <h3 className="font-bold text-white text-lg leading-tight truncate">
-                                        {college.name}
-                                    </h3>
-                                    <div className="flex items-center gap-1 text-gray-200 text-xs mt-1">
-                                        <MapPin size={12} />
-                                        {/* Dynamic Location ONLY */}
-                                        {college.city}, {college.country}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Content Body */}
-                            <div className="p-4 space-y-3">
-                                {/* AI Reasons - Only render what backend sends */}
-                                <div className="flex flex-wrap gap-2">
-                                    {college.why?.slice(0, 4).map((reason: string, rIdx: number) => (
-                                        <span key={`${college._id}-reason-${rIdx}`} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-medium border border-indigo-100">
-                                            <CheckCircle2 size={10} className="text-indigo-500" />
-                                            {reason}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <Button className="w-full mt-2 group-hover:bg-indigo-600 transition-colors" size="sm">
-                                    View Details
-                                </Button>
-                            </div>
-                        </Card>
+                            variant={variant}
+                            onClick={() => openCollegeDetails(college._id)}
+                        />
                     );
                 })}
             </div>

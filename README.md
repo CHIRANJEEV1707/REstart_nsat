@@ -14,25 +14,25 @@ Built with a performance-first mindset, the platform integrates seamless **Authe
 
 ## **Key Features**
 
-### 🎓 **College Discovery**
+### **College Discovery**
 *   **Indian Colleges**: extensive database of IITs, NITs, and private institutions.
 *   **International Universities**: Global coverage for study-abroad aspirants.
 *   **Smart Filtering**: Filter by Fee range, Location, Exams accepted, and more.
 
-### 📝 **Exam Tracking**
+### **Exam Tracking**
 *   Detailed pages for **JEE Main, JEE Advanced, SAT**, and other medical/engineering entrance exams.
 *   Timelines, Eligibility criteria, and Important dates.
 
-### 💼 **Prep Bundles & Payments**
+### **Prep Bundles & Payments**
 *   **Premium Study Materials**: Purchase tailored prep bundles for specific exams.
 *   **Razorpay Integration**: Secure, seamless checkout experience for Indian users.
 *   **Order History**: Track purchases and access content instantly.
 
-### 👤 **Personalized Onboarding**
+### **Personalized Onboarding**
 *   **Smart Profiling**: Collects user preferences (Budget, Country, Target Degree) to tailor recommendations.
 *   **Dashboard**: A personalized hub showing saved colleges, application status, and recommendations.
 
-### 🔐 **Security & Auth**
+### **Security & Auth**
 *   **Hybrid Auth**: Supports both **HttpOnly Cookies** (Production) and **Bearer Tokens** (Mobility).
 *   **Security Hardening**: Rate limiting, Helmet headers, Mongo Sanitize, and CSRF protection.
 

@@ -129,7 +129,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                         />
                     ) : (
                         <div className="w-full h-full bg-slate-900 flex items-center justify-center text-slate-700 font-bold text-4xl">
-                            {college.name[0]}
+                            {college.name?.[0] || 'C'}
                         </div>
                     )}
 
@@ -218,7 +218,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     />
                 ) : (
                     <span className="text-3xl font-bold text-gray-300">
-                        {college.name[0]}
+                        {college.name?.[0] || 'C'}
                     </span>
                 )}
 

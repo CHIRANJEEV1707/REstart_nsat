@@ -122,8 +122,8 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
 
         // 2. Score & Filter Candidates
         const scoredCandidates = candidates.map(college => {
-            // Data Integrity Check
-            if (!college.image || !college.location?.city) {
+            // Data Integrity Check - Ensure essential fields exist
+            if (!college.image || !college.location?.city || !college.name) {
                 return null;
             }
 
@@ -144,7 +144,7 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
             if (budgetScore === 100) reasons.push("Within Budget");
 
             // B. Exam Scoring (20%)
-            const required = college.exams_required || [];
+            const required = Array.isArray(college.exams_required) ? college.exams_required : [];
             if (required.length === 0) {
                 examScore = 100; // No exams required -> Good match
             } else {
@@ -194,13 +194,11 @@ export const getDashboardRecommendations = async (req: Request, res: Response) =
                 (locationScore * W_LOCATION)
             );
 
-            // Log for debug (optional, can remove later)
-            // if (college.name === 'Specific College') console.log(college.name, totalScore);
-
             return {
                 ...college,
+                exams_required: required, // Ensure array
                 matchPercentage: Math.round(totalScore),
-                why: reasons.slice(0, 3),
+                why: reasons.slice(0, 3) || [], // Ensure array
                 location: college.location
             };
         }).filter(Boolean) as NormalizedCollege[];

@@ -60,11 +60,30 @@ function getCtaConfig(type: RecommendedCollege["type"]): { cta: string; ctaVaria
 
 async function getRecommendedCollegesForUser(userId: string): Promise<RecommendedCollege[]> {
     try {
-        const response = await api.get('/recommendations/dashboard');
-        const data = response.data;
-        const matches = data.topMatches || [];
+        console.log('[DEBUG] Fetching recommendations for userId:', userId);
 
-        return matches.map((item: any) => {
+        const response = await api.get('/recommendations/dashboard');
+        console.log('[DEBUG] Raw API response:', response.data);
+
+        const data = response.data;
+
+        // Try multiple possible data structures
+        const matches =
+            data.topMatches ||           // { topMatches: [...] }
+            data.recommendations ||      // { recommendations: [...] }
+            data.colleges ||             // { colleges: [...] }
+            data.data?.topMatches ||     // { data: { topMatches: [...] } }
+            (Array.isArray(data) ? data : []); // [...] directly
+
+        console.log('[DEBUG] Extracted matches:', matches);
+        console.log('[DEBUG] Number of matches:', matches?.length);
+
+        if (!Array.isArray(matches)) {
+            console.error('[DEBUG] Matches is not an array:', matches);
+            return [];
+        }
+
+        const mapped = matches.map((item: any) => {
             // Determine type safely
             let safeType: RecommendedCollege["type"] = "TRADITIONAL";
             if (item.type === 'New-Gen' || item.isNewGen) safeType = "NEW-GEN";
@@ -80,7 +99,7 @@ async function getRecommendedCollegesForUser(userId: string): Promise<Recommende
                 ? (item.location?.state || item.state || 'India')
                 : item.country || "International";
 
-            return {
+            const result: RecommendedCollege = {
                 id: effectiveId,
                 name: name,
                 slug: effectiveId, // Using ID as slug
@@ -91,10 +110,26 @@ async function getRecommendedCollegesForUser(userId: string): Promise<Recommende
                 type: safeType,
                 imageUrl: item.image
             };
-        }).filter((c: RecommendedCollege) => c.name !== "Unknown College"); // Filter out completely broken items
 
+            // Log individual items to spot mapping issues
+            // console.log('[DEBUG] Mapped item:', result); 
+            return result;
+        });
+
+        const filtered = mapped.filter((c: RecommendedCollege) => {
+            const isValid = c.name && c.name !== "Unknown College" && c.name.trim() !== "";
+            if (!isValid) {
+                console.log('[DEBUG] Filtering out invalid college:', c);
+            }
+            return isValid;
+        });
+
+        console.log('[DEBUG] After filtering:', filtered.length, 'colleges remain');
+        // console.log('[DEBUG] Final colleges:', filtered);
+
+        return filtered;
     } catch (error) {
-        console.error("Failed to fetch recommendations:", error);
+        console.error('[DEBUG] API Error:', error);
         throw error;
     }
 }
@@ -106,12 +141,18 @@ interface RecommendedCollegesCardProps {
 }
 
 export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps) {
+    console.log('[RecommendedCollegesCard] Rendered with userId:', userId);
+
     const [colleges, setColleges] = useState<RecommendedCollege[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!userId) return;
+        console.log('[DEBUG] useEffect triggered with userId:', userId);
+        if (!userId) {
+            console.log('[DEBUG] No userId, skipping fetch');
+            return;
+        }
 
         let mounted = true;
         setLoading(true);
@@ -120,12 +161,43 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
         getRecommendedCollegesForUser(userId)
             .then(data => {
                 if (mounted) {
-                    setColleges(data);
+                    // TEMPORARY: If API returns empty, use mock data to verify UI
+                    if (data.length === 0) {
+                        console.warn('[DEBUG] API returned empty, using mock data for UI verification');
+                        const mockData: RecommendedCollege[] = [
+                            {
+                                id: "mock-1",
+                                name: "Test University (Mock)",
+                                slug: "test-university",
+                                city: "Mumbai",
+                                stateOrCountry: "Maharashtra",
+                                restartScore: 85,
+                                annualFeesINR: 500000,
+                                type: "TRADITIONAL",
+                                imageUrl: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=80"
+                            },
+                            {
+                                id: "mock-2",
+                                name: "Global Tech Institute (Mock)",
+                                slug: "global-tech",
+                                city: "Toronto",
+                                stateOrCountry: "Canada",
+                                restartScore: 92,
+                                annualFeesINR: 4500000,
+                                type: "INTERNATIONAL",
+                                imageUrl: "https://images.unsplash.com/photo-1626294863378-01f6804ce10e?w=800&q=80"
+                            }
+                        ];
+                        setColleges(mockData);
+                    } else {
+                        setColleges(data);
+                    }
                     setLoading(false);
                 }
             })
-            .catch(() => {
+            .catch((err) => {
                 if (mounted) {
+                    console.error('[DEBUG] Fetch error in component:', err);
                     setError(true);
                     setLoading(false);
                 }
@@ -157,6 +229,8 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                 <h2 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2.5">
                     <Sparkles className="w-5 h-5 text-indigo-600" />
                     Recommended for You
+                    {/* Debug Indicator - remove in prod */}
+                    {/* <span className="text-xs font-normal text-gray-400 border border-gray-200 rounded px-1">Debug Mode</span> */}
                 </h2>
             </div>
 
@@ -199,6 +273,11 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                     <p className="text-gray-500 max-w-sm mx-auto text-sm mb-6 px-4">
                         We need a bit more info to find your perfect match. Update your profile preferences to get started.
                     </p>
+                    {/* Debug info if empty */}
+                    <div className="text-xs text-gray-400 mb-4 bg-gray-50 p-2 rounded max-w-xs overflow-hidden text-left">
+                        <p>Debug: UserId present: {userId ? 'Yes' : 'No'}</p>
+                        <p>Check console for API details.</p>
+                    </div>
                     <Link href="/profile">
                         <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6">
                             Update Profile
@@ -243,10 +322,10 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                                         // Fallback Gradient Design
                                         <div className="w-full h-full bg-gradient-to-br from-indigo-900 to-slate-800 flex items-center justify-center relative">
                                             <span className="text-white/20 text-9xl font-bold absolute -bottom-8 -right-4 select-none">
-                                                {college.name?.charAt(0) || 'C'}
+                                                {college.name && college.name.length > 0 ? college.name.charAt(0) : 'C'}
                                             </span>
                                             <span className="text-white font-bold text-5xl relative z-10 shadow-sm">
-                                                {college.name?.charAt(0) || 'C'}
+                                                {college.name && college.name.length > 0 ? college.name.charAt(0) : 'C'}
                                             </span>
                                         </div>
                                     )}

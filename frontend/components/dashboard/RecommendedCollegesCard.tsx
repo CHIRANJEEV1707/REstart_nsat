@@ -215,7 +215,7 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                                         />
                                     ) : (
                                         <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300 font-bold text-4xl">
-                                            {college.name.charAt(0)}
+                                            {college.name && college.name.length > 0 ? college.name.charAt(0) : '?'}
                                         </div>
                                     )}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60" />

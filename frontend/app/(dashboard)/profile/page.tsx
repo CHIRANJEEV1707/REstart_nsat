@@ -182,7 +182,7 @@ function PreferencesSection({ user }: { user: any }) {
         goal: prefs.goal || '',
         budgetMax: prefs.budget?.amount || prefs.budgetMax || 0,
         preferredCountries: prefs.preferredCountries || [],
-        collegeTypes: prefs.collegeTypes || [],
+        collegeTypes: Array.isArray(prefs.collegeTypes) ? prefs.collegeTypes : [],
         examsInterested: prefs.examsInterested || [],
         collegeTypePreference: prefs.collegeTypePreference || null
     });
@@ -214,7 +214,7 @@ function PreferencesSection({ user }: { user: any }) {
     // Helper for multi-select (simple toggle for now)
     const toggleItem = (list: string[], item: string, field: string) => {
         const newList = list.includes(item) ? list.filter(i => i !== item) : [...list, item];
-        setFormData({ ...formData, [field]: newList });
+        setFormData(prev => ({ ...prev, [field]: newList }));
     };
 
     return (
@@ -299,7 +299,13 @@ function PreferencesSection({ user }: { user: any }) {
                         {['Engineering', 'Management', 'Research', 'Liberal Arts', 'Private', 'Government'].map(t => (
                             <div key={t}
                                 onClick={() => toggleItem(formData.collegeTypes, t, 'collegeTypes')}
-                                className={`px-3 py-1 rounded-full text-sm border cursor-pointer ${formData.collegeTypes.includes(t) ? 'bg-black text-white' : 'bg-white'}`}>
+                                className={`
+                                    px-3 py-1 rounded-full text-sm border cursor-pointer transition-colors select-none
+                                    ${formData.collegeTypes.includes(t)
+                                        ? 'bg-black text-white border-black'
+                                        : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                                    }
+                                `}>
                                 {t}
                             </div>
                         ))}

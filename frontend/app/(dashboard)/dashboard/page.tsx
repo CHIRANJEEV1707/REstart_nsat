@@ -70,7 +70,7 @@ export default function DashboardPage() {
             </div>
 
             {/* 2. Recommended Colleges Carousel */}
-            <RecommendedCollegesCard />
+            <RecommendedCollegesCard userId={user?._id} />
 
             {/* 🆕 New-Gen Colleges Section - Conditionally Rendered */}
             {showNewGen && <NewGenSection openCollegeDetails={openCollegeDetails} />}

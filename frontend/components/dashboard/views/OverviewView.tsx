@@ -48,7 +48,7 @@ export function OverviewView({ dashboard }: { dashboard: any }) {
                 <MatchSummaryCard />
             </div>
             {/* 2. Recommended Colleges Carousel */}
-            <RecommendedCollegesCard />
+            <RecommendedCollegesCard userId={dashboard.user?._id} />
 
             {/* 🆕 New-Gen Colleges Section */}
             {showNewGen && newGenColleges?.length > 0 && (

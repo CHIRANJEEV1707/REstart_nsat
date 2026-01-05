@@ -54,8 +54,11 @@ app.use(helmetConfig);
 
 // 2. CORS - strictly validate options
 const allowedOrigins = [
-    process.env.FRONTEND_URL || 'https://letsrestart.vercel.app',
-    'http://localhost:3000', // Development
+    "https://www.letsrestart.in",
+    "https://letsrestart.in",
+    // Keep localhost for local development
+    "http://localhost:3000",
+    "http://localhost:5173", // Vite default
 ];
 
 const corsOptions = {
@@ -63,8 +66,7 @@ const corsOptions = {
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
-        // Check if origin matches allowed origins or is a Vercel preview URL
-        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+        if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
             logger.warn(`CORS blocked request from origin: ${origin}`);
@@ -73,7 +75,8 @@ const corsOptions = {
     },
     credentials: true, // Allow cookies
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'x-csrf-token'], // Added x-csrf-token
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'x-csrf-token'],
+    exposedHeaders: ['set-cookie'],
 };
 
 app.use(corsPackage(corsOptions));

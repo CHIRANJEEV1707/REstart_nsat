@@ -6,7 +6,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
     let token;
 
     // 1. Check Authorization Header (Bearer Token)
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    if (req.headers.authorization && req.headers.authorization.toLowerCase().startsWith('bearer')) {
         token = req.headers.authorization.split(' ')[1];
     }
     // 2. Check Cookie (Fallback or Primary depending on client)

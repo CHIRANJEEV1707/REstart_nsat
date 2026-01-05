@@ -57,10 +57,11 @@ api.interceptors.response.use(
                 const protectedPaths = ['/dashboard', '/admin', '/saved', '/prep'];
                 const currentPath = window.location.pathname;
 
-                // Only redirect if explicitly on a protected path
+                // Only redirect if explicitly on a protected path AND it wasn't the login request itself that failed
                 const isProtected = protectedPaths.some(path => currentPath.startsWith(path));
+                const isLoginRequest = error.config && error.config.url && (error.config.url.includes('/auth/login') || error.config.url.includes('/auth/signup'));
 
-                if (isProtected && !currentPath.includes('/auth/login')) {
+                if (isProtected && !currentPath.includes('/auth/login') && !isLoginRequest) {
                     window.location.href = '/auth/login';
                 }
             }

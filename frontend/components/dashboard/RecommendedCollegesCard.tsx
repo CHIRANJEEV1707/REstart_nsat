@@ -52,6 +52,9 @@ function getCtaConfig(type: RecommendedCollege["type"]): { cta: string; ctaVaria
     return { cta: "View Details", ctaVariant: "secondary" };
 }
 
+
+
+
 // --- API Adapter ---
 
 async function getRecommendedCollegesForUser(userId: string): Promise<RecommendedCollege[]> {
@@ -66,8 +69,8 @@ async function getRecommendedCollegesForUser(userId: string): Promise<Recommende
 
         // Backend returns `topMatches`
         const matches = data.topMatches || data.recommendations || [];
-        console.log('[DEBUG] 🎯 Extracted matches:', matches);
-        console.log('[DEBUG] 📊 Match count:', matches.length);
+        // console.log('[DEBUG] 🎯 Extracted matches:', matches);
+        // console.log('[DEBUG] 📊 Match count:', matches.length);
 
         if (matches.length === 0) {
             console.warn('[DEBUG] ⚠️ API returned ZERO matches!');
@@ -115,17 +118,24 @@ async function getRecommendedCollegesForUser(userId: string): Promise<Recommende
             };
 
             // console.log('[DEBUG] ✨ Mapped result:', result);
+            // console.log('[DEBUG] ✨ Mapped result:', result);
             return result;
         });
 
         // Filter out invalid items
         const filtered = mapped.filter((c: RecommendedCollege) => {
-            const isValid = c.name && c.name !== "Unknown College" && c.name.trim() !== "";
+            // Loosened Validation: Just need an ID and at least a name placeholder (even 'Unknown' is allowed for debugging so user sees SOMETHING)
+            const isValid = c.id && c.name && c.name.trim() !== "";
+
             if (!isValid) {
-                console.warn('[DEBUG] ⛔ Filtering out invalid college:', c);
+                console.warn('[DEBUG] ⛔ Filtering out invalid college (missing ID or Name):', JSON.stringify(c, null, 2));
             }
             return isValid;
         });
+
+        if (filtered.length === 0 && mapped.length > 0) {
+            console.warn('[DEBUG] ⚠️ All fetched items were filtered out! Check property mapping.');
+        }
 
         console.log('[DEBUG] ✅ Final filtered colleges:', filtered.length);
         return filtered;

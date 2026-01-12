@@ -54,7 +54,12 @@ export default function LoginPage() {
                 }, 100);
             }
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+            console.error('Login error:', err);
+            if (err.response && err.response.status === 401) {
+                setError('Invalid credentials. If you just deployed, please Sign Up again.');
+            } else {
+                setError(err.response?.data?.message || 'Login failed. Please try again.');
+            }
         } finally {
             setLoading(false);
         }

@@ -105,6 +105,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         // Check for user
         const user = await User.findOne({ email }).select('+password');
         if (!user) {
+            console.log(`[Auth Debug] Login failed: User not found for email '${email}'`);
             res.status(401).json({ success: false, message: 'Invalid credentials' });
             return;
         }
@@ -122,17 +123,14 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const isMatch = await user.matchPassword(password);
 
         if (!isMatch) {
+            console.log(`[Auth Debug] Login failed: Password mismatch for user '${email}'`);
             // Increment Failed Attempts
             user.failedLoginAttempts += 1;
 
             // Lock if >= 5
             if (user.failedLoginAttempts >= 5) {
                 user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // Lock for 15 mins
-                user.failedLoginAttempts = 0; // Reset counter after locking? Or keep it? keeping it ensures subsequent fails extend? 
-                // Standard: limit reached -> lock. Reset attempts is optional but clean. 
-                // Let's reset attempts only on successful login, 
-                // but here since we locked, we can leave it or reset. 
-                // Resetting it allows clean slate after 15 mins.
+                user.failedLoginAttempts = 0;
             }
 
             await user.save();

@@ -56,10 +56,12 @@ app.use(helmetConfig);
 const allowedOrigins = [
     "https://www.letsrestart.in",
     "https://letsrestart.in",
-    // Keep localhost for local development
-    "http://localhost:3000",
-    "http://localhost:5173", // Vite default
 ];
+
+if (process.env.NODE_ENV !== 'production') {
+    allowedOrigins.push("http://localhost:3000");
+    allowedOrigins.push("http://localhost:5173");
+}
 
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {

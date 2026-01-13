@@ -139,4 +139,27 @@ router.post('/verify', protect, async (req: any, res: Response) => {
     }
 });
 
+// @desc    Get Order by ID
+// @route   GET /api/orders/:id
+// @access  Private (or Public if using order ID as secret, but Private is safer)
+router.get('/:id', protect, async (req: any, res: Response) => {
+    try {
+        const order = await Order.findById(req.params.id).populate('bundleId', 'title price currency');
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // Ensure user owns the order (optional, but recommended)
+        if (order.userId.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ message: 'Not authorized to view this order' });
+        }
+
+        res.json(order);
+    } catch (error: any) {
+        console.error("Error fetching order:", error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 export default router;

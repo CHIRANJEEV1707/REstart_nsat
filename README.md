@@ -1,6 +1,6 @@
 # **REstart — The Future of College Discovery**
 
-*A smart, data-driven platform helping students find their dream engineering college — globally.*
+*A smart, data-driven platform helping students find their dream engineering college — globally*
 
 ---
 

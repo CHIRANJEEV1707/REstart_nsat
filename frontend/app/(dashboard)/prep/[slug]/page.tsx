@@ -35,7 +35,7 @@ export default function BundleDetailPage() {
         const fetchBundle = async () => {
             try {
                 const res = await api.get(`/bundles/${params.slug}`);
-                setBundle(res.data);
+                setBundle(res.data.data);
             } catch (error) {
                 console.error("Failed to fetch bundle", error);
             } finally {
@@ -150,9 +150,8 @@ export default function BundleDetailPage() {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                                 </svg>
                                             </div>
-                                            <div>
-                                                <h4 className="font-semibold text-gray-900">Feature {i + 1}</h4>
-                                                <p className="text-sm text-gray-500">{feature}</p>
+                                            <div className="flex items-center">
+                                                <p className="font-medium text-gray-900">{feature}</p>
                                             </div>
                                         </div>
                                     ))}

@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import api from '@/lib/axios';
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/Button";
+import { useQuery } from '@tanstack/react-query';
+import { useCompare } from "@/context/CompareContext";
 
 // --- Types & Contract ---
 type RecommendedCollege = {
@@ -52,105 +54,6 @@ function getCtaConfig(type: RecommendedCollege["type"]): { cta: string; ctaVaria
     return { cta: "View Details", ctaVariant: "secondary" };
 }
 
-
-
-
-// --- API Adapter ---
-
-async function getRecommendedCollegesForUser(userId: string): Promise<RecommendedCollege[]> {
-    try {
-        console.log('[DEBUG] 🚀 Fetching recommendations for userId:', userId);
-
-        const response = await api.get('/recommendations/dashboard');
-        console.log('[DEBUG] ✅ Raw API Response:', response);
-        console.log('[DEBUG] 📦 Response Data:', response.data);
-
-        const data = response.data;
-
-        // Backend returns `topMatches`
-        const matches = data.topMatches || data.recommendations || [];
-        // console.log('[DEBUG] 🎯 Extracted matches:', matches);
-        // console.log('[DEBUG] 📊 Match count:', matches.length);
-
-        if (matches.length === 0) {
-            console.warn('[DEBUG] ⚠️ API returned ZERO matches!');
-            console.log('[DEBUG] 🔍 Full response structure:', JSON.stringify(data, null, 2));
-        }
-
-        const mapped = matches.map((item: any) => {
-            // console.log('[DEBUG] 🔄 Mapping college:', item);
-
-            // Mapping based on Algorithm Doc & Controller
-            const effectiveId = item.collegeId || item._id || item.id;
-            const name = item.collegeName || item.name || "Unknown College";
-
-            // Location
-            const city = item.city || item.location?.city || "Unknown City";
-            let stateOrCountry: string;
-            if (item.country === 'India') {
-                stateOrCountry = item.state || item.location?.state || 'India';
-            } else {
-                stateOrCountry = item.country || 'International';
-            }
-
-            // Scores & Fees
-            const restartScore = item.restart_score || item.score || 0;
-            const fees = item.fees || item.annualFees || item.tuition || 0;
-
-            // Type Determination
-            let type: RecommendedCollege["type"] = "TRADITIONAL";
-            if (item.isNewGen || item.type === 'New-Gen') {
-                type = "NEW-GEN";
-            } else if (item.country && item.country !== 'India') {
-                type = "INTERNATIONAL";
-            }
-
-            const result: RecommendedCollege = {
-                id: effectiveId,
-                name: name,
-                slug: item.slug || effectiveId,
-                city: city,
-                stateOrCountry: stateOrCountry,
-                restartScore: restartScore,
-                annualFeesINR: fees,
-                type: type,
-                imageUrl: item.image || item.imageUrl
-            };
-
-            // console.log('[DEBUG] ✨ Mapped result:', result);
-            // console.log('[DEBUG] ✨ Mapped result:', result);
-            return result;
-        });
-
-        // Filter out invalid items
-        const filtered = mapped.filter((c: RecommendedCollege) => {
-            // Loosened Validation: Just need an ID and at least a name placeholder (even 'Unknown' is allowed for debugging so user sees SOMETHING)
-            const isValid = c.id && c.name && c.name.trim() !== "";
-
-            if (!isValid) {
-                console.warn('[DEBUG] ⛔ Filtering out invalid college (missing ID or Name):', JSON.stringify(c, null, 2));
-            }
-            return isValid;
-        });
-
-        if (filtered.length === 0 && mapped.length > 0) {
-            console.warn('[DEBUG] ⚠️ All fetched items were filtered out! Check property mapping.');
-        }
-
-        console.log('[DEBUG] ✅ Final filtered colleges:', filtered.length);
-        return filtered;
-
-    } catch (error: any) {
-        console.error('[DEBUG] ❌ API Error:', error);
-        console.error('[DEBUG] 🔍 Error details:', {
-            message: error.message,
-            response: error.response?.data,
-            status: error.response?.status
-        });
-        throw error;
-    }
-}
-
 // --- Component ---
 
 interface RecommendedCollegesCardProps {
@@ -158,46 +61,57 @@ interface RecommendedCollegesCardProps {
 }
 
 export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps) {
-    const [colleges, setColleges] = useState<RecommendedCollege[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
+    const { addToCompare, removeFromCompare, isInCompare, compareItems } = useCompare();
 
-    useEffect(() => {
-        if (!userId) {
-            console.log('[DEBUG] RecommendedCollegesCard: No userId, skipping fetch');
-            return;
+    const { data: apiData, isLoading: loading, isError: error } = useQuery({
+        queryKey: ['dashboard-recommendations'],
+        queryFn: async () => {
+            const res = await api.get('/recommendations/dashboard');
+            return res.data;
+        },
+        enabled: !!userId,
+        staleTime: 5 * 60 * 1000 // 5 minutes
+    });
+
+    // Map data when available
+    const colleges: RecommendedCollege[] = (apiData?.topMatches || []).map((item: any) => {
+        // Mapping Logic
+        const effectiveId = item.collegeId || item._id || item.id;
+        const name = item.collegeName || item.name || "Unknown College";
+
+        // Location
+        const city = item.city || item.location?.city || "Unknown City";
+        let stateOrCountry: string;
+        if (item.country === 'India') {
+            stateOrCountry = item.state || item.location?.state || 'India';
+        } else {
+            stateOrCountry = item.country || 'International';
         }
 
-        console.log('[API] Attempting to fetch from:', '/recommendations/dashboard');
-        console.log('[API] With userId:', userId);
+        // Scores & Fees
+        const restartScore = item.restart_score || item.score || 0;
+        const fees = item.fees || item.annualFees || item.tuition || 0;
 
-        let mounted = true;
-        setLoading(true);
-        setError(false);
+        // Type Determination
+        let type: RecommendedCollege["type"] = "TRADITIONAL";
+        if (item.isNewGen || item.type === 'New-Gen') {
+            type = "NEW-GEN";
+        } else if (item.country && item.country !== 'India') {
+            type = "INTERNATIONAL";
+        }
 
-        getRecommendedCollegesForUser(userId)
-            .then(data => {
-                if (mounted) {
-                    if (data.length === 0) {
-                        console.warn('[DEBUG] Algorithm returned 0 matches');
-                        console.log('[DEBUG] User likely needs to complete profile');
-                        setColleges([]);
-                    } else {
-                        setColleges(data);
-                    }
-                    setLoading(false);
-                }
-            })
-            .catch((err) => {
-                if (mounted) {
-                    console.error('[DEBUG] Component Error:', err);
-                    setError(true);
-                    setLoading(false);
-                }
-            });
-
-        return () => { mounted = false; };
-    }, [userId]);
+        return {
+            id: effectiveId,
+            name: name,
+            slug: item.slug || effectiveId,
+            city: city,
+            stateOrCountry: stateOrCountry,
+            restartScore: restartScore,
+            annualFeesINR: fees,
+            type: type,
+            imageUrl: item.image || item.imageUrl
+        };
+    }).filter((c: RecommendedCollege) => c.id && c.name && c.name.trim() !== "");
 
     // Empty / No User State
     if (!userId) {
@@ -216,7 +130,7 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
     }
 
     return (
-        <div className="w-full">
+        <div className="w-full" id="recommended-section">
             {/* Section Header */}
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2.5">
@@ -292,6 +206,26 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                         const scoreDisplay = scoreToTenScale(college.restartScore);
                         const locationDisplay = `${college.city}, ${college.stateOrCountry}`;
                         const fallbackImage = "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=80"; // Default Uni Image
+
+                        // Compare Logic
+                        const isCompared = isInCompare(college.id);
+                        const handleCompare = () => {
+                            if (isCompared) {
+                                removeFromCompare(college.id);
+                            } else {
+                                // Map type to CompareItem type
+                                let compareType: 'indian' | 'international' | 'newgen' = 'indian';
+                                if (college.type === 'INTERNATIONAL') compareType = 'international';
+                                if (college.type === 'NEW-GEN') compareType = 'newgen';
+
+                                addToCompare({
+                                    collegeId: college.id,
+                                    name: college.name,
+                                    collegeType: compareType,
+                                    image: college.imageUrl
+                                });
+                            }
+                        };
 
                         return (
                             <div
@@ -384,8 +318,15 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
 
                                     {/* Action Buttons */}
                                     <div className="grid grid-cols-2 gap-3 pt-4 border-t border-dashed border-gray-200">
-                                        <button className="flex items-center justify-center w-full h-10 px-4 rounded-xl text-sm font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors">
-                                            + Compare
+                                        <button
+                                            onClick={handleCompare}
+                                            disabled={!isCompared && compareItems.length >= 3}
+                                            className={`flex items-center justify-center w-full h-10 px-4 rounded-xl text-sm font-semibold transition-colors border ${isCompared
+                                                ? 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
+                                                : 'text-gray-600 bg-gray-50 hover:bg-gray-100 border-gray-200'
+                                                }`}
+                                        >
+                                            {isCompared ? '✓ Added' : '+ Compare'}
                                         </button>
 
                                         <Link href={`/college/${college.slug}`} className="w-full">

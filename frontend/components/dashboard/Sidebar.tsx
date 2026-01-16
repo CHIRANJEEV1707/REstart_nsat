@@ -9,9 +9,11 @@ import {
     CalendarDays,
     Globe,
     User,
+    Users,
     LogOut,
     Sparkles,
-    ScrollText
+    ScrollText,
+    Code
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
@@ -38,7 +40,9 @@ export function Sidebar() {
         { name: 'New-Gen Colleges', icon: Sparkles, href: '/new-gen' },
         { name: 'Saved Colleges', icon: Bookmark, href: '/saved' },
         { name: 'Compare Colleges', icon: ArrowLeftRight, href: '/compare' },
-        { name: 'Prep', icon: ScrollText, href: '/prep' },
+        { name: 'NSAT Prep', icon: ScrollText, href: '/nsat-prep' },
+        { name: 'NSAT Coding', icon: Code, href: '/nsat-coding' },
+        { name: 'REstart Sessions', icon: Users, href: '/sessions', badge: 'NEW' },
         { name: 'Exams & Deadlines', icon: CalendarDays, href: '/exams-deadlines' },
     ];
 
@@ -86,7 +90,7 @@ export function Sidebar() {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-4 space-y-1">
+            <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
@@ -94,19 +98,24 @@ export function Sidebar() {
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors group ${isActive
-                                ? 'bg-indigo-50 text-indigo-600'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600'
+                            className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all group ${isActive
+                                ? 'bg-blue-50 text-blue-600'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
                                 }`}
                         >
                             <item.icon
                                 size={18}
                                 className={`transition-colors ${isActive
-                                    ? 'text-indigo-600'
-                                    : 'text-gray-400 group-hover:text-indigo-600'
+                                    ? 'text-blue-600'
+                                    : 'text-gray-400 group-hover:text-blue-600'
                                     }`}
                             />
-                            {item.name}
+                            <span className="flex-1">{item.name}</span>
+                            {(item as any).badge && (
+                                <span className="px-2 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full">
+                                    {(item as any).badge}
+                                </span>
+                            )}
                         </Link>
                     );
                 })}

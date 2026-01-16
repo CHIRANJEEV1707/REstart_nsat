@@ -55,13 +55,13 @@ export function MatchSummaryCard() {
     }
 
     return (
-        <Card className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-blue-500 border-none shadow-xl text-white relative overflow-hidden h-full">
+        <Card className="bg-gradient-to-br from-[#0085ff] to-[#006bd1] border-none shadow-xl text-white relative overflow-hidden h-full">
             {/* Background Pattern */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
             <CardContent className="p-8 relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between h-full gap-6">
                 <div>
-                    <div className="flex items-center gap-2 mb-2 text-indigo-100">
+                    <div className="flex items-center gap-2 mb-2 text-blue-50">
                         <Target size={18} />
                         <span className="text-sm font-medium tracking-wide uppercase">College Fit Analysis</span>
                     </div>
@@ -70,42 +70,45 @@ export function MatchSummaryCard() {
                         You matched with <span className="text-white border-b-2 border-yellow-400 pb-0.5">{count} Colleges</span>
                     </h2>
 
-                    <p className="text-indigo-100 max-w-md">
+                    <p className="text-blue-50 max-w-md">
                         Based on your preference for <strong>{meta.preferredCountry || 'your goals'}</strong> and budget.
                     </p>
 
                     <div className="flex items-center gap-6 mt-6">
                         {/* AVG FIT SCORE */}
                         <div className="flex items-center gap-2">
-                            <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/10">
                                 <span className="font-bold text-lg">{Math.round(meta.avgMatch || 0)}%</span>
                             </div>
-                            <span className="text-xs text-indigo-100 leading-tight">Avg Match<br />Score</span>
+                            <span className="text-xs text-blue-50 leading-tight">Avg Match<br />Score</span>
                         </div>
 
                         {/* BUDGET MATCH */}
                         <div className={`flex items-center gap-2 ${!meta.budgetMatch ? 'opacity-50' : ''}`} title={!meta.budgetMatch ? "Some colleges exceed your budget" : "Within Budget"}>
-                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/10">
                                 <IndianRupee size={16} />
                             </div>
-                            <span className="text-xs text-indigo-100 leading-tight">Budget<br />Match</span>
+                            <span className="text-xs text-blue-50 leading-tight">Budget<br />Match</span>
                         </div>
 
                         {/* LOCATION MATCH */}
                         <div className={`flex items-center gap-2 ${!meta.locationMatch ? 'opacity-50' : ''}`}>
-                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">
+                            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/10">
                                 <MapPin size={16} />
                             </div>
-                            <span className="text-xs text-indigo-100 leading-tight">Loc<br />Match</span>
+                            <span className="text-xs text-blue-50 leading-tight">Loc<br />Match</span>
                         </div>
                     </div>
                 </div>
 
                 <Button
                     onClick={() => {
-                        router.push('/indian-colleges');
+                        const element = document.getElementById('recommended-section');
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }
                     }}
-                    className="h-auto flex-shrink-0 bg-white text-indigo-600 px-6 py-4 rounded-full font-bold shadow-lg hover:bg-gray-50 hover:scale-105 transition-all flex items-center gap-2 text-base"
+                    className="h-auto flex-shrink-0 bg-white text-[#0085ff] px-6 py-4 rounded-full font-bold shadow-lg hover:bg-gray-50 hover:scale-105 transition-all flex items-center gap-2 text-base"
                 >
                     View Top Matches <ArrowRight size={18} />
                 </Button>

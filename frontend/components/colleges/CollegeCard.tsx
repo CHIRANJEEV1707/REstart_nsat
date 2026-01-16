@@ -252,14 +252,26 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-3">
-                    {/* Tags logic */}
-                    {/* RESTART Score (Universal) */}
-                    <span className="text-[10px] px-2 py-0.5 bg-[#0085ff]/10 text-[#0085ff] rounded-md font-bold border border-[#0085ff]/20 flex items-center gap-1">
-                        RESTART Score: {college.restart_score ? college.restart_score.toFixed(1) : 'N/A'}
+                    {/* GAMIFICATION: Match Score Badge */}
+                    {college.restart_score ? (
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border flex items-center gap-1 ${college.restart_score >= 8
+                            ? 'bg-green-50 text-green-700 border-green-200'
+                            : college.restart_score >= 6
+                                ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                                : 'bg-gray-50 text-gray-600 border-gray-200'
+                            }`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                            {Math.round(college.restart_score * 10)}% Match
+                        </span>
+                    ) : null}
+
+                    {/* RESTART Score (Legacy but kept small) */}
+                    <span className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md font-medium border border-blue-100">
+                        Score: {college.restart_score ? college.restart_score.toFixed(1) : 'N/A'}
                     </span>
 
                     {variant === 'traditional' && college.badges?.[0] && (
-                        <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md">
+                        <span className="text-[10px] px-2 py-0.5 bg-gray-50 text-gray-500 rounded-md border border-gray-100">
                             {college.badges[0]}
                         </span>
                     )}
@@ -299,13 +311,17 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                         }}
                         disabled={isInCompare(effectiveId) || compareItems.length >= 3}
                         variant="outline"
-                        className={`w-full border-gray-200 ${isInCompare(effectiveId) ? 'bg-green-50 text-green-700 border-green-200' : ''}`}
+                        className={`w-full border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors ${isInCompare(effectiveId) ? 'bg-green-50 text-green-700 border-green-200' : ''}`}
                     >
                         {isInCompare(effectiveId) ? '✓ Added' : '+ Compare'}
                     </Button>
                 </div>
                 <div className="flex-1">
-                    {getCTA()}
+                    <Link href={`/college/${college.collegeId}`} className="w-full">
+                        <Button className="w-full bg-[#0085ff] hover:bg-[#006bd1] text-white shadow-md hover:shadow-lg transition-all h-9">
+                            View Details <ArrowRight size={16} className="ml-2" />
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </div>

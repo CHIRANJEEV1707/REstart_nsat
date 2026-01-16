@@ -62,9 +62,9 @@ export default function CollegeGrid({
             let endpoint = '/colleges'; // Default for 'indian'
 
             if (type === 'international') {
-                endpoint = '/colleges/international';
+                endpoint = '/international-colleges';
             } else if (type === 'newgen') {
-                endpoint = '/colleges/new-gen';
+                endpoint = '/newgen-colleges';
             }
 
             const params = new URLSearchParams();

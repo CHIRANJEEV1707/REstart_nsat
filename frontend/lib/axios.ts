@@ -2,28 +2,8 @@ import axios from 'axios';
 
 import Cookies from 'js-cookie';
 
-// Validate and get API base URL
-const getApiBaseUrl = (): string => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    // In production, fail fast if env var is missing
-    if (!apiUrl && process.env.NODE_ENV === 'production') {
-        throw new Error(
-            'NEXT_PUBLIC_API_URL is not defined. Please set this environment variable in production.'
-        );
-    }
-
-    // In development, use localhost with a warning
-    if (!apiUrl) {
-        console.warn(
-            '⚠️  NEXT_PUBLIC_API_URL is not set. Using default: http://localhost:5001/api\n' +
-            'To remove this warning, add NEXT_PUBLIC_API_URL to your .env.local file.'
-        );
-        return 'http://localhost:5001/api';
-    }
-
-    return apiUrl;
-};
+// Use relative path since API routes are now in the same Next.js app
+const getApiBaseUrl = (): string => '/api';
 
 const api = axios.create({
     baseURL: getApiBaseUrl(),
@@ -54,7 +34,7 @@ api.interceptors.response.use(
                 localStorage.removeItem('token');
 
                 // Define protected paths that require login
-                const protectedPaths = ['/dashboard', '/admin', '/saved', '/prep'];
+                const protectedPaths = ['/dashboard', '/admin', '/saved', '/prep', '/settings', '/profile', '/onboarding'];
                 const currentPath = window.location.pathname;
 
                 // Only redirect if explicitly on a protected path AND it wasn't the login request itself that failed

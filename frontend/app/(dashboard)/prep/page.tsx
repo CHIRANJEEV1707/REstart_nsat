@@ -29,7 +29,7 @@ export default function PrepPage() {
             try {
                 // api client uses correct base URL and credentials
                 const res = await api.get('/bundles');
-                setBundles(res.data);
+                setBundles(res.data.data || []);
             } catch (error: any) {
                 console.error("Failed to fetch bundles. Is the backend running?", error);
                 // Optional: Show user-friendly error state later if needed

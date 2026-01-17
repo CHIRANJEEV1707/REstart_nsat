@@ -16,9 +16,11 @@ async function getCurrentUser(request: NextRequest) {
     }
 }
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, props: { params: Promise<{ slug: string }> }) {
     try {
         await dbConnect();
+
+        const params = await props.params;
 
         const guide = await InterviewGuide.findOne({
             slug: params.slug,

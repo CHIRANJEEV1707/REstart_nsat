@@ -19,12 +19,13 @@ async function checkAdmin(request: NextRequest) {
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { questionId: string } }) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ questionId: string }> }) {
     if (!await checkAdmin(request)) {
         return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
 
     try {
+        const params = await props.params;
         const body = await request.json();
         const question = await Question.findByIdAndUpdate(params.questionId, body, { new: true, runValidators: true });
         if (!question) return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
@@ -34,12 +35,13 @@ export async function PUT(request: NextRequest, { params }: { params: { question
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { questionId: string } }) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ questionId: string }> }) {
     if (!await checkAdmin(request)) {
         return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
 
     try {
+        const params = await props.params;
         await Question.findByIdAndDelete(params.questionId);
         return NextResponse.json({ success: true, data: {} });
     } catch (error: any) {

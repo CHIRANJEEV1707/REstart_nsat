@@ -205,17 +205,31 @@ const startServer = async () => {
         // Connect to database
         await connectDB();
 
-        // Start server
-        app.listen(PORT, () => {
-            logger.info(`Server running on port ${PORT}`);
-        });
+        // Start server only if not in Vercel environment (Vercel handles it)
+        if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+            app.listen(PORT, () => {
+                logger.info(`Server running on port ${PORT}`);
+            });
+        }
     } catch (error: any) {
         logger.error(`Failed to start server: ${error.message}`);
-        // Start server anyway to allow health checks
-        app.listen(PORT, () => {
-            logger.warn(`Server running on port ${PORT} (Database connection failed)`);
-        });
+        if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+            app.listen(PORT, () => {
+                logger.warn(`Server running on port ${PORT} (Database connection failed)`);
+            });
+        }
     }
 };
 
-startServer();
+// Vercel needs the app exported
+export default app;
+
+if (require.main === module) {
+    startServer();
+} else {
+    // For Vercel (imported), ensure DB is connected.
+    // However, since handler is synchronous (app), we can't await connectDB here easily without top-level await
+    // or adding a middleware.
+    // Adding a middleware to ensure DB connection is the safest serverless pattern.
+    connectDB();
+}

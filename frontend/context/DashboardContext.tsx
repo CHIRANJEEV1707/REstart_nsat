@@ -1,60 +1,36 @@
 "use client";
 
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/axios';
 import { useRouter } from 'next/navigation';
+import { useSavedColleges } from '@/hooks/useSavedColleges';
 
 interface DashboardContextType {
     // Saved Colleges
     savedColleges: string[];
     toggleSaveCollege: (id: string, type?: string) => void;
 
-    // Navigation Helpers (Optional, can be used if needed but simpler to use generic router)
+    // Navigation Helpers
     openCollegeDetails: (id: string) => void;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
-    const queryClient = useQueryClient();
     const router = useRouter();
+    const { savedColleges: savedList, isSaved, saveCollege, removeCollege } = useSavedColleges();
 
     const openCollegeDetails = (id: string) => {
         router.push(`/college/${id}`);
     };
 
-    // --- Saved Colleges Logic ---
-    const { data: savedResponse } = useQuery({
-        queryKey: ['saved-colleges'],
-        queryFn: async () => {
-            const res = await api.get('/saved');
-            return res.data;
-        }
-    });
-
-    const savedColleges = savedResponse?.data?.map((c: any) => c.collegeId || c._id) || [];
-
-    const saveMutation = useMutation({
-        mutationFn: async ({ id, type }: { id: string; type: string }) => {
-            const isSaved = savedColleges.includes(id);
-            if (isSaved) {
-                await api.delete(`/saved/${id}?type=${type}`);
-            } else {
-                await api.post('/saved', {
-                    collegeId: id,
-                    collegeType: type
-                });
-            }
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['saved-colleges'] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-        }
-    });
+    const savedColleges = savedList.map((c: any) => c._id || c.collegeId);
 
     const toggleSaveCollege = (id: string, type: string = 'indian') => {
-        saveMutation.mutate({ id, type });
+        if (isSaved(id)) {
+            removeCollege({ id, type });
+        } else {
+            saveCollege({ id, type });
+        }
     };
 
     return (

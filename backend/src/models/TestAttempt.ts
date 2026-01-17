@@ -14,6 +14,7 @@ export interface ITestAttempt extends Document {
         isCorrect: boolean;
         marksAwarded: number;
         timeSpent: number; // seconds on this question
+        status: 'not-visited' | 'visited' | 'answered' | 'marked-for-review' | 'answered-marked-for-review';
     }[];
 
     // Scoring
@@ -91,6 +92,11 @@ const TestAttemptSchema = new Schema<ITestAttempt>({
         isCorrect: { type: Boolean, default: false },
         marksAwarded: { type: Number, default: 0 },
         timeSpent: { type: Number, default: 0 },
+        status: {
+            type: String,
+            enum: ['not-visited', 'visited', 'answered', 'marked-for-review', 'answered-marked-for-review'],
+            default: 'not-visited'
+        },
         _id: false
     }],
 

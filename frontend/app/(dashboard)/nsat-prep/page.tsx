@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, BookOpen, TrendingUp } from 'lucide-react';
+import { ArrowLeft, BookOpen, TrendingUp, Sparkles, Lock, CheckCircle } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { PaymentModal } from '@/components/payment/PaymentModal';
 import { useAuth } from '@/context/AuthContext';
@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function NSATPrepPage() {
     const { user } = useAuth();
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
+    const [showUpgrade, setShowUpgrade] = useState(false);
 
     const packages = [
         {
@@ -75,6 +76,8 @@ export default function NSATPrepPage() {
         return user?.purchasedBundles?.some((b: any) => b.productSlug === slug);
     };
 
+    const hasPurchasedAny = user?.purchasedBundles?.some((b: any) => b.productSlug.includes('nsat'));
+
     const loadRazorpay = () => {
         return new Promise((resolve) => {
             const script = document.createElement('script');
@@ -126,7 +129,7 @@ export default function NSATPrepPage() {
                         const verifyData = await verifyRes.json();
                         if (verifyData.success) {
                             toast.success('Payment Verified! Access Granted.');
-                            window.location.href = '/dashboard';
+                            window.location.reload();
                         } else {
                             toast.error('Verification failed: ' + verifyData.message);
                         }
@@ -164,144 +167,187 @@ export default function NSATPrepPage() {
             />
 
             <div className="max-w-7xl mx-auto px-6 py-8">
-                <Link href="/dashboard" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-6 group">
-                    <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-                    Back to Dashboard
-                </Link>
+                <div className="flex items-center justify-between mb-8">
+                    <Link href="/dashboard" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors group">
+                        <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+                        Back to Dashboard
+                    </Link>
 
-                {/* Hero Section */}
-                <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-xl overflow-hidden relative">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-4">
-                            <BookOpen className="w-8 h-8 text-blue-100" />
-                            <Badge className="bg-white/20 text-white border-white/20 backdrop-blur-md">NSAT Prep</Badge>
+                    {hasPurchasedAny && (
+                        <div className="flex gap-2">
+                             <Button
+                                variant={showUpgrade ? "default" : "outline"}
+                                onClick={() => setShowUpgrade(!showUpgrade)}
+                                className="gap-2"
+                             >
+                                <Sparkles className="w-4 h-4" />
+                                {showUpgrade ? "View Dashboard" : "Upgrade / Store"}
+                             </Button>
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
-                            Master the NSAT Exam
-                        </h1>
-                        <p className="text-lg text-blue-100 max-w-2xl leading-relaxed">
-                            Comprehensive preparation materials, mock tests, and expert guidance to crack the Newton School Aptitude Test.
-                        </p>
-                    </div>
+                    )}
                 </div>
 
-                {/* Quick Access Cards */}
-                <div className="grid md:grid-cols-3 gap-6 mb-12">
-                    <Link href="/nsat-prep/mock-tests" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
-                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
-                            <svg className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                            </svg>
-                        </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">Mock Tests</h3>
-                        <p className="text-sm text-gray-500">Full-length proctored mock tests for NSAT & Coding NSAT</p>
-                        <span className="inline-flex items-center text-blue-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all">
-                            Start Practice <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                        </span>
-                    </Link>
-
-                    <Link href="/nsat-prep/pyqs" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all">
-                        <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors">
-                            <svg className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                        </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">Previous Year Questions</h3>
-                        <p className="text-sm text-gray-500">Practice with actual questions from past NSAT exams</p>
-                        <span className="inline-flex items-center text-green-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all">
-                            View PYQs <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                        </span>
-                    </Link>
-
-                    <Link href="/nsat-prep/interview-guide" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all">
-                        <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-600 transition-colors">
-                            <svg className="w-6 h-6 text-purple-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">Interview Guide</h3>
-                        <p className="text-sm text-gray-500">Expert tips and sample questions for NSAT interview</p>
-                        <span className="inline-flex items-center text-purple-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all">
-                            Read Guide <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                        </span>
-                    </Link>
-                </div>
-                {/* ... Quick Access Cards ... */}
-            </div>
-
-            {/* Recent Performance Section */}
-            <RecentPerformance />
-
-            {/* Pricing Grid */}
-            <div className="grid md:grid-cols-3 gap-8 items-start">
-                {packages.map((pkg, idx) => {
-                    // ... existing map logic ...
-                    const purchased = isPurchased(pkg.slug);
-                    return (
-                        <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full border ${pkg.popular ? pkg.color + ' shadow-xl scale-105 z-10' : 'border-gray-100 hover:border-gray-200 hover:shadow-lg'}`}>
-                            {pkg.popular && (
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide">
-                                    MOST POPULAR
+                {!hasPurchasedAny || showUpgrade ? (
+                    // Marketing / Sales View
+                    <>
+                         {/* Hero Section */}
+                         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-xl overflow-hidden relative">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <BookOpen className="w-8 h-8 text-blue-100" />
+                                    <Badge className="bg-white/20 text-white border-white/20 backdrop-blur-md">NSAT Prep</Badge>
                                 </div>
-                            )}
-                            <div className="mb-6">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
-                                <p className="text-sm text-gray-500 font-medium mb-4">{pkg.bestFor}</p>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</span>
-                                    <span className="text-gray-400 font-medium">/ bundle</span>
-                                </div>
+                                <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
+                                    {hasPurchasedAny ? "Upgrade Your Prep" : "Master the NSAT Exam"}
+                                </h1>
+                                <p className="text-lg text-blue-100 max-w-2xl leading-relaxed">
+                                    {hasPurchasedAny
+                                        ? "Unlock more features, full-length mocks, and expert interview guidance to secure your admission."
+                                        : "Comprehensive preparation materials, mock tests, and expert guidance to crack the Newton School Aptitude Test."}
+                                </p>
                             </div>
-                            <div className="flex-1 space-y-4 mb-8">
-                                <ul className="space-y-3">
-                                    {pkg.features.map((feat, i) => (
-                                        <li key={i} className="flex items-start gap-3 text-gray-700">
-                                            <div className={`mt-1 p-0.5 rounded-full ${pkg.popular ? 'bg-blue-100 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                </svg>
+                        </div>
+
+                        {/* Pricing Grid */}
+                        <div className="grid md:grid-cols-3 gap-8 items-start mb-12">
+                            {packages.map((pkg, idx) => {
+                                const purchased = isPurchased(pkg.slug);
+                                return (
+                                    <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full border ${pkg.popular ? pkg.color + ' shadow-xl scale-105 z-10' : 'border-gray-100 hover:border-gray-200 hover:shadow-lg'}`}>
+                                        {pkg.popular && (
+                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide">
+                                                MOST POPULAR
                                             </div>
-                                            <span className="text-sm leading-relaxed">{feat}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className="flex items-center gap-2 text-xs text-gray-400 px-1 mt-auto pt-4">
-                                    <span className="font-bold">Duration:</span> {pkg.duration}
-                                </div>
-                            </div>
-                            <Button
-                                size="lg"
-                                onClick={() => {
-                                    if (purchased) {
-                                        window.location.href = '/dashboard';
-                                    } else {
-                                        setSelectedPackage(pkg);
-                                    }
-                                }}
-                                className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
-                                    ? 'bg-green-600 hover:bg-green-700 text-white border-transparent'
-                                    : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
-                                    }`}
-                            >
-                                {purchased ? 'Access Content' : 'Get Started'}
-                            </Button>
+                                        )}
+                                        <div className="mb-6">
+                                            <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
+                                            <p className="text-sm text-gray-500 font-medium mb-4">{pkg.bestFor}</p>
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</span>
+                                                <span className="text-gray-400 font-medium">/ bundle</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 space-y-4 mb-8">
+                                            <ul className="space-y-3">
+                                                {pkg.features.map((feat, i) => (
+                                                    <li key={i} className="flex items-start gap-3 text-gray-700">
+                                                        <div className={`mt-1 p-0.5 rounded-full ${pkg.popular ? 'bg-blue-100 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                        <span className="text-sm leading-relaxed">{feat}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <div className="flex items-center gap-2 text-xs text-gray-400 px-1 mt-auto pt-4">
+                                                <span className="font-bold">Duration:</span> {pkg.duration}
+                                            </div>
+                                        </div>
+                                        <Button
+                                            size="lg"
+                                            onClick={() => {
+                                                if (purchased) {
+                                                    // Already purchased
+                                                } else {
+                                                    setSelectedPackage(pkg);
+                                                }
+                                            }}
+                                            disabled={purchased}
+                                            className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
+                                                ? 'bg-green-100 text-green-700 border-transparent cursor-default'
+                                                : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
+                                                }`}
+                                        >
+                                            {purchased ? (
+                                                <span className="flex items-center gap-2"><CheckCircle className="w-5 h-5" /> Active</span>
+                                            ) : 'Get Started'}
+                                        </Button>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    );
-                })}
+                    </>
+                ) : (
+                    // Student Dashboard View
+                    <>
+                        <div className="mb-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back!</h1>
+                            <p className="text-gray-600">Track your progress and access your NSAT prep resources.</p>
+                        </div>
+
+                         {/* Quick Access Cards */}
+                        <div className="grid md:grid-cols-3 gap-6 mb-12">
+                            <Link href="/nsat-prep/mock-tests" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
+                                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors relative z-10">
+                                    <svg className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2 relative z-10">Mock Tests</h3>
+                                <p className="text-sm text-gray-500 relative z-10">Full-length proctored mock tests for NSAT & Coding NSAT</p>
+                                <span className="inline-flex items-center text-blue-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
+                                    Start Practice <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                                </span>
+                            </Link>
+
+                            <Link href="/nsat-prep/pyqs" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
+                                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors relative z-10">
+                                    <svg className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2 relative z-10">Previous Year Questions</h3>
+                                <p className="text-sm text-gray-500 relative z-10">Practice with actual questions from past NSAT exams</p>
+                                <span className="inline-flex items-center text-green-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
+                                    View PYQs <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                                </span>
+                            </Link>
+
+                            <Link href="/nsat-prep/interview-guide" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
+                                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-600 transition-colors relative z-10">
+                                    <svg className="w-6 h-6 text-purple-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2 relative z-10">Interview Guide</h3>
+                                <p className="text-sm text-gray-500 relative z-10">Expert tips and sample questions for NSAT interview</p>
+                                <span className="inline-flex items-center text-purple-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
+                                    Read Guide <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                                </span>
+                            </Link>
+                        </div>
+
+                        {/* Recent Performance Section */}
+                        <RecentPerformance />
+                    </>
+                )}
             </div>
         </div>
     );
 }
 
-// Sub-component for Performance to keep main component clean
+// Sub-component for Performance
 function RecentPerformance() {
     const [attempts, setAttempts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/mock-tests/attempts')
-            .then(res => res.json())
+        fetch('/api/mock-tests/attempts/history') // Updated endpoint to use history if needed, or check existing endpoint
+            .then(res => res.json()) // It was /api/mock-tests/attempts/history in routes, wait.
+            // In routes file: router.get('/attempts/history', ...)
+            // The existing file called /api/mock-tests/attempts ??
+            // Let's check the routes file content I read earlier.
+            // router.get('/attempts/history', ...) is defined.
+            // Is there a generic /attempts route?
+            // No. The previous code called /api/mock-tests/attempts.
+            // If the previous code was working, maybe there is another route or I missed it.
+            // But 'backend/src/routes/mockTestRoutes.ts' has `router.get('/attempts/history', ...)`
+            // I will use `/api/mock-tests/attempts/history`.
             .then(data => {
                 if (data.success) {
                     setAttempts(data.data);
@@ -345,7 +391,7 @@ function RecentPerformance() {
                                 </td>
                                 <td className="py-4">
                                     <Badge variant="outline" className={`${(attempt.analytics?.accuracy || 0) > 80 ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
-                                        {attempt.analytics?.accuracy || 0}%
+                                        {Math.round(attempt.analytics?.accuracy || 0)}%
                                     </Badge>
                                 </td>
                                 <td className="py-4">

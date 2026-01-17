@@ -51,6 +51,12 @@ export default function TestResultsPage() {
     const { mockTestId: test, totalScore, totalViolations, analytics, totalTimeSpent } = attempt;
     const isPremium = (user?.purchasedBundles?.length ?? 0) > 0;
 
+    // Calculate global accuracy if not present
+    const totalCorrect = analytics?.sectionWise?.reduce((acc: number, curr: any) => acc + curr.correct, 0) || 0;
+    const totalIncorrect = analytics?.sectionWise?.reduce((acc: number, curr: any) => acc + curr.incorrect, 0) || 0;
+    const totalAttempted = totalCorrect + totalIncorrect;
+    const globalAccuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+
     // Helper for formatting time
     const formatTime = (secs: number) => {
         const mins = Math.floor(secs / 60);
@@ -103,7 +109,7 @@ export default function TestResultsPage() {
                             <span className="text-gray-500 font-medium text-sm">Accuracy</span>
                             <CheckCircle className="w-5 h-5 text-green-500" />
                         </div>
-                        <div className="text-2xl font-bold text-gray-900">{analytics?.accuracy || 0}%</div>
+                        <div className="text-2xl font-bold text-gray-900">{globalAccuracy}%</div>
                     </Card>
 
                     <Card className="p-6 border-l-4 border-l-purple-500">
@@ -163,12 +169,12 @@ export default function TestResultsPage() {
                                     <div key={idx}>
                                         <div className="flex justify-between text-sm mb-2">
                                             <span className="font-medium text-gray-700">{section.section}</span>
-                                            <span className="text-gray-500">{section.score}/{section.totalMarks} Marks</span>
+                                            <span className="text-gray-500">{section.score}/{section.maxScore} Marks</span>
                                         </div>
                                         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                                             <div
                                                 className="h-full bg-blue-600 rounded-full"
-                                                style={{ width: `${(section.score / section.totalMarks) * 100}%` }}
+                                                style={{ width: `${Math.max(0, Math.min(100, (section.score / section.maxScore) * 100))}%` }}
                                             ></div>
                                         </div>
                                     </div>

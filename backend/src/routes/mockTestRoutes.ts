@@ -133,7 +133,7 @@ router.post('/:slug/start', protect, async (req: any, res: Response) => {
                 isCorrect: false,
                 marksAwarded: 0,
                 timeSpent: 0,
-                status: 'not-visited'
+                status: 'not-visited' as 'not-visited'
             })),
             cameraEnabled: req.body.cameraEnabled || false
         });

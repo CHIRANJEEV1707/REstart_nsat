@@ -29,10 +29,10 @@ export default function MockTestsPage() {
     const [accessLevel, setAccessLevel] = useState<'none' | 'free' | 'premium'>('none');
 
     // Fetch access status
-    const { data: accessData } = useQuery({
+    const { data: accessData, refetch: refetchAccess } = useQuery({
         queryKey: ['freePackStatus'],
         queryFn: async () => {
-            const res = await api.get('/free-pack');
+            const res = await api.get('/api/free-pack/status');
             return res.data?.data;
         },
         enabled: !!user
@@ -56,7 +56,7 @@ export default function MockTestsPage() {
     // Claim free pack mutation
     const claimMutation = useMutation({
         mutationFn: async () => {
-            const res = await api.post('/free-pack');
+            const res = await api.post('/api/free-pack/claim', { source: 'mock-test-page' });
             return res.data;
         },
         onSuccess: (data) => {
@@ -65,7 +65,7 @@ export default function MockTestsPage() {
             } else {
                 toast.success('🎉 Free pack claimed successfully!');
             }
-            setAccessLevel('free');
+            refetchAccess();
         },
         onError: () => {
             toast.error('Failed to claim free pack. Please try again.');

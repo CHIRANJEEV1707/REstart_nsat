@@ -239,6 +239,19 @@ const seed = async () => {
                 { question: 'Explain Event Loop in Node.js', suggestedAnswer: 'The event loop allows Node.js to perform non-blocking I/O operations...' }
             ]
         });
+
+        await InterviewGuide.create({
+            title: 'Behavioral Interview Masterclass',
+            slug: 'behavioral-masterclass',
+            guideType: 'nsat',
+            description: 'Master the HR round with common behavioral questions and the STAR method.',
+            content: '# Behavioral Interviews\n\n## The STAR Method\n- **Situation**\n- **Task**\n- **Action**\n- **Result**',
+            isFree: true,
+            tips: ['Be honest', 'Use the STAR method', 'Research the company'],
+            sampleQuestions: [
+                { question: 'Tell me about a time you failed.', suggestedAnswer: 'I once missed a deadline because...' }
+            ]
+        });
         console.log('Seeded Interview Guide');
 
         // --- 4. PYQs ---

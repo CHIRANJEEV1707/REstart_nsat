@@ -1,11 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft, BookOpen, Lock, FileText, Calendar } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 interface PYQCategory {
     _id: string;
@@ -18,10 +20,29 @@ interface PYQCategory {
 }
 
 export default function PYQListPage() {
+    const { user } = useAuth();
+    const [accessLevel, setAccessLevel] = useState<'none' | 'free' | 'premium'>('none');
+
+    // Fetch access status
+    const { data: accessData } = useQuery({
+        queryKey: ['freePackStatus'],
+        queryFn: async () => {
+            const res = await api.get('/api/free-pack/status');
+            return res.data?.data;
+        },
+        enabled: !!user
+    });
+
+    useEffect(() => {
+        if (accessData) {
+            setAccessLevel(accessData.accessLevel);
+        }
+    }, [accessData]);
+
     const { data: categories, isLoading } = useQuery({
         queryKey: ['pyqCategories'],
         queryFn: async () => {
-            const res = await api.get('/pyqs');
+            const res = await api.get('/api/pyqs');
             return res.data?.data || [];
         }
     });
@@ -31,6 +52,12 @@ export default function PYQListPage() {
     // Group by exam type
     const generalPYQs = categoriesList.filter(c => c.examType === 'nsat');
     const codingPYQs = categoriesList.filter(c => c.examType === 'coding-nsat');
+
+    const canAccess = (item: PYQCategory) => {
+        if (accessLevel === 'premium') return true;
+        if (accessLevel === 'free' && item.isFree) return true;
+        return false;
+    };
 
     return (
         <div className="min-h-screen bg-gray-50/30 pb-20">
@@ -61,7 +88,7 @@ export default function PYQListPage() {
                             </h2>
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {generalPYQs.map(category => (
-                                    <PYQCard key={category._id} category={category} />
+                                    <PYQCard key={category._id} category={category} hasAccess={canAccess(category)} />
                                 ))}
                                 {generalPYQs.length === 0 && (
                                     <p className="text-gray-500 col-span-full">No PYQs available yet.</p>
@@ -77,7 +104,7 @@ export default function PYQListPage() {
                             </h2>
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {codingPYQs.map(category => (
-                                    <PYQCard key={category._id} category={category} />
+                                    <PYQCard key={category._id} category={category} hasAccess={canAccess(category)} />
                                 ))}
                                 {codingPYQs.length === 0 && (
                                     <p className="text-gray-500 col-span-full">No Coding PYQs available yet.</p>
@@ -91,9 +118,9 @@ export default function PYQListPage() {
     );
 }
 
-function PYQCard({ category }: { category: PYQCategory }) {
+function PYQCard({ category, hasAccess }: { category: PYQCategory; hasAccess: boolean }) {
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-lg hover:border-blue-200 transition-all group">
+        <div className={`bg-white rounded-xl border p-6 transition-all group ${hasAccess ? 'border-gray-100 hover:shadow-lg hover:border-blue-200' : 'border-gray-200 opacity-80'}`}>
             <div className="flex justify-between items-start mb-4">
                 <Badge variant="outline" className="bg-gray-50">
                     <Calendar className="w-3 h-3 mr-1" />
@@ -102,7 +129,7 @@ function PYQCard({ category }: { category: PYQCategory }) {
                 {category.isFree ? (
                     <Badge className="bg-green-100 text-green-700">FREE</Badge>
                 ) : (
-                    <Lock className="w-4 h-4 text-gray-400" />
+                    !hasAccess && <Lock className="w-4 h-4 text-gray-400" />
                 )}
             </div>
 
@@ -115,11 +142,19 @@ function PYQCard({ category }: { category: PYQCategory }) {
                     {category.questionCount} Questions
                 </span>
 
-                <Link href={`/nsat-prep/pyqs/${category._id}`}>
-                    <Button variant="ghost" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 p-2 h-auto text-sm font-medium">
-                        View Questions →
-                    </Button>
-                </Link>
+                {hasAccess ? (
+                    <Link href={`/nsat-prep/pyqs/${category._id}`}>
+                        <Button variant="ghost" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 p-2 h-auto text-sm font-medium">
+                            View Questions →
+                        </Button>
+                    </Link>
+                ) : (
+                    <Link href="/nsat-prep">
+                         <Button variant="ghost" className="text-gray-500 hover:text-gray-700 p-2 h-auto text-sm font-medium">
+                            <Lock className="w-3 h-3 mr-1" /> Unlock
+                        </Button>
+                    </Link>
+                )}
             </div>
         </div>
     );

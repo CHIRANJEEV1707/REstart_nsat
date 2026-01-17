@@ -4,15 +4,56 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, BookOpen, TrendingUp, Sparkles, Lock, CheckCircle } from 'lucide-react';
+import { ArrowLeft, BookOpen, TrendingUp, Sparkles, Lock, CheckCircle, Gift } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { PaymentModal } from '@/components/payment/PaymentModal';
 import { useAuth } from '@/context/AuthContext';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import api from '@/lib/axios';
 
 export default function NSATPrepPage() {
     const { user } = useAuth();
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
     const [showUpgrade, setShowUpgrade] = useState(false);
+    const [accessLevel, setAccessLevel] = useState<'none' | 'free' | 'premium'>('none');
+
+    // Fetch access status
+    const { data: accessData, refetch: refetchAccess } = useQuery({
+        queryKey: ['freePackStatus'],
+        queryFn: async () => {
+            const res = await api.get('/api/free-pack/status');
+            return res.data?.data;
+        },
+        enabled: !!user
+    });
+
+    useEffect(() => {
+        if (accessData) {
+            setAccessLevel(accessData.accessLevel);
+        }
+    }, [accessData]);
+
+    const hasPurchasedAny = accessLevel === 'premium';
+    const hasFreePack = accessLevel === 'free';
+    const showDashboard = hasPurchasedAny || hasFreePack;
+
+    const claimMutation = useMutation({
+        mutationFn: async () => {
+            const res = await api.post('/api/free-pack/claim', { source: 'nsat-prep-page' });
+            return res.data;
+        },
+        onSuccess: (data) => {
+            if (data.alreadyClaimed) {
+                toast.success('You already have the free pack!');
+            } else {
+                toast.success('🎉 Free pack claimed successfully!');
+            }
+            refetchAccess();
+        },
+        onError: () => {
+            toast.error('Failed to claim free pack. Please try again.');
+        }
+    });
 
     const packages = [
         {
@@ -75,8 +116,6 @@ export default function NSATPrepPage() {
     const isPurchased = (slug: string) => {
         return user?.purchasedBundles?.some((b: any) => b.productSlug === slug);
     };
-
-    const hasPurchasedAny = user?.purchasedBundles?.some((b: any) => b.productSlug.includes('nsat'));
 
     const loadRazorpay = () => {
         return new Promise((resolve) => {
@@ -173,7 +212,7 @@ export default function NSATPrepPage() {
                         Back to Dashboard
                     </Link>
 
-                    {hasPurchasedAny && (
+                    {showDashboard && (
                         <div className="flex gap-2">
                              <Button
                                 variant={showUpgrade ? "default" : "outline"}
@@ -187,7 +226,7 @@ export default function NSATPrepPage() {
                     )}
                 </div>
 
-                {!hasPurchasedAny || showUpgrade ? (
+                {!showDashboard || showUpgrade ? (
                     // Marketing / Sales View
                     <>
                          {/* Hero Section */}
@@ -208,6 +247,32 @@ export default function NSATPrepPage() {
                                 </p>
                             </div>
                         </div>
+
+                        {/* Free Pack Offer */}
+                        {!hasFreePack && !hasPurchasedAny && (
+                            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 mb-12 border border-orange-100 relative overflow-hidden">
+                                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-2 text-orange-600 font-bold uppercase tracking-wider text-sm">
+                                            <Gift className="w-5 h-5" />
+                                            Limited Time Offer
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Claim Your Free Starter Pack</h2>
+                                        <p className="text-gray-600 max-w-xl">
+                                            Get instant access to <strong>1 Full-length NSAT Mock Test</strong>, <strong>1 Coding Mock Test</strong>, and <strong>Previous Year Questions</strong> - completely FREE!
+                                        </p>
+                                    </div>
+                                    <Button
+                                        size="lg"
+                                        onClick={() => claimMutation.mutate()}
+                                        disabled={claimMutation.isPending}
+                                        className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg shadow-orange-500/20 whitespace-nowrap min-w-[200px]"
+                                    >
+                                        {claimMutation.isPending ? 'Claiming...' : 'Claim Free Pack'}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Pricing Grid */}
                         <div className="grid md:grid-cols-3 gap-8 items-start mb-12">
@@ -275,6 +340,13 @@ export default function NSATPrepPage() {
                         <div className="mb-8">
                             <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back!</h1>
                             <p className="text-gray-600">Track your progress and access your NSAT prep resources.</p>
+
+                            {hasFreePack && !hasPurchasedAny && (
+                                <div className="mt-4 bg-orange-50 border border-orange-100 text-orange-800 px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2">
+                                    <Gift className="w-4 h-4" />
+                                    Free Starter Pack Active. Upgrade for full access.
+                                </div>
+                            )}
                         </div>
 
                          {/* Quick Access Cards */}

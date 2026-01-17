@@ -47,7 +47,9 @@ export interface IUser extends Document {
     saved_international_colleges?: mongoose.Types.ObjectId[];
     saved_newgen_colleges?: mongoose.Types.ObjectId[];
     purchasedBundles: {
-        bundleId: mongoose.Types.ObjectId;
+        bundleId?: mongoose.Types.ObjectId;
+        productSlug?: string;
+        verificationStatus?: 'active' | 'pending' | 'rejected';
         purchasedAt: Date;
         orderId: string;
         paymentId: string;
@@ -117,7 +119,9 @@ const UserSchema = new Schema<IUser>({
     saved_newgen_colleges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'NewGenCollege' }],
 
     purchasedBundles: [{
-        bundleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bundle' },
+        bundleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bundle' }, // Optional
+        productSlug: String, // New
+        verificationStatus: { type: String, enum: ['active', 'pending', 'rejected'], default: 'active' }, // New
         purchasedAt: { type: Date, default: Date.now },
         orderId: String,
         paymentId: String,

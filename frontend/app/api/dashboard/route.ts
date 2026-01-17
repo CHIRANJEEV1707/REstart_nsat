@@ -48,12 +48,26 @@ export async function GET(request: NextRequest) {
 
         // Get upcoming exam deadlines
         const today = new Date();
-        const upcomingExams = await Exam.find({
-            $or: [
-                { 'dates.registration_end': { $gte: today } },
-                { 'dates.exam_date_start': { $gte: today } }
-            ]
-        }).sort('dates.registration_end').limit(5);
+        let upcomingExams;
+
+        if (user.target_exams && user.target_exams.length > 0) {
+            // Prioritize tracked exams
+            upcomingExams = await Exam.find({
+                _id: { $in: user.target_exams },
+                $or: [
+                    { 'dates.registration_end': { $gte: today } },
+                    { 'dates.exam_date_start': { $gte: today } }
+                ]
+            }).sort('dates.registration_end');
+        } else {
+            // Fallback to general upcoming exams
+            upcomingExams = await Exam.find({
+                $or: [
+                    { 'dates.registration_end': { $gte: today } },
+                    { 'dates.exam_date_start': { $gte: today } }
+                ]
+            }).sort('dates.registration_end').limit(5);
+        }
 
         // Format deadlines
         const deadlines = upcomingExams.map(exam => ({

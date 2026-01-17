@@ -36,4 +36,5 @@ yarn-error.log*
 next-env.d.ts
 
 backend/dist
-backend/node_modulesfrontend.zip
+backend/node_modules
+frontend.zip

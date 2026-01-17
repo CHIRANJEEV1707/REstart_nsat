@@ -34,7 +34,7 @@ api.interceptors.response.use(
                 localStorage.removeItem('token');
 
                 // Define protected paths that require login
-                const protectedPaths = ['/dashboard', '/admin', '/saved', '/prep', '/settings', '/profile', '/onboarding'];
+                const protectedPaths = ['/dashboard', '/saved', '/prep', '/settings', '/profile', '/onboarding'];
                 const currentPath = window.location.pathname;
 
                 // Only redirect if explicitly on a protected path AND it wasn't the login request itself that failed
@@ -42,7 +42,12 @@ api.interceptors.response.use(
                 const isLoginRequest = error.config && error.config.url && (error.config.url.includes('/auth/login') || error.config.url.includes('/auth/signup'));
 
                 if (isProtected && !currentPath.includes('/auth/login') && !isLoginRequest) {
-                    window.location.href = '/auth/login';
+                    // Start logout process
+                    fetch('/api/auth/logout', { method: 'POST' })
+                        .catch(err => console.error("Logout failed during 401 handling", err))
+                        .finally(() => {
+                            window.location.href = '/auth/login';
+                        });
                 }
             }
         }

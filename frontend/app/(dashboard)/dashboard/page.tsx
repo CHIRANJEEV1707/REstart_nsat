@@ -8,11 +8,13 @@ import { SavedCollegesCard } from "@/components/dashboard/SavedCollegesCard";
 import CollegeCard from "@/components/colleges/CollegeCard";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
-import { Sparkles, Globe, Loader2 } from "lucide-react";
+import { Sparkles, Globe, Loader2, Code2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import AuthButton from "@/components/ui/AuthButton";
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -68,6 +70,9 @@ export default function DashboardPage() {
             <div className="h-[300px]">
                 <MatchSummaryCard />
             </div>
+
+            {/* 0. Active Plans */}
+            <ActivePlansSection user={user} />
 
             {/* 2. Recommended Colleges Carousel */}
             <RecommendedCollegesCard userId={user?._id} />
@@ -151,6 +156,46 @@ function InternationalSection({ openCollegeDetails, user }: { openCollegeDetails
                         />
                     </div>
                 ))}
+            </div>
+        </div>
+    );
+}
+
+function ActivePlansSection({ user }: { user: any }) {
+    if (!user?.purchasedBundles?.length) return null;
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-2">
+                <Sparkles className="text-yellow-500 w-5 h-5" />
+                <h2 className="text-xl font-bold text-gray-900">Your Active Plans</h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+                {user.purchasedBundles.map((p: any, i: number) => {
+                    const title = p.productSlug
+                        ? p.productSlug.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+                        : 'Unlocked Bundle';
+
+                    return (
+                        <div key={i} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-indigo-100 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                    <Code2 className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-gray-900">{title}</h3>
+                                    <p className="text-xs text-gray-500">Active since {new Date(p.purchasedAt).toLocaleDateString()}</p>
+                                    {p.verificationStatus === 'pending' && (
+                                        <Badge className="ml-2 bg-yellow-100 text-yellow-800 border-yellow-200">Pending Verification</Badge>
+                                    )}
+                                </div>
+                            </div>
+                            <Button size="sm" variant="outline" className="border-indigo-200 text-indigo-600 hover:bg-indigo-50">
+                                Access Content
+                            </Button>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

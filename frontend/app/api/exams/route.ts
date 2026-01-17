@@ -6,7 +6,15 @@ export async function GET(request: NextRequest) {
     try {
         await dbConnect();
 
-        const exams = await Exam.find();
+        const { searchParams } = new URL(request.url);
+        const search = searchParams.get('search');
+
+        let query = {};
+        if (search) {
+            query = { name: { $regex: search, $options: 'i' } };
+        }
+
+        const exams = await Exam.find(query);
 
         return NextResponse.json({
             success: true,

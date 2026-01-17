@@ -17,6 +17,10 @@ export default function AdminPage() {
                     <h3 className="font-bold text-lg">Manage Exams</h3>
                     <p className="text-gray-500 text-sm mt-1">Update exam dates and details.</p>
                 </Link>
+                <Link href="/admin/orders" className="block p-8 bg-white rounded-xl shadow-sm hover:shadow-md border border-yellow-100">
+                    <h3 className="font-bold text-lg text-yellow-700">Pending Approvals</h3>
+                    <p className="text-gray-500 text-sm mt-1">Verify manual UPI payments.</p>
+                </Link>
             </div>
         </div>
     )

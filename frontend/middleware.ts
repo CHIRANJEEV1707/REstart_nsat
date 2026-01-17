@@ -5,8 +5,8 @@ export function middleware(request: NextRequest) {
     const token = request.cookies.get('token')?.value
     const { pathname } = request.nextUrl
 
-    // Protected routes: dashboard, saved, prep, admin, settings, profile, onboarding
-    const protectedRoutes = ['/dashboard', '/saved', '/prep', '/admin', '/settings', '/profile', '/onboarding']
+    // Protected routes: dashboard, saved, prep, settings, profile, onboarding
+    const protectedRoutes = ['/dashboard', '/saved', '/prep', '/settings', '/profile', '/onboarding']
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
     // Auth routes: login, signup, forgot-password, reset-password

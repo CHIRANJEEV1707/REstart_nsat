@@ -11,6 +11,8 @@ import Link from "next/link";
 import { useCompare } from "@/context/CompareContext";
 import { useAuth } from "@/context/AuthContext";
 import { ChevronLeft, Heart, Share2, MapPin, Award, TrendingUp, DollarSign, Building2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { PaymentModal } from '@/components/payment/PaymentModal';
 
 export default function CollegeDetailPage() {
     const { id } = useParams();
@@ -61,6 +63,91 @@ export default function CollegeDetailPage() {
         staleTime: 0, // Always fetch fresh
     });
 
+    // Payment Logic
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+    // Use a fixed package for the Talk to Us feature
+    const talkToUsPackage = {
+        title: `Talk to Expert - ${response?.data?.name || 'College'}`,
+        price: 100,
+        slug: `talk-expert-${id}`
+    };
+
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
+    const handleRazorpayPayment = async (email: string) => {
+        try {
+            const res = await loadRazorpay();
+            if (!res) throw new Error('Razorpay SDK failed to load');
+
+            const orderRes = await fetch('/api/payment/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: talkToUsPackage.price,
+                    currency: 'INR',
+                    productSlug: talkToUsPackage.slug,
+                    receipt: `receipt_${talkToUsPackage.slug}_${Date.now()}`.substring(0, 40)
+                })
+            });
+
+            if (!orderRes.ok) throw new Error('Failed to create order');
+            const orderData = await orderRes.json();
+
+            const options = {
+                key: orderData.keyId,
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: "REstart",
+                description: `Expert Session for ${college?.name}`,
+                order_id: orderData.id,
+                handler: async function (response: any) {
+                    try {
+                        const verifyRes = await fetch('/api/payment/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            })
+                        });
+
+                        const verifyData = await verifyRes.json();
+                        if (verifyData.success) {
+                            toast.success('Payment Verified! Our expert will contact you shortly.');
+                            setIsPaymentModalOpen(false);
+                        } else {
+                            toast.error('Verification failed: ' + verifyData.message);
+                        }
+                    } catch (e) {
+                        console.error("Verification error", e);
+                        toast.error('Payment verification failed');
+                    }
+                },
+                prefill: {
+                    name: user?.name || "User",
+                    email: email,
+                    contact: "9999999999"
+                },
+                theme: { color: "#2563EB" }
+            };
+            const paymentObject = new (window as any).Razorpay(options);
+            paymentObject.open();
+        } catch (e) {
+            console.error(e);
+            toast.error('Payment initialization failed. Please try again.');
+        }
+    };
+
     const college = response?.data;
     const isInternational = college?.country && college.country !== 'India';
 
@@ -69,6 +156,13 @@ export default function CollegeDetailPage() {
 
     return (
         <div className="min-h-screen bg-gray-50/50">
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                pkg={talkToUsPackage}
+                upiId={process.env.NEXT_PUBLIC_UPI_ID || ''}
+                onRazorpay={handleRazorpayPayment}
+            />
             {/* Sticky Dashboard Top Bar */}
             <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-4">
@@ -322,7 +416,12 @@ export default function CollegeDetailPage() {
                             <div className="bg-gray-900 text-gray-300 p-5 rounded-xl text-sm">
                                 <p className="mb-2 font-medium text-white">Need help applying?</p>
                                 <p className="mb-4 text-gray-400">Get free counseling from our experts.</p>
-                                <button className="text-white underline hover:no-underline">Chat with us</button>
+                                <button
+                                    onClick={() => setIsPaymentModalOpen(true)}
+                                    className="text-white underline hover:no-underline"
+                                >
+                                    Chat with us
+                                </button>
                             </div>
                         </div>
                     </aside>

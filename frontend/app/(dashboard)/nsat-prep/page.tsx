@@ -7,13 +7,16 @@ import { Button } from '@/components/ui/Button';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { PaymentModal } from '@/components/payment/PaymentModal';
+import { useAuth } from '@/context/AuthContext';
 
 export default function NSATPrepPage() {
+    const { user } = useAuth();
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
 
     const packages = [
         {
             title: "NSAT Complete Prep – Interview + Mocks",
+            slug: "nsat-prep-complete",
             price: 800,
             bestFor: "Students wanting 360° coverage",
             features: [
@@ -31,6 +34,7 @@ export default function NSATPrepPage() {
         },
         {
             title: "NSAT Complete Prep – Interview",
+            slug: "nsat-prep-interview",
             price: 500,
             popular: true,
             bestFor: "Students focusing on the interview stage",
@@ -49,6 +53,7 @@ export default function NSATPrepPage() {
         },
         {
             title: "NSAT Complete Prep – Basic",
+            slug: "nsat-prep-basic",
             price: 300,
             bestFor: "Building strong fundamentals",
             features: [
@@ -64,6 +69,11 @@ export default function NSATPrepPage() {
             btnVariant: "outline"
         }
     ];
+
+    // Helper to check if purchased
+    const isPurchased = (slug: string) => {
+        return user?.purchasedBundles?.some((b: any) => b.productSlug === slug);
+    };
 
     const loadRazorpay = () => {
         return new Promise((resolve) => {
@@ -86,7 +96,8 @@ export default function NSATPrepPage() {
                 body: JSON.stringify({
                     amount: selectedPackage.price,
                     currency: 'INR',
-                    receipt: `receipt_${selectedPackage.title.replace(/\s+/g, '_')}_${Date.now()}`.substring(0, 40)
+                    productSlug: selectedPackage.slug,
+                    receipt: `receipt_${selectedPackage.slug}_${Date.now()}`.substring(0, 40)
                 })
             });
 
@@ -101,23 +112,27 @@ export default function NSATPrepPage() {
                 description: `Payment for ${selectedPackage.title}`,
                 order_id: orderData.id,
                 handler: async function (response: any) {
-                    // Send Email Notification
                     try {
-                        await fetch('/api/email/send', {
+                        const verifyRes = await fetch('/api/payment/verify', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                email,
-                                name: "Student",
-                                productTitle: selectedPackage.title,
-                                amount: selectedPackage.price,
-                                type: 'razorpay_success'
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
                             })
                         });
-                        toast.success('Payment Successful! Check your email.');
+
+                        const verifyData = await verifyRes.json();
+                        if (verifyData.success) {
+                            toast.success('Payment Verified! Access Granted.');
+                            window.location.href = '/dashboard';
+                        } else {
+                            toast.error('Verification failed: ' + verifyData.message);
+                        }
                     } catch (e) {
-                        console.error("Email failed", e);
-                        toast.success('Payment Successful!');
+                        console.error("Verification error", e);
+                        toast.error('Payment verification failed');
                     }
                     setSelectedPackage(null);
                 },
@@ -132,7 +147,7 @@ export default function NSATPrepPage() {
             paymentObject.open();
         } catch (e) {
             console.error(e);
-            alert('Payment initialization failed. Please try again.');
+            toast.error('Payment initialization failed. Please try again.');
         }
     };
 
@@ -143,7 +158,7 @@ export default function NSATPrepPage() {
             <PaymentModal
                 isOpen={!!selectedPackage}
                 onClose={() => setSelectedPackage(null)}
-                pkg={selectedPackage || { title: '', price: 0 }}
+                pkg={selectedPackage || { title: '', price: 0, slug: '' }}
                 upiId={process.env.NEXT_PUBLIC_UPI_ID || ''}
                 onRazorpay={handleRazorpayPayment}
             />
@@ -173,47 +188,59 @@ export default function NSATPrepPage() {
 
                 {/* Pricing Grid */}
                 <div className="grid md:grid-cols-3 gap-8 items-start">
-                    {packages.map((pkg, idx) => (
-                        <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full border ${pkg.popular ? pkg.color + ' shadow-xl scale-105 z-10' : 'border-gray-100 hover:border-gray-200 hover:shadow-lg'}`}>
-                            {pkg.popular && (
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide">
-                                    MOST POPULAR
+                    {packages.map((pkg, idx) => {
+                        const purchased = isPurchased(pkg.slug);
+                        return (
+                            <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full border ${pkg.popular ? pkg.color + ' shadow-xl scale-105 z-10' : 'border-gray-100 hover:border-gray-200 hover:shadow-lg'}`}>
+                                {pkg.popular && (
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide">
+                                        MOST POPULAR
+                                    </div>
+                                )}
+                                <div className="mb-6">
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
+                                    <p className="text-sm text-gray-500 font-medium mb-4">{pkg.bestFor}</p>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</span>
+                                        <span className="text-gray-400 font-medium">/ bundle</span>
+                                    </div>
                                 </div>
-                            )}
-                            <div className="mb-6">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
-                                <p className="text-sm text-gray-500 font-medium mb-4">{pkg.bestFor}</p>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</span>
-                                    <span className="text-gray-400 font-medium">/ bundle</span>
+                                <div className="flex-1 space-y-4 mb-8">
+                                    <ul className="space-y-3">
+                                        {pkg.features.map((feat, i) => (
+                                            <li key={i} className="flex items-start gap-3 text-gray-700">
+                                                <div className={`mt-1 p-0.5 rounded-full ${pkg.popular ? 'bg-blue-100 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </div>
+                                                <span className="text-sm leading-relaxed">{feat}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <div className="flex items-center gap-2 text-xs text-gray-400 px-1 mt-auto pt-4">
+                                        <span className="font-bold">Duration:</span> {pkg.duration}
+                                    </div>
                                 </div>
+                                <Button
+                                    size="lg"
+                                    onClick={() => {
+                                        if (purchased) {
+                                            window.location.href = '/dashboard';
+                                        } else {
+                                            setSelectedPackage(pkg);
+                                        }
+                                    }}
+                                    className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
+                                            ? 'bg-green-600 hover:bg-green-700 text-white border-transparent'
+                                            : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
+                                        }`}
+                                >
+                                    {purchased ? 'Access Content' : 'Get Started'}
+                                </Button>
                             </div>
-                            <div className="flex-1 space-y-4 mb-8">
-                                <ul className="space-y-3">
-                                    {pkg.features.map((feat, i) => (
-                                        <li key={i} className="flex items-start gap-3 text-gray-700">
-                                            <div className={`mt-1 p-0.5 rounded-full ${pkg.popular ? 'bg-blue-100 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-sm leading-relaxed">{feat}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className="flex items-center gap-2 text-xs text-gray-400 px-1 mt-auto pt-4">
-                                    <span className="font-bold">Duration:</span> {pkg.duration}
-                                </div>
-                            </div>
-                            <Button
-                                size="lg"
-                                onClick={() => setSelectedPackage(pkg)}
-                                className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'}`}
-                            >
-                                Get Started
-                            </Button>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </div>

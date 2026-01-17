@@ -1,7 +1,10 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/Card";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { Calendar, Clock, ArrowRight, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AddExamModal } from "./AddExamModal";
+import { Button } from "@/components/ui/Button";
+import { useState } from "react";
 
 interface DeadlinesProps {
     deadlines: any[];
@@ -9,14 +12,29 @@ interface DeadlinesProps {
 
 export function DeadlinesCard({ deadlines }: DeadlinesProps) {
     const router = useRouter();
+    const [isIdDialogOpen, setIsDialogOpen] = useState(false);
+
     return (
         <Card className="bg-white border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
             <CardContent className="p-6 flex-1 flex flex-col">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
-                        <Clock size={20} />
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+                            <Clock size={20} />
+                        </div>
+                        <CardTitle className="text-lg">Important Deadlines</CardTitle>
                     </div>
-                    <CardTitle className="text-lg">Important Deadlines</CardTitle>
+
+                    <AddExamModal open={isIdDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-full"
+                            onClick={() => setIsDialogOpen(true)}
+                        >
+                            <Plus size={18} />
+                        </Button>
+                    </AddExamModal>
                 </div>
 
                 <div className="space-y-0 flex-1 relative">
@@ -25,7 +43,7 @@ export function DeadlinesCard({ deadlines }: DeadlinesProps) {
                             {deadlines.map((item, i) => (
                                 <div key={i} className="relative pl-6">
                                     <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-4 ring-white"></div>
-                                    <h4 className="text-sm font-bold text-gray-900">{item.name}</h4>
+                                    <h4 className="text-sm font-bold text-gray-900">{item.title}</h4>
                                     <p className="text-xs text-gray-500 mt-1">
                                         {item.type} • <span className="text-amber-600 font-medium">{new Date(item.date).toLocaleDateString()}</span>
                                     </p>
@@ -33,7 +51,17 @@ export function DeadlinesCard({ deadlines }: DeadlinesProps) {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-sm text-gray-400 py-6 text-center">No upcoming deadlines.</p>
+                        <div className="flex flex-col items-center justify-center py-8 text-center">
+                            <p className="text-sm text-gray-400 mb-3">No upcoming deadlines.</p>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs"
+                                onClick={() => setIsDialogOpen(true)}
+                            >
+                                <Plus className="w-3 h-3 mr-1" /> Add Exam
+                            </Button>
+                        </div>
                     )}
                 </div>
 

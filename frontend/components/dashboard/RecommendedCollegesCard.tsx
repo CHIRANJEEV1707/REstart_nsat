@@ -285,7 +285,7 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                                         className="font-bold text-lg leading-tight text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2 min-h-[1.5em]"
                                         title={college.name}
                                     >
-                                        <Link href={`/college/${college.slug}`}>
+                                        <Link href={`/college/${college.id}`}>
                                             {college.name}
                                         </Link>
                                     </h3>
@@ -329,7 +329,7 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
                                             {isCompared ? '✓ Added' : '+ Compare'}
                                         </button>
 
-                                        <Link href={`/college/${college.slug}`} className="w-full">
+                                        <Link href={`/college/${college.id}`} className="w-full">
                                             <button className={`flex items-center justify-center w-full h-10 px-4 rounded-xl text-sm font-semibold text-white shadow-md hover:shadow-lg transition-all ${ctaVariant === 'primary' ? 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
                                                 {cta} {ctaVariant === 'primary' && <ArrowRight size={14} className="ml-1.5" />}
                                             </button>

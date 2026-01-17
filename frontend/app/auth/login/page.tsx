@@ -7,9 +7,10 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/axios';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 const loginSchema = z.object({
     email: z.string().email('Please enter a valid email'),
@@ -22,6 +23,7 @@ export default function LoginPage() {
     const router = useRouter();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const {
         register,
@@ -53,12 +55,13 @@ export default function LoginPage() {
                     }
                 }, 100);
             }
-        } catch (err: any) {
-            console.error('Login error:', err);
-            if (err.response && err.response.status === 401) {
+        } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            console.error('Login error:', error);
+            if (error.response && error.response.status === 401) {
                 setError('Invalid credentials. If you just deployed, please Sign Up again.');
             } else {
-                setError(err.response?.data?.message || 'Login failed. Please try again.');
+                setError(error.response?.data?.message || 'Login failed. Please try again.');
             }
         } finally {
             setLoading(false);
@@ -78,10 +81,14 @@ export default function LoginPage() {
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
                         <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                                Email address
+                            </label>
                             <Input
+                                id="email"
                                 {...register('email')}
                                 type="email"
-                                placeholder="Email address"
+                                placeholder="name@example.com"
                                 className={`h-12 ${errors.email ? 'border-red-500 focus:ring-red-500' : ''}`}
                             />
                             {errors.email && (
@@ -90,12 +97,26 @@ export default function LoginPage() {
                         </div>
 
                         <div>
-                            <Input
-                                {...register('password')}
-                                type="password"
-                                placeholder="Password"
-                                className={`h-12 ${errors.password ? 'border-red-500 focus:ring-red-500' : ''}`}
-                            />
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    {...register('password')}
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter your password"
+                                    className={`h-12 pr-10 ${errors.password ? 'border-red-500 focus:ring-red-500' : ''}`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </div>
                             {errors.password && (
                                 <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
                             )}
@@ -145,7 +166,7 @@ export default function LoginPage() {
                     </Button>
 
                     <div className="text-center text-sm">
-                        <span className="text-gray-500">Don't have an account? </span>
+                        <span className="text-gray-500">Don&apos;t have an account? </span>
                         <Link href="/auth/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
                             Sign up
                         </Link>

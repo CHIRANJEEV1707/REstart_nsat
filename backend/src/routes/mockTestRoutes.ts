@@ -132,7 +132,8 @@ router.post('/:slug/start', protect, async (req: any, res: Response) => {
                 selectedAnswer: '',
                 isCorrect: false,
                 marksAwarded: 0,
-                timeSpent: 0
+                timeSpent: 0,
+                status: 'not-visited'
             })),
             cameraEnabled: req.body.cameraEnabled || false
         });
@@ -171,7 +172,7 @@ router.post('/:slug/start', protect, async (req: any, res: Response) => {
 // @access  Private
 router.post('/attempts/:attemptId/save-answer', protect, async (req: any, res: Response) => {
     try {
-        const { questionId, selectedAnswer, timeSpent } = req.body;
+        const { questionId, selectedAnswer, timeSpent, status } = req.body;
 
         const attempt = await TestAttempt.findOne({
             _id: req.params.attemptId,
@@ -191,6 +192,7 @@ router.post('/attempts/:attemptId/save-answer', protect, async (req: any, res: R
         if (answerIndex !== -1) {
             attempt.answers[answerIndex].selectedAnswer = selectedAnswer;
             attempt.answers[answerIndex].timeSpent = timeSpent;
+            if (status) attempt.answers[answerIndex].status = status;
             await attempt.save();
         }
 

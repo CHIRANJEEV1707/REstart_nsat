@@ -15,7 +15,7 @@ export default function InternationalCollegesPage() {
     });
 
     return (
-        <div className="p-6 md:p-8 max-w-full mx-auto w-full pb-20 fade-in slide-in-from-bottom-2 duration-500 animate-in">
+        <div className="p-6 md:p-8 max-w-7xl mx-auto w-full pb-24 animate-fade-in-up">
             <div className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
                 <div className="flex items-center gap-3 mb-2">
                     <span className="p-2 bg-white rounded-lg shadow-sm text-blue-600">

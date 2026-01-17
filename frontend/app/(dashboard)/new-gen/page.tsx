@@ -14,7 +14,7 @@ export default function NewGenCollegesPage() {
     });
 
     return (
-        <div className="p-6 md:p-8 max-w-full mx-auto w-full pb-20 fade-in slide-in-from-bottom-2 duration-500 animate-in">
+        <div className="p-6 md:p-8 max-w-7xl mx-auto w-full pb-24 animate-fade-in-up">
             {/* Unique Header for New-Gen */}
             <div className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 text-white relative overflow-hidden">
                 <div className="relative z-10">

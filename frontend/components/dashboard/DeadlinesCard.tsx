@@ -1,6 +1,7 @@
+"use client";
+
 import { Card, CardContent, CardTitle } from "@/components/ui/Card";
-import { Calendar, Clock, ArrowRight, Plus } from "lucide-react";
-import Link from "next/link";
+import { Clock, ArrowRight, Plus, CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AddExamModal } from "./AddExamModal";
 import { Button } from "@/components/ui/Button";
@@ -12,24 +13,38 @@ interface DeadlinesProps {
 
 export function DeadlinesCard({ deadlines }: DeadlinesProps) {
     const router = useRouter();
-    const [isIdDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    // Sort deadlines by date
+    const sortedDeadlines = [...deadlines].sort((a, b) =>
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    // Get deadline color based on urgency
+    const getDeadlineColor = (date: string) => {
+        const daysUntil = Math.ceil((new Date(date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        if (daysUntil <= 7) return 'bg-red-500';
+        if (daysUntil <= 30) return 'bg-amber-500';
+        return 'bg-emerald-500';
+    };
 
     return (
-        <Card className="bg-white border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
+        <Card className="h-full flex flex-col">
             <CardContent className="p-6 flex-1 flex flex-col">
+                {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+                        <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
                             <Clock size={20} />
                         </div>
-                        <CardTitle className="text-lg">Important Deadlines</CardTitle>
+                        <CardTitle>Important Deadlines</CardTitle>
                     </div>
 
-                    <AddExamModal open={isIdDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <AddExamModal open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-full"
+                            variant="ghost"
+                            size="icon-sm"
+                            className="text-indigo-600 hover:bg-indigo-50"
                             onClick={() => setIsDialogOpen(true)}
                         >
                             <Plus size={18} />
@@ -37,36 +52,63 @@ export function DeadlinesCard({ deadlines }: DeadlinesProps) {
                     </AddExamModal>
                 </div>
 
-                <div className="space-y-0 flex-1 relative">
-                    {deadlines.length > 0 ? (
-                        <div className="relative border-l-2 border-gray-100 ml-3 space-y-6 py-2">
-                            {deadlines.map((item, i) => (
-                                <div key={i} className="relative pl-6">
-                                    <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-4 ring-white"></div>
-                                    <h4 className="text-sm font-bold text-gray-900">{item.title}</h4>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        {item.type} • <span className="text-amber-600 font-medium">{new Date(item.date).toLocaleDateString()}</span>
-                                    </p>
+                {/* Content */}
+                <div className="flex-1">
+                    {sortedDeadlines.length > 0 ? (
+                        <div className="space-y-4">
+                            {sortedDeadlines.slice(0, 4).map((item, i) => (
+                                <div
+                                    key={i}
+                                    className="flex items-start gap-3 group"
+                                >
+                                    {/* Dot indicator */}
+                                    <div className="mt-1.5 relative">
+                                        <div className={`w-2.5 h-2.5 rounded-full ${getDeadlineColor(item.date)}`} />
+                                    </div>
+
+                                    {/* Content */}
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-sm font-semibold text-gray-900 truncate">
+                                            {item.title}
+                                        </h4>
+                                        <p className="text-xs text-gray-500 mt-0.5">
+                                            {item.type} • <span className="font-medium text-amber-600">
+                                                {new Date(item.date).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric'
+                                                })}
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-8 text-center">
-                            <p className="text-sm text-gray-400 mb-3">No upcoming deadlines.</p>
+                        <div className="flex flex-col items-center justify-center py-8 text-center flex-1">
+                            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-3">
+                                <CalendarDays className="w-6 h-6 text-gray-400" />
+                            </div>
+                            <p className="text-sm text-gray-500 mb-3">No upcoming deadlines</p>
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-xs"
                                 onClick={() => setIsDialogOpen(true)}
                             >
-                                <Plus className="w-3 h-3 mr-1" /> Add Exam
+                                <Plus className="w-4 h-4 mr-1.5" />
+                                Add Exam
                             </Button>
                         </div>
                     )}
                 </div>
 
-                <button onClick={() => router.push('/exams-deadlines')} className="mt-6 flex items-center justify-center w-full py-2.5 text-sm font-semibold text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-                    See All Deadlines <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                {/* Footer */}
+                <button
+                    onClick={() => router.push('/exams-deadlines')}
+                    className="mt-4 flex items-center justify-center w-full py-2.5 text-sm font-medium text-gray-600 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group"
+                >
+                    See All Deadlines
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
             </CardContent>
         </Card>

@@ -9,11 +9,10 @@ import {
     CalendarDays,
     Globe,
     User,
-    Users,
     LogOut,
     Sparkles,
-    ScrollText,
-    Code
+    Code,
+    ChevronRight
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
@@ -39,19 +38,17 @@ export function Sidebar() {
         { name: 'International', icon: Globe, href: '/international' },
         { name: 'New-Gen Colleges', icon: Sparkles, href: '/new-gen' },
         { name: 'Saved Colleges', icon: Bookmark, href: '/saved' },
-        { name: 'Compare Colleges', icon: ArrowLeftRight, href: '/compare' },
-        { name: 'NSAT Prep', icon: ScrollText, href: '/nsat-prep' },
-        { name: 'NSAT Coding', icon: Code, href: '/nsat-coding' },
-        { name: 'REstart Sessions', icon: Users, href: '/sessions', badge: 'NEW' },
-        { name: 'Exams & Deadlines', icon: CalendarDays, href: '/exams-deadlines' },
+        { name: 'Compare', icon: ArrowLeftRight, href: '/compare' },
+        { name: 'NSAT Prep', icon: Code, href: '/nsat-prep' },
+        { name: 'Deadlines', icon: CalendarDays, href: '/exams-deadlines' },
     ];
 
     if (!user) return null;
 
     return (
-        <aside className="w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col h-screen sticky top-0">
+        <aside className="w-72 bg-white border-r border-gray-100 hidden lg:flex flex-col h-screen sticky top-0">
             {/* Logo */}
-            <div className="p-6">
+            <div className="p-6 pb-4">
                 <Link href="/dashboard" className="flex items-center gap-2">
                     <Image
                         src="/Restart_logo.png"
@@ -63,34 +60,39 @@ export function Sidebar() {
                 </Link>
             </div>
 
-            {/* User Greeting */}
-            <div className="px-6 mb-6">
-                <div className="p-4 bg-indigo-50 rounded-xl">
-                    <div className="font-semibold text-gray-900 border-b border-indigo-100 pb-2 mb-2">
-                        Hello, {user.name?.split(' ')[0] || 'User'} 👋
-                    </div>
-                    <div className="text-xs text-gray-500 space-y-1">
-                        <div className="flex justify-between">
-                            <span>State:</span>
-                            <span className="font-medium text-gray-700">{user.state || 'Not Set'}</span>
+            {/* User Greeting Card */}
+            <div className="px-5 mb-6">
+                <div className="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-indigo-100/50">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+                            {user.name?.[0]?.toUpperCase() || 'U'}
                         </div>
-                        <div className="flex justify-between">
-                            <span>Goal:</span>
-                            <span
-                                className="font-medium text-gray-700 truncate max-w-[150px] text-right"
-                                title={Array.isArray(user.target_degree) ? user.target_degree.join(', ') : user.target_degree}
-                            >
+                        <div>
+                            <div className="font-semibold text-gray-900 text-sm">
+                                {user.name?.split(' ')[0] || 'User'}
+                            </div>
+                            <div className="text-xs text-gray-500">Premium</div>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-white/70 rounded-lg px-2.5 py-1.5">
+                            <span className="text-gray-500">State</span>
+                            <div className="font-medium text-gray-900 truncate">{user.state || 'Not Set'}</div>
+                        </div>
+                        <div className="bg-white/70 rounded-lg px-2.5 py-1.5">
+                            <span className="text-gray-500">Goal</span>
+                            <div className="font-medium text-gray-900 truncate">
                                 {Array.isArray(user.target_degree)
-                                    ? user.target_degree.join(', ')
+                                    ? user.target_degree[0]
                                     : (user.target_degree || 'Not Set')}
-                            </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+            <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
@@ -98,23 +100,25 @@ export function Sidebar() {
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all group ${isActive
-                                ? 'bg-blue-50 text-blue-600'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
-                                }`}
+                            className={`
+                                group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200
+                                ${isActive
+                                    ? 'bg-indigo-50 text-indigo-700'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                }
+                            `}
                         >
                             <item.icon
-                                size={18}
+                                size={20}
+                                strokeWidth={isActive ? 2 : 1.5}
                                 className={`transition-colors ${isActive
-                                    ? 'text-blue-600'
-                                    : 'text-gray-400 group-hover:text-blue-600'
+                                    ? 'text-indigo-600'
+                                    : 'text-gray-400 group-hover:text-gray-600'
                                     }`}
                             />
                             <span className="flex-1">{item.name}</span>
-                            {(item as any).badge && (
-                                <span className="px-2 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded-full">
-                                    {(item as any).badge}
-                                </span>
+                            {isActive && (
+                                <ChevronRight size={16} className="text-indigo-400" />
                             )}
                         </Link>
                     );
@@ -125,29 +129,32 @@ export function Sidebar() {
             <div className="p-4 border-t border-gray-100 space-y-1">
                 <Link
                     href="/profile"
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors group ${pathname === '/profile'
-                        ? 'bg-indigo-50 text-indigo-600'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600'
-                        }`}
+                    className={`
+                        group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200
+                        ${pathname === '/profile'
+                            ? 'bg-indigo-50 text-indigo-700'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        }
+                    `}
                 >
                     <User
-                        size={18}
+                        size={20}
+                        strokeWidth={pathname === '/profile' ? 2 : 1.5}
                         className={`transition-colors ${pathname === '/profile'
                             ? 'text-indigo-600'
-                            : 'text-gray-400 group-hover:text-indigo-600'
+                            : 'text-gray-400 group-hover:text-gray-600'
                             }`}
                     />
                     Profile Settings
                 </Link>
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                    className="w-full group flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 rounded-xl hover:bg-red-50 transition-all duration-200"
                 >
-                    <LogOut size={18} />
+                    <LogOut size={20} strokeWidth={1.5} className="text-red-400 group-hover:text-red-500" />
                     Logout
                 </button>
             </div>
         </aside>
     );
 }
-

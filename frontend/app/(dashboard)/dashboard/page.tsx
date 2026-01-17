@@ -65,17 +65,19 @@ export default function DashboardPage() {
     const showInternational = user.preferences?.preferredCountries?.some((c: string) => c !== 'India') || dashboard.user.preferences?.preferredCountries?.some((c: string) => c !== 'India');
 
     return (
-        <div className="p-6 md:p-8 max-w-5xl mx-auto w-full space-y-8 pb-20 fade-in slide-in-from-bottom-2 duration-500 animate-in">
+        <div className="p-6 md:p-8 max-w-6xl mx-auto w-full space-y-10 pb-24 animate-fade-in-up">
             {/* 1. College Fit Hero */}
-            <div className="h-[300px]">
+            <section>
                 <MatchSummaryCard />
-            </div>
+            </section>
 
             {/* 0. Active Plans */}
             <ActivePlansSection user={user} />
 
             {/* 2. Recommended Colleges Carousel */}
-            <RecommendedCollegesCard userId={user?._id} />
+            <section>
+                <RecommendedCollegesCard userId={user?._id} />
+            </section>
 
             {/* 🆕 New-Gen Colleges Section - Conditionally Rendered */}
             {showNewGen && <NewGenSection openCollegeDetails={openCollegeDetails} />}
@@ -83,15 +85,11 @@ export default function DashboardPage() {
             {/* 🌍 International Colleges Section - Conditionally Rendered */}
             {showInternational && <InternationalSection openCollegeDetails={openCollegeDetails} user={user} />}
 
-            {/* 3. Deadlines & Updates Row */}
-            <div className="grid md:grid-cols-2 gap-8">
+            {/* 3. Deadlines & Saved Colleges Row */}
+            <section className="grid md:grid-cols-2 gap-6">
                 <DeadlinesCard deadlines={dashboard.deadlines} />
-                <div className="space-y-8">
-                    <div className="relative group cursor-pointer" onClick={() => router.push('/saved')}>
-                        <SavedCollegesCard colleges={dashboard.saved_colleges} count={user.saved_count || dashboard.saved_colleges.length} />
-                    </div>
-                </div>
-            </div>
+                <SavedCollegesCard colleges={dashboard.saved_colleges} count={user.saved_count || dashboard.saved_colleges.length} />
+            </section>
         </div>
     );
 }

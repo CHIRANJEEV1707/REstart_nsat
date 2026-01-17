@@ -1,7 +1,8 @@
+"use client";
+
 import { Card, CardContent, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Bookmark, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Bookmark, ArrowRight, Heart } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 import { useRouter } from "next/navigation";
 
@@ -15,47 +16,74 @@ export function SavedCollegesCard({ colleges, count }: SavedCollegesProps) {
     const router = useRouter();
 
     return (
-        <Card className="bg-white border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
+        <Card className="h-full flex flex-col">
             <CardContent className="p-6 flex-1 flex flex-col">
+                {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-600">
+                        <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500">
                             <Bookmark size={20} />
                         </div>
-                        <CardTitle className="text-lg">Saved Colleges</CardTitle>
+                        <CardTitle>Saved Colleges</CardTitle>
                     </div>
-                    <Badge variant="secondary" className="bg-gray-100">{count}</Badge>
+                    <Badge className="bg-gray-100 text-gray-600 border-0 font-semibold">
+                        {count}
+                    </Badge>
                 </div>
 
-                <div className="space-y-4 flex-1">
+                {/* Content */}
+                <div className="flex-1">
                     {colleges.length > 0 ? (
-                        colleges.slice(0, 3).map((col) => (
-                            <div
-                                key={col._id}
-                                onClick={() => openCollegeDetails(col._id)}
-                                className="p-3 rounded-xl bg-gray-50 border border-gray-100 hover:border-pink-100 hover:bg-pink-50/50 transition-colors group cursor-pointer"
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <h4 className="font-semibold text-gray-900 line-clamp-1 text-sm">{col.name}</h4>
+                        <div className="space-y-3">
+                            {colleges.slice(0, 3).map((col) => (
+                                <div
+                                    key={col._id}
+                                    onClick={() => openCollegeDetails(col._id)}
+                                    className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all cursor-pointer group"
+                                >
+                                    {/* Avatar */}
+                                    <div className="w-10 h-10 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-gray-400 text-sm font-semibold flex-shrink-0 group-hover:border-rose-200">
+                                        {col.name?.[0] || 'C'}
+                                    </div>
+
+                                    {/* Info */}
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-sm font-semibold text-gray-900 truncate group-hover:text-rose-700">
+                                            {col.name}
+                                        </h4>
+                                        <p className="text-xs text-gray-500 truncate">
+                                            {col.location?.city || col.city || 'Location N/A'}
+                                        </p>
+                                    </div>
+
+                                    {/* Arrow */}
+                                    <ArrowRight
+                                        size={16}
+                                        className="text-gray-300 group-hover:text-rose-400 group-hover:translate-x-1 transition-all flex-shrink-0"
+                                    />
                                 </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {col.tags?.map((tag: string, i: number) => (
-                                        <span key={i} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white text-gray-500 border border-gray-100">
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        ))
+                            ))}
+                        </div>
                     ) : (
-                        <div className="text-center py-6 text-gray-400 text-sm">
-                            <p>No colleges saved yet.</p>
+                        <div className="flex flex-col items-center justify-center py-8 text-center flex-1">
+                            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-3">
+                                <Heart className="w-6 h-6 text-gray-400" />
+                            </div>
+                            <p className="text-sm text-gray-500">No colleges saved yet</p>
+                            <p className="text-xs text-gray-400 mt-1">
+                                Save colleges while browsing to compare later
+                            </p>
                         </div>
                     )}
                 </div>
 
-                <button onClick={() => router.push('/saved')} className="mt-6 flex items-center justify-center w-full py-2.5 text-sm font-semibold text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
-                    View All Saved <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                {/* Footer */}
+                <button
+                    onClick={() => router.push('/saved')}
+                    className="mt-4 flex items-center justify-center w-full py-2.5 text-sm font-medium text-gray-600 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group"
+                >
+                    View All Saved
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
             </CardContent>
         </Card>

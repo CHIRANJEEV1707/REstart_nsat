@@ -24,18 +24,38 @@ export default function ProfilePage() {
         }
     });
 
-    if (isLoading) return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>;
+    if (isLoading) return (
+        <div className="h-screen flex items-center justify-center">
+            <Loader2 className="animate-spin text-indigo-600 w-8 h-8" />
+        </div>
+    );
 
     const user = profileData;
 
     return (
-        <div className="container mx-auto p-6 space-y-8 max-w-4xl">
-            <h1 className="text-3xl font-bold mb-6">My Profile</h1>
+        <div className="p-6 md:p-8 max-w-4xl mx-auto w-full pb-24 animate-fade-in-up">
+            {/* Page Header */}
+            <div className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <User size={22} />
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                        Profile Settings
+                    </h1>
+                </div>
+                <p className="text-gray-500 ml-[52px]">
+                    Manage your personal information, preferences, and exam scores.
+                </p>
+            </div>
 
-            <PersonalInfoSection user={user} />
-            <PreferencesSection user={user} />
-            <PurchasedBundlesSection user={user} />
-            <ExamScoresSection user={user} />
+            {/* Sections */}
+            <div className="space-y-6">
+                <PersonalInfoSection user={user} />
+                <PreferencesSection user={user} />
+                <PurchasedBundlesSection user={user} />
+                <ExamScoresSection user={user} />
+            </div>
         </div>
     );
 }

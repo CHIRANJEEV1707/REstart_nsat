@@ -298,7 +298,7 @@ export function RecommendedCollegesCard({ userId }: RecommendedCollegesCardProps
 
                                     {/* Metrics Pills */}
                                     <div className="flex flex-wrap items-center gap-2 mb-4">
-                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">
+                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">
                                             RESTART Score: <span className="text-indigo-900">{scoreDisplay}</span>
                                         </span>
                                     </div>

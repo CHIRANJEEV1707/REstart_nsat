@@ -297,9 +297,10 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
             </div>
 
             {/* Actions */}
-            <div className="mt-auto pt-4 border-t border-dashed border-gray-200/50 flex gap-2">
-                <div className="flex-1" title={compareItems.length >= 3 && !isInCompare(effectiveId) ? "You can only compare up to 3 colleges. Remove one to add this." : ""}>
+            <div className="mt-auto pt-4 border-t border-dashed border-gray-200/50 flex flex-wrap gap-2">
+                <div className="flex-1 min-w-[120px]" title={compareItems.length >= 3 && !isInCompare(effectiveId) ? "You can only compare up to 3 colleges. Remove one to add this." : ""}>
                     <Button
+                        size="sm"
                         onClick={(e) => {
                             e.stopPropagation();
                             if (isInCompare(effectiveId)) {
@@ -319,12 +320,12 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                         {isInCompare(effectiveId) ? '✓ Added' : '+ Compare'}
                     </Button>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-[120px]">
                     <Link
                         href={`/college/${effectiveId}`}
                         className="w-full"
                     >
-                        <Button className="w-full bg-[#0085ff] hover:bg-[#006bd1] text-white shadow-md hover:shadow-lg transition-all h-9 text-xs">
+                        <Button size="sm" className="w-full bg-[#0085ff] hover:bg-[#006bd1] text-white shadow-md hover:shadow-lg transition-all h-9 text-xs">
                             View Details <ArrowRight size={14} className="ml-1 flex-shrink-0" />
                         </Button>
                     </Link>

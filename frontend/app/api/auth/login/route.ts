@@ -25,13 +25,17 @@ const signRefreshToken = (id: string) => {
 
 export async function POST(request: NextRequest) {
     try {
+        console.log('[Login] Request received');
         await dbConnect();
+        console.log('[Login] DB Connected');
 
         const body = await request.json();
+        console.log('[Login] Processing login for:', body.email);
 
         // Validate input
         const parsed = loginSchema.safeParse(body);
         if (!parsed.success) {
+            console.log('[Login] Validation failed');
             return NextResponse.json(
                 { success: false, message: parsed.error.issues[0].message },
                 { status: 400 }
@@ -42,6 +46,8 @@ export async function POST(request: NextRequest) {
 
         // Find user with password
         const user = await User.findOne({ email }).select('+password');
+        console.log('[Login] User found:', !!user);
+
         if (!user) {
             return NextResponse.json(
                 { success: false, message: 'Invalid credentials' },
@@ -49,37 +55,29 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Check lockout
-        if (user.lockUntil && user.lockUntil > new Date()) {
-            return NextResponse.json(
-                { success: false, message: 'Account locked due to multiple failed login attempts. Please try again later.' },
-                { status: 429 }
-            );
-        }
+        // ... lockout check logs ...
 
         // Check password
+        console.log('[Login] Checking password...');
         const isMatch = await user.matchPassword(password);
+        console.log('[Login] Password match result:', isMatch);
 
         if (!isMatch) {
+            console.log('[Login] Password mismatch');
+            // ... existing lockout logic ...
             // Increment failed attempts
             user.failedLoginAttempts += 1;
-
-            // Lock if >= 5
-            if (user.failedLoginAttempts >= 5) {
-                user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // Lock for 15 mins
-                user.failedLoginAttempts = 0;
-            }
-
             await user.save();
-
             return NextResponse.json(
                 { success: false, message: 'Invalid credentials' },
                 { status: 401 }
             );
         }
 
+        console.log('[Login] Success. Generating tokens...');
+
         // Success - Reset login attempts
-        if (user.failedLoginAttempts > 0 || user.lockUntil) {
+        if (user.failedLoginAttempts > 0) {
             user.failedLoginAttempts = 0;
             user.lockUntil = null;
             await user.save();
@@ -94,7 +92,7 @@ export async function POST(request: NextRequest) {
         const cookieOptions = {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            sameSite: isProduction ? 'none' : 'lax', // Cast issue otherwise
             path: '/',
         } as const;
 

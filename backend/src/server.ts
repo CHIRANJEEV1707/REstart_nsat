@@ -163,6 +163,20 @@ app.use('/api/orders', orderRoutes);
 import bundleRoutes from './routes/bundleRoutes';
 app.use('/api/bundles', bundleRoutes);
 
+// NSAT Prep Routes
+import mockTestRoutes from './routes/mockTestRoutes';
+import pyqRoutes from './routes/pyqRoutes';
+import interviewGuideRoutes from './routes/interviewGuideRoutes';
+import freePackRoutes from './routes/freePackRoutes';
+import nsatAdminRoutes from './routes/admin/nsatAdminRoutes';
+
+app.use('/api/mock-tests', mockTestRoutes);
+app.use('/api/pyqs', pyqRoutes);
+app.use('/api/interview-guides', interviewGuideRoutes);
+app.use('/api/free-pack', freePackRoutes);
+app.use('/api/admin/nsat', nsatAdminRoutes);
+
+
 // Simple health endpoints for debugging
 app.get('/', (req: Request, res: Response) => {
     res.status(200).json({ status: 'ok', service: 'backend', env: process.env.NODE_ENV });

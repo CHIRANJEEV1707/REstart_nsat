@@ -60,7 +60,7 @@ export default function CollegeDetailPage() {
             return res.data;
         },
         enabled: !!id,
-        staleTime: 0, // Always fetch fresh
+        staleTime: 0,
     });
 
     // Payment Logic

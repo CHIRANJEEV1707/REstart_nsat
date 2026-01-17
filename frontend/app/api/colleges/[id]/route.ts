@@ -6,11 +6,13 @@ import mongoose from 'mongoose';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await dbConnect();
-        const { id } = params;
+
+        // In Next.js 15+, params is a Promise and must be awaited
+        const { id } = await params;
 
         // Check if ID is a valid ObjectId
         const isObjectId = mongoose.Types.ObjectId.isValid(id);
@@ -19,25 +21,16 @@ export async function GET(
 
         if (isObjectId) {
             // Try ID lookup
-            console.log(`[Detailed API] Looking up by ID: ${id}`);
             college = await College.findById(id).lean();
             if (!college) {
-                console.log(`[Detailed API] Not found in College, checking NewGenCollege: ${id}`);
                 college = await NewGenCollege.findById(id).lean();
             }
         } else {
             // Try Slug lookup (assuming slug is unique across collections, or prioritize College)
-            console.log(`[Detailed API] Looking up by Slug: ${id}`);
             college = await College.findOne({ slug: id }).lean();
             if (!college) {
                 college = await NewGenCollege.findOne({ slug: id }).lean();
             }
-        }
-
-        if (college) {
-            console.log(`[Detailed API] Found college: ${college.name} (${college._id})`);
-        } else {
-            console.log(`[Detailed API] College NOT FOUND for id: ${id}`);
         }
 
         if (!college) {
@@ -60,3 +53,4 @@ export async function GET(
         );
     }
 }
+

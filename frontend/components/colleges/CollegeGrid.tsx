@@ -184,7 +184,7 @@ export default function CollegeGrid({
             </div>
 
             <div className={`grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 ${isFetching ? 'opacity-70 transition-opacity' : ''}`}>
-                {colleges.map((college) => {
+                {colleges.map((college, index) => {
                     let variant: 'traditional' | 'international' | 'newgen' = 'traditional';
                     if (type === 'international') variant = 'international';
                     else if (type === 'newgen') variant = 'newgen';
@@ -193,7 +193,7 @@ export default function CollegeGrid({
 
                     return (
                         <CollegeCard
-                            key={college.collegeId}
+                            key={`${college._id}-${index}`}
                             college={college}
                             variant={variant}
                             onClick={() => {

@@ -30,8 +30,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     // CRITICAL FIX: Ensure we're using the correct unique identifier
     const effectiveId = college._id || college.collegeId;
 
-    // Debug log to trace the issue
-    console.log(`[CollegeCard] ${college.name} -> ID: ${effectiveId}`);
+
 
     // Check if saved
     const isCollegeSaved = isSaved(effectiveId);
@@ -321,7 +320,10 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     </Button>
                 </div>
                 <div className="flex-1">
-                    <Link href={`/college/${effectiveId}`} className="w-full">
+                    <Link
+                        href={`/college/${effectiveId}`}
+                        className="w-full"
+                    >
                         <Button className="w-full bg-[#0085ff] hover:bg-[#006bd1] text-white shadow-md hover:shadow-lg transition-all h-9 text-xs">
                             View Details <ArrowRight size={14} className="ml-1 flex-shrink-0" />
                         </Button>

@@ -21,6 +21,10 @@ export default function AdminPage() {
                     <h3 className="font-bold text-lg text-yellow-700">Pending Approvals</h3>
                     <p className="text-gray-500 text-sm mt-1">Verify manual UPI payments.</p>
                 </Link>
+                <Link href="/admin/nsat" className="block p-8 bg-blue-50 rounded-xl shadow-sm hover:shadow-md border border-blue-100">
+                    <h3 className="font-bold text-lg text-blue-700">NSAT Prep Content</h3>
+                    <p className="text-gray-500 text-sm mt-1">Manage Mock Tests, PYQs, and Guides.</p>
+                </Link>
             </div>
         </div>
     )

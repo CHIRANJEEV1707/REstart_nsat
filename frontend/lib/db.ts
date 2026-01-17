@@ -40,7 +40,10 @@ async function dbConnect(): Promise<mongoose.Mongoose> {
             serverSelectionTimeoutMS: 5000,
         };
 
-        cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
+        // Sanitize URI (remove empty appName)
+        const validURI = MONGODB_URI.replace(/[?&]appName=$/, '').replace(/[?&]appName=&/, '&').replace(/[?&]$/, '');
+
+        cached.promise = mongoose.connect(validURI, opts).then((mongooseInstance) => {
             console.log('[DB] MongoDB connected successfully');
             return mongooseInstance;
         });

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { ArrowLeft, BookOpen, TrendingUp } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { PaymentModal } from '@/components/payment/PaymentModal';
 import { useAuth } from '@/context/AuthContext';
@@ -186,62 +186,177 @@ export default function NSATPrepPage() {
                     </div>
                 </div>
 
-                {/* Pricing Grid */}
-                <div className="grid md:grid-cols-3 gap-8 items-start">
-                    {packages.map((pkg, idx) => {
-                        const purchased = isPurchased(pkg.slug);
-                        return (
-                            <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full border ${pkg.popular ? pkg.color + ' shadow-xl scale-105 z-10' : 'border-gray-100 hover:border-gray-200 hover:shadow-lg'}`}>
-                                {pkg.popular && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide">
-                                        MOST POPULAR
-                                    </div>
-                                )}
-                                <div className="mb-6">
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
-                                    <p className="text-sm text-gray-500 font-medium mb-4">{pkg.bestFor}</p>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</span>
-                                        <span className="text-gray-400 font-medium">/ bundle</span>
-                                    </div>
-                                </div>
-                                <div className="flex-1 space-y-4 mb-8">
-                                    <ul className="space-y-3">
-                                        {pkg.features.map((feat, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-gray-700">
-                                                <div className={`mt-1 p-0.5 rounded-full ${pkg.popular ? 'bg-blue-100 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                </div>
-                                                <span className="text-sm leading-relaxed">{feat}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <div className="flex items-center gap-2 text-xs text-gray-400 px-1 mt-auto pt-4">
-                                        <span className="font-bold">Duration:</span> {pkg.duration}
-                                    </div>
-                                </div>
-                                <Button
-                                    size="lg"
-                                    onClick={() => {
-                                        if (purchased) {
-                                            window.location.href = '/dashboard';
-                                        } else {
-                                            setSelectedPackage(pkg);
-                                        }
-                                    }}
-                                    className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
-                                            ? 'bg-green-600 hover:bg-green-700 text-white border-transparent'
-                                            : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
-                                        }`}
-                                >
-                                    {purchased ? 'Access Content' : 'Get Started'}
-                                </Button>
-                            </div>
-                        );
-                    })}
+                {/* Quick Access Cards */}
+                <div className="grid md:grid-cols-3 gap-6 mb-12">
+                    <Link href="/nsat-prep/mock-tests" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
+                            <svg className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">Mock Tests</h3>
+                        <p className="text-sm text-gray-500">Full-length proctored mock tests for NSAT & Coding NSAT</p>
+                        <span className="inline-flex items-center text-blue-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all">
+                            Start Practice <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                        </span>
+                    </Link>
+
+                    <Link href="/nsat-prep/pyqs" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all">
+                        <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors">
+                            <svg className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">Previous Year Questions</h3>
+                        <p className="text-sm text-gray-500">Practice with actual questions from past NSAT exams</p>
+                        <span className="inline-flex items-center text-green-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all">
+                            View PYQs <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                        </span>
+                    </Link>
+
+                    <Link href="/nsat-prep/interview-guide" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all">
+                        <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-600 transition-colors">
+                            <svg className="w-6 h-6 text-purple-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">Interview Guide</h3>
+                        <p className="text-sm text-gray-500">Expert tips and sample questions for NSAT interview</p>
+                        <span className="inline-flex items-center text-purple-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all">
+                            Read Guide <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                        </span>
+                    </Link>
                 </div>
+                {/* ... Quick Access Cards ... */}
+            </div>
+
+            {/* Recent Performance Section */}
+            <RecentPerformance />
+
+            {/* Pricing Grid */}
+            <div className="grid md:grid-cols-3 gap-8 items-start">
+                {packages.map((pkg, idx) => {
+                    // ... existing map logic ...
+                    const purchased = isPurchased(pkg.slug);
+                    return (
+                        <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full border ${pkg.popular ? pkg.color + ' shadow-xl scale-105 z-10' : 'border-gray-100 hover:border-gray-200 hover:shadow-lg'}`}>
+                            {pkg.popular && (
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide">
+                                    MOST POPULAR
+                                </div>
+                            )}
+                            <div className="mb-6">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
+                                <p className="text-sm text-gray-500 font-medium mb-4">{pkg.bestFor}</p>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</span>
+                                    <span className="text-gray-400 font-medium">/ bundle</span>
+                                </div>
+                            </div>
+                            <div className="flex-1 space-y-4 mb-8">
+                                <ul className="space-y-3">
+                                    {pkg.features.map((feat, i) => (
+                                        <li key={i} className="flex items-start gap-3 text-gray-700">
+                                            <div className={`mt-1 p-0.5 rounded-full ${pkg.popular ? 'bg-blue-100 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span className="text-sm leading-relaxed">{feat}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="flex items-center gap-2 text-xs text-gray-400 px-1 mt-auto pt-4">
+                                    <span className="font-bold">Duration:</span> {pkg.duration}
+                                </div>
+                            </div>
+                            <Button
+                                size="lg"
+                                onClick={() => {
+                                    if (purchased) {
+                                        window.location.href = '/dashboard';
+                                    } else {
+                                        setSelectedPackage(pkg);
+                                    }
+                                }}
+                                className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
+                                    ? 'bg-green-600 hover:bg-green-700 text-white border-transparent'
+                                    : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
+                                    }`}
+                            >
+                                {purchased ? 'Access Content' : 'Get Started'}
+                            </Button>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+// Sub-component for Performance to keep main component clean
+function RecentPerformance() {
+    const [attempts, setAttempts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('/api/mock-tests/attempts')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setAttempts(data.data);
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error(err);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return null;
+    if (attempts.length === 0) return null;
+
+    return (
+        <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <TrendingUp className="w-6 h-6 text-blue-600" />
+                Your Recent Performance
+            </h2>
+            <div className="overflow-x-auto">
+                <table className="w-full">
+                    <thead>
+                        <tr className="text-left border-b border-gray-100">
+                            <th className="pb-4 font-semibold text-gray-500 text-sm">Test Name</th>
+                            <th className="pb-4 font-semibold text-gray-500 text-sm">Date</th>
+                            <th className="pb-4 font-semibold text-gray-500 text-sm">Score</th>
+                            <th className="pb-4 font-semibold text-gray-500 text-sm">Accuracy</th>
+                            <th className="pb-4 font-semibold text-gray-500 text-sm">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                        {attempts.map((attempt) => (
+                            <tr key={attempt._id} className="group hover:bg-gray-50/50 transition-colors">
+                                <td className="py-4 font-medium text-gray-900">{attempt.mockTestId?.title || 'Unknown Test'}</td>
+                                <td className="py-4 text-gray-500">{new Date(attempt.completedAt).toLocaleDateString()}</td>
+                                <td className="py-4 text-gray-900">
+                                    <span className="font-bold text-blue-600">{attempt.totalScore}</span>
+                                    <span className="text-gray-400 text-xs"> / {attempt.mockTestId?.totalMarks || 100}</span>
+                                </td>
+                                <td className="py-4">
+                                    <Badge variant="outline" className={`${(attempt.analytics?.accuracy || 0) > 80 ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
+                                        {attempt.analytics?.accuracy || 0}%
+                                    </Badge>
+                                </td>
+                                <td className="py-4">
+                                    <Link href={`/nsat-prep/mock-tests/results/${attempt._id}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                                        View Analysis
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

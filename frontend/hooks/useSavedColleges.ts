@@ -6,7 +6,6 @@ interface SavedCollege {
     _id: string;
     collegeId?: string;
     type: 'indian' | 'international' | 'newgen';
-    // Add other minimal fields if needed for UI cache
 }
 
 export const useSavedColleges = () => {
@@ -40,7 +39,8 @@ export const useSavedColleges = () => {
     // Save Mutation
     const saveMutation = useMutation({
         mutationFn: async ({ id, type }: { id: string, type: string }) => {
-            await api.post(`/saved`, { collegeId: id, collegeType: type });
+            // POST /api/saved/[id]
+            await api.post(`/saved/${id}`, { type });
         },
         onMutate: async ({ id, type }) => {
             await queryClient.cancelQueries({ queryKey: ['saved-colleges'] });
@@ -50,6 +50,10 @@ export const useSavedColleges = () => {
             // Optimistically update
             queryClient.setQueryData(['saved-colleges'], (old: any) => {
                 const oldData = old?.data || [];
+                // Check if already exists in cache to avoid duplicates
+                if (oldData.some((c: any) => c._id === id || c.collegeId === id)) {
+                    return old;
+                }
                 // Mock the new saved item
                 const newSavedItem = { _id: id, collegeId: id, type };
                 return {
@@ -74,6 +78,7 @@ export const useSavedColleges = () => {
     // Remove Mutation
     const removeMutation = useMutation({
         mutationFn: async ({ id, type }: { id: string, type: string }) => {
+            // DELETE /api/saved/[id]?type=[type]
             await api.delete(`/saved/${id}?type=${type}`);
         },
         onMutate: async ({ id }) => {

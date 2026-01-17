@@ -145,7 +145,7 @@ export default function FiltersPanel({ onFilterChange, viewType = 'generic' }: F
             </div>
 
             {/* Filters - Right Side */}
-            <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+            <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide pr-2">
 
                 {/* 1. Location Filter: State (Indian) OR Country (Generic) */}
                 <div className="flex items-center gap-2 min-w-fit">

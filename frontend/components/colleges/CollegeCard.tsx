@@ -26,8 +26,12 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     // Saved Colleges Hook
     const { isSaved, saveCollege, removeCollege, isSaving, isRemoving } = useSavedColleges();
 
-    // ID Logic: Prefer collegeId (normalized), fallback to _id
-    const effectiveId = college.collegeId || college._id;
+    // ID Logic: Use _id as primary (MongoDB ObjectId), fallback to collegeId
+    // CRITICAL FIX: Ensure we're using the correct unique identifier
+    const effectiveId = college._id || college.collegeId;
+
+    // Debug log to trace the issue
+    console.log(`[CollegeCard] ${college.name} -> ID: ${effectiveId}`);
 
     // Check if saved
     const isCollegeSaved = isSaved(effectiveId);
@@ -79,7 +83,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     };
 
     const getCTA = () => {
-        const linkHref = `/college/${college.collegeId}`;
+        const linkHref = `/college/${effectiveId}`;
         switch (variant) {
             case 'newgen':
                 return (
@@ -185,7 +189,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
                     {/* Buttons */}
                     <div className="mt-auto grid grid-cols-2 gap-2">
-                        <Link href={`/college/${college.collegeId}`} className="w-full">
+                        <Link href={`/college/${effectiveId}`} className="w-full">
                             <Button
                                 variant="ghost"
                                 className="w-full text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700 text-xs h-9"
@@ -193,7 +197,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                                 View Details
                             </Button>
                         </Link>
-                        <Link href={`/college/${college.collegeId}`} className="w-full">
+                        <Link href={`/college/${effectiveId}`} className="w-full">
                             <Button
                                 className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-0 shadow-lg shadow-indigo-500/20 text-xs h-9 px-2"
                             >
@@ -241,7 +245,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
             {/* Content */}
             <div className="flex-1 mb-4">
                 <h3 className="font-bold text-lg mb-1 line-clamp-2 text-gray-900 group-hover:text-indigo-600">
-                    <Link href={`/college/${college.collegeId}`}>
+                    <Link href={`/college/${effectiveId}`}>
                         {college.name}
                     </Link>
                 </h3>
@@ -317,9 +321,9 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                     </Button>
                 </div>
                 <div className="flex-1">
-                    <Link href={`/college/${college.collegeId}`} className="w-full">
-                        <Button className="w-full bg-[#0085ff] hover:bg-[#006bd1] text-white shadow-md hover:shadow-lg transition-all h-9">
-                            View Details <ArrowRight size={16} className="ml-2" />
+                    <Link href={`/college/${effectiveId}`} className="w-full">
+                        <Button className="w-full bg-[#0085ff] hover:bg-[#006bd1] text-white shadow-md hover:shadow-lg transition-all h-9 text-xs">
+                            View Details <ArrowRight size={14} className="ml-1 flex-shrink-0" />
                         </Button>
                     </Link>
                 </div>

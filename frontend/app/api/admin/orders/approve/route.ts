@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
         }
 
         if (action === 'approve') {
-            order.status = 'success';
+            order.status = 'paid';
             order.verificationStatus = 'approved';
             await order.save();
 
             // Update User Bundle Status
             await User.findOneAndUpdate(
-                { _id: order.userId, "purchasedBundles.orderId": order._id },
+                { _id: order.userId, "purchasedBundles.orderId": order._id } as any,
                 {
                     $set: { "purchasedBundles.$.verificationStatus": "active" }
                 }
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
             // Update User Bundle Status
             await User.findOneAndUpdate(
-                { _id: order.userId, "purchasedBundles.orderId": order._id },
+                { _id: order.userId, "purchasedBundles.orderId": order._id } as any,
                 {
                     $set: { "purchasedBundles.$.verificationStatus": "rejected" }
                 }

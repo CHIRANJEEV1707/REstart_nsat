@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
 
     // --- Rate Limiting (Applied to /api routes) ---
     if (pathname.startsWith('/api')) {
-        const ip = request.ip || request.headers.get('x-forwarded-for') || '127.0.0.1'
+        const ip = (request as any).ip || request.headers.get('x-forwarded-for') || '127.0.0.1'
 
         // 1. Global API Limiter (300 req / 15 min)
         const globalLimit = checkRateLimit(ip, 'global', { limit: 300, interval: 15 * 60 * 1000 })

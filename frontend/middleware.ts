@@ -1,9 +1,56 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { checkRateLimit } from './lib/rate-limit'
 
 export function middleware(request: NextRequest) {
-    const token = request.cookies.get('token')?.value
     const { pathname } = request.nextUrl
+
+    // --- Rate Limiting (Applied to /api routes) ---
+    if (pathname.startsWith('/api')) {
+        const ip = request.ip || request.headers.get('x-forwarded-for') || '127.0.0.1'
+
+        // 1. Global API Limiter (300 req / 15 min)
+        const globalLimit = checkRateLimit(ip, 'global', { limit: 300, interval: 15 * 60 * 1000 })
+
+        if (!globalLimit.success) {
+            return NextResponse.json(
+                { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': String(Math.ceil((globalLimit.reset - Date.now()) / 1000)),
+                        'RateLimit-Limit': String(globalLimit.limit),
+                        'RateLimit-Remaining': String(globalLimit.remaining),
+                        'RateLimit-Reset': String(Math.ceil(globalLimit.reset / 1000))
+                    }
+                }
+            )
+        }
+
+        // 2. Auth Limiter (5 req / 15 min)
+        // Matches /api/auth/login and /api/auth/signup
+        if (pathname === '/api/auth/login' || pathname === '/api/auth/signup') {
+            const authLimit = checkRateLimit(ip, 'auth', { limit: 5, interval: 15 * 60 * 1000 })
+
+            if (!authLimit.success) {
+                return NextResponse.json(
+                    { success: false, message: 'Too many authentication attempts, please try again after 15 minutes' },
+                    {
+                        status: 429,
+                        headers: {
+                            'Retry-After': String(Math.ceil((authLimit.reset - Date.now()) / 1000)),
+                            'RateLimit-Limit': String(authLimit.limit),
+                            'RateLimit-Remaining': String(authLimit.remaining),
+                            'RateLimit-Reset': String(Math.ceil(authLimit.reset / 1000))
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    // --- Existing Authentication Logic ---
+    const token = request.cookies.get('token')?.value
 
     // Protected routes: dashboard, saved, prep, settings, profile, onboarding
     const protectedRoutes = ['/dashboard', '/saved', '/prep', '/settings', '/profile', '/onboarding']
@@ -32,11 +79,12 @@ export const config = {
     matcher: [
         /*
          * Match all request paths except for the ones starting with:
-         * - api (API routes)
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
+         *
+         * NOTE: 'api' was previously excluded, but now included for rate limiting.
          */
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!_next/static|_next/image|favicon.ico).*)',
     ],
 }

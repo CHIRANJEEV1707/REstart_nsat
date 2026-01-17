@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import User from '@/lib/models/User';
 import Exam from '@/lib/models/Exam';
+import '@/lib/models/College';
+import '@/lib/models/InternationalCollege';
+import '@/lib/models/NewGenCollege';
 import jwt from 'jsonwebtoken';
 
 interface JwtPayload {

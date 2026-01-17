@@ -10,7 +10,9 @@ export function middleware(request: NextRequest) {
         const ip = (request as any).ip || request.headers.get('x-forwarded-for') || '127.0.0.1'
 
         // 1. Global API Limiter (300 req / 15 min)
-        const globalLimit = checkRateLimit(ip, 'global', { limit: 300, interval: 15 * 60 * 1000 })
+        const isDev = process.env.NODE_ENV === 'development'
+        const globalLimitVal = isDev ? 1000 : 300
+        const globalLimit = checkRateLimit(ip, 'global', { limit: globalLimitVal, interval: 15 * 60 * 1000 })
 
         if (!globalLimit.success) {
             return NextResponse.json(
@@ -30,7 +32,9 @@ export function middleware(request: NextRequest) {
         // 2. Auth Limiter (5 req / 15 min)
         // Matches /api/auth/login and /api/auth/signup
         if (pathname === '/api/auth/login' || pathname === '/api/auth/signup') {
-            const authLimit = checkRateLimit(ip, 'auth', { limit: 5, interval: 15 * 60 * 1000 })
+            const isDev = process.env.NODE_ENV === 'development'
+            const limit = isDev ? 100 : 5 // 100 requests in dev, 5 in prod
+            const authLimit = checkRateLimit(ip, 'auth', { limit, interval: 15 * 60 * 1000 })
 
             if (!authLimit.success) {
                 return NextResponse.json(

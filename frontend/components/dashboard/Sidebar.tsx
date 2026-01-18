@@ -71,7 +71,7 @@ export function Sidebar() {
                             <div className="font-semibold text-gray-900 text-sm">
                                 {user.name?.split(' ')[0] || 'User'}
                             </div>
-                            <div className="text-xs text-gray-500">Premium</div>
+                            <div className="text-xs text-gray-500 capitalize">{user.role || 'Student'}</div>
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">

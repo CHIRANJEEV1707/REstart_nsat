@@ -24,6 +24,16 @@ export default function TestResultsPage() {
         }
     });
 
+    // Check Free Pack Status
+    const { data: freePackData } = useQuery({
+        queryKey: ['freePackStatus'],
+        queryFn: async () => {
+            const res = await api.get('/free-pack');
+            return res.data?.data;
+        },
+        enabled: !!user
+    });
+
     if (isLoading) {
         return (
             <div className="min-h-screen p-8 max-w-7xl mx-auto space-y-6">
@@ -49,7 +59,18 @@ export default function TestResultsPage() {
     }
 
     const { mockTestId: test, totalScore, totalViolations, analytics, totalTimeSpent } = attempt;
-    const isPremium = (user?.purchasedBundles?.length ?? 0) > 0;
+
+    // Check access rights
+    const hasPurchasedBundle = (user?.purchasedBundles?.length ?? 0) > 0;
+    const hasFreePack = freePackData?.hasFreepack || freePackData?.accessLevel === 'free';
+
+    // If user has any premium access OR free pack, show results? 
+    // Actually, for mock tests, if they could TAKE the test, they should see results.
+    // The "Lock" usually applies to detailed analytics for FREE users on PREMIUM tests.
+    // But if this is a "Free Pack" test, it should be unlocked.
+    // Assuming 'isPremium' controls the locking of analytics section.
+
+    const isPremium = hasPurchasedBundle || hasFreePack;
 
     // Calculate global accuracy if not present
     const totalCorrect = analytics?.sectionWise?.reduce((acc: number, curr: any) => acc + curr.correct, 0) || 0;

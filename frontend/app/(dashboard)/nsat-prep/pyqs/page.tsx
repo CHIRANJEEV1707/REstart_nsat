@@ -27,7 +27,7 @@ export default function PYQListPage() {
     const { data: accessData } = useQuery({
         queryKey: ['freePackStatus'],
         queryFn: async () => {
-            const res = await api.get('/api/free-pack/status');
+            const res = await api.get('/free-pack/status');
             return res.data?.data;
         },
         enabled: !!user
@@ -42,7 +42,7 @@ export default function PYQListPage() {
     const { data: categories, isLoading } = useQuery({
         queryKey: ['pyqCategories'],
         queryFn: async () => {
-            const res = await api.get('/api/pyqs');
+            const res = await api.get('/pyqs');
             return res.data?.data || [];
         }
     });
@@ -150,7 +150,7 @@ function PYQCard({ category, hasAccess }: { category: PYQCategory; hasAccess: bo
                     </Link>
                 ) : (
                     <Link href="/nsat-prep">
-                         <Button variant="ghost" className="text-gray-500 hover:text-gray-700 p-2 h-auto text-sm font-medium">
+                        <Button variant="ghost" className="text-gray-500 hover:text-gray-700 p-2 h-auto text-sm font-medium">
                             <Lock className="w-3 h-3 mr-1" /> Unlock
                         </Button>
                     </Link>

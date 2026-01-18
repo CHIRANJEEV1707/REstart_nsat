@@ -21,7 +21,7 @@ export default function NSATPrepPage() {
     const { data: accessData, refetch: refetchAccess } = useQuery({
         queryKey: ['freePackStatus'],
         queryFn: async () => {
-            const res = await api.get('/api/free-pack/status');
+            const res = await api.get('/free-pack');
             return res.data?.data;
         },
         enabled: !!user
@@ -39,7 +39,7 @@ export default function NSATPrepPage() {
 
     const claimMutation = useMutation({
         mutationFn: async () => {
-            const res = await api.post('/api/free-pack/claim', { source: 'nsat-prep-page' });
+            const res = await api.post('/free-pack', { source: 'nsat-prep-page' });
             return res.data;
         },
         onSuccess: (data) => {
@@ -214,14 +214,14 @@ export default function NSATPrepPage() {
 
                     {showDashboard && (
                         <div className="flex gap-2">
-                             <Button
+                            <Button
                                 variant={showUpgrade ? "default" : "outline"}
                                 onClick={() => setShowUpgrade(!showUpgrade)}
                                 className="gap-2"
-                             >
+                            >
                                 <Sparkles className="w-4 h-4" />
                                 {showUpgrade ? "View Dashboard" : "Upgrade / Store"}
-                             </Button>
+                            </Button>
                         </div>
                     )}
                 </div>
@@ -229,8 +229,8 @@ export default function NSATPrepPage() {
                 {!showDashboard || showUpgrade ? (
                     // Marketing / Sales View
                     <>
-                         {/* Hero Section */}
-                         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-xl overflow-hidden relative">
+                        {/* Hero Section */}
+                        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-xl overflow-hidden relative">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
                             <div className="relative z-10">
                                 <div className="flex items-center gap-3 mb-4">
@@ -349,7 +349,7 @@ export default function NSATPrepPage() {
                             )}
                         </div>
 
-                         {/* Quick Access Cards */}
+                        {/* Quick Access Cards */}
                         <div className="grid md:grid-cols-3 gap-6 mb-12">
                             <Link href="/nsat-prep/mock-tests" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
@@ -409,17 +409,8 @@ function RecentPerformance() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/mock-tests/attempts/history') // Updated endpoint to use history if needed, or check existing endpoint
-            .then(res => res.json()) // It was /api/mock-tests/attempts/history in routes, wait.
-            // In routes file: router.get('/attempts/history', ...)
-            // The existing file called /api/mock-tests/attempts ??
-            // Let's check the routes file content I read earlier.
-            // router.get('/attempts/history', ...) is defined.
-            // Is there a generic /attempts route?
-            // No. The previous code called /api/mock-tests/attempts.
-            // If the previous code was working, maybe there is another route or I missed it.
-            // But 'backend/src/routes/mockTestRoutes.ts' has `router.get('/attempts/history', ...)`
-            // I will use `/api/mock-tests/attempts/history`.
+        fetch('/api/mock-tests/attempts')
+            .then(res => res.json())
             .then(data => {
                 if (data.success) {
                     setAttempts(data.data);
@@ -437,10 +428,15 @@ function RecentPerformance() {
 
     return (
         <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-blue-600" />
-                Your Recent Performance
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <TrendingUp className="w-6 h-6 text-blue-600" />
+                    Your Recent Performance
+                </h2>
+                <Link href="/nsat-prep/results" className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                    View All Results
+                </Link>
+            </div>
             <div className="overflow-x-auto">
                 <table className="w-full">
                     <thead>

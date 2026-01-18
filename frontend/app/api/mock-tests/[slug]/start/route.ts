@@ -60,6 +60,48 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     // Check if there is an existing active attempt? 
     // Maybe we allow multiple attempts.
 
+    // Check for existing in-progress attempt to support RESUME
+    const existingAttempt = await TestAttempt.findOne({
+        userId: user._id,
+        mockTestId: test._id,
+        status: 'in-progress'
+    });
+
+    if (existingAttempt) {
+        console.log(`[StartTest] Resuming existing attempt: ${existingAttempt._id}`);
+
+        // Fetch questions to ensure we return the structure frontend expects
+        const questions = await Question.find({ mockTestId: test._id }).sort({ questionNumber: 1 });
+
+        // Return questions without correct answers
+        const questionsWithoutAnswers = questions.map(q => ({
+            _id: q._id,
+            section: q.section,
+            questionNumber: q.questionNumber,
+            questionText: q.questionText,
+            questionType: q.questionType,
+            options: q.options,
+            marks: q.marks,
+            negativeMarks: q.negativeMarks,
+            isCoding: q.isCoding,
+            codeTemplate: q.codeTemplate,
+            testCases: q.testCases?.filter((tc: any) => !tc.isHidden)
+        }));
+
+        return NextResponse.json({
+            success: true,
+            data: {
+                attempt: existingAttempt,
+                test: {
+                    title: test.title,
+                    duration: test.duration,
+                    sections: test.sections
+                },
+                questions: questionsWithoutAnswers
+            }
+        });
+    }
+
     try {
         // Fetch questions to initialize answers array
         const questions = await Question.find({ mockTestId: test._id }).sort({ questionNumber: 1 });

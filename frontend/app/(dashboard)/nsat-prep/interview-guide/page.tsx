@@ -26,7 +26,7 @@ export default function InterviewGuideListPage() {
     const { data: accessData } = useQuery({
         queryKey: ['freePackStatus'],
         queryFn: async () => {
-            const res = await api.get('/api/free-pack/status');
+            const res = await api.get('/free-pack/status');
             return res.data?.data;
         },
         enabled: !!user
@@ -41,7 +41,7 @@ export default function InterviewGuideListPage() {
     const { data: guides, isLoading } = useQuery({
         queryKey: ['interviewGuides'],
         queryFn: async () => {
-            const res = await api.get('/api/interview-guides');
+            const res = await api.get('/interview-guides');
             return res.data?.data || [];
         }
     });

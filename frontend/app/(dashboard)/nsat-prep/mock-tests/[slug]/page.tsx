@@ -98,13 +98,22 @@ function TestInterface() {
                 setAnswers(existingAnswers);
                 setQuestionStatus(existingStatus);
 
-                // Calculate time left
-                const timeSpent = data.data.attempt.totalTimeSpent || 0;
-                const duration = data.data.test.duration * 60;
-                setTimeLeft(Math.max(0, duration - timeSpent));
+                // Calculate time left based on startedAt (Wall Clock Time)
+                // This ensures timer resumes correctly even on refresh
+                const startedAt = new Date(data.data.attempt.startedAt).getTime();
+                const now = new Date().getTime();
+                const durationMs = data.data.test.duration * 60 * 1000;
+
+                // Time elapsed since start
+                const elapsedMs = now - startedAt;
+                const remainingSeconds = Math.max(0, Math.floor((durationMs - elapsedMs) / 1000));
+
+                setTimeLeft(remainingSeconds);
 
                 setTestStarted(true);
-                proctoring.enterFullscreen();
+                // proctoring.enterFullscreen(); // Only enter if not already? Or just force it.
+                // Note: Removing auto-fullscreen on resume might be nicer, but let's keep it for security.
+                if (remainingSeconds > 0) proctoring.enterFullscreen();
             }
         },
         onError: (error: any) => {
@@ -135,11 +144,23 @@ function TestInterface() {
     // Actions
     const handleOptionSelect = (qId: string, val: string) => {
         setAnswers(prev => ({ ...prev, [qId]: val }));
+        // Auto-save: mark as answered immediately
+        handleStatusUpdate(qId, 'answered');
+        syncAnswer(qId, val, 'answered');
     };
 
     const handleStatusUpdate = (qId: string, newStatus: QuestionStatus) => {
         setQuestionStatus(prev => ({ ...prev, [qId]: newStatus }));
-        syncAnswer(qId, answers[qId] || '', newStatus);
+        // syncAnswer is called in handleOptionSelect for answers, 
+        // but for other status updates (mark for review), we call it here.
+        // However, to avoid double calling for option select if we call syncAnswer there,
+        // we should be careful. 
+        // Let's rely on handleOptionSelect calling syncAnswer separately for value changes.
+        // For simple status changes (like clear/mark review) we call syncAnswer from those handlers or usage.
+
+        // Actually, let's keep it simple: syncAnswer whenever status changes?
+        // But status update doesn't have the answer value if called generically.
+        // So we will trigger sync from the specific actions.
     };
 
     const handleSaveNext = () => {
@@ -148,6 +169,7 @@ function TestInterface() {
         const newStatus = ans ? 'answered' : 'visited'; // If no answer, just visited (skipped)
 
         handleStatusUpdate(currentQuestion._id, newStatus);
+        syncAnswer(currentQuestion._id, ans || '', newStatus);
 
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(prev => prev + 1);
@@ -160,6 +182,7 @@ function TestInterface() {
         const newStatus = ans ? 'answered-marked-for-review' : 'marked-for-review';
 
         handleStatusUpdate(currentQuestion._id, newStatus);
+        syncAnswer(currentQuestion._id, ans || '', newStatus);
 
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(prev => prev + 1);
@@ -174,12 +197,13 @@ function TestInterface() {
             return next;
         });
         handleStatusUpdate(currentQuestion._id, 'visited');
+        syncAnswer(currentQuestion._id, '', 'visited');
     };
 
     const jumpToQuestion = (idx: number) => {
         // Mark current as visited if moving away and status is not-visited
         if (currentQuestion && questionStatus[currentQuestion._id] === 'not-visited') {
-             handleStatusUpdate(currentQuestion._id, 'visited');
+            handleStatusUpdate(currentQuestion._id, 'visited');
         }
         setCurrentIndex(idx);
         setSidebarOpen(false);
@@ -187,7 +211,14 @@ function TestInterface() {
 
     // Timer Logic
     useEffect(() => {
-        if (!testStarted || timeLeft <= 0) return;
+        if (!testStarted) return;
+
+        // If loaded with 0 time, submit immediately
+        if (timeLeft <= 0) {
+            handleSubmit();
+            return;
+        }
+
         const timer = setInterval(() => {
             setTimeLeft(prev => {
                 if (prev <= 1) {
@@ -325,8 +356,8 @@ function TestInterface() {
             <div className="flex flex-1 overflow-hidden relative">
                 {/* Main Content */}
                 <main className="flex-1 flex flex-col h-full overflow-hidden relative z-0">
-                     {/* Violation & Camera */}
-                     {showViolation && (
+                    {/* Violation & Camera */}
+                    {showViolation && (
                         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 max-w-sm w-full">
                             <ViolationWarning
                                 type={showViolation.type as any}
@@ -337,26 +368,26 @@ function TestInterface() {
                         </div>
                     )}
                     <div className="absolute top-4 right-4 z-10 w-32 opacity-80 hover:opacity-100 transition-opacity">
-                         <CameraPreview />
+                        <CameraPreview />
                     </div>
 
                     {/* Question Header */}
                     <div className="bg-white border-b px-6 py-4 flex items-center justify-between shrink-0">
-                         <div>
-                             <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                                 {currentSection}
-                             </span>
-                             <div className="flex items-center gap-2 mt-1">
-                                 <h2 className="text-xl font-bold text-gray-900">Question {currentIndex + 1}</h2>
-                                 <Badge variant={currentQuestion?.questionType === 'coding' ? 'default' : 'outline'}>
-                                     {currentQuestion?.questionType === 'coding' ? 'Coding' : 'MCQ'}
-                                 </Badge>
-                             </div>
-                         </div>
-                         <div className="text-right">
-                             <div className="font-bold text-green-600">+{currentQuestion?.marks} Marks</div>
-                             <div className="text-sm text-red-500">-{currentQuestion?.negativeMarks} Neg.</div>
-                         </div>
+                        <div>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                                {currentSection}
+                            </span>
+                            <div className="flex items-center gap-2 mt-1">
+                                <h2 className="text-xl font-bold text-gray-900">Question {currentIndex + 1}</h2>
+                                <Badge variant={currentQuestion?.questionType === 'coding' ? 'default' : 'outline'}>
+                                    {currentQuestion?.questionType === 'coding' ? 'Coding' : 'MCQ'}
+                                </Badge>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className="font-bold text-green-600">+{currentQuestion?.marks} Marks</div>
+                            <div className="text-sm text-red-500">-{currentQuestion?.negativeMarks} Neg.</div>
+                        </div>
                     </div>
 
                     {/* Question Body */}
@@ -391,24 +422,21 @@ function TestInterface() {
                                         <div
                                             key={option.id}
                                             onClick={() => handleOptionSelect(currentQuestion._id, option.id)}
-                                            className={`group relative flex items-center p-4 cursor-pointer rounded-xl border-2 transition-all duration-200 ${
-                                                answers[currentQuestion._id] === option.id
-                                                    ? 'border-blue-600 bg-blue-50'
-                                                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-                                            }`}
+                                            className={`group relative flex items-center p-4 cursor-pointer rounded-xl border-2 transition-all duration-200 ${answers[currentQuestion._id] === option.id
+                                                ? 'border-blue-600 bg-blue-50'
+                                                : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                                                }`}
                                         >
-                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-4 transition-colors ${
-                                                answers[currentQuestion._id] === option.id
-                                                    ? 'border-blue-600 bg-blue-600'
-                                                    : 'border-gray-300 group-hover:border-blue-400'
-                                            }`}>
+                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-4 transition-colors ${answers[currentQuestion._id] === option.id
+                                                ? 'border-blue-600 bg-blue-600'
+                                                : 'border-gray-300 group-hover:border-blue-400'
+                                                }`}>
                                                 {answers[currentQuestion._id] === option.id && (
                                                     <div className="w-2.5 h-2.5 rounded-full bg-white" />
                                                 )}
                                             </div>
-                                            <span className={`flex-1 font-medium ${
-                                                answers[currentQuestion._id] === option.id ? 'text-blue-900' : 'text-gray-700'
-                                            }`}>
+                                            <span className={`flex-1 font-medium ${answers[currentQuestion._id] === option.id ? 'text-blue-900' : 'text-gray-700'
+                                                }`}>
                                                 {option.text}
                                             </span>
                                         </div>
@@ -450,9 +478,8 @@ function TestInterface() {
                 </main>
 
                 {/* Right Sidebar (Palette) */}
-                <aside className={`fixed inset-y-0 right-0 w-80 bg-white border-l shadow-2xl transform transition-transform duration-300 z-30 lg:relative lg:transform-none lg:shadow-none ${
-                    sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
-                }`}>
+                <aside className={`fixed inset-y-0 right-0 w-80 bg-white border-l shadow-2xl transform transition-transform duration-300 z-30 lg:relative lg:transform-none lg:shadow-none ${sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
+                    }`}>
                     <div className="flex flex-col h-full">
                         {/* User Profile / Info */}
                         <div className="p-6 border-b bg-gray-50">

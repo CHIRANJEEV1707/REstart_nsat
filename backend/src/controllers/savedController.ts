@@ -19,9 +19,17 @@ export const getSavedColleges = async (req: Request, res: Response) => {
         }
 
         // Add type to each college object
-        const indianColleges = (user.saved_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'indian' }));
-        const internationalColleges = (user.saved_international_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'international' }));
-        const newGenColleges = (user.saved_newgen_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'newgen' }));
+        const indianColleges = (user.saved_colleges || [])
+            .filter((c: any) => c && typeof c.toObject === 'function')
+            .map((c: any) => ({ ...c.toObject(), type: 'indian' }));
+
+        const internationalColleges = (user.saved_international_colleges || [])
+            .filter((c: any) => c && typeof c.toObject === 'function')
+            .map((c: any) => ({ ...c.toObject(), type: 'international' }));
+
+        const newGenColleges = (user.saved_newgen_colleges || [])
+            .filter((c: any) => c && typeof c.toObject === 'function')
+            .map((c: any) => ({ ...c.toObject(), type: 'newgen' }));
 
         const allSaved = [...indianColleges, ...internationalColleges, ...newGenColleges];
 

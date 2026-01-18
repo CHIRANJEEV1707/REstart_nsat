@@ -12,6 +12,7 @@ export interface ITestAttempt extends Document {
         questionId: mongoose.Types.ObjectId;
         selectedAnswer: string;
         isCorrect: boolean;
+        isVerified: boolean; // For coding questions (passed all test cases)
         marksAwarded: number;
         timeSpent: number; // seconds on this question
         status: 'not-visited' | 'visited' | 'answered' | 'marked-for-review' | 'answered-marked-for-review';
@@ -90,6 +91,7 @@ const TestAttemptSchema = new Schema<ITestAttempt>({
         questionId: { type: Schema.Types.ObjectId, ref: 'Question', required: true },
         selectedAnswer: { type: String, default: '' },
         isCorrect: { type: Boolean, default: false },
+        isVerified: { type: Boolean, default: false },
         marksAwarded: { type: Number, default: 0 },
         timeSpent: { type: Number, default: 0 },
         status: {

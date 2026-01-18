@@ -41,7 +41,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     try {
         const { attemptId } = await params;
-        const { questionId, selectedAnswer, timeSpent } = await request.json();
+        const { questionId, selectedAnswer, timeSpent, isVerified } = await request.json();
 
         const attempt = await TestAttempt.findOne({
             _id: attemptId,
@@ -71,6 +71,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
             attempt.answers[answerIndex].selectedAnswer = selectedAnswer;
             // attempt.answers[answerIndex].timeSpent = timeSpent; 
+
+            if (isVerified !== undefined) {
+                (attempt.answers as any)[answerIndex].isVerified = isVerified;
+            }
 
             // Mark modified? Mongoose detects changes in arrays.
         } else {

@@ -18,6 +18,7 @@ export interface IQuestion extends Document {
     tags: string[];
     // Coding-specific fields
     isCoding: boolean;
+    constraints?: string;
     codeTemplate: {
         language: string;
         template: string;
@@ -63,6 +64,7 @@ const QuestionSchema = new Schema<IQuestion>({
     tags: [{ type: String }],
     // Coding-specific
     isCoding: { type: Boolean, default: false },
+    constraints: { type: String },
     codeTemplate: [{
         language: { type: String },
         template: { type: String },

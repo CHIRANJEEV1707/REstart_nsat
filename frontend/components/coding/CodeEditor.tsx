@@ -56,7 +56,7 @@ export default function CodeEditor({
     };
 
     return (
-        <div className="relative w-full rounded-lg overflow-hidden border border-gray-700 bg-[#1e1e1e]">
+        <div className="relative w-full h-full rounded-lg overflow-hidden border border-gray-700 bg-[#1e1e1e]" style={{ height: height === '100%' ? '100%' : height }}>
             {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-10">
                     <div className="flex items-center gap-2 text-gray-400">

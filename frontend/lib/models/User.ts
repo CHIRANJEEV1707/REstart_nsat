@@ -59,6 +59,9 @@ export interface IUser extends Document {
     // Password reset fields
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
+    // Email verification
+    isEmailVerified: boolean;
+    emailVerifiedAt?: Date;
     createdAt: Date;
     updatedAt: Date;
     matchPassword(enteredPassword: string): Promise<boolean>;
@@ -134,6 +137,10 @@ const UserSchema = new Schema<IUser>({
     // Password reset fields
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false },
+
+    // Email verification
+    isEmailVerified: { type: Boolean, default: false, index: true },
+    emailVerifiedAt: { type: Date },
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

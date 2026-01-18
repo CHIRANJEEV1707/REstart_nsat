@@ -7,7 +7,8 @@ import { z } from 'zod';
 const signupSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters')
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    verificationToken: z.string().optional()
 });
 
 // Helper: Sign Access Token (15 min)
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { name, email, password } = parsed.data;
+        const { name, email, password, verificationToken } = parsed.data;
 
         // Check if user exists
         const existingUser = await User.findOne({ email });
@@ -50,13 +51,29 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Verify the verification token if provided
+        let isEmailVerified = false;
+        if (verificationToken) {
+            try {
+                const decoded: any = jwt.verify(verificationToken, process.env.JWT_SECRET || 'secret');
+                if (decoded.email?.toLowerCase() === email.toLowerCase() && decoded.verified && decoded.type === 'email-verification') {
+                    isEmailVerified = true;
+                }
+            } catch (err) {
+                // Token invalid or expired - continue but don't mark as verified
+                console.log('[Signup] Verification token invalid or expired');
+            }
+        }
+
         // Create user
         const user = await User.create({
             name,
             email,
             password,
             onboardingCompleted: false,
-            onboardingStep: 1
+            onboardingStep: 1,
+            isEmailVerified,
+            emailVerifiedAt: isEmailVerified ? new Date() : undefined
         });
 
         // Generate tokens
@@ -81,7 +98,8 @@ export async function POST(request: NextRequest) {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                onboardingCompleted: user.onboardingCompleted
+                onboardingCompleted: user.onboardingCompleted,
+                isEmailVerified: user.isEmailVerified
             }
         }, { status: 201 });
 
@@ -105,3 +123,4 @@ export async function POST(request: NextRequest) {
         );
     }
 }
+

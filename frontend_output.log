@@ -1,0 +1,28 @@
+
+> frontend@0.1.0 dev /app/frontend
+> next dev --port 3003
+
+   ▲ Next.js 16.0.8 (Turbopack)
+   - Local:         http://localhost:3003
+   - Network:       http://192.168.0.2:3003
+   - Environments: .env.local
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+ ✓ Ready in 1641ms
+ ○ Compiling /auth/login ...
+ GET /auth/login?from=%2Fprep%2Fnsat 200 in 6.0s (compile: 5.1s, proxy.ts: 5ms, render: 899ms)
+ GET /auth/login?from=%2Fprep%2Fnsat 200 in 83ms (compile: 8ms, proxy.ts: 5ms, render: 71ms)
+ GET /prep/nsat 200 in 1206ms (compile: 1015ms, proxy.ts: 7ms, render: 184ms)
+[DB] MongoDB connected successfully
+ GET /api/saved 401 in 3.7s (compile: 1282ms, proxy.ts: 5ms, render: 2.4s)
+ POST /api/auth/logout 200 in 182ms (compile: 166ms, proxy.ts: 6ms, render: 11ms)
+ GET /auth/login 200 in 72ms (compile: 3ms, proxy.ts: 3ms, render: 66ms)
+ GET /prep/nsat 200 in 82ms (compile: 6ms, proxy.ts: 6ms, render: 71ms)
+ GET /prep/nsat 200 in 71ms (compile: 4ms, proxy.ts: 5ms, render: 61ms)
+ GET /prep/nsat 200 in 493ms (compile: 147ms, proxy.ts: 5ms, render: 341ms)

@@ -6,9 +6,22 @@ import jwt from 'jsonwebtoken';
 import User from '@/lib/models/User';
 
 async function getUser(request: NextRequest) {
+    let token: string | undefined;
+
+    // Try cookies first
     const cookieStore = await cookies();
-    const token = cookieStore.get('token')?.value;
+    token = cookieStore.get('token')?.value;
+
+    // Fallback to Authorization header
+    if (!token) {
+        const authHeader = request.headers.get('authorization');
+        if (authHeader?.startsWith('Bearer ')) {
+            token = authHeader.slice(7);
+        }
+    }
+
     if (!token) return null;
+
     try {
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
         await dbConnect();

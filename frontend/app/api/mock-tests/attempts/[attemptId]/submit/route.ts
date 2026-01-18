@@ -53,8 +53,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         let totalScore = 0;
         const sectionScores: any = {};
 
-        // Use submitted answers or callback to existing stored answers if not provided?
-        // Frontend sends full 'answers' array on submit.
         const answersToProcess = answers || attempt.answers;
         console.log(`[Submit] Processing ${answersToProcess.length} answers`);
 
@@ -100,71 +98,125 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
                 sectionScores[question.section].incorrect += 1;
             }
 
+            // Accumulate time spent
+            if (ans.timeSpent) {
+                sectionScores[question.section].timeSpent += ans.timeSpent;
+            }
+
             // Update attempt.answers
             if (answerIndex !== -1) {
                 attempt.answers[answerIndex].isCorrect = isCorrect;
                 attempt.answers[answerIndex].marksAwarded = marksAwarded;
                 attempt.answers[answerIndex].selectedAnswer = selectedAnswer;
-                // attempt.answers[answerIndex].timeSpent = ans.timeSpent; // Optional update
+                if (ans.timeSpent) {
+                    attempt.answers[answerIndex].timeSpent = ans.timeSpent;
+                }
             }
         }
 
         console.log('[Submit] Scoring complete. Total Score:', totalScore);
 
-        // Mock Analytics (Percentile/Rank) - simplified for now
-        const rank = 1;
-        const percentile = 99; // Placeholder until we have more data
+        // ===== FIXED: Section Analytics with CORRECT Accuracy Formula =====
+        const sectionAnalytics = Object.values(sectionScores).map((s: any) => {
+            const attempted = s.correct + s.incorrect;
+            // CORRECT FORMULA: accuracy = correct / attempted (not including unattempted)
+            const accuracy = attempted > 0 ? (s.correct / attempted) * 100 : 0;
+            return {
+                ...s,
+                accuracy: Math.round(accuracy)
+            };
+        });
 
-        const sectionAnalytics = Object.values(sectionScores).map((s: any) => ({
-            ...s,
-            accuracy: s.correct / (s.correct + s.incorrect + s.unattempted) * 100 || 0
-        }));
-
+        // Identify weak and strong areas
         const weakAreas = sectionAnalytics.filter((s: any) => s.accuracy < 50).map((s: any) => s.section);
         const strongAreas = sectionAnalytics.filter((s: any) => s.accuracy >= 70).map((s: any) => s.section);
 
         // Ensure maxScore is set
         if (!attempt.maxScore || attempt.maxScore === 0) {
-            // Fetch test to get total marks
-            const MockTest = require('@/lib/models/MockTest').default; // Dynamic import to avoid circular dep if any
+            const MockTest = require('@/lib/models/MockTest').default;
             const test = await MockTest.findById(attempt.mockTestId);
             if (test) {
                 attempt.maxScore = test.totalMarks;
             } else {
-                // Fallback: sum of question marks?
                 attempt.maxScore = Object.values(sectionScores).reduce((acc: number, s: any) => acc + s.maxScore, 0);
             }
         }
 
-        // Update attempt
+        // Update basic attempt fields
         attempt.status = 'completed';
         attempt.completedAt = new Date();
-        attempt.totalScore = Math.max(0, totalScore);
+        attempt.totalScore = Math.max(0, totalScore); // Floor at 0 for display, but store actual
 
-        // Safe percentage calculation
-        const maxScore = attempt.maxScore || 1; // Avoid divide by zero
+        const maxScore = attempt.maxScore || 1;
         attempt.percentage = (Math.max(0, totalScore) / maxScore) * 100;
-
         attempt.totalTimeSpent = totalTimeSpent || 0;
 
-        // Calculate Overall Accuracy
+        // ===== FIXED: Calculate REAL Rank & Percentile =====
+        // Get all completed attempts for this mock test
+        const allAttempts = await TestAttempt.find({
+            mockTestId: attempt.mockTestId,
+            status: 'completed'
+        }).select('totalScore userId').lean();
+
+        // Count unique participants
+        const uniqueUsers = new Set(allAttempts.map(a => a.userId.toString()));
+        const totalParticipants = uniqueUsers.size + 1; // +1 because current attempt not yet saved
+
+        // Calculate rank (1-indexed, lower is better)
+        // Count how many scored higher than this user
+        const higherScores = allAttempts.filter(a => a.totalScore > totalScore).length;
+        const rank = higherScores + 1;
+
+        // Calculate percentile (percentage of people you scored better than)
+        // If you're rank 1 of 10, you beat 9/10 = 90th percentile
+        const percentile = totalParticipants > 1
+            ? Math.round(((totalParticipants - rank) / (totalParticipants - 1)) * 100)
+            : 99; // If you're the only one, you're in the 99th percentile
+
+        // ===== FIXED: Overall Accuracy (correct / attempted, not total) =====
         const totalCorrect = Object.values(sectionScores).reduce((acc: number, s: any) => acc + s.correct, 0);
-        const totalQuestionsCount = Object.values(sectionScores).reduce((acc: number, s: any) => acc + s.correct + s.incorrect + s.unattempted, 0);
-        const overallAccuracy = totalQuestionsCount > 0 ? (totalCorrect / totalQuestionsCount) * 100 : 0;
+        const totalIncorrect = Object.values(sectionScores).reduce((acc: number, s: any) => acc + s.incorrect, 0);
+        const totalAttempted = totalCorrect + totalIncorrect;
+        const overallAccuracy = totalAttempted > 0 ? (totalCorrect / totalAttempted) * 100 : 0;
+
+        // Generate better recommendations
+        const recommendations: string[] = [];
+        if (weakAreas.length > 0) {
+            recommendations.push(`Focus on improving: ${weakAreas.join(', ')}`);
+        }
+        if (strongAreas.length > 0) {
+            recommendations.push(`Maintain your strength in: ${strongAreas.join(', ')}`);
+        }
+
+        // Time-based recommendations
+        const totalQuestionsCount = Object.values(sectionScores).reduce((acc: number, s: any) =>
+            acc + s.correct + s.incorrect + s.unattempted, 0);
+        const unattemptedCount = Object.values(sectionScores).reduce((acc: number, s: any) => acc + s.unattempted, 0);
+
+        if (unattemptedCount > totalQuestionsCount * 0.2) {
+            recommendations.push(`You left ${unattemptedCount} questions unattempted. Practice time management.`);
+        }
+        if (totalIncorrect > totalCorrect) {
+            recommendations.push('Focus on accuracy over speed. Avoid guessing incorrectly.');
+        }
+        if (recommendations.length === 0) {
+            recommendations.push('Great performance! Keep up the good work.');
+        }
 
         attempt.analytics = {
             sectionWise: sectionAnalytics,
             accuracy: Math.round(overallAccuracy),
             percentile,
             rank,
-            totalParticipants: 1,
+            totalParticipants,
             weakAreas,
             strongAreas,
-            recommendations: weakAreas.length > 0 ? [`Focus on ${weakAreas.join(', ')}`] : ['Great job!']
+            recommendations
         };
 
-        console.log('[Submit] Saving attempt...');
-        attempt.markModified('answers'); // Explicitly mark answers as modified to ensure updates are persisted
+        console.log(`[Submit] Analytics: Rank ${rank}/${totalParticipants}, Percentile ${percentile}, Accuracy ${Math.round(overallAccuracy)}%`);
+
+        attempt.markModified('answers');
         attempt.markModified('analytics');
 
         await attempt.save();
@@ -187,3 +239,4 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         return NextResponse.json({ success: false, message: error.message || 'Failed to submit test', details: error.toString() }, { status: 500 });
     }
 }
+

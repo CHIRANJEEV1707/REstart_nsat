@@ -72,16 +72,37 @@ export default function TestResultsPage() {
 
     const isPremium = hasPurchasedBundle || hasFreePack;
 
-    // Calculate global accuracy if not present
-    const totalCorrect = analytics?.sectionWise?.reduce((acc: number, curr: any) => acc + curr.correct, 0) || 0;
-    const totalIncorrect = analytics?.sectionWise?.reduce((acc: number, curr: any) => acc + curr.incorrect, 0) || 0;
-    const totalAttempted = totalCorrect + totalIncorrect;
-    const globalAccuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+    // Use server-calculated accuracy (fallback to client calculation if missing)
+    const serverAccuracy = analytics?.accuracy;
+    const globalAccuracy = serverAccuracy !== undefined ? serverAccuracy : (
+        (() => {
+            const totalCorrect = analytics?.sectionWise?.reduce((acc: number, curr: any) => acc + curr.correct, 0) || 0;
+            const totalIncorrect = analytics?.sectionWise?.reduce((acc: number, curr: any) => acc + curr.incorrect, 0) || 0;
+            const totalAttempted = totalCorrect + totalIncorrect;
+            return totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+        })()
+    );
 
     // Helper for formatting time
     const formatTime = (secs: number) => {
         const mins = Math.floor(secs / 60);
         return `${mins}m ${secs % 60}s`;
+    };
+
+    // Helper for section score display (handles negative)
+    const getScoreDisplay = (score: number, maxScore: number) => {
+        if (score < 0) {
+            return { text: `${score}/${maxScore}`, isNegative: true };
+        }
+        return { text: `${score}/${maxScore}`, isNegative: false };
+    };
+
+    // Calculate progress bar width (handle negative scores)
+    const getProgressWidth = (score: number, maxScore: number) => {
+        if (maxScore === 0) return 0;
+        // For negative scores, show a small red indicator
+        if (score < 0) return 0;
+        return Math.min(100, (score / maxScore) * 100);
     };
 
     return (
@@ -186,20 +207,38 @@ export default function TestResultsPage() {
                             </h2>
 
                             <div className="space-y-6">
-                                {analytics?.sectionWise?.map((section: any, idx: number) => (
-                                    <div key={idx}>
-                                        <div className="flex justify-between text-sm mb-2">
-                                            <span className="font-medium text-gray-700">{section.section}</span>
-                                            <span className="text-gray-500">{section.score}/{section.maxScore} Marks</span>
+                                {analytics?.sectionWise?.map((section: any, idx: number) => {
+                                    const scoreInfo = getScoreDisplay(section.score, section.maxScore);
+                                    const progressWidth = getProgressWidth(section.score, section.maxScore);
+
+                                    return (
+                                        <div key={idx}>
+                                            <div className="flex justify-between text-sm mb-2">
+                                                <span className="font-medium text-gray-700">{section.section}</span>
+                                                <span className={`${scoreInfo.isNegative ? 'text-red-600 font-medium' : 'text-gray-500'}`}>
+                                                    {scoreInfo.text} Marks
+                                                </span>
+                                            </div>
+                                            <div className="h-3 bg-gray-100 rounded-full overflow-hidden relative">
+                                                {scoreInfo.isNegative ? (
+                                                    // Show red indicator for negative scores
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <span className="text-xs text-red-500 font-medium">Negative</span>
+                                                    </div>
+                                                ) : (
+                                                    <div
+                                                        className="h-full bg-blue-600 rounded-full transition-all"
+                                                        style={{ width: `${progressWidth}%` }}
+                                                    ></div>
+                                                )}
+                                            </div>
+                                            {/* Show accuracy per section */}
+                                            <div className="text-xs text-gray-400 mt-1">
+                                                Accuracy: {section.accuracy}% • {section.correct} correct, {section.incorrect} wrong, {section.unattempted} skipped
+                                            </div>
                                         </div>
-                                        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full bg-blue-600 rounded-full"
-                                                style={{ width: `${Math.max(0, Math.min(100, (section.score / section.maxScore) * 100))}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                                 {(!analytics?.sectionWise || analytics.sectionWise.length === 0) && (
                                     <p className="text-gray-500 text-center py-4">No data available</p>
                                 )}

@@ -25,8 +25,11 @@ interface ExamScore {
     year?: number;
 }
 
+import { useQueryClient } from '@tanstack/react-query'; // Import added
+
 function OnboardingContent() {
     const router = useRouter();
+    const queryClient = useQueryClient(); // Initialized
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('edit') === 'true';
 
@@ -122,6 +125,10 @@ function OnboardingContent() {
 
             await api.post('/user/preferences', payload);
             toast.success("Preferences Saved Successfully!");
+
+            // Force refetch user to update onboardingCompleted status
+            await queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+            await queryClient.refetchQueries({ queryKey: ['auth-user'] });
 
             // Allow animation time
             setTimeout(() => {

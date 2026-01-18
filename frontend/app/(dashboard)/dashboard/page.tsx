@@ -36,7 +36,8 @@ export default function DashboardPage() {
             return res.data.data;
         },
         enabled: !!user,
-        retry: false
+        retry: 2,
+        refetchOnWindowFocus: true
     });
 
     if (isDashboardLoading || !user) {

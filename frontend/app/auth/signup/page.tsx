@@ -165,6 +165,7 @@ export default function SignupPage() {
 
                 // Invalidate auth query
                 await queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+                await queryClient.refetchQueries({ queryKey: ['auth-user'] });
 
                 // Redirect to onboarding
                 router.replace('/onboarding');

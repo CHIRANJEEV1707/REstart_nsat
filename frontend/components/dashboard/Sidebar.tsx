@@ -64,14 +64,16 @@ export function Sidebar() {
             <div className="px-5 mb-6">
                 <div className="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-indigo-100/50">
                     <div className="flex items-center gap-3 mb-3">
-                        <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+                        <div className="h-10 w-10 shrink-0 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
                             {user.name?.[0]?.toUpperCase() || 'U'}
                         </div>
-                        <div>
-                            <div className="font-semibold text-gray-900 text-sm">
-                                {user.name?.split(' ')[0] || 'User'}
+                        <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-gray-900 text-sm truncate" title={user.name}>
+                                {user.name || 'User'}
                             </div>
-                            <div className="text-xs text-gray-500 capitalize">{user.role || 'Student'}</div>
+                            <div className="text-xs text-gray-500 truncate" title={user.email}>
+                                {user.email || user.role || 'Student'}
+                            </div>
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">

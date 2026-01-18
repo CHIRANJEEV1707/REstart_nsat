@@ -49,6 +49,7 @@ export default function LoginPage() {
 
                 // Invalidate auth query to force refetch with new credentials
                 await queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+                await queryClient.refetchQueries({ queryKey: ['auth-user'] });
 
                 const isComplete = res.data.data.onboardingCompleted;
                 // Check completion status and redirect

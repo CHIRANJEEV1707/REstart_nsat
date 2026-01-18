@@ -3,19 +3,34 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 import api from '@/lib/axios';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import {
     ArrowLeft, ArrowRight, Clock, AlertTriangle,
-    Maximize, Camera, Bookmark, RotateCcw, Save, Menu
+    Maximize, Camera, Bookmark, RotateCcw, Save, Menu, Play, Send
 } from 'lucide-react';
 import { ProctoringProvider, useProctoring } from '@/components/proctoring/ProctoringProvider';
 import { CameraPreview } from '@/components/proctoring/CameraPreview';
 import { ViolationWarning } from '@/components/proctoring/ViolationWarning';
+import LanguageSelector from '@/components/coding/LanguageSelector';
+import TestCasePanel from '@/components/coding/TestCasePanel';
 import toast, { Toaster } from 'react-hot-toast';
 
+// Dynamic import for Monaco to avoid SSR issues
+const CodeEditor = dynamic(() => import('@/components/coding/CodeEditor'), {
+    ssr: false,
+    loading: () => <div className="h-96 bg-gray-900 rounded-lg flex items-center justify-center text-gray-500">Loading Editor...</div>
+});
+
 // Types
+interface TestCase {
+    input: string;
+    expectedOutput: string;
+    isHidden: boolean;
+}
+
 interface Question {
     _id: string;
     section: string;
@@ -26,7 +41,19 @@ interface Question {
     marks: number;
     negativeMarks: number;
     isCoding?: boolean;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    constraints?: string;
+    codeTemplate?: { language: string; template: string }[];
+    testCases?: TestCase[];
 }
+
+// Default code templates
+const DEFAULT_TEMPLATES: Record<string, string> = {
+    python: `# Write your code here\n\ndef solution():\n    pass\n`,
+    javascript: `// Write your code here\n\nfunction solution() {\n    \n}\n`,
+    java: `// Write your code here\n\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}\n`,
+    cpp: `// Write your code here\n\n#include <iostream>\nusing namespace std;\n\nint main() {\n    \n    return 0;\n}\n`
+};
 
 type QuestionStatus = 'not-visited' | 'visited' | 'answered' | 'marked-for-review' | 'answered-marked-for-review';
 
@@ -47,6 +74,15 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
     const [submitting, setSubmitting] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar
     const [testStartedAt, setTestStartedAt] = useState<Date | null>(null); // Track actual start time
+
+    // Coding-specific state
+    const [codingLanguage, setCodingLanguage] = useState<{ [qId: string]: string }>({});
+    const [codeContent, setCodeContent] = useState<{ [qId: string]: string }>({});
+    const [isRunningCode, setIsRunningCode] = useState(false);
+    const [testResults, setTestResults] = useState<{ [qId: string]: any }>({});
+    const [activeIOTab, setActiveIOTab] = useState<'input' | 'output' | 'error'>('input');
+    const [customInput, setCustomInput] = useState('');
+    const [runOutput, setRunOutput] = useState({ stdout: '', stderr: '' });
 
     // Notify parent when attemptId changes (for violation syncing)
     useEffect(() => {
@@ -216,6 +252,106 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
         }
         setCurrentIndex(idx);
         setSidebarOpen(false);
+    };
+
+    // ===== Coding Handlers =====
+    const getCurrentLanguage = (qId: string) => codingLanguage[qId] || 'python';
+
+    const getCurrentCode = (qId: string, question: Question) => {
+        if (codeContent[qId]) return codeContent[qId];
+        const lang = getCurrentLanguage(qId);
+        const template = question.codeTemplate?.find(t => t.language === lang)?.template;
+        return template || DEFAULT_TEMPLATES[lang] || '';
+    };
+
+    const handleLanguageChange = (qId: string, newLang: string, question: Question) => {
+        setCodingLanguage(prev => ({ ...prev, [qId]: newLang }));
+        // Reset code to template for new language (only if user hasn't written code)
+        if (!codeContent[qId] || codeContent[qId] === getCurrentCode(qId, question)) {
+            const template = question.codeTemplate?.find(t => t.language === newLang)?.template;
+            setCodeContent(prev => ({ ...prev, [qId]: template || DEFAULT_TEMPLATES[newLang] || '' }));
+        }
+    };
+
+    const handleCodeChange = (qId: string, code: string) => {
+        setCodeContent(prev => ({ ...prev, [qId]: code }));
+        // Save code as answer for syncing
+        setAnswers(prev => ({ ...prev, [qId]: code }));
+        handleStatusUpdate(qId, 'answered');
+    };
+
+    const handleRunCode = async (question: Question) => {
+        if (!question) return;
+        const qId = question._id;
+        const code = getCurrentCode(qId, question);
+        const lang = getCurrentLanguage(qId);
+
+        setIsRunningCode(true);
+        setActiveIOTab('output');
+        setRunOutput({ stdout: '', stderr: '' });
+
+        try {
+            const res = await api.post('/code/execute', {
+                code,
+                language: lang,
+                input: customInput
+            });
+
+            if (res.data.success) {
+                setRunOutput({
+                    stdout: res.data.data.stdout,
+                    stderr: res.data.data.stderr || res.data.data.compileOutput
+                });
+                if (res.data.data.stderr || res.data.data.compileOutput) {
+                    setActiveIOTab('error');
+                }
+            }
+        } catch (error: any) {
+            setRunOutput({
+                stdout: '',
+                stderr: error.response?.data?.message || 'Execution failed'
+            });
+            setActiveIOTab('error');
+        } finally {
+            setIsRunningCode(false);
+        }
+    };
+
+    const handleSubmitCode = async (question: Question) => {
+        if (!question || !question.testCases) return;
+        const qId = question._id;
+        const code = getCurrentCode(qId, question);
+        const lang = getCurrentLanguage(qId);
+
+        setIsRunningCode(true);
+        setTestResults(prev => ({ ...prev, [qId]: null }));
+
+        try {
+            const res = await api.post('/code/execute', {
+                code,
+                language: lang,
+                testCases: question.testCases
+            });
+
+            if (res.data.success) {
+                setTestResults(prev => ({ ...prev, [qId]: res.data.data }));
+                // Mark as answered if all passed
+                handleStatusUpdate(qId, 'answered');
+                syncAnswer(qId, code, 'answered');
+            }
+        } catch (error: any) {
+            setTestResults(prev => ({
+                ...prev,
+                [qId]: {
+                    passedCount: 0,
+                    totalCount: question.testCases?.length || 0,
+                    allPassed: false,
+                    results: [{ error: error.message }]
+                }
+            }));
+        } finally {
+            setIsRunningCode(false);
+        }
     };
 
     // Timer Logic
@@ -421,22 +557,119 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
 
                             {currentQuestion?.questionType === 'coding' ? (
                                 <div className="space-y-4">
-                                    <div className="bg-gray-900 rounded-lg overflow-hidden border border-gray-700">
-                                        <div className="bg-gray-800 px-4 py-2 text-gray-400 text-xs flex items-center justify-between">
-                                            <span>Code Editor (Python/Java/C++)</span>
-                                            <span>Auto-saved</span>
+                                    {/* Constraints */}
+                                    {currentQuestion.constraints && (
+                                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                            <h4 className="text-sm font-semibold text-amber-800 mb-1">Constraints</h4>
+                                            <pre className="text-sm text-amber-700 whitespace-pre-wrap">{currentQuestion.constraints}</pre>
                                         </div>
-                                        <textarea
-                                            value={answers[currentQuestion._id] || ''}
-                                            onChange={(e) => handleOptionSelect(currentQuestion._id, e.target.value)}
-                                            className="w-full h-96 bg-gray-900 text-gray-100 font-mono p-4 focus:outline-none resize-none text-sm leading-6"
-                                            placeholder="// Write your code here..."
-                                            spellCheck={false}
+                                    )}
+
+                                    {/* Sample Test Cases */}
+                                    {currentQuestion.testCases && currentQuestion.testCases.filter(tc => !tc.isHidden).length > 0 && (
+                                        <div className="space-y-2">
+                                            <h4 className="text-sm font-semibold text-gray-700">Examples</h4>
+                                            {currentQuestion.testCases.filter(tc => !tc.isHidden).map((tc, idx) => (
+                                                <div key={idx} className="bg-gray-100 rounded-lg p-4 grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <div className="text-xs text-gray-500 mb-1">Input:</div>
+                                                        <pre className="text-sm text-gray-800 bg-white p-2 rounded">{tc.input || '(none)'}</pre>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-xs text-gray-500 mb-1">Output:</div>
+                                                        <pre className="text-sm text-gray-800 bg-white p-2 rounded">{tc.expectedOutput}</pre>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Code Editor Header */}
+                                    <div className="bg-gray-900 rounded-t-lg border border-gray-700 border-b-0 px-4 py-2 flex items-center justify-between">
+                                        <LanguageSelector
+                                            value={getCurrentLanguage(currentQuestion._id)}
+                                            onChange={(lang) => handleLanguageChange(currentQuestion._id, lang, currentQuestion)}
+                                        />
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                onClick={() => handleRunCode(currentQuestion)}
+                                                disabled={isRunningCode}
+                                                size="sm"
+                                                variant="outline"
+                                                className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                                            >
+                                                <Play className="w-4 h-4 mr-1" />
+                                                {isRunningCode ? 'Running...' : 'Run'}
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleSubmitCode(currentQuestion)}
+                                                disabled={isRunningCode}
+                                                size="sm"
+                                                className="bg-green-600 hover:bg-green-700 text-white"
+                                            >
+                                                <Send className="w-4 h-4 mr-1" />
+                                                Submit
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Monaco Editor */}
+                                    <div className="rounded-b-lg overflow-hidden border border-gray-700 border-t-0">
+                                        <CodeEditor
+                                            language={getCurrentLanguage(currentQuestion._id)}
+                                            value={getCurrentCode(currentQuestion._id, currentQuestion)}
+                                            onChange={(code) => handleCodeChange(currentQuestion._id, code)}
+                                            height="350px"
                                         />
                                     </div>
-                                    <p className="text-sm text-gray-500">
-                                        * Note: Syntax highlighting is limited in this view.
-                                    </p>
+
+                                    {/* I/O Panel */}
+                                    <div className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden">
+                                        <div className="flex border-b border-gray-700">
+                                            {(['input', 'output', 'error'] as const).map(tab => (
+                                                <button
+                                                    key={tab}
+                                                    onClick={() => setActiveIOTab(tab)}
+                                                    className={`px-4 py-2 text-sm font-medium transition-colors ${activeIOTab === tab
+                                                            ? 'text-blue-400 border-b-2 border-blue-400 bg-gray-800'
+                                                            : 'text-gray-500 hover:text-gray-300'
+                                                        }`}
+                                                >
+                                                    {tab.toUpperCase()}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="p-3 h-32 overflow-auto">
+                                            {activeIOTab === 'input' && (
+                                                <textarea
+                                                    value={customInput}
+                                                    onChange={(e) => setCustomInput(e.target.value)}
+                                                    placeholder="Enter custom input here..."
+                                                    className="w-full h-full bg-transparent text-gray-300 text-sm focus:outline-none resize-none font-mono"
+                                                />
+                                            )}
+                                            {activeIOTab === 'output' && (
+                                                <pre className="text-sm text-gray-300 font-mono whitespace-pre-wrap">
+                                                    {isRunningCode ? 'Running...' : (runOutput.stdout || 'No output yet')}
+                                                </pre>
+                                            )}
+                                            {activeIOTab === 'error' && (
+                                                <pre className="text-sm text-red-400 font-mono whitespace-pre-wrap">
+                                                    {runOutput.stderr || 'No errors'}
+                                                </pre>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Test Results */}
+                                    {testResults[currentQuestion._id] && (
+                                        <TestCasePanel
+                                            results={testResults[currentQuestion._id].results || []}
+                                            passedCount={testResults[currentQuestion._id].passedCount || 0}
+                                            totalCount={testResults[currentQuestion._id].totalCount || 0}
+                                            isLoading={isRunningCode}
+                                        />
+                                    )}
                                 </div>
                             ) : (
                                 <div className="space-y-3">

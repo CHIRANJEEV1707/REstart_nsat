@@ -30,7 +30,7 @@ interface Question {
 
 type QuestionStatus = 'not-visited' | 'visited' | 'answered' | 'marked-for-review' | 'answered-marked-for-review';
 
-function TestInterface() {
+function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string | null) => void }) {
     const params = useParams();
     const router = useRouter();
     const slug = params.slug as string;
@@ -47,6 +47,11 @@ function TestInterface() {
     const [submitting, setSubmitting] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar
     const [testStartedAt, setTestStartedAt] = useState<Date | null>(null); // Track actual start time
+
+    // Notify parent when attemptId changes (for violation syncing)
+    useEffect(() => {
+        onAttemptIdChange?.(attemptId);
+    }, [attemptId, onAttemptIdChange]);
 
     // Fetch test details (metadata)
     const { data: testData } = useQuery({
@@ -586,9 +591,27 @@ function TestInterface() {
 }
 
 export default function MockTestPage() {
+    const [attemptIdForViolation, setAttemptIdForViolation] = useState<string | null>(null);
+
+    // Sync violation to backend
+    const handleViolation = useCallback(async (type: string) => {
+        if (!attemptIdForViolation) return;
+        try {
+            await api.post(`/mock-tests/attempts/${attemptIdForViolation}/violation`, { type });
+            console.log(`[Proctoring] Violation synced: ${type}`);
+        } catch (e) {
+            console.error('Failed to sync violation', e);
+        }
+    }, [attemptIdForViolation]);
+
     return (
-        <ProctoringProvider>
-            <TestInterface />
+        <ProctoringProvider onViolation={handleViolation}>
+            <TestInterfaceWrapper setAttemptIdForViolation={setAttemptIdForViolation} />
         </ProctoringProvider>
     );
+}
+
+// Wrapper to pass attemptId up to parent for violation syncing
+function TestInterfaceWrapper({ setAttemptIdForViolation }: { setAttemptIdForViolation: (id: string | null) => void }) {
+    return <TestInterface onAttemptIdChange={setAttemptIdForViolation} />;
 }

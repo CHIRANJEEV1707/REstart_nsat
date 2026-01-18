@@ -556,120 +556,173 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
                             </p>
 
                             {currentQuestion?.questionType === 'coding' ? (
-                                <div className="space-y-4">
-                                    {/* Constraints */}
-                                    {currentQuestion.constraints && (
-                                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                                            <h4 className="text-sm font-semibold text-amber-800 mb-1">Constraints</h4>
-                                            <pre className="text-sm text-amber-700 whitespace-pre-wrap">{currentQuestion.constraints}</pre>
-                                        </div>
-                                    )}
+                                /* ===== CODING QUESTION: SPLIT VIEW LAYOUT ===== */
+                                <div className="flex h-[calc(100vh-200px)] -mx-6 lg:-mx-8 -mb-6 lg:-mb-8">
+                                    {/* LEFT PANEL: Question Description */}
+                                    <div className="w-[45%] border-r border-gray-200 overflow-y-auto bg-white">
+                                        <div className="p-6">
+                                            {/* Question Title */}
+                                            <h1 className="text-xl font-bold text-gray-900 mb-4">
+                                                {currentQuestion.questionText.split('\n')[0]}
+                                            </h1>
 
-                                    {/* Sample Test Cases */}
-                                    {currentQuestion.testCases && currentQuestion.testCases.filter(tc => !tc.isHidden).length > 0 && (
-                                        <div className="space-y-2">
-                                            <h4 className="text-sm font-semibold text-gray-700">Examples</h4>
-                                            {currentQuestion.testCases.filter(tc => !tc.isHidden).map((tc, idx) => (
-                                                <div key={idx} className="bg-gray-100 rounded-lg p-4 grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <div className="text-xs text-gray-500 mb-1">Input:</div>
-                                                        <pre className="text-sm text-gray-800 bg-white p-2 rounded">{tc.input || '(none)'}</pre>
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-xs text-gray-500 mb-1">Output:</div>
-                                                        <pre className="text-sm text-gray-800 bg-white p-2 rounded">{tc.expectedOutput}</pre>
+                                            {/* Difficulty Badge */}
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Badge className={`${currentQuestion.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
+                                                        currentQuestion.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                                            'bg-red-100 text-red-700'
+                                                    }`}>
+                                                    {currentQuestion.difficulty || 'Medium'}
+                                                </Badge>
+                                                <span className="text-sm text-gray-500">{currentQuestion.marks} pts</span>
+                                            </div>
+
+                                            {/* Problem Description */}
+                                            <div className="prose prose-sm max-w-none mb-6">
+                                                <pre className="whitespace-pre-wrap text-gray-700 font-sans text-sm leading-relaxed bg-transparent p-0 m-0 border-0">
+                                                    {currentQuestion.questionText.split('\n').slice(1).join('\n').trim()}
+                                                </pre>
+                                            </div>
+
+                                            {/* Constraints */}
+                                            {currentQuestion.constraints && (
+                                                <div className="mb-6">
+                                                    <h3 className="text-sm font-semibold text-gray-800 mb-2">Constraints</h3>
+                                                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                                        <pre className="text-sm text-amber-800 whitespace-pre-wrap font-mono">
+                                                            {currentQuestion.constraints}
+                                                        </pre>
                                                     </div>
                                                 </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                            )}
 
-                                    {/* Code Editor Header */}
-                                    <div className="bg-gray-900 rounded-t-lg border border-gray-700 border-b-0 px-4 py-2 flex items-center justify-between">
-                                        <LanguageSelector
-                                            value={getCurrentLanguage(currentQuestion._id)}
-                                            onChange={(lang) => handleLanguageChange(currentQuestion._id, lang, currentQuestion)}
-                                        />
-                                        <div className="flex items-center gap-2">
-                                            <Button
-                                                onClick={() => handleRunCode(currentQuestion)}
-                                                disabled={isRunningCode}
-                                                size="sm"
-                                                variant="outline"
-                                                className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                                            >
-                                                <Play className="w-4 h-4 mr-1" />
-                                                {isRunningCode ? 'Running...' : 'Run'}
-                                            </Button>
-                                            <Button
-                                                onClick={() => handleSubmitCode(currentQuestion)}
-                                                disabled={isRunningCode}
-                                                size="sm"
-                                                className="bg-green-600 hover:bg-green-700 text-white"
-                                            >
-                                                <Send className="w-4 h-4 mr-1" />
-                                                Submit
-                                            </Button>
+                                            {/* Sample Test Cases - Only show non-hidden */}
+                                            {currentQuestion.testCases && currentQuestion.testCases.filter(tc => !tc.isHidden).length > 0 && (
+                                                <div className="mb-6">
+                                                    <h3 className="text-sm font-semibold text-gray-800 mb-3">Examples</h3>
+                                                    {currentQuestion.testCases.filter(tc => !tc.isHidden).map((tc, idx) => (
+                                                        <div key={idx} className="bg-gray-50 rounded-lg p-4 mb-3 border border-gray-200">
+                                                            <div className="grid grid-cols-2 gap-4">
+                                                                <div>
+                                                                    <div className="text-xs font-medium text-gray-500 mb-1">Input:</div>
+                                                                    <pre className="text-sm text-gray-800 bg-white p-2 rounded border font-mono">
+                                                                        {tc.input || '(empty)'}
+                                                                    </pre>
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-xs font-medium text-gray-500 mb-1">Output:</div>
+                                                                    <pre className="text-sm text-gray-800 bg-white p-2 rounded border font-mono">
+                                                                        {tc.expectedOutput}
+                                                                    </pre>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {/* Submission Results */}
+                                            {testResults[currentQuestion._id] && (
+                                                <div className="mt-6">
+                                                    <h3 className="text-sm font-semibold text-gray-800 mb-3">Submission Result</h3>
+                                                    <div className={`p-4 rounded-lg border ${testResults[currentQuestion._id].allPassed
+                                                            ? 'bg-green-50 border-green-200'
+                                                            : 'bg-red-50 border-red-200'
+                                                        }`}>
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <span className={`text-lg font-bold ${testResults[currentQuestion._id].allPassed ? 'text-green-600' : 'text-red-600'
+                                                                }`}>
+                                                                {testResults[currentQuestion._id].allPassed ? '✓ Accepted' : '✗ Wrong Answer'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-sm text-gray-600">
+                                                            {testResults[currentQuestion._id].passedCount}/{testResults[currentQuestion._id].totalCount} test cases passed
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
-                                    {/* Monaco Editor */}
-                                    <div className="rounded-b-lg overflow-hidden border border-gray-700 border-t-0">
-                                        <CodeEditor
-                                            language={getCurrentLanguage(currentQuestion._id)}
-                                            value={getCurrentCode(currentQuestion._id, currentQuestion)}
-                                            onChange={(code) => handleCodeChange(currentQuestion._id, code)}
-                                            height="350px"
-                                        />
-                                    </div>
-
-                                    {/* I/O Panel */}
-                                    <div className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden">
-                                        <div className="flex border-b border-gray-700">
-                                            {(['input', 'output', 'error'] as const).map(tab => (
-                                                <button
-                                                    key={tab}
-                                                    onClick={() => setActiveIOTab(tab)}
-                                                    className={`px-4 py-2 text-sm font-medium transition-colors ${activeIOTab === tab
-                                                            ? 'text-blue-400 border-b-2 border-blue-400 bg-gray-800'
-                                                            : 'text-gray-500 hover:text-gray-300'
-                                                        }`}
+                                    {/* RIGHT PANEL: Code Editor */}
+                                    <div className="flex-1 flex flex-col bg-gray-900 overflow-hidden">
+                                        {/* Editor Header */}
+                                        <div className="h-12 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4 shrink-0">
+                                            <LanguageSelector
+                                                value={getCurrentLanguage(currentQuestion._id)}
+                                                onChange={(lang) => handleLanguageChange(currentQuestion._id, lang, currentQuestion)}
+                                            />
+                                            <div className="flex items-center gap-2">
+                                                <Button
+                                                    onClick={() => handleRunCode(currentQuestion)}
+                                                    disabled={isRunningCode}
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="border-gray-600 text-gray-300 hover:bg-gray-700"
                                                 >
-                                                    {tab.toUpperCase()}
-                                                </button>
-                                            ))}
+                                                    <Play className="w-4 h-4 mr-1" />
+                                                    {isRunningCode ? 'Running...' : 'Run'}
+                                                </Button>
+                                                <Button
+                                                    onClick={() => handleSubmitCode(currentQuestion)}
+                                                    disabled={isRunningCode}
+                                                    size="sm"
+                                                    className="bg-green-600 hover:bg-green-700 text-white"
+                                                >
+                                                    <Send className="w-4 h-4 mr-1" />
+                                                    Submit
+                                                </Button>
+                                            </div>
                                         </div>
-                                        <div className="p-3 h-32 overflow-auto">
-                                            {activeIOTab === 'input' && (
-                                                <textarea
-                                                    value={customInput}
-                                                    onChange={(e) => setCustomInput(e.target.value)}
-                                                    placeholder="Enter custom input here..."
-                                                    className="w-full h-full bg-transparent text-gray-300 text-sm focus:outline-none resize-none font-mono"
-                                                />
-                                            )}
-                                            {activeIOTab === 'output' && (
-                                                <pre className="text-sm text-gray-300 font-mono whitespace-pre-wrap">
-                                                    {isRunningCode ? 'Running...' : (runOutput.stdout || 'No output yet')}
-                                                </pre>
-                                            )}
-                                            {activeIOTab === 'error' && (
-                                                <pre className="text-sm text-red-400 font-mono whitespace-pre-wrap">
-                                                    {runOutput.stderr || 'No errors'}
-                                                </pre>
-                                            )}
+
+                                        {/* Code Editor */}
+                                        <div className="flex-1 min-h-0">
+                                            <CodeEditor
+                                                language={getCurrentLanguage(currentQuestion._id)}
+                                                value={getCurrentCode(currentQuestion._id, currentQuestion)}
+                                                onChange={(code) => handleCodeChange(currentQuestion._id, code)}
+                                                height="100%"
+                                            />
+                                        </div>
+
+                                        {/* I/O Panel */}
+                                        <div className="h-40 border-t border-gray-700 flex flex-col shrink-0">
+                                            <div className="flex border-b border-gray-700 bg-gray-800">
+                                                {(['input', 'output', 'error'] as const).map(tab => (
+                                                    <button
+                                                        key={tab}
+                                                        onClick={() => setActiveIOTab(tab)}
+                                                        className={`px-4 py-2 text-sm font-medium transition-colors ${activeIOTab === tab
+                                                                ? 'text-blue-400 border-b-2 border-blue-400'
+                                                                : 'text-gray-500 hover:text-gray-300'
+                                                            }`}
+                                                    >
+                                                        {tab.toUpperCase()}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <div className="flex-1 p-3 overflow-auto bg-gray-900">
+                                                {activeIOTab === 'input' && (
+                                                    <textarea
+                                                        value={customInput}
+                                                        onChange={(e) => setCustomInput(e.target.value)}
+                                                        placeholder="Enter custom input here..."
+                                                        className="w-full h-full bg-transparent text-gray-300 text-sm focus:outline-none resize-none font-mono"
+                                                    />
+                                                )}
+                                                {activeIOTab === 'output' && (
+                                                    <pre className="text-sm text-gray-300 font-mono whitespace-pre-wrap">
+                                                        {isRunningCode ? 'Running...' : (runOutput.stdout || 'Click "Run" to execute your code')}
+                                                    </pre>
+                                                )}
+                                                {activeIOTab === 'error' && (
+                                                    <pre className="text-sm text-red-400 font-mono whitespace-pre-wrap">
+                                                        {runOutput.stderr || 'No errors'}
+                                                    </pre>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-
-                                    {/* Test Results */}
-                                    {testResults[currentQuestion._id] && (
-                                        <TestCasePanel
-                                            results={testResults[currentQuestion._id].results || []}
-                                            passedCount={testResults[currentQuestion._id].passedCount || 0}
-                                            totalCount={testResults[currentQuestion._id].totalCount || 0}
-                                            isLoading={isRunningCode}
-                                        />
-                                    )}
                                 </div>
                             ) : (
                                 <div className="space-y-3">

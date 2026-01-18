@@ -65,19 +65,35 @@ export async function POST(request: NextRequest) {
                     const data = await response.json();
                     const executionTime = Date.now() - startTime;
 
-                    const actualOutput = (data.run?.stdout || '').trim();
-                    const expectedOutput = tc.expectedOutput.trim();
+                    // Normalize output: trim, normalize line endings, remove trailing whitespace per line
+                    const normalizeOutput = (s: string) => {
+                        return s
+                            .split(/\r?\n/)
+                            .map(line => line.trimEnd())
+                            .join('\n')
+                            .trim()
+                            .toLowerCase();  // Case-insensitive for true/false
+                    };
+
+                    const actualOutput = normalizeOutput(data.run?.stdout || '');
+                    const expectedOutput = normalizeOutput(tc.expectedOutput || '');
                     const error = data.run?.stderr || data.compile?.stderr || '';
-                    const passed = actualOutput === expectedOutput && !error;
+
+                    // Pass if outputs match and no error (unless it's just a warning)
+                    const passed = actualOutput === expectedOutput && !error.includes('error');
 
                     if (passed) passedCount++;
+
+                    // For display purposes, show the original (non-lowercased) output
+                    const displayActual = (data.run?.stdout || '').trim();
+                    const displayExpected = (tc.expectedOutput || '').trim();
 
                     results.push({
                         testCaseIndex: i,
                         passed,
                         input: tc.isHidden ? 'Hidden' : tc.input,
-                        expectedOutput: tc.isHidden ? 'Hidden' : expectedOutput,
-                        actualOutput: tc.isHidden ? (passed ? 'Correct' : 'Incorrect') : actualOutput,
+                        expectedOutput: tc.isHidden ? 'Hidden' : displayExpected,
+                        actualOutput: tc.isHidden ? (passed ? 'Correct' : 'Incorrect') : displayActual,
                         error: error || undefined,
                         executionTime
                     });

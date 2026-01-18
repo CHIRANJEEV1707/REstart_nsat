@@ -3,11 +3,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Search, BookOpen, CheckSquare, Square, Play, Loader2 } from 'lucide-react';
+import { Search, BookOpen, CheckSquare, Square, Play, Loader2, Eye } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { ExamService, Question } from '@/services/examService';
+import PracticeSessionModal from './PracticeSessionModal';
+import SolutionViewerModal from './SolutionViewerModal';
 
-export default function PYQExplorer({ examType }: { examType?: string }) { // Added prop for exam context
+export default function PYQExplorer({ examType }: { examType?: string }) {
   // Filter States
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
@@ -21,6 +23,10 @@ export default function PYQExplorer({ examType }: { examType?: string }) { // Ad
   // Selection State
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+  // Modals
+  const [isPracticeOpen, setIsPracticeOpen] = useState(false);
+  const [isSolutionOpen, setIsSolutionOpen] = useState(false);
+
   // Fetch Questions on Load & Filter Change
   useEffect(() => {
     let isMounted = true;
@@ -33,11 +39,13 @@ export default function PYQExplorer({ examType }: { examType?: string }) { // Ad
         if (selectedDifficulty !== 'All') filters.difficulty = selectedDifficulty;
         if (selectedYear !== 'All') filters.year = parseInt(selectedYear);
 
-        const data = await ExamService.getPYQs(examType || 'jee-mains', filters); // Default to generic if no prop
+        const data = await ExamService.getPYQs(examType || 'jee-mains', filters);
 
         if (isMounted) {
           setQuestions(data);
           setLoading(false);
+          // Clear selection when filters change significantly? Maybe better to keep if valid.
+          // For simplicity, let's keep.
         }
       } catch (error) {
         console.error("Failed to fetch questions", error);
@@ -50,7 +58,7 @@ export default function PYQExplorer({ examType }: { examType?: string }) { // Ad
     return () => { isMounted = false; };
   }, [selectedSubject, selectedDifficulty, selectedYear, examType]);
 
-  // Client-side Searching (for now, search is local on the fetched batch)
+  // Client-side Searching
   const filteredQuestions = useMemo(() => {
     return questions.filter(q => {
       if (searchQuery) {
@@ -90,6 +98,8 @@ export default function PYQExplorer({ examType }: { examType?: string }) { // Ad
       default: return 'bg-gray-100 text-gray-700';
     }
   };
+
+  const selectedQuestions = questions.filter(q => selectedIds.has(q.id));
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[600px]">
@@ -235,13 +245,13 @@ export default function PYQExplorer({ examType }: { examType?: string }) { // Ad
             <span className="text-sm font-medium text-gray-600">Selected</span>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => alert('Solution view coming soon!')}>
-              View Solutions
+            <Button variant="outline" size="sm" onClick={() => setIsSolutionOpen(true)}>
+              <Eye className="w-4 h-4 mr-2" /> View Solutions
             </Button>
             <Button
               size="sm"
               className="bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-md shadow-blue-200"
-              onClick={() => alert(`Starting practice with ${selectedIds.size} questions... (Mock)`)}
+              onClick={() => setIsPracticeOpen(true)}
             >
               <Play className="w-4 h-4" />
               Practice Selected
@@ -249,6 +259,21 @@ export default function PYQExplorer({ examType }: { examType?: string }) { // Ad
           </div>
         </div>
       )}
+
+      {/* Modals */}
+      <PracticeSessionModal
+        isOpen={isPracticeOpen}
+        onClose={() => setIsPracticeOpen(false)}
+        examId={examType || 'jee-mains'}
+        onComplete={() => console.log('Practice complete')}
+        initialQuestions={selectedQuestions}
+      />
+
+      <SolutionViewerModal
+        isOpen={isSolutionOpen}
+        onClose={() => setIsSolutionOpen(false)}
+        questions={selectedQuestions}
+      />
     </div>
   );
 }

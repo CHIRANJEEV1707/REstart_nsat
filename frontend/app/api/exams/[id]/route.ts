@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Exam from '@/lib/models/Exam';
+import mongoose from 'mongoose';
 
 export async function GET(
     request: NextRequest,
@@ -11,7 +12,16 @@ export async function GET(
 
         const { id } = await params;
 
-        const exam = await Exam.findById(id);
+        let exam;
+        // Check if id is a valid ObjectId
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            exam = await Exam.findById(id).lean();
+        }
+
+        // If not found or not ObjectId, try by code (slug)
+        if (!exam) {
+            exam = await Exam.findOne({ code: id }).lean();
+        }
 
         if (!exam) {
             return NextResponse.json({ success: false, message: 'Exam not found' }, { status: 404 });

@@ -1,26 +1,52 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import ExamStickyHeader from '@/components/exam/ExamStickyHeader';
 import QuickPracticeWidget from '@/components/exam/QuickPracticeWidget';
 import ProgressSnapshotCard from '@/components/exam/ProgressSnapshotCard';
 import PYQExplorer from '@/components/exam/PYQExplorer';
 import SmartInsightsSection from '@/components/exam/SmartInsightsSection';
 import SoftUpgradeCard from '@/components/exam/SoftUpgradeCard';
-
-
+import CollegeListModal from '@/components/exam/CollegeListModal';
+import { ExamService, ExamDetails } from '@/services/examService';
 
 export default function JEEMainsPage() {
+  const [examDetails, setExamDetails] = useState<ExamDetails | null>(null);
+  const [isCollegeModalOpen, setIsCollegeModalOpen] = useState(false);
+  const EXAM_SLUG = 'jee-mains';
+
+  useEffect(() => {
+    async function loadExam() {
+      const details = await ExamService.getExamDetails(EXAM_SLUG);
+      if (details) {
+        setExamDetails(details);
+      }
+    }
+    loadExam();
+  }, []);
+
+  // Defaults if loading or failed (fallback to avoid layout shift or empty header)
+  const headerProps = examDetails ? {
+    examName: examDetails.name,
+    subtext: examDetails.description || "Engineering Entrance | India",
+    deadlineDate: examDetails.dates.registration_end,
+    nextAttempt: new Date(examDetails.dates.exam_date_start).toLocaleString('default', { month: 'long', year: 'numeric' }),
+    eligibleColleges: "NITs, IIITs, GFTIs", // This could also be dynamic if we added a summary field, but hardcoded is okay for description
+  } : {
+    examName: "JEE Mains 2026",
+    subtext: "Engineering Entrance | India",
+    deadlineDate: "2026-03-31",
+    nextAttempt: "April 2026",
+    eligibleColleges: "NITs, IIITs, GFTIs"
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Sticky Header */}
       <ExamStickyHeader
-        examName="JEE Mains 2026"
-        subtext="Engineering Entrance | India"
-        deadlineDate="2026-03-31"
-        nextAttempt="April 2026"
-        eligibleColleges="NITs, IIITs, GFTIs"
+        {...headerProps}
         onReminder={() => console.log('Reminder set!')}
-        onViewColleges={() => console.log('Viewing eligible colleges...')}
+        onViewColleges={() => setIsCollegeModalOpen(true)}
       />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -29,33 +55,37 @@ export default function JEEMainsPage() {
           {/* Main Progress Card - Takes up 2 columns */}
           <div className="lg:col-span-2">
             <ProgressSnapshotCard
-              examId="jee-mains"
-              onViewChances={() => alert('College Predictor opening soon...')}
+              examId={EXAM_SLUG}
+              onViewChances={() => setIsCollegeModalOpen(true)}
             />
           </div>
 
           {/* Quick Practice Widget - Takes up 1 column */}
           <div className="lg:col-span-1">
-            <QuickPracticeWidget examId="jee-mains" />
+            <QuickPracticeWidget examId={EXAM_SLUG} />
           </div>
         </div>
 
         {/* PYQ Explorer Section */}
         <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Explore Previous Year Questions</h2>
-          <PYQExplorer />
+          <PYQExplorer examType={EXAM_SLUG} />
         </div>
 
         {/* Smart Insights Section */}
-        <SmartInsightsSection examType="jee-mains" />
+        <SmartInsightsSection examType={EXAM_SLUG} />
 
         {/* Soft Upgrade CTA */}
         <div className="mt-12">
           <SoftUpgradeCard />
         </div>
-
-
       </div>
+
+      <CollegeListModal
+        isOpen={isCollegeModalOpen}
+        onClose={() => setIsCollegeModalOpen(false)}
+        examType={EXAM_SLUG}
+      />
     </div>
   );
 }

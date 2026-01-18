@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/Button';
 import { Crown, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SoftUpgradeCard() {
   return (
@@ -37,14 +38,15 @@ export default function SoftUpgradeCard() {
         </div>
 
         <div className="flex-shrink-0 w-full md:w-auto">
-          <Button
-            size="lg"
-            className="w-full md:w-auto bg-white hover:bg-gray-100 text-gray-900 font-bold px-8 h-12 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] transition-all duration-300 group"
-            onClick={() => console.log('Upgrade clicked')}
-          >
-            View Plans
-            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link href="/pricing">
+            <Button
+              size="lg"
+              className="w-full md:w-auto bg-white hover:bg-gray-100 text-gray-900 font-bold px-8 h-12 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] transition-all duration-300 group"
+            >
+              View Plans
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
           <p className="text-xs text-center text-gray-500 mt-3">
             7-day money back guarantee • No commitment
           </p>

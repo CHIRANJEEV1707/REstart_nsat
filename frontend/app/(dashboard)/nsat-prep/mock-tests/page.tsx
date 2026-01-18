@@ -32,7 +32,7 @@ export default function MockTestsPage() {
     const { data: accessData, refetch: refetchAccess } = useQuery({
         queryKey: ['freePackStatus'],
         queryFn: async () => {
-            const res = await api.get('/api/free-pack/status');
+            const res = await api.get('/free-pack');
             return res.data?.data;
         },
         enabled: !!user
@@ -56,7 +56,7 @@ export default function MockTestsPage() {
     // Claim free pack mutation
     const claimMutation = useMutation({
         mutationFn: async () => {
-            const res = await api.post('/api/free-pack/claim', { source: 'mock-test-page' });
+            const res = await api.post('/free-pack', { source: 'mock-test-page' });
             return res.data;
         },
         onSuccess: (data) => {

@@ -11,6 +11,7 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 const loginSchema = z.object({
     email: z.string().email('Please enter a valid email'),
@@ -21,6 +22,7 @@ type LoginEvaluated = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
     const router = useRouter();
+    const queryClient = useQueryClient();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -45,15 +47,16 @@ export default function LoginPage() {
                     localStorage.setItem('token', res.data.accessToken);
                 }
 
+                // Invalidate auth query to force refetch with new credentials
+                await queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+
                 const isComplete = res.data.data.onboardingCompleted;
-                setTimeout(() => {
-                    // Check completion status and redirect
-                    if (isComplete) {
-                        router.replace('/dashboard');
-                    } else {
-                        router.replace('/onboarding');
-                    }
-                }, 100);
+                // Check completion status and redirect
+                if (isComplete) {
+                    router.replace('/dashboard');
+                } else {
+                    router.replace('/onboarding');
+                }
             }
         } catch (err) {
             const error = err as AxiosError<{ message: string }>;

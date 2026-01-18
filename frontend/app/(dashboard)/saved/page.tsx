@@ -18,8 +18,8 @@ export default function SavedCollegesPage() {
     });
 
     const removeMutation = useMutation({
-        mutationFn: async (id: string) => {
-            await api.delete(`/saved/${id}`);
+        mutationFn: async ({ id, type }: { id: string, type: string }) => {
+            await api.delete(`/saved/${id}?type=${type}`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['saved'] });
@@ -49,7 +49,7 @@ export default function SavedCollegesPage() {
                                     <Button
                                         variant="destructive"
                                         size="icon"
-                                        onClick={() => removeMutation.mutate(college._id)}
+                                        onClick={() => removeMutation.mutate({ id: college._id, type: college.type })}
                                         className="bg-white border border-red-100 text-red-500 hover:bg-red-50 hover:border-red-200 shadow-none"
                                     >
                                         <Trash2 size={18} />

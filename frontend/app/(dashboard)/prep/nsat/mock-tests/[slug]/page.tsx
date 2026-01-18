@@ -448,8 +448,18 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
     if (!testStarted) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-                <div className="max-w-lg w-full bg-white rounded-2xl shadow-xl p-8">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4">{testData?.title || 'Loading...'}</h1>
+                <div className="max-w-lg w-full bg-white rounded-2xl shadow-xl p-8 relative">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="absolute top-4 left-4 text-gray-500 hover:text-gray-700"
+                        onClick={() => router.back()}
+                    >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back
+                    </Button>
+
+                    <h1 className="text-2xl font-bold text-gray-900 mb-4 mt-6">{testData?.title || 'Loading...'}</h1>
                     {testData && (
                         <>
                             <div className="space-y-3 mb-6">

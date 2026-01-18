@@ -163,15 +163,28 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         const totalParticipants = uniqueUsers.size + 1; // +1 because current attempt not yet saved
 
         // Calculate rank (1-indexed, lower is better)
-        // Count how many scored higher than this user
+        // Count how many scored STRICTLY higher than this user
         const higherScores = allAttempts.filter(a => a.totalScore > totalScore).length;
         const rank = higherScores + 1;
 
-        // Calculate percentile (percentage of people you scored better than)
-        // If you're rank 1 of 10, you beat 9/10 = 90th percentile
-        const percentile = totalParticipants > 1
-            ? Math.round(((totalParticipants - rank) / (totalParticipants - 1)) * 100)
-            : 99; // If you're the only one, you're in the 99th percentile
+        // Calculate percentile (what percentage of test-takers scored BELOW you)
+        // Standard formula: percentile = ((rank position from bottom) / total) * 100
+        // If rank=1 of 10, you're in 90th-100th percentile (top 10%)
+        // If rank=3 of 3, you're in 1st-33rd percentile
+        // We use: percentile = Math.round(((totalParticipants - rank) / totalParticipants) * 100)
+        // This gives 0 for last place, 90 for rank 1 of 10
+        // But we cap at 99 for first place (not 100) to be realistic
+        let percentile: number;
+        if (totalParticipants <= 1) {
+            percentile = 99; // Only participant
+        } else {
+            // Number of people you beat = (totalParticipants - rank)
+            // Percentile = (people you beat / (total - 1)) * 100
+            // For rank=1 of 3: (3-1)/(3-1)*100 = 100, cap to 99
+            // For rank=2 of 3: (3-2)/(3-1)*100 = 50
+            // For rank=3 of 3: (3-3)/(3-1)*100 = 0
+            percentile = Math.min(99, Math.round(((totalParticipants - rank) / (totalParticipants - 1)) * 100));
+        }
 
         // ===== FIXED: Overall Accuracy (correct / attempted, not total) =====
         const totalCorrect = Object.values(sectionScores).reduce((acc: number, s: any) => acc + s.correct, 0);

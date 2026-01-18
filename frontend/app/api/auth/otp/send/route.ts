@@ -55,18 +55,24 @@ export async function POST(request: NextRequest) {
         const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
         // Upsert OTP record
-        await EmailOTP.findOneAndUpdate(
-            { email },
-            {
+        if (existingOTP) {
+            // Update existing record
+            await EmailOTP.findByIdAndUpdate(existingOTP._id, {
+                otp,
+                expiresAt,
+                attempts: 0,
+                resendCount: existingOTP.resendCount + 1
+            });
+        } else {
+            // Create new record
+            await EmailOTP.create({
                 email,
                 otp,
                 expiresAt,
                 attempts: 0,
-                $inc: { resendCount: existingOTP ? 1 : 0 },
-                createdAt: existingOTP ? existingOTP.createdAt : new Date()
-            },
-            { upsert: true, new: true }
-        );
+                resendCount: 1
+            });
+        }
 
         // Send email via Resend
         if (!process.env.RESEND_API_KEY) {
@@ -75,7 +81,7 @@ export async function POST(request: NextRequest) {
             if (process.env.NODE_ENV === 'development') {
                 return NextResponse.json({
                     success: true,
-                    message: 'OTP sent successfully',
+                    message: 'OTP sent successfully (dev mode)',
                     devOtp: otp // Only in dev
                 });
             }
@@ -86,9 +92,10 @@ export async function POST(request: NextRequest) {
         }
 
         const resend = new Resend(process.env.RESEND_API_KEY);
+        const fromEmail = process.env.RESEND_FROM_EMAIL || 'REstart <noreply@letsrevamp.in>';
 
         const { error } = await resend.emails.send({
-            from: 'REstart <noreply@letsrevamp.in>',
+            from: fromEmail,
             to: email,
             subject: 'Your REstart Verification Code',
             html: `
@@ -134,3 +141,4 @@ export async function POST(request: NextRequest) {
         );
     }
 }
+

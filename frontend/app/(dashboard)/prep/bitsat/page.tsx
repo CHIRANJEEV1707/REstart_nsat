@@ -1,26 +1,51 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import ExamStickyHeader from '@/components/exam/ExamStickyHeader';
 import QuickPracticeWidget from '@/components/exam/QuickPracticeWidget';
 import ProgressSnapshotCard from '@/components/exam/ProgressSnapshotCard';
 import PYQExplorer from '@/components/exam/PYQExplorer';
 import SmartInsightsSection from '@/components/exam/SmartInsightsSection';
 import SoftUpgradeCard from '@/components/exam/SoftUpgradeCard';
-
-
+import CollegeListModal from '@/components/exam/CollegeListModal';
+import { ExamService, ExamDetails } from '@/services/examService';
 
 export default function BITSATPage() {
+  const [examDetails, setExamDetails] = useState<ExamDetails | null>(null);
+  const [isCollegeModalOpen, setIsCollegeModalOpen] = useState(false);
+  const EXAM_SLUG = 'bitsat';
+
+  useEffect(() => {
+    async function loadExam() {
+      const details = await ExamService.getExamDetails(EXAM_SLUG);
+      if (details) {
+        setExamDetails(details);
+      }
+    }
+    loadExam();
+  }, []);
+
+  const headerProps = examDetails ? {
+    examName: examDetails.name,
+    subtext: examDetails.description || "BITS Entrance | Pilani, Goa, Hyderabad",
+    deadlineDate: examDetails.dates.registration_end,
+    nextAttempt: new Date(examDetails.dates.exam_date_start).toLocaleString('default', { month: 'long', year: 'numeric' }),
+    eligibleColleges: "BITS Pilani, Goa, Hyderabad",
+  } : {
+    examName: "BITSAT 2026",
+    subtext: "BITS Entrance | Pilani, Goa, Hyderabad",
+    deadlineDate: "2026-04-10",
+    nextAttempt: "May 2026",
+    eligibleColleges: "BITS Pilani, Goa, Hyderabad"
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Sticky Header */}
       <ExamStickyHeader
-        examName="BITSAT 2026"
-        subtext="BITS Entrance | Pilani, Goa, Hyderabad"
-        deadlineDate="2026-04-10"
-        nextAttempt="May 2026"
-        eligibleColleges="BITS Pilani, Goa, Hyderabad"
+        {...headerProps}
         onReminder={() => console.log('Reminder set!')}
-        onViewColleges={() => console.log('Viewing eligible colleges...')}
+        onViewColleges={() => setIsCollegeModalOpen(true)}
       />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -29,21 +54,21 @@ export default function BITSATPage() {
           {/* Main Progress Card */}
           <div className="lg:col-span-2">
             <ProgressSnapshotCard
-              examId="bitsat"
-              onViewChances={() => alert('College Predictor opening soon...')}
+              examId={EXAM_SLUG}
+              onViewChances={() => setIsCollegeModalOpen(true)}
             />
           </div>
 
           {/* Quick Practice Widget */}
           <div className="lg:col-span-1">
-            <QuickPracticeWidget examId="bitsat" />
+            <QuickPracticeWidget examId={EXAM_SLUG} />
           </div>
         </div>
 
         {/* PYQ Explorer Section */}
         <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Explore Previous Year Questions</h2>
-          <PYQExplorer examType="bitsat" />
+          <PYQExplorer examType={EXAM_SLUG} />
         </div>
 
         {/* Smart Insights Section */}
@@ -53,9 +78,13 @@ export default function BITSATPage() {
         <div className="mt-12">
           <SoftUpgradeCard />
         </div>
-
-
       </div>
+
+      <CollegeListModal
+        isOpen={isCollegeModalOpen}
+        onClose={() => setIsCollegeModalOpen(false)}
+        examType={EXAM_SLUG}
+      />
     </div>
   );
 }

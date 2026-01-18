@@ -121,14 +121,7 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                className="w-full border-gray-200 hover:bg-gray-50 text-gray-700"
-                onClick={() => alert('Detailed solution view coming soon!')}
-              >
-                Solutions
-              </Button>
+            <div className="grid grid-cols-1 gap-3">
               <Button
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100 gap-2"
                 onClick={() => setIsModalOpen(true)}

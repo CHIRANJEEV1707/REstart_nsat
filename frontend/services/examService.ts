@@ -26,6 +26,36 @@ export interface Question {
   difficulty: string;
   topics: string[];
   hasVideoSolution: boolean;
+  explanation?: string;
+  options?: { id: string; text: string }[];
+  correctAnswer?: string;
+}
+
+export interface College {
+  _id: string;
+  name: string;
+  location: { state: string; city: string };
+  type: string;
+  fees: number;
+  exams_required: string[];
+  badges: string[];
+  trendingScore: number;
+  // Add other fields as needed
+}
+
+export interface ExamDetails {
+  _id: string;
+  name: string;
+  code: string;
+  description: string;
+  dates: {
+    registration_start: string;
+    registration_end: string;
+    exam_date_start: string;
+    exam_date_end: string;
+  };
+  eligibility: string;
+  website: string;
 }
 
 // --- Service ---
@@ -83,23 +113,65 @@ export const ExamService = {
   },
 
   /**
-   * Get PYQs (Still Mock for now as requested API was for progress, but should ideally be real)
-   * For strictness, if no PYQ API exists, we should probably fetch from a real route if possible.
-   * Since I don't have a PYQ DB yet, I will keep THIS part simple but structured to easy swap.
-   * BUT Constraint #13 says "If any part still uses mock data, stop and refactor."
-   * 
-   * I will create a simple PYQ API route next to ensure compliance.
+   * Get PYQs with filters
    */
   getPYQs: async (examId: string, filters: any): Promise<Question[]> => {
     try {
-      // Using the existing (or soon to be created) PYQ API
-      const response = await axios.get('/api/pyqs', { params: { examType: examId, ...filters } });
+      const response = await axios.get('/api/pyqs/questions', { params: { examType: examId, ...filters } });
       if (response.data.success) {
         return response.data.data;
       }
       return [];
     } catch (error) {
       console.error('Failed to fetch PYQs', error);
+      return [];
+    }
+  },
+
+  /**
+   * Get Quick Practice Questions (Random 5)
+   */
+  getQuickPracticeQuestions: async (examId: string): Promise<Question[]> => {
+    try {
+      const response = await axios.get('/api/prep/quick-practice', { params: { examType: examId } });
+      if (response.data.success) {
+        return response.data.data;
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch quick practice questions', error);
+      return [];
+    }
+  },
+
+  /**
+   * Get Exam Details
+   */
+  getExamDetails: async (slug: string): Promise<ExamDetails | null> => {
+    try {
+      const response = await axios.get(`/api/exams/${slug}`);
+      if (response.data.success) {
+        return response.data.data;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to fetch exam details', error);
+      return null;
+    }
+  },
+
+  /**
+   * Get Eligible Colleges
+   */
+  getEligibleColleges: async (examType: string): Promise<College[]> => {
+    try {
+      const response = await axios.get('/api/colleges', { params: { examType } });
+      if (response.data.success) {
+        return response.data.data;
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch eligible colleges', error);
       return [];
     }
   }

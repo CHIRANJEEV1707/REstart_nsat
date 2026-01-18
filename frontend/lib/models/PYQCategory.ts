@@ -15,7 +15,7 @@ export interface IPYQCategory {
 const PYQCategorySchema = new mongoose.Schema<IPYQCategory>({
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true, index: true },
-    examType: { type: String, enum: ['nsat', 'coding-nsat'], required: true, index: true },
+    examType: { type: String, enum: ['nsat', 'coding-nsat', 'jee-mains', 'jee-advanced', 'bitsat'], required: true, index: true },
     year: { type: Number, required: true, index: true },
     description: { type: String, default: '' },
     questionCount: { type: Number, default: 0 },

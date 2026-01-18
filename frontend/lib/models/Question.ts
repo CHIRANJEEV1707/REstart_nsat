@@ -1,5 +1,12 @@
 import mongoose, { Model } from 'mongoose';
 
+export interface ITestCase {
+    input: string;
+    expectedOutput: string;
+    isHidden: boolean;
+    explanation?: string;
+}
+
 export interface IQuestion {
     mockTestId: mongoose.Types.ObjectId;
     section: string;
@@ -13,9 +20,14 @@ export interface IQuestion {
     negativeMarks: number;
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
+    // Coding-specific fields
     isCoding: boolean;
+    functionName?: string;  // e.g., "isPrime", "secondLargest"
+    constraints?: string;   // e.g., "1 <= N <= 10^6"
+    timeLimit?: number;     // in seconds
+    memoryLimit?: number;   // in MB
     codeTemplate: { language: string; template: string }[];
-    testCases: { input: string; expectedOutput: string; isHidden: boolean }[];
+    testCases: ITestCase[];
 }
 
 const QuestionSchema = new mongoose.Schema<IQuestion>({

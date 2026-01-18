@@ -83,14 +83,39 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             let marksAwarded = 0;
             const selectedAnswer = ans.selectedAnswer;
 
+            // Check verified status from payload OR DB
+            const isVerifiedPayload = (ans as any).isVerified;
+            const isVerifiedDB = (attempt.answers[answerIndex] as any)?.isVerified;
+
+            // Console Log Debugging
+            if (question.questionType === 'coding' || question.isCoding) {
+                console.log(`[DEBUG] Scoring Coding Q: ${question._id}`);
+                console.log(`[DEBUG] Payload isVerified: ${isVerifiedPayload}`);
+                console.log(`[DEBUG] DB isVerified: ${isVerifiedDB}`);
+                console.log(`[DEBUG] Question Type: ${question.questionType}, IsCoding: ${question.isCoding}`);
+            }
+
             if (!selectedAnswer || selectedAnswer === '') {
                 sectionScores[question.section].unattempted += 1;
             } else if (selectedAnswer === question.correctAnswer) {
+                // Correct (MCQ)
                 isCorrect = true;
                 marksAwarded = question.marks;
                 totalScore += question.marks;
                 sectionScores[question.section].score += question.marks;
                 sectionScores[question.section].correct += 1;
+            } else if ((question.questionType === 'coding' || question.isCoding) && (isVerifiedPayload || isVerifiedDB)) {
+                // Correct (Coding)
+                console.log('[DEBUG] Marking Coding Question CORRECT');
+                isCorrect = true;
+                marksAwarded = question.marks;
+                totalScore += question.marks;
+                sectionScores[question.section].score += question.marks;
+                sectionScores[question.section].correct += 1;
+                // Ensure verifying flag is saved in DB if it was payload-only
+                if (answerIndex !== -1) {
+                    (attempt.answers[answerIndex] as any).isVerified = true;
+                }
             } else {
                 marksAwarded = -question.negativeMarks;
                 totalScore -= question.negativeMarks;

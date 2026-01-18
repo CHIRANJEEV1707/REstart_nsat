@@ -149,9 +149,18 @@ router.post('/:slug/start', protect, async (req: any, res: Response) => {
             marks: q.marks,
             negativeMarks: q.negativeMarks,
             isCoding: q.isCoding,
+            difficulty: q.difficulty,
+            constraints: q.constraints,
             codeTemplate: q.codeTemplate,
-            testCases: q.testCases?.filter(tc => !tc.isHidden) // Only visible test cases
+            // Send all test cases but only show input/output for non-hidden ones
+            // The code execution API will handle hiding details in the response
+            testCases: q.testCases?.map(tc => ({
+                input: tc.isHidden ? '' : tc.input,
+                expectedOutput: tc.isHidden ? '' : tc.expectedOutput,
+                isHidden: tc.isHidden
+            }))
         }));
+
 
         res.json({
             success: true,
@@ -172,7 +181,7 @@ router.post('/:slug/start', protect, async (req: any, res: Response) => {
 // @access  Private
 router.post('/attempts/:attemptId/save-answer', protect, async (req: any, res: Response) => {
     try {
-        const { questionId, selectedAnswer, timeSpent, status } = req.body;
+        const { questionId, selectedAnswer, timeSpent, status, isVerified } = req.body;
 
         const attempt = await TestAttempt.findOne({
             _id: req.params.attemptId,
@@ -193,6 +202,7 @@ router.post('/attempts/:attemptId/save-answer', protect, async (req: any, res: R
             attempt.answers[answerIndex].selectedAnswer = selectedAnswer;
             attempt.answers[answerIndex].timeSpent = timeSpent;
             if (status) attempt.answers[answerIndex].status = status;
+            if (isVerified !== undefined) attempt.answers[answerIndex].isVerified = isVerified;
             await attempt.save();
         }
 
@@ -280,6 +290,14 @@ router.post('/attempts/:attemptId/submit', protect, async (req: any, res: Respon
                 a => a.questionId.toString() === ans.questionId.toString()
             );
 
+            // Console Log Debugging
+            if (question.questionType === 'coding' || question.isCoding) {
+                console.log(`[DEBUG] Scoring Coding Q: ${question._id}`);
+                console.log(`[DEBUG] Payload isVerified: ${ans.isVerified}`);
+                console.log(`[DEBUG] DB isVerified: ${answerIndex !== -1 ? attempt.answers[answerIndex].isVerified : 'N/A'}`);
+                console.log(`[DEBUG] Question Type: ${question.questionType}, IsCoding: ${question.isCoding}`);
+            }
+
             if (!ans.selectedAnswer || ans.selectedAnswer === '') {
                 // Unattempted
                 sectionScores[question.section].unattempted += 1;
@@ -288,12 +306,24 @@ router.post('/attempts/:attemptId/submit', protect, async (req: any, res: Respon
                     attempt.answers[answerIndex].marksAwarded = 0;
                 }
             } else if (ans.selectedAnswer === question.correctAnswer) {
-                // Correct
+                // Correct (MCQ)
                 totalScore += question.marks;
                 sectionScores[question.section].score += question.marks;
                 sectionScores[question.section].correct += 1;
                 if (answerIndex !== -1) {
                     attempt.answers[answerIndex].isCorrect = true;
+                    attempt.answers[answerIndex].marksAwarded = question.marks;
+                    attempt.answers[answerIndex].selectedAnswer = ans.selectedAnswer;
+                }
+            } else if ((question.questionType === 'coding' || question.isCoding) && (ans.isVerified || (answerIndex !== -1 && attempt.answers[answerIndex].isVerified))) {
+                // Correct (Coding - Verified by frontend execution OR stored verification)
+                console.log('[DEBUG] Marking Coding Question CORRECT');
+                totalScore += question.marks;
+                sectionScores[question.section].score += question.marks;
+                sectionScores[question.section].correct += 1;
+                if (answerIndex !== -1) {
+                    attempt.answers[answerIndex].isCorrect = true;
+                    attempt.answers[answerIndex].isVerified = true; // Ensure DB is updated
                     attempt.answers[answerIndex].marksAwarded = question.marks;
                     attempt.answers[answerIndex].selectedAnswer = ans.selectedAnswer;
                 }

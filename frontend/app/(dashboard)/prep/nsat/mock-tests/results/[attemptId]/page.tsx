@@ -176,13 +176,15 @@ export default function TestResultsPage() {
                         {!isPremium && <div className="text-xs text-orange-600 font-medium mt-1">Premium Feature</div>}
                     </Card>
 
-                    <Card className="p-6 border-l-4 border-l-red-500">
+                    <Card className={`p-6 border-l-4 ${totalViolations <= 3 ? 'border-l-green-500' : 'border-l-red-500'}`}>
                         <div className="flex justify-between items-start mb-2">
                             <span className="text-gray-500 font-medium text-sm">Proctoring Flags</span>
-                            <AlertTriangle className="w-5 h-5 text-red-500" />
+                            <AlertTriangle className={`w-5 h-5 ${totalViolations <= 3 ? 'text-green-500' : 'text-red-500'}`} />
                         </div>
                         <div className="text-2xl font-bold text-gray-900">{totalViolations}</div>
-                        <div className="text-xs text-red-600 font-medium mt-1">{totalViolations > 3 ? 'High Risk' : 'Acceptable'}</div>
+                        <div className={`text-xs font-medium mt-1 ${totalViolations <= 3 ? 'text-green-600' : 'text-red-600'}`}>
+                            {totalViolations <= 3 ? 'Acceptable' : 'Unacceptable'}
+                        </div>
                     </Card>
                 </div>
 

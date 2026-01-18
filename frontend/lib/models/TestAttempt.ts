@@ -10,6 +10,7 @@ export interface ITestAttempt {
         questionId: mongoose.Types.ObjectId;
         selectedAnswer: string;
         isCorrect: boolean;
+        isVerified: boolean;
         marksAwarded: number;
         timeSpent: number;
     }[];
@@ -44,6 +45,7 @@ const TestAttemptSchema = new mongoose.Schema<ITestAttempt>({
         questionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
         selectedAnswer: { type: String, default: '' },
         isCorrect: { type: Boolean, default: false },
+        isVerified: { type: Boolean, default: false },
         marksAwarded: { type: Number, default: 0 },
         timeSpent: { type: Number, default: 0 },
         _id: false

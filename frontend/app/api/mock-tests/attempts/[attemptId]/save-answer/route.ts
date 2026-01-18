@@ -6,9 +6,22 @@ import jwt from 'jsonwebtoken';
 import User from '@/lib/models/User';
 
 async function getUser(request: NextRequest) {
+    let token: string | undefined;
+
+    // Try cookies first
     const cookieStore = await cookies();
-    const token = cookieStore.get('token')?.value;
+    token = cookieStore.get('token')?.value;
+
+    // Fallback to Authorization header
+    if (!token) {
+        const authHeader = request.headers.get('authorization');
+        if (authHeader?.startsWith('Bearer ')) {
+            token = authHeader.slice(7);
+        }
+    }
+
     if (!token) return null;
+
     try {
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
         await dbConnect();
@@ -28,7 +41,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     try {
         const { attemptId } = await params;
-        const { questionId, selectedAnswer, timeSpent } = await request.json();
+        const { questionId, selectedAnswer, timeSpent, isVerified } = await request.json();
 
         const attempt = await TestAttempt.findOne({
             _id: attemptId,
@@ -58,6 +71,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
             attempt.answers[answerIndex].selectedAnswer = selectedAnswer;
             // attempt.answers[answerIndex].timeSpent = timeSpent; 
+
+            if (isVerified !== undefined) {
+                (attempt.answers as any)[answerIndex].isVerified = isVerified;
+            }
 
             // Mark modified? Mongoose detects changes in arrays.
         } else {

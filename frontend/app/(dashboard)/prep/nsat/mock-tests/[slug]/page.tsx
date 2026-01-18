@@ -128,7 +128,7 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
         onError: (error: any) => {
             if (error.response?.data?.requiresPurchase) {
                 toast.error('Premium access required');
-                router.push('/nsat-prep');
+                router.push('/prep/nsat');
             } else {
                 toast.error('Failed to start test');
             }
@@ -274,7 +274,7 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
             });
             proctoring.exitFullscreen();
             proctoring.disableCamera();
-            router.push(`/nsat-prep/mock-tests/results/${attemptId}`);
+            router.push(`/prep/nsat/mock-tests/results/${attemptId}`);
         } catch (error) {
             toast.error('Failed to submit test');
             setSubmitting(false);

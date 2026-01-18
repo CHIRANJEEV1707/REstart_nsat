@@ -19,6 +19,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/nsat-prep/:path*',
+        destination: '/prep/nsat/:path*',
+        permanent: true,
+      },
+      {
+        source: '/nsat-prep',
+        destination: '/prep/nsat',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

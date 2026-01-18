@@ -50,7 +50,7 @@ export default function ResultsHistoryPage() {
         <div className="min-h-screen bg-gray-50 p-6 lg:p-10">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-8">
-                    <Link href="/nsat-prep" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-4 group">
+                    <Link href="/prep/nsat" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-4 group">
                         <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
                         Back to NSAT Prep
                     </Link>
@@ -122,7 +122,7 @@ export default function ResultsHistoryPage() {
                         </div>
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
                         <p className="text-gray-500 mb-6">You haven&apos;t taken any mock tests yet, or none match your search.</p>
-                        <Link href="/nsat-prep/mock-tests">
+                        <Link href="/prep/nsat/mock-tests">
                             <Button>Explore Mock Tests</Button>
                         </Link>
                     </div>
@@ -167,7 +167,7 @@ export default function ResultsHistoryPage() {
                                         </div>
                                     </div>
 
-                                    <Link href={`/nsat-prep/mock-tests/results/${attempt._id}`}>
+                                    <Link href={`/prep/nsat/mock-tests/results/${attempt._id}`}>
                                         <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
                                             View Report
                                         </Button>
@@ -181,3 +181,4 @@ export default function ResultsHistoryPage() {
         </div>
     );
 }
+

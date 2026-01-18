@@ -57,7 +57,7 @@ export default function InterviewGuideListPage() {
     return (
         <div className="min-h-screen bg-gray-50/30 pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
-                <Link href="/nsat-prep" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-6 group">
+                <Link href="/prep/nsat" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-6 group">
                     <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
                     Back to NSAT Prep
                 </Link>
@@ -100,13 +100,13 @@ export default function InterviewGuideListPage() {
                                     </div>
 
                                     {hasAccess ? (
-                                        <Link href={`/nsat-prep/interview-guide/${guide.slug}`}>
+                                        <Link href={`/prep/nsat/interview-guide/${guide.slug}`}>
                                             <Button className="w-full bg-white text-purple-600 border border-purple-200 hover:bg-purple-50">
                                                 Read Guide
                                             </Button>
                                         </Link>
                                     ) : (
-                                        <Link href="/nsat-prep">
+                                        <Link href="/prep/nsat">
                                             <Button variant="outline" className="w-full">
                                                 <Lock className="w-4 h-4 mr-2" /> Unlock
                                             </Button>
@@ -127,3 +127,4 @@ export default function InterviewGuideListPage() {
         </div>
     );
 }
+

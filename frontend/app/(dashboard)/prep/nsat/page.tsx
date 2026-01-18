@@ -351,7 +351,7 @@ export default function NSATPrepPage() {
 
                         {/* Quick Access Cards */}
                         <div className="grid md:grid-cols-3 gap-6 mb-12">
-                            <Link href="/nsat-prep/mock-tests" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all relative overflow-hidden">
+                            <Link href="/prep/nsat/mock-tests" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
                                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors relative z-10">
                                     <svg className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -365,7 +365,7 @@ export default function NSATPrepPage() {
                                 </span>
                             </Link>
 
-                            <Link href="/nsat-prep/pyqs" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all relative overflow-hidden">
+                            <Link href="/prep/nsat/pyqs" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
                                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors relative z-10">
                                     <svg className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -379,7 +379,7 @@ export default function NSATPrepPage() {
                                 </span>
                             </Link>
 
-                            <Link href="/nsat-prep/interview-guide" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all relative overflow-hidden">
+                            <Link href="/prep/nsat/interview-guide" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
                                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-600 transition-colors relative z-10">
                                     <svg className="w-6 h-6 text-purple-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -433,7 +433,7 @@ function RecentPerformance() {
                     <TrendingUp className="w-6 h-6 text-blue-600" />
                     Your Recent Performance
                 </h2>
-                <Link href="/nsat-prep/results" className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                <Link href="/prep/nsat/results" className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
                     View All Results
                 </Link>
             </div>
@@ -463,7 +463,7 @@ function RecentPerformance() {
                                     </Badge>
                                 </td>
                                 <td className="py-4">
-                                    <Link href={`/nsat-prep/mock-tests/results/${attempt._id}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                                    <Link href={`/prep/nsat/mock-tests/results/${attempt._id}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
                                         View Analysis
                                     </Link>
                                 </td>
@@ -475,3 +475,4 @@ function RecentPerformance() {
         </div>
     );
 }
+

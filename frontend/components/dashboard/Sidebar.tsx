@@ -39,7 +39,7 @@ export function Sidebar() {
         { name: 'New-Gen Colleges', icon: Sparkles, href: '/new-gen' },
         { name: 'Saved Colleges', icon: Bookmark, href: '/saved' },
         { name: 'Compare', icon: ArrowLeftRight, href: '/compare' },
-        { name: 'NSAT Prep', icon: Code, href: '/nsat-prep' },
+        { name: 'Prep', icon: Code, href: '/prep' },
         { name: 'Deadlines', icon: CalendarDays, href: '/exams-deadlines' },
     ];
 

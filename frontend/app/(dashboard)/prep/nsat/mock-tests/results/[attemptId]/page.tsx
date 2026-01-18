@@ -52,7 +52,7 @@ export default function TestResultsPage() {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <h2 className="text-xl font-bold mb-2">Result not found</h2>
-                    <Button onClick={() => router.push('/nsat-prep/mock-tests')}>Go Back</Button>
+                    <Button onClick={() => router.push('/prep/nsat/mock-tests')}>Go Back</Button>
                 </div>
             </div>
         );
@@ -108,7 +108,7 @@ export default function TestResultsPage() {
     return (
         <div className="min-h-screen bg-gray-50/30 pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
-                <Link href="/nsat-prep/mock-tests" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-6 group">
+                <Link href="/prep/nsat/mock-tests" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-6 group">
                     <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
                     Back to Mock Tests
                 </Link>
@@ -133,7 +133,7 @@ export default function TestResultsPage() {
 
                         <div className="flex gap-4">
                             {!isPremium && (
-                                <Link href="/nsat-prep">
+                                <Link href="/prep/nsat">
                                     <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-lg">
                                         <Trophy className="w-4 h-4 mr-2" />
                                         Unlock Detailed Analysis
@@ -195,7 +195,7 @@ export default function TestResultsPage() {
                                     <Lock className="w-8 h-8 text-gray-400 mb-2" />
                                     <h3 className="font-bold text-gray-900">Section-wise Breakdown Locked</h3>
                                     <p className="text-sm text-gray-500 mb-4">Get detailed performance insights with Premium</p>
-                                    <Link href="/nsat-prep">
+                                    <Link href="/prep/nsat">
                                         <Button>Unlock Premium</Button>
                                     </Link>
                                 </div>
@@ -278,19 +278,19 @@ export default function TestResultsPage() {
                         <Card className="p-6">
                             <h3 className="font-bold text-gray-900 mb-4">What's Next?</h3>
                             <div className="space-y-3">
-                                <Link href="/nsat-prep/mock-tests">
+                                <Link href="/prep/nsat/mock-tests">
                                     <Button variant="outline" className="w-full justify-start">
                                         <ArrowLeft className="w-4 h-4 mr-2" />
                                         Take Another Test
                                     </Button>
                                 </Link>
-                                <Link href="/nsat-prep/pyqs">
+                                <Link href="/prep/nsat/pyqs">
                                     <Button variant="outline" className="w-full justify-start">
                                         <Clock className="w-4 h-4 mr-2" />
                                         Practice PYQs
                                     </Button>
                                 </Link>
-                                <Link href="/nsat-prep/interview-guide">
+                                <Link href="/prep/nsat/interview-guide">
                                     <Button variant="outline" className="w-full justify-start">
                                         <TrendingUp className="w-4 h-4 mr-2" />
                                         Read Interview Guide

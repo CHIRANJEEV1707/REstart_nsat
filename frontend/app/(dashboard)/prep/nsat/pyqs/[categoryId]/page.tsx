@@ -55,7 +55,7 @@ export default function PYQQuestionsPage() {
                     <p className="text-gray-500 mb-6 max-w-md">This content is available only for premium members. Upgrade your plan to access all Previous Year Questions.</p>
                     <div className="flex gap-4">
                         <Button variant="outline" onClick={() => router.back()}>Go Back</Button>
-                        <Button onClick={() => router.push('/nsat-prep')} className="bg-blue-600 hover:bg-blue-700 text-white">View Plans</Button>
+                        <Button onClick={() => router.push('/prep/nsat')} className="bg-blue-600 hover:bg-blue-700 text-white">View Plans</Button>
                     </div>
                 </div>
             );
@@ -127,8 +127,8 @@ export default function PYQQuestionsPage() {
                                                     <div
                                                         key={opt.id}
                                                         className={`p-3 rounded-lg border text-sm ${opt.id === q.correctAnswer
-                                                                ? 'bg-green-50 border-green-200 text-green-800 font-medium'
-                                                                : 'bg-white border-gray-200 text-gray-700'
+                                                            ? 'bg-green-50 border-green-200 text-green-800 font-medium'
+                                                            : 'bg-white border-gray-200 text-gray-700'
                                                             }`}
                                                     >
                                                         <span className="font-bold mr-2">{opt.id.toUpperCase()}.</span>

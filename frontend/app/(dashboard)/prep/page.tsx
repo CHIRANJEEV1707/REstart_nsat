@@ -1,117 +1,158 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-// import axios from 'axios';
-import api from '@/lib/axios';
+import { ArrowRight, BookOpen, GraduationCap, Globe, Calculator, Binary, PenTool } from 'lucide-react';
 
-import { ArrowLeft } from 'lucide-react';
-
-interface Bundle {
-    _id: string;
-    title: string;
-    slug: string;
-    description: string;
-    price: number;
-    currency: string;
-    tags: string[];
-    features: string[];
-}
-
-export default function PrepPage() {
-    const [bundles, setBundles] = useState<Bundle[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchBundles = async () => {
-            try {
-                // api client uses correct base URL and credentials
-                const res = await api.get('/bundles');
-                setBundles(res.data.data || []);
-            } catch (error: any) {
-                console.error("Failed to fetch bundles. Is the backend running?", error);
-                // Optional: Show user-friendly error state later if needed
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchBundles();
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="min-h-screen pt-24 px-6 max-w-7xl mx-auto">
-                <div className="h-8 w-48 bg-gray-200 rounded mb-8 animate-pulse"></div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-64 bg-gray-100 rounded-2xl animate-pulse"></div>
-                    ))}
-                </div>
-            </div>
-        );
+const exams = [
+    {
+        id: 'nsat',
+        title: 'NSAT',
+        subtitle: 'Newton School Aptitude Test',
+        icon: BookOpen,
+        image: '/images/nsat-logo.svg',
+        color: 'blue',
+        href: '/prep/nsat',
+        status: 'active'
+    },
+    {
+        id: 'jee-mains',
+        title: 'JEE Mains',
+        subtitle: 'Joint Entrance Examination Main',
+        icon: Calculator,
+        image: '/images/jeemains.svg',
+        color: 'orange',
+        href: '/prep/jee-mains',
+        status: 'coming-soon'
+    },
+    {
+        id: 'jee-advanced',
+        title: 'JEE Advanced',
+        subtitle: 'Joint Entrance Examination Advanced',
+        icon: Calculator,
+        image: '/images/jeeadv.svg',
+        color: 'red',
+        href: '/prep/jee-advanced',
+        status: 'coming-soon'
+    },
+    {
+        id: 'bitsat',
+        title: 'BITSAT',
+        subtitle: 'Birla Institute Technical Test',
+        icon: Binary,
+        image: '/images/bitsat.svg',
+        color: 'red',
+        href: '/prep/bitsat',
+        status: 'coming-soon'
+    },
+    {
+        id: 'sat',
+        title: 'SAT',
+        subtitle: 'Scholastic Assessment Test',
+        icon: Globe,
+        color: 'purple',
+        href: '/prep/sat',
+        status: 'coming-soon'
+    },
+    {
+        id: 'psat',
+        title: 'PSAT',
+        subtitle: 'Preliminary SAT',
+        icon: PenTool,
+        color: 'indigo',
+        href: '/prep/psat',
+        status: 'coming-soon'
+    },
+    {
+        id: 'mhcet',
+        title: 'MHCET',
+        subtitle: 'Maharashtra Health & Tech CET',
+        icon: GraduationCap,
+        image: '/images/mhtcet.svg',
+        color: 'green',
+        href: '/prep/mhcet',
+        status: 'coming-soon'
     }
+];
 
+const colorMap: Record<string, string> = {
+    blue: 'bg-blue-100 text-blue-600 group-hover:text-blue-700 bg-blue-50 hover:border-blue-200',
+    orange: 'bg-orange-100 text-orange-600 group-hover:text-orange-700 bg-orange-50 hover:border-orange-200',
+    red: 'bg-red-100 text-red-600 group-hover:text-red-700 bg-red-50 hover:border-red-200',
+    purple: 'bg-purple-100 text-purple-600 group-hover:text-purple-700 bg-purple-50 hover:border-purple-200',
+    indigo: 'bg-indigo-100 text-indigo-600 group-hover:text-indigo-700 bg-indigo-50 hover:border-indigo-200',
+    green: 'bg-green-100 text-green-600 group-hover:text-green-700 bg-green-50 hover:border-green-200',
+};
+
+export default function PrepHubPage() {
     return (
-        <div className="min-h-screen pt-24 pb-20 bg-gray-50/50">
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="max-w-3xl mb-12">
-                    <Link href="/dashboard" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors mb-6 group">
-                        <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-                        Back to Dashboard
-                    </Link>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                        Premium <span className="text-primary">Exam Prep</span> Bundles
-                    </h1>
-                    <p className="text-xl text-gray-600">
-                        Structured courses, mock tests, and expert guidance to help you crack your dream college entrance exams.
-                    </p>
+        <div className="min-h-screen bg-gray-50/30 pb-20 page-transition">
+            <div className="max-w-7xl mx-auto px-6 py-12">
+
+                {/* Header */}
+                <div className="mb-12">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Exam Prep Hub</h1>
+                    <p className="text-gray-600">Select an exam to start your preparation.</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {bundles.map((bundle) => (
-                        <div key={bundle._id} className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col">
-                            <div className="p-8 flex-1 flex flex-col">
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {bundle.tags.slice(0, 3).map(tag => (
-                                        <Badge key={tag} variant="secondary">{tag}</Badge>
-                                    ))}
-                                </div>
+                {/* Exam Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {exams.map((exam) => {
+                        const Icon = exam.icon;
+                        const [bgBase, textBase] = colorMap[exam.color].split(' group-hover');
 
-                                <h3 className="text-2xl font-bold text-gray-900 mb-2">{bundle.title}</h3>
-                                <p className="text-gray-500 mb-6 flex-1">{bundle.description}</p>
+                        // Applying specific color parts
+                        const bgLight = `bg-${exam.color}-50`;
+                        const bgIcon = exam.image ? 'bg-white' : `bg-${exam.color}-100`; // White bg for actual logos
+                        const textIcon = `text-${exam.color}-600`;
+                        const borderHover = `hover:border-${exam.color}-200`;
 
-                                <ul className="space-y-3 mb-8">
-                                    {bundle.features.slice(0, 4).map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-600">
-                                            <svg className="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
+                        const cardClasses = `group bg-white rounded-2xl border border-gray-100 transition-all overflow-hidden flex flex-col items-center text-center p-8 relative ${exam.status === 'active'
+                            ? `${borderHover} hover:shadow-lg cursor-pointer`
+                            : 'opacity-90 hover:border-gray-200 cursor-not-allowed grayscale-[0.3] hover:grayscale-0'
+                            }`;
 
-                                <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
-                                    <div>
-                                        <span className="text-sm text-gray-400">Price</span>
-                                        <div className="text-2xl font-bold text-gray-900">
-                                            {bundle.currency === 'INR' ? '₹' : '$'}{bundle.price}
+                        return (
+                            <Link
+                                href={exam.status === 'active' ? exam.href : '#'}
+                                key={exam.id}
+                                className={cardClasses}
+                                onClick={(e) => exam.status !== 'active' && e.preventDefault()}
+                            >
+                                <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity ${bgLight}`}></div>
+
+                                {/* Logo / Icon Container */}
+                                <div className={`w-24 h-24 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform relative z-10 p-4 ${bgIcon} ${exam.image ? 'shadow-sm border border-gray-50' : ''}`}>
+                                    {exam.image ? (
+                                        <div className="relative w-full h-full">
+                                            <Image
+                                                src={exam.image}
+                                                alt={`${exam.title} Logo`}
+                                                fill
+                                                className="object-contain"
+                                            />
                                         </div>
-                                    </div>
-                                    <Link href={`/prep/${bundle.slug}`}>
-                                        <Button
-                                            size="lg"
-                                            className="rounded-xl bg-[#0085ff] text-white font-medium px-8 py-3 shadow-md hover:bg-[#006bd1] hover:shadow-xl transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0085ff]"
-                                        >
-                                            View Bundle
-                                        </Button>
-                                    </Link>
+                                    ) : (
+                                        <Icon className={`w-10 h-10 ${textIcon}`} />
+                                    )}
                                 </div>
-                            </div>
-                        </div>
-                    ))}
+
+                                <h3 className="text-xl font-bold text-gray-900 mb-2 transition-colors relative z-10">{exam.title}</h3>
+                                <Badge variant="secondary" className="mb-6 relative z-10">{exam.subtitle}</Badge>
+
+                                <div className="mt-auto relative z-10 h-6">
+                                    {exam.status === 'active' ? (
+                                        <span className={`inline-flex items-center font-medium group-hover:gap-2 transition-all ${textIcon}`}>
+                                            Enter Prep <ArrowRight className="w-4 h-4 ml-1" />
+                                        </span>
+                                    ) : (
+                                        <span className="text-gray-400 text-sm font-medium">Coming Soon</span>
+                                    )}
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
         </div>

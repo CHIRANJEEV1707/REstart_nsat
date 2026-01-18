@@ -30,7 +30,17 @@ export async function GET(request: NextRequest) {
 
         // Add type to each college object
         const indianColleges = (user.saved_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'indian' }));
-        const internationalColleges = (user.saved_international_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'international' }));
+        const internationalColleges = (user.saved_international_colleges || []).map((c: any) => {
+            const obj = c.toObject();
+            return {
+                ...obj,
+                type: 'international',
+                location: {
+                    city: obj.city,
+                    state: obj.country
+                }
+            };
+        });
         const newGenColleges = (user.saved_newgen_colleges || []).map((c: any) => ({ ...c.toObject(), type: 'newgen' }));
 
         const allSaved = [...indianColleges, ...internationalColleges, ...newGenColleges];

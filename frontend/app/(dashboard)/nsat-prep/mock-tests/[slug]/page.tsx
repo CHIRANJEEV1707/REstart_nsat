@@ -46,6 +46,7 @@ function TestInterface() {
     const [showViolation, setShowViolation] = useState<{ type: string; count: number } | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar
+    const [testStartedAt, setTestStartedAt] = useState<Date | null>(null); // Track actual start time
 
     // Fetch test details (metadata)
     const { data: testData } = useQuery({
@@ -109,6 +110,9 @@ function TestInterface() {
                 const remainingSeconds = Math.max(0, Math.floor((durationMs - elapsedMs) / 1000));
 
                 setTimeLeft(remainingSeconds);
+
+                // Store the startedAt time for accurate time calculation
+                setTestStartedAt(new Date(data.data.attempt.startedAt));
 
                 setTestStarted(true);
                 // proctoring.enterFullscreen(); // Only enter if not already? Or just force it.
@@ -243,12 +247,25 @@ function TestInterface() {
         if (submitting || !attemptId) return;
         setSubmitting(true);
         try {
+            // Calculate actual time spent from startedAt to now
+            let actualTimeSpent = 0;
+            if (testStartedAt) {
+                actualTimeSpent = Math.floor((new Date().getTime() - testStartedAt.getTime()) / 1000);
+            } else {
+                // Fallback: use duration - timeLeft (less accurate)
+                actualTimeSpent = (testData?.duration * 60 || 0) - timeLeft;
+            }
+
+            // Cap at test duration to avoid showing more than allowed time
+            const maxDuration = (testData?.duration || 60) * 60;
+            actualTimeSpent = Math.min(actualTimeSpent, maxDuration);
+
             await api.post(`/mock-tests/attempts/${attemptId}/submit`, {
                 answers: Object.entries(answers).map(([questionId, selectedAnswer]) => ({
                     questionId,
                     selectedAnswer
                 })),
-                totalTimeSpent: (testData?.duration * 60 || 0) - timeLeft
+                totalTimeSpent: actualTimeSpent
             });
             proctoring.exitFullscreen();
             proctoring.disableCamera();

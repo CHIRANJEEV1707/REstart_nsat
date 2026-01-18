@@ -24,7 +24,7 @@ const exams = [
         image: '/images/jeemains.svg',
         color: 'orange',
         href: '/prep/jee-mains',
-        status: 'coming-soon'
+        status: 'active'
     },
     {
         id: 'jee-advanced',
@@ -34,7 +34,7 @@ const exams = [
         image: '/images/jeeadv.svg',
         color: 'red',
         href: '/prep/jee-advanced',
-        status: 'coming-soon'
+        status: 'active'
     },
     {
         id: 'bitsat',
@@ -44,7 +44,7 @@ const exams = [
         image: '/images/bitsat.svg',
         color: 'red',
         href: '/prep/bitsat',
-        status: 'coming-soon'
+        status: 'active'
     },
     {
         id: 'sat',

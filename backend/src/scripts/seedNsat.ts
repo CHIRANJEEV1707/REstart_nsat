@@ -38,11 +38,6 @@ const seed = async () => {
     try {
         let uri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/restart';
 
-        // Clean up URI if it has trailing issues (handled by mongoose usually but safeguards help)
-        if (uri.endsWith('=') && uri.includes('appName')) {
-            // Sometimes check issues, but let's just log
-        }
-
         console.log(`Connecting to MongoDB...`);
 
         await mongoose.connect(uri);
@@ -146,11 +141,12 @@ const seed = async () => {
             ]
         });
 
+        // Question 1: Prime Check (MCQ Style Logic)
         await Question.create({
             mockTestId: freeCodingTest._id,
             questionNumber: 1,
             section: 'Coding',
-            questionText: 'Write a program to check if a number is Prime. (Select Complexity)',
+            questionText: 'Write a function `isPrime(n)` that returns true if a number is prime. Determine the time complexity of the most efficient approach.',
             questionType: 'mcq',
             marks: 50,
             negativeMarks: 0,
@@ -164,19 +160,26 @@ const seed = async () => {
             explanation: 'Iterate from 2 to sqrt(n).'
         } as any);
 
+        // Question 2: Real Coding Question
         await Question.create({
             mockTestId: freeCodingTest._id,
             questionNumber: 2,
             section: 'Coding',
-            questionText: 'Write a program to reverse a string. (Select Complexity)',
-            questionType: 'mcq',
+            questionText: 'Write a program to reverse a string.',
+            questionType: 'coding', // Changed to coding
+            isCoding: true,
             marks: 50,
             negativeMarks: 0,
             difficulty: 'easy',
-            correctAnswer: 'a',
-            options: [{ id: 'a', text: 'O(n)' }, { id: 'b', text: 'O(n^2)' }],
+            correctAnswer: 'olleh', // Dummy expected output for simple check
+            codeTemplate: [
+                { language: 'cpp', template: '#include <iostream>\nusing namespace std;\n\nstring reverseString(string s) {\n    // Write your code here\n    return "";\n}' },
+                { language: 'python', template: 'def reverse_string(s):\n    # Write your code here\n    return ""' },
+                { language: 'java', template: 'class Solution {\n    public String reverseString(String s) {\n        // Write your code here\n        return "";\n    }\n}' }
+            ],
             testCases: [
-                { input: 'hello', output: 'olleh', isPublic: true }
+                { input: 'hello', output: 'olleh', isPublic: true },
+                { input: 'world', output: 'dlrow', isPublic: false }
             ],
             explanation: 'Swap characters from start and end.'
         } as any);
@@ -199,24 +202,21 @@ const seed = async () => {
             ]
         });
 
-        // We use 'mcq' type for now as backend supports MCQ format, 
-        // but description implies coding. For this MVP, we use MCQ questions that ASK about code output or logic,
-        // unless I implement a full Code Editor question type (which is "coding" type in model).
-        // Let's check Question model. It has 'testCases'.
-        // I'll create a Coding question.
-
         await Question.create({
             mockTestId: codingTest._id,
             questionNumber: 1,
             section: 'Coding',
-            questionText: 'Write a program to find the longest palindromic substring in a given string. (Mock: Select complexity)',
-            questionType: 'mcq', // Using mcq type for now
+            questionText: 'Write a program to find the longest palindromic substring in a given string.',
+            questionType: 'coding',
+            isCoding: true,
             marks: 100,
             negativeMarks: 0,
             difficulty: 'hard',
-            correctAnswer: 'b', // Dummy answer for MCQ
-            options: [{ id: 'a', text: 'O(n)' }, { id: 'b', text: 'O(n^2)' }], // Dummy options
-            // Coding question metadata
+            correctAnswer: '',
+            codeTemplate: [
+                { language: 'cpp', template: 'string longestPalindrome(string s) {\n    // Write your code here\n}' },
+                { language: 'python', template: 'def longest_palindrome(s):\n    # Write your code here\n    pass' }
+            ],
             testCases: [
                 { input: 'babad', output: 'bab', isPublic: true },
                 { input: 'cbbd', output: 'bb', isPublic: true }
@@ -267,12 +267,23 @@ const seed = async () => {
         await PYQQuestion.create({
             categoryId: pyqCat._id,
             questionNumber: 1,
-            questionText: 'Given an array of size N, find the majority element.',
-            options: [{ id: 'a', text: 'O(n)' }, { id: 'b', text: 'O(n log n)' }],
+            questionText: 'Given an array of size N, find the majority element (> N/2 times).',
+            options: [{ id: 'a', text: 'O(n)' }, { id: 'b', text: 'O(n log n)' }, { id: 'c', text: 'O(n^2)' }, { id: 'd', text: 'O(1)' }],
             correctAnswer: 'a',
             difficulty: 'medium',
-            explanation: 'Moore Voting Algorithm'
+            explanation: 'Moore Voting Algorithm is the most efficient approach with O(n) time and O(1) space.'
         });
+
+        await PYQQuestion.create({
+            categoryId: pyqCat._id,
+            questionNumber: 2,
+            questionText: 'In a group of 60 people, 35 like Coffee, 25 like Tea, and 10 like both. How many like neither?',
+            options: [{ id: 'a', text: '10' }, { id: 'b', text: '15' }, { id: 'c', text: '20' }, { id: 'd', text: '5' }],
+            correctAnswer: 'a',
+            difficulty: 'medium',
+            explanation: 'Total = C + T - Both + Neither. 60 = 35 + 25 - 10 + N => 60 = 50 + N => N = 10.'
+        });
+
         console.log('Seeded PYQs');
 
         console.log('Database seeding completed successfully.');

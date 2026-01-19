@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -17,6 +17,8 @@ import { PaymentModal } from '@/components/payment/PaymentModal';
 export default function CollegeDetailPage() {
     const { id } = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const type = searchParams.get('type') || 'indian';
     const [activeTab, setActiveTab] = useState("overview");
     const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
@@ -54,9 +56,15 @@ export default function CollegeDetailPage() {
     };
 
     const { data: response, isLoading, isError } = useQuery({
-        queryKey: ['college', id],
+        queryKey: ['college', id, type],
         queryFn: async () => {
-            const res = await api.get(`/colleges/${id}`);
+            let endpoint = `/colleges/${id}`;
+            if (type === 'international') {
+                endpoint = `/international-colleges/${id}`;
+            } else if (type === 'newgen') {
+                endpoint = `/newgen-colleges/${id}`;
+            }
+            const res = await api.get(endpoint);
             return res.data;
         },
         enabled: !!id,
@@ -409,7 +417,19 @@ export default function CollegeDetailPage() {
                                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                                     Applications Open
                                 </div>
-                                <Button className="w-full mb-3 bg-indigo-600 hover:bg-indigo-700 text-white" size="lg">Apply Now</Button>
+                                <Button
+                                    className="w-full mb-3 bg-indigo-600 hover:bg-indigo-700 text-white"
+                                    size="lg"
+                                    onClick={() => {
+                                        const link = isInternational
+                                            ? (college.application_portal_url || college.official_website)
+                                            : (college.website || "#");
+                                        if (link && link !== '#') window.open(link, '_blank');
+                                        else toast.error("Application link not available");
+                                    }}
+                                >
+                                    Apply Now
+                                </Button>
                                 <Button variant="outline" className="w-full border-gray-200 text-gray-700 hover:bg-gray-50">Download Brochure</Button>
                             </div>
 

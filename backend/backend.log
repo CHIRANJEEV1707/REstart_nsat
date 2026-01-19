@@ -1,0 +1,13 @@
+
+> backend@1.0.0 dev
+> nodemon src/server.ts
+
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src/**/*[39m
+[33m[nodemon] watching extensions: ts[39m
+[32m[nodemon] starting `ts-node src/server.ts`[39m
+2026-01-19 16:48:14 [[31merror[39m]: Missing required environment variables: JWT_SECRET, NODE_ENV, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
+2026-01-19 16:48:14 [[31merror[39m]: Please check your .env file and ensure all required variables are set
+2026-01-19 16:48:14 [[31merror[39m]: Server startup failed: Missing required environment variables: JWT_SECRET, NODE_ENV, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m

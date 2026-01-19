@@ -152,6 +152,36 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
+// @desc    Refresh Token
+// @route   POST /api/auth/refresh
+export const refresh = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+
+        if (!refreshToken) {
+            return res.status(401).json({ success: false, message: 'No refresh token found' });
+        }
+
+        try {
+            // Verify token
+            const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET!) as { id: string };
+
+            // Find user
+            const user = await User.findById(decoded.id);
+            if (!user) {
+                return res.status(401).json({ success: false, message: 'User not found' });
+            }
+
+            // Issue new tokens
+            sendTokenResponse(user, 200, res);
+        } catch (err) {
+            return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
 export const getMe = async (req: Request, res: Response, next: NextFunction) => {

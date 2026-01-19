@@ -93,14 +93,12 @@ const InternationalCollegeSchema: Schema = new Schema({
     // 🔹 Metadata
     badges: [{ type: String }], // e.g. ["Ivy League", "Top 10 Global"]
 
+    // 🔹 Image
+    image: { type: String },
+
     // 🔹 Trending
     isTrending: { type: Boolean, default: false, index: true },
-    trendingScore: { type: Number, default: 0, index: true } // Removed image field from schema for now as it wasn't there, or should I add it? Controller asks for image. I'll stick to interface only or add to schema if logic requires.
-    // Actually, controller projects 'image'. The schema doesn't have 'image'. 
-    // Wait, the trendingController uses `.select('... image ...')`. If international doesn't have image, it returns undefined.
-    // The previous error was specifically about `isTrending`. 
-    // Let's add `image` to schema too while we are here, to support the feature fully.
-
+    trendingScore: { type: Number, default: 0, index: true }
 }, {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });

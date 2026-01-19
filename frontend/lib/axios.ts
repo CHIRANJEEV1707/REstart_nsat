@@ -25,30 +25,49 @@ api.interceptors.request.use((config) => {
 // Response Interceptor: Handle 401 globally
 api.interceptors.response.use(
     (response) => response,
-    (error: any) => {
-        if (error.response && error.response.status === 401) {
-            console.log('[Axios] 401 Unauthorized detected.');
-            // Remove the invalid token cookie
-            if (typeof window !== 'undefined') {
-                Cookies.remove('token');
-                localStorage.removeItem('token');
+    async (error: any) => {
+        const originalRequest = error.config;
 
-                // Define protected paths that require login
-                const protectedPaths = ['/dashboard', '/saved', '/prep', '/settings', '/profile', '/onboarding'];
-                const currentPath = window.location.pathname;
+        // If error is 401 and we haven't retried yet
+        if (error.response && error.response.status === 401 && !originalRequest._retry) {
 
-                // Only redirect if explicitly on a protected path AND it wasn't the login request itself that failed
-                const isProtected = protectedPaths.some(path => currentPath.startsWith(path));
-                const isLoginRequest = error.config && error.config.url && (error.config.url.includes('/auth/login') || error.config.url.includes('/auth/signup'));
+            // Avoid infinite loop if the refresh endpoint itself returns 401
+            if (originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/login')) {
+                 return Promise.reject(error);
+            }
 
-                if (isProtected && !currentPath.includes('/auth/login') && !isLoginRequest) {
-                    // Start logout process
-                    fetch('/api/auth/logout', { method: 'POST' })
-                        .catch(err => console.error("Logout failed during 401 handling", err))
-                        .finally(() => {
-                            window.location.href = '/auth/login';
-                        });
+            originalRequest._retry = true;
+
+            try {
+                console.log('[Axios] 401 detected. Attempting refresh...');
+                // Call refresh endpoint
+                // We use axios directly to avoid using this interceptor instance for the refresh call
+                await axios.post('/api/auth/refresh', {}, { withCredentials: true });
+
+                console.log('[Axios] Refresh successful. Retrying original request.');
+                // Retry original request
+                return api(originalRequest);
+            } catch (refreshError) {
+                console.log('[Axios] Refresh failed. Logging out.');
+                // Fallback to logout logic
+                if (typeof window !== 'undefined') {
+                    Cookies.remove('token');
+                    localStorage.removeItem('token');
+
+                    const protectedPaths = ['/dashboard', '/saved', '/prep', '/settings', '/profile', '/onboarding'];
+                    const currentPath = window.location.pathname;
+
+                    const isProtected = protectedPaths.some(path => currentPath.startsWith(path));
+
+                    if (isProtected && !currentPath.includes('/auth/login')) {
+                        fetch('/api/auth/logout', { method: 'POST' })
+                            .catch(err => console.error("Logout failed during 401 handling", err))
+                            .finally(() => {
+                                window.location.href = '/auth/login';
+                            });
+                    }
                 }
+                return Promise.reject(refreshError);
             }
         }
         return Promise.reject(error);

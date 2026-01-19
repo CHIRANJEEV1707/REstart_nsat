@@ -82,7 +82,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
     };
 
     const getCTA = () => {
-        const linkHref = `/college/${effectiveId}`;
+        const linkHref = `/college/${effectiveId}?type=${variant === 'traditional' ? 'indian' : variant}`;
         switch (variant) {
             case 'newgen':
                 return (
@@ -188,7 +188,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
 
                     {/* Buttons */}
                     <div className="mt-auto grid grid-cols-2 gap-2">
-                        <Link href={`/college/${effectiveId}`} className="w-full">
+                        <Link href={`/college/${effectiveId}?type=newgen`} className="w-full">
                             <Button
                                 variant="ghost"
                                 className="w-full text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700 text-xs h-9"
@@ -196,7 +196,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                                 View Details
                             </Button>
                         </Link>
-                        <Link href={`/college/${effectiveId}`} className="w-full">
+                        <Link href={`/college/${effectiveId}?type=newgen`} className="w-full">
                             <Button
                                 className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-0 shadow-lg shadow-indigo-500/20 text-xs h-9 px-2"
                             >
@@ -244,7 +244,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
             {/* Content */}
             <div className="flex-1 mb-4">
                 <h3 className="font-bold text-lg mb-1 line-clamp-2 text-gray-900 group-hover:text-indigo-600">
-                    <Link href={`/college/${effectiveId}`}>
+                    <Link href={`/college/${effectiveId}?type=${variant === 'traditional' ? 'indian' : variant}`}>
                         {college.name}
                     </Link>
                 </h3>
@@ -322,7 +322,7 @@ export default function CollegeCard({ college, variant, onClick }: CollegeCardPr
                 </div>
                 <div className="flex-1 min-w-[120px]">
                     <Link
-                        href={`/college/${effectiveId}`}
+                        href={`/college/${effectiveId}?type=${variant === 'traditional' ? 'indian' : variant}`}
                         className="w-full"
                     >
                         <Button size="sm" className="w-full bg-[#0085ff] hover:bg-[#006bd1] text-white shadow-md hover:shadow-lg transition-all h-9 text-xs">

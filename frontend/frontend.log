@@ -1,0 +1,27 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+   ▲ Next.js 16.0.8 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://192.168.0.2:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+ ✓ Ready in 1883ms
+ ○ Compiling /dashboard ...
+ GET /dashboard 200 in 9.1s (compile: 8.2s, proxy.ts: 169ms, render: 704ms)
+ GET /onboarding 200 in 2.5s (compile: 2.3s, proxy.ts: 46ms, render: 189ms)
+ GET /onboarding 200 in 2.5s (compile: 2.3s, proxy.ts: 44ms, render: 152ms)
+ GET /exams 200 in 1893ms (compile: 1785ms, proxy.ts: 52ms, render: 56ms)
+ GET /api/dashboard 200 in 3.6s (compile: 2.1s, proxy.ts: 49ms, render: 1490ms)
+ GET /api/saved 200 in 3.8s (compile: 2.5s, proxy.ts: 11ms, render: 1340ms)
+[DB] MongoDB connected successfully
+ GET /college/int1?type=international 200 in 1728ms (compile: 1607ms, proxy.ts: 7ms, render: 114ms)
+ GET /api/saved 401 in 26ms (compile: 11ms, proxy.ts: 6ms, render: 9ms)

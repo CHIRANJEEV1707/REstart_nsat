@@ -1,6 +1,6 @@
 'use client';
 
-import { Lightbulb, TrendingUp, Target, Shield, Zap, AlertTriangle, BookOpen, BarChart } from 'lucide-react';
+import { Lightbulb, TrendingUp, Target, Shield, Zap, AlertTriangle, BookOpen, BarChart, Microscope, HeartPulse, BrainCircuit } from 'lucide-react';
 
 interface Insight {
   icon: any;
@@ -9,9 +9,9 @@ interface Insight {
   color: string;
 }
 
-type ExamType = 'jee-mains' | 'jee-advanced' | 'bitsat';
+type ExamType = 'jee-mains' | 'jee-advanced' | 'bitsat' | 'neet' | 'ugee' | string;
 
-const INSIGHTS_DATA: Record<ExamType, Insight[]> = {
+const INSIGHTS_DATA: Record<string, Insight[]> = {
   'jee-mains': [
     {
       icon: BookOpen,
@@ -89,6 +89,58 @@ const INSIGHTS_DATA: Record<ExamType, Insight[]> = {
       description: 'Conceptual clarity beats formula memorization here.',
       color: 'bg-blue-100 text-blue-600'
     }
+  ],
+  'neet': [
+    {
+      icon: HeartPulse,
+      title: 'Biology is Key',
+      description: 'Biology constitutes 50% of marks. NCERT is your bible.',
+      color: 'bg-green-100 text-green-600'
+    },
+    {
+      icon: Zap,
+      title: 'Physics Speed',
+      description: 'Practice numericals to solve within 1 min/question.',
+      color: 'bg-yellow-100 text-yellow-600'
+    },
+    {
+      icon: AlertTriangle,
+      title: 'Negative Marking',
+      description: 'High cutoff means accuracy is paramount. Avoid blind guesses.',
+      color: 'bg-red-100 text-red-600'
+    },
+    {
+      icon: BookOpen,
+      title: 'Organic Chemistry',
+      description: 'Focus on reaction mechanisms and named reactions.',
+      color: 'bg-purple-100 text-purple-600'
+    }
+  ],
+  'ugee': [
+    {
+      icon: BrainCircuit,
+      title: 'REAP Section',
+      description: 'Research Aptitude is critical. Focus on logic & linguistics.',
+      color: 'bg-purple-100 text-purple-600'
+    },
+    {
+      icon: Microscope,
+      title: 'Research Orientation',
+      description: 'Interview round assesses your passion for research.',
+      color: 'bg-blue-100 text-blue-600'
+    },
+    {
+      icon: Target,
+      title: 'SUPR Strategy',
+      description: 'Subject proficiency is standard. REAP is the rank decider.',
+      color: 'bg-green-100 text-green-600'
+    },
+    {
+      icon: Shield,
+      title: 'Cutoffs',
+      description: 'You must clear cutoffs in BOTH sections independently.',
+      color: 'bg-orange-100 text-orange-600'
+    }
   ]
 };
 
@@ -97,7 +149,7 @@ interface SmartInsightsSectionProps {
 }
 
 export default function SmartInsightsSection({ examType }: SmartInsightsSectionProps) {
-  const insights = INSIGHTS_DATA[examType] || [];
+  const insights = INSIGHTS_DATA[examType] || INSIGHTS_DATA['jee-mains']; // Fallback
 
   return (
     <div className="mb-12">

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, BookOpen, TrendingUp, Sparkles, Lock, CheckCircle, Gift } from 'lucide-react';
+import { ArrowLeft, BookOpen, TrendingUp, Sparkles, Lock, CheckCircle, Gift, Loader2 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { PaymentModal } from '@/components/payment/PaymentModal';
 import { useAuth } from '@/context/AuthContext';
@@ -12,13 +12,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '@/lib/axios';
 
 export default function NSATPrepPage() {
-    const { user } = useAuth();
+    const { user, isLoading: authLoading } = useAuth();
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
     const [showUpgrade, setShowUpgrade] = useState(false);
-    const [accessLevel, setAccessLevel] = useState<'none' | 'free' | 'premium'>('none');
 
     // Fetch access status
-    const { data: accessData, refetch: refetchAccess } = useQuery({
+    const { data: accessData, refetch: refetchAccess, isLoading: queryLoading } = useQuery({
         queryKey: ['freePackStatus'],
         queryFn: async () => {
             const res = await api.get('/free-pack');
@@ -27,12 +26,7 @@ export default function NSATPrepPage() {
         enabled: !!user
     });
 
-    useEffect(() => {
-        if (accessData) {
-            setAccessLevel(accessData.accessLevel);
-        }
-    }, [accessData]);
-
+    const accessLevel = accessData?.accessLevel || 'none';
     const hasPurchasedAny = accessLevel === 'premium';
     const hasFreePack = accessLevel === 'free';
     const showDashboard = hasPurchasedAny || hasFreePack;
@@ -54,6 +48,14 @@ export default function NSATPrepPage() {
             toast.error('Failed to claim free pack. Please try again.');
         }
     });
+
+    if (authLoading || queryLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50/30">
+                <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+            </div>
+        );
+    }
 
     const packages = [
         {

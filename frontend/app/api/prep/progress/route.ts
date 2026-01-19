@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import UserExamProgress from '@/lib/models/UserExamProgress';
+import PYQQuestion from '@/lib/models/PYQQuestion';
 import { getUserFromToken } from '@/lib/auth-utils';
 
 export async function GET(request: NextRequest) {
@@ -82,6 +83,49 @@ export async function POST(request: NextRequest) {
       };
     }
     else if (type === 'practice_complete') {
+      const { answers, timeTaken, totalQuestions } = data;
+
+      let score = 0;
+      let totalScore = 0;
+      const sessionAnswers = [];
+
+      // Determine Marking Scheme
+      let marking = { correct: 1, incorrect: 0 };
+      if (examId === 'jee-mains' || examId === 'jee-advanced') marking = { correct: 4, incorrect: -1 };
+      else if (examId === 'bitsat') marking = { correct: 3, incorrect: -1 };
+
+      if (answers && Object.keys(answers).length > 0) {
+          const questionIds = Object.keys(answers);
+          const questions = await PYQQuestion.find({ _id: { $in: questionIds } }).select('_id correctAnswer').lean();
+          const questionMap = new Map(questions.map((q: any) => [q._id.toString(), q]));
+
+          for (const [qId, optionId] of Object.entries(answers)) {
+              const question = questionMap.get(qId);
+              let isCorrect = false;
+              if (question && (question as any).correctAnswer === optionId) {
+                  isCorrect = true;
+                  score += marking.correct;
+              } else {
+                  score += marking.incorrect;
+              }
+
+              sessionAnswers.push({
+                  questionId: qId,
+                  selectedOptionId: optionId as string,
+                  isCorrect
+              });
+          }
+           // Adjust totalQuestionsSolved (count attempted/solved)
+           progress.totalQuestionsSolved += Object.keys(answers).length;
+      } else {
+         progress.totalQuestionsSolved += (data.questionsSolved || 0);
+      }
+
+      // Calculate Total Max Score
+      // If totalQuestions provided (e.g. 5), use that. Else use count of answers.
+      const questionCount = totalQuestions || (answers ? Object.keys(answers).length : 0);
+      totalScore = questionCount * marking.correct;
+
       // Update Streak
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -90,10 +134,6 @@ export async function POST(request: NextRequest) {
       if (lastDate) lastDate.setHours(0, 0, 0, 0);
 
       if (!lastDate || lastDate.getTime() < today.getTime()) {
-        // If last practice was yesterday, increment. 
-        // If older, reset to 1? Or just increment? 
-        // "Streak" implies consecutive days.
-
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
 
@@ -102,13 +142,20 @@ export async function POST(request: NextRequest) {
         } else if (!lastDate || lastDate.getTime() < yesterday.getTime()) {
           progress.streak.current = 1; // Reset if gap > 1 day
         }
-        // If applied today already, do nothing or just update date
         progress.streak.lastPracticeDate = new Date();
         progress.streak.max = Math.max(progress.streak.max, progress.streak.current);
       }
 
-      // Update stats
-      progress.totalQuestionsSolved += (data.questionsSolved || 0);
+      // Save Session
+      if (answers) {
+          progress.lastSession = {
+              score,
+              totalScore,
+              timeTaken: timeTaken || 0,
+              date: new Date(),
+              answers: sessionAnswers
+          };
+      }
     }
 
     await progress.save();

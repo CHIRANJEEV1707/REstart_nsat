@@ -11,6 +11,8 @@ interface PracticeSessionModalProps {
   examId: string;
   onComplete: () => void;
   initialQuestions?: Question[]; // Optional pre-selected questions
+  mode?: 'practice' | 'review';
+  reviewData?: any;
 }
 
 export default function PracticeSessionModal({
@@ -18,7 +20,9 @@ export default function PracticeSessionModal({
   onClose,
   examId,
   onComplete,
-  initialQuestions
+  initialQuestions,
+  mode = 'practice',
+  reviewData
 }: PracticeSessionModalProps) {
   const [step, setStep] = useState<'intro' | 'loading' | 'active' | 'submitting' | 'success'>('intro');
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
@@ -29,23 +33,47 @@ export default function PracticeSessionModal({
   // Reset state on open
   useEffect(() => {
     if (isOpen) {
-      setStep('intro');
-      setTimeLeft(300);
-      setCurrentQuestionIndex(0);
-      setQuestions([]);
-      setAnswers({});
+      if (mode === 'review' && reviewData && reviewData.answers) {
+        setStep('loading');
+        // Fetch questions for review
+        const qIds = reviewData.answers.map((a: any) => a.questionId);
+        ExamService.getQuestionsByIds(qIds).then(qs => {
+          // Ensure questions are sorted or matched to answers order if needed,
+          // but API returns list. We just display them.
+          setQuestions(qs);
+
+          // Populate answers
+          const ansMap: Record<string, string> = {};
+          reviewData.answers.forEach((a: any) => {
+             ansMap[a.questionId] = a.selectedOptionId;
+          });
+          setAnswers(ansMap);
+
+          setStep('active');
+          setCurrentQuestionIndex(0);
+        }).catch(() => {
+          alert('Failed to load review.');
+          onClose();
+        });
+      } else {
+        setStep('intro');
+        setTimeLeft(300);
+        setCurrentQuestionIndex(0);
+        setQuestions([]);
+        setAnswers({});
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, mode, reviewData]);
 
   // Timer
   useEffect(() => {
-    if (step === 'active' && timeLeft > 0) {
+    if (mode === 'practice' && step === 'active' && timeLeft > 0) {
       const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
       return () => clearInterval(timer);
-    } else if (timeLeft === 0 && step === 'active') {
+    } else if (mode === 'practice' && timeLeft === 0 && step === 'active') {
       handleSubmit();
     }
-  }, [step, timeLeft]);
+  }, [step, timeLeft, mode]);
 
   const handleStart = async () => {
     if (initialQuestions && initialQuestions.length > 0) {
@@ -79,6 +107,7 @@ export default function PracticeSessionModal({
   };
 
   const handleOptionSelect = (optionId: string) => {
+    if (mode === 'review') return;
     const q = questions[currentQuestionIndex];
     setAnswers(prev => ({ ...prev, [q.id]: optionId }));
   };
@@ -86,9 +115,9 @@ export default function PracticeSessionModal({
   const handleSubmit = async () => {
     setStep('submitting');
     try {
-      // Calculate score locally for fun or send to API if it supported detailed submission
       const solvedCount = Object.keys(answers).length;
-      await ExamService.completePractice(examId, solvedCount); // API expects number of questions solved
+      const timeTaken = 300 - timeLeft;
+      await ExamService.completePractice(examId, solvedCount, timeTaken, answers, questions.length);
       setStep('success');
       setTimeout(() => {
         onComplete();
@@ -103,13 +132,14 @@ export default function PracticeSessionModal({
   if (!isOpen) return null;
 
   const currentQuestion = questions[currentQuestionIndex];
+  const isReview = mode === 'review';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl w-full max-w-2xl h-[600px] shadow-2xl flex flex-col relative overflow-hidden">
 
-        {/* Close (only if not doing exam) */}
-        {step === 'intro' && (
+        {/* Close Button always visible in review or intro */}
+        {(step === 'intro' || isReview) && (
           <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
             <X className="w-6 h-6" />
           </button>
@@ -149,10 +179,17 @@ export default function PracticeSessionModal({
                 <div className="text-sm font-medium text-gray-500">
                   Question {currentQuestionIndex + 1} / {questions.length}
                 </div>
-                <div className="flex items-center gap-2 text-orange-600 font-mono font-bold bg-orange-50 px-3 py-1 rounded-lg">
-                  <Clock className="w-4 h-4" />
-                  {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-                </div>
+                {!isReview && (
+                    <div className="flex items-center gap-2 text-orange-600 font-mono font-bold bg-orange-50 px-3 py-1 rounded-lg">
+                    <Clock className="w-4 h-4" />
+                    {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                    </div>
+                )}
+                {isReview && (
+                    <div className="flex items-center gap-2 text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-lg">
+                        Review Mode
+                    </div>
+                )}
               </div>
 
               {/* Question Text */}
@@ -171,31 +208,55 @@ export default function PracticeSessionModal({
 
                 {/* Options */}
                 <div className="mt-6 space-y-3">
-                    {currentQuestion.options?.map((opt) => (
-                        <button
-                            key={opt.id}
-                            onClick={() => handleOptionSelect(opt.id)}
-                            className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3
-                                ${answers[currentQuestion.id] === opt.id
-                                    ? 'border-blue-500 bg-blue-50/50 text-blue-800'
-                                    : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
-                                }`}
-                        >
-                            <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-                                ${answers[currentQuestion.id] === opt.id ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500'}
-                            `}>
-                                {opt.id}
-                            </span>
-                            <span className="font-medium">{opt.text}</span>
-                        </button>
-                    ))}
+                    {currentQuestion.options?.map((opt) => {
+                        let buttonClass = 'border-gray-100 hover:border-gray-200 hover:bg-gray-50 text-gray-600';
+                        let badgeClass = 'bg-gray-100 text-gray-500';
+
+                        const isSelected = answers[currentQuestion.id] === opt.id;
+
+                        if (isReview) {
+                            if (currentQuestion.correctAnswer === opt.id) {
+                                buttonClass = 'border-green-500 bg-green-50 text-green-800';
+                                badgeClass = 'bg-green-600 text-white';
+                            } else if (isSelected) {
+                                buttonClass = 'border-red-500 bg-red-50 text-red-800';
+                                badgeClass = 'bg-red-600 text-white';
+                            }
+                        } else {
+                            if (isSelected) {
+                                buttonClass = 'border-blue-500 bg-blue-50/50 text-blue-800';
+                                badgeClass = 'bg-blue-600 text-white';
+                            }
+                        }
+
+                        return (
+                            <button
+                                key={opt.id}
+                                onClick={() => handleOptionSelect(opt.id)}
+                                disabled={isReview}
+                                className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 ${buttonClass}`}
+                            >
+                                <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${badgeClass}`}>
+                                    {opt.id}
+                                </span>
+                                <span className="font-medium">{opt.text}</span>
+                            </button>
+                        );
+                    })}
                 </div>
+
+                {isReview && currentQuestion.explanation && (
+                    <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-xl">
+                        <h4 className="font-bold text-yellow-800 mb-2">Explanation</h4>
+                        <p className="text-yellow-700 text-sm leading-relaxed">{currentQuestion.explanation}</p>
+                    </div>
+                )}
               </div>
 
               {/* Actions */}
               <div className="flex justify-end pt-4 border-t border-gray-100">
-                <Button onClick={handleNext} className="gap-2 bg-blue-600 text-white shadow-lg shadow-blue-200">
-                  {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'} <ArrowRight className="w-4 h-4" />
+                <Button onClick={isReview && currentQuestionIndex === questions.length - 1 ? onClose : handleNext} className="gap-2 bg-blue-600 text-white shadow-lg shadow-blue-200">
+                  {currentQuestionIndex === questions.length - 1 ? (isReview ? 'Close' : 'Submit') : 'Next'} <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>

@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Play, CheckCircle, Clock, BarChart2, FileText, RotateCcw } from 'lucide-react';
+import { Play, CheckCircle, Clock, BarChart2, FileText, RotateCcw, Eye } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
-import { ExamService } from '@/services/examService';
+import { ExamService, UserProgressData } from '@/services/examService';
 import PracticeSessionModal from './PracticeSessionModal';
 
 interface QuickPracticeWidgetProps {
@@ -16,6 +16,8 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
   const [streak, setStreak] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lastSession, setLastSession] = useState<UserProgressData['lastSession']>(null);
+  const [modalMode, setModalMode] = useState<'practice' | 'review'>('practice');
 
   const loadData = async () => {
     const data = await ExamService.getUserProgress(examId);
@@ -25,6 +27,7 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
     }
 
     setStreak(data.streak?.current || 0);
+    setLastSession(data.lastSession);
 
     // Check if practiced today
     const lastDate = data.streak?.lastPracticeDate ? new Date(data.streak.lastPracticeDate) : null;
@@ -49,6 +52,22 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
     // Reload stats to show updated streak
     loadData();
     setCompleted(true);
+  };
+
+  const handleStartPractice = () => {
+    setModalMode('practice');
+    setIsModalOpen(true);
+  };
+
+  const handleShowSolution = () => {
+    setModalMode('review');
+    setIsModalOpen(true);
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}m ${s}s`;
   };
 
   if (loading) return <div className="h-64 bg-gray-50 rounded-2xl animate-pulse" />;
@@ -97,7 +116,7 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
             <Button
               size="lg"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-200 gap-2 h-12 rounded-xl"
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleStartPractice}
             >
               <Play className="w-5 h-5 fill-current" />
               Start Practice
@@ -108,12 +127,16 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
           <div className="space-y-6 animate-in fade-in zoom-in duration-300">
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="bg-green-50 rounded-xl p-3 border border-green-100">
-                <div className="text-xs text-green-600 font-semibold uppercase mb-1">Status</div>
-                <div className="text-lg font-bold text-green-700">Done</div>
+                <div className="text-xs text-green-600 font-semibold uppercase mb-1">Score</div>
+                <div className="text-lg font-bold text-green-700">
+                   {lastSession ? `${lastSession.score}/${lastSession.totalScore}` : '-'}
+                </div>
               </div>
               <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
-                <div className="text-xs text-blue-600 font-semibold uppercase mb-1">Target</div>
-                <div className="text-lg font-bold text-blue-700">5/5</div>
+                <div className="text-xs text-blue-600 font-semibold uppercase mb-1">Time</div>
+                <div className="text-lg font-bold text-blue-700">
+                  {lastSession ? formatTime(lastSession.timeTaken) : '-'}
+                </div>
               </div>
               <div className="bg-orange-50 rounded-xl p-3 border border-orange-100">
                 <div className="text-xs text-orange-600 font-semibold uppercase mb-1">Streak</div>
@@ -121,10 +144,18 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 gap-2"
+                onClick={handleShowSolution}
+              >
+                <Eye className="w-4 h-4" />
+                Solution
+              </Button>
               <Button
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100 gap-2"
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleStartPractice}
               >
                 <RotateCcw className="w-4 h-4" />
                 Practice Again
@@ -139,6 +170,8 @@ export default function QuickPracticeWidget({ examId }: QuickPracticeWidgetProps
         onClose={() => setIsModalOpen(false)}
         examId={examId}
         onComplete={handlePracticeComplete}
+        mode={modalMode}
+        reviewData={lastSession}
       />
     </>
   );

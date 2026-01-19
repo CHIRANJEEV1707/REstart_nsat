@@ -16,6 +16,17 @@ export interface UserProgressData {
     percentile: number;
     date: string;
   } | null;
+  lastSession?: {
+    score: number;
+    totalScore: number;
+    timeTaken: number;
+    date: string;
+    answers: {
+      questionId: string;
+      selectedOptionId: string;
+      isCorrect: boolean;
+    }[];
+  } | null;
 }
 
 export interface Question {
@@ -98,12 +109,12 @@ export const ExamService = {
   /**
    * Complete Practice Session via API
    */
-  completePractice: async (examId: string, questionsSolved: number) => {
+  completePractice: async (examId: string, questionsSolved: number, timeTaken?: number, answers?: Record<string, string>, totalQuestions?: number) => {
     try {
       const response = await axios.post('/api/prep/progress', {
         examId,
         type: 'practice_complete',
-        data: { questionsSolved }
+        data: { questionsSolved, timeTaken, answers, totalQuestions }
       });
       return response.data.data;
     } catch (error) {
@@ -124,6 +135,19 @@ export const ExamService = {
       return [];
     } catch (error) {
       console.error('Failed to fetch PYQs', error);
+      return [];
+    }
+  },
+
+  getQuestionsByIds: async (ids: string[]): Promise<Question[]> => {
+    try {
+      const response = await axios.get('/api/pyqs/questions', { params: { ids: ids.join(',') } });
+      if (response.data.success) {
+        return response.data.data;
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch questions by IDs', error);
       return [];
     }
   },

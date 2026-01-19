@@ -24,6 +24,18 @@ export interface IUserExamProgress extends Document {
     date: Date;
   } | null;
 
+  lastSession: {
+    score: number;
+    totalScore: number;
+    timeTaken: number; // seconds
+    date: Date;
+    answers: {
+      questionId: string;
+      selectedOptionId: string;
+      isCorrect: boolean;
+    }[];
+  } | null;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,6 +59,18 @@ const UserExamProgressSchema = new Schema<IUserExamProgress>({
     total: { type: Number },
     percentile: { type: Number },
     date: { type: Date, default: Date.now }
+  },
+
+  lastSession: {
+    score: { type: Number },
+    totalScore: { type: Number },
+    timeTaken: { type: Number },
+    date: { type: Date },
+    answers: [{
+      questionId: { type: String },
+      selectedOptionId: { type: String },
+      isCorrect: { type: Boolean }
+    }]
   }
 }, {
   timestamps: true

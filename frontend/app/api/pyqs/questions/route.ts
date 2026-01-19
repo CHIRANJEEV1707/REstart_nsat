@@ -12,6 +12,29 @@ export async function GET(request: NextRequest) {
     const difficulty = searchParams.get('difficulty');
     const year = searchParams.get('year');
     const search = searchParams.get('search'); // Text search
+    const ids = searchParams.get('ids');
+
+    if (ids) {
+      const idList = ids.split(',');
+      const questions = await PYQQuestion.find({ _id: { $in: idList } })
+        .populate('categoryId', 'title year examType')
+        .lean();
+
+      const formattedQuestions = questions.map((q: any) => ({
+        id: q._id,
+        text: q.questionText,
+        subject: q.section,
+        year: q.categoryId?.year,
+        difficulty: q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1),
+        topics: q.tags,
+        hasVideoSolution: false,
+        explanation: q.explanation,
+        options: q.options,
+        correctAnswer: q.correctAnswer
+      }));
+
+      return NextResponse.json({ success: true, data: formattedQuestions });
+    }
 
     // 1. Find Categories matching examType and year
     const categoryFilter: any = { isActive: true };

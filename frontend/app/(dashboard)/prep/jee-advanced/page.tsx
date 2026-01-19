@@ -72,8 +72,7 @@ export default function JEEAdvancedPage() {
         </div>
 
         {/* Smart Insights Section */}
-        <SmartInsightsSection examType="jee-advanced" as any />
-        {/* Note: 'as any' cast might be needed if exact string literal type match fails, but EXAM_SLUG string vs literal union usually works if const */}
+        <SmartInsightsSection examType="jee-advanced" />
 
         {/* Soft Upgrade CTA */}
         <div className="mt-12">

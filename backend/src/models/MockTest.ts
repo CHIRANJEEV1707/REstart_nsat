@@ -4,7 +4,7 @@ export interface IMockTest extends Document {
     title: string;
     slug: string;
     description: string;
-    examType: 'nsat' | 'coding-nsat';
+    examType: 'nsat' | 'coding-nsat' | 'neet' | 'ugee' | 'jee-mains' | 'jee-advanced' | 'bitsat';
     duration: number; // in minutes
     totalMarks: number;
     passingMarks: number;
@@ -29,7 +29,7 @@ const MockTestSchema = new Schema<IMockTest>({
     description: { type: String, required: true },
     examType: {
         type: String,
-        enum: ['nsat', 'coding-nsat'],
+        enum: ['nsat', 'coding-nsat', 'neet', 'ugee', 'jee-mains', 'jee-advanced', 'bitsat'],
         required: true,
         index: true
     },

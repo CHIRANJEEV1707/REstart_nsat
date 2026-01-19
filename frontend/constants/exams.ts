@@ -2,8 +2,12 @@ export const EXAMS_BY_COUNTRY: Record<string, string[]> = {
     India: [
         "JEE Main",
         "JEE Advanced",
+        "NEET",
         "BITSAT",
         "VITEEE",
+        "UGEE",
+        "IAT",
+        "NEST",
         "COMEDK",
         "WBJEE",
         "MHTCET",

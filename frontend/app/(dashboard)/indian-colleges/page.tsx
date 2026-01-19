@@ -29,7 +29,7 @@ export default function IndianCollegesPage() {
                     </h1>
                 </div>
                 <p className="text-gray-500 ml-[52px]">
-                    Find your best fit engineering college in India with smart filters.
+                    Find your best fit college (Engineering, Medical, Research) in India with smart filters.
                 </p>
             </div>
 

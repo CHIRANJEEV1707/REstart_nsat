@@ -2,10 +2,28 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
-import { ArrowRight, BookOpen, GraduationCap, Globe, Calculator, Binary, PenTool } from 'lucide-react';
+import {
+    ArrowRight,
+    BookOpen,
+    GraduationCap,
+    Globe,
+    Calculator,
+    Binary,
+    PenTool,
+    Stethoscope,
+    Microscope,
+    Atom,
+    FlaskConical,
+    Plane,
+    Cpu
+} from 'lucide-react';
+
+type ExamCategory = 'engineering' | 'medical' | 'research' | 'international';
 
 const exams = [
+    // Engineering
     {
         id: 'nsat',
         title: 'NSAT',
@@ -13,7 +31,8 @@ const exams = [
         icon: BookOpen,
         image: '/images/nsat-logo.svg',
         href: '/prep/nsat',
-        status: 'active'
+        status: 'active',
+        category: 'engineering'
     },
     {
         id: 'jee-mains',
@@ -22,7 +41,8 @@ const exams = [
         icon: Calculator,
         image: '/images/jeemains.svg',
         href: '/prep/jee-mains',
-        status: 'active'
+        status: 'active',
+        category: 'engineering'
     },
     {
         id: 'jee-advanced',
@@ -31,7 +51,8 @@ const exams = [
         icon: Calculator,
         image: '/images/jeeadv.svg',
         href: '/prep/jee-advanced',
-        status: 'active'
+        status: 'active',
+        category: 'engineering'
     },
     {
         id: 'bitsat',
@@ -40,23 +61,8 @@ const exams = [
         icon: Binary,
         image: '/images/bitsat.svg',
         href: '/prep/bitsat',
-        status: 'active'
-    },
-    {
-        id: 'sat',
-        title: 'SAT',
-        subtitle: 'Scholastic Assessment Test',
-        icon: Globe,
-        href: '/prep/sat',
-        status: 'coming-soon'
-    },
-    {
-        id: 'psat',
-        title: 'PSAT',
-        subtitle: 'Preliminary SAT',
-        icon: PenTool,
-        href: '/prep/psat',
-        status: 'coming-soon'
+        status: 'active',
+        category: 'engineering'
     },
     {
         id: 'mhcet',
@@ -65,35 +71,129 @@ const exams = [
         icon: GraduationCap,
         image: '/images/mhtcet.svg',
         href: '/prep/mhcet',
-        status: 'coming-soon'
-    }
+        status: 'coming-soon',
+        category: 'engineering'
+    },
+
+    // Medical
+    {
+        id: 'neet',
+        title: 'NEET',
+        subtitle: 'National Eligibility cum Entrance Test',
+        icon: Stethoscope,
+        href: '/prep/neet',
+        status: 'active',
+        category: 'medical'
+    },
+
+    // Research
+    {
+        id: 'ugee',
+        title: 'UGEE',
+        subtitle: 'IIIT Hyderabad Undergraduate Exam',
+        icon: Microscope,
+        href: '/prep/ugee',
+        status: 'active',
+        category: 'research'
+    },
+    {
+        id: 'iat',
+        title: 'IAT',
+        subtitle: 'IISER Aptitude Test',
+        icon: FlaskConical,
+        href: '/prep/iat',
+        status: 'coming-soon',
+        category: 'research'
+    },
+    {
+        id: 'nest',
+        title: 'NEST',
+        subtitle: 'National Entrance Screening Test',
+        icon: Atom,
+        href: '/prep/nest',
+        status: 'coming-soon',
+        category: 'research'
+    },
+
+    // International
+    {
+        id: 'sat',
+        title: 'SAT',
+        subtitle: 'Scholastic Assessment Test',
+        icon: Globe,
+        href: '/prep/sat',
+        status: 'coming-soon',
+        category: 'international'
+    },
+    {
+        id: 'psat',
+        title: 'PSAT',
+        subtitle: 'Preliminary SAT',
+        icon: PenTool,
+        href: '/prep/psat',
+        status: 'coming-soon',
+        category: 'international'
+    },
+];
+
+const categories: { id: ExamCategory; label: string; icon: any }[] = [
+    { id: 'engineering', label: 'Engineering', icon: Cpu },
+    { id: 'medical', label: 'Medical', icon: Stethoscope },
+    { id: 'research', label: 'Research', icon: Microscope },
+    { id: 'international', label: 'Study Abroad', icon: Plane },
 ];
 
 export default function PrepHubPage() {
+    const [activeTab, setActiveTab] = useState<ExamCategory>('engineering');
+
+    const filteredExams = exams.filter(exam => exam.category === activeTab);
+
     return (
         <div className="min-h-screen bg-gray-50/30 pb-20 page-transition">
             <div className="max-w-7xl mx-auto px-6 py-12">
 
                 {/* Header */}
-                <div className="mb-12">
+                <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Exam Prep Hub</h1>
-                    <p className="text-gray-600">Select an exam to start your preparation.</p>
+                    <p className="text-gray-600">Select your target pathway to find the right exams for you.</p>
+                </div>
+
+                {/* Pathway Tabs */}
+                <div className="flex flex-wrap gap-3 mb-10">
+                    {categories.map((cat) => {
+                        const Icon = cat.icon;
+                        const isActive = activeTab === cat.id;
+                        return (
+                            <button
+                                key={cat.id}
+                                onClick={() => setActiveTab(cat.id)}
+                                className={`
+                                    flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-200 border
+                                    ${isActive
+                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200'
+                                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                                    }
+                                `}
+                            >
+                                <Icon size={18} />
+                                {cat.label}
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {/* Exam Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {exams.map((exam) => {
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {filteredExams.map((exam) => {
                         const Icon = exam.icon;
 
-                        // Uniform Blue Theme
-                        const bgIcon = exam.image ? 'bg-white' : 'bg-blue-100';
+                        // Dynamic Theme Colors based on Category could be added, but keeping uniform blue for consistency
+                        const bgIcon = exam.image ? 'bg-white' : 'bg-blue-50';
                         const textIcon = 'text-blue-600';
-                        const borderHover = 'hover:border-blue-300';
-                        const ringFocus = 'focus:ring-blue-500';
 
                         const cardClasses = `group bg-white rounded-xl border border-gray-200 transition-all overflow-hidden flex flex-row items-center p-6 relative ${
                             exam.status === 'active'
-                                ? `${borderHover} hover:shadow-md cursor-pointer`
+                                ? 'hover:border-blue-300 hover:shadow-md cursor-pointer'
                                 : 'opacity-80 hover:border-gray-300 cursor-not-allowed grayscale-[0.1]'
                         }`;
 
@@ -147,7 +247,7 @@ export default function PrepHubPage() {
                                     )}
                                 </div>
 
-                                {/* Mobile Arrow (always visible if active, since hover doesn't exist on touch as easily) */}
+                                {/* Mobile Arrow */}
                                 {exam.status === 'active' && (
                                      <div className="sm:hidden absolute top-6 right-6 text-blue-600">
                                         <ArrowRight className="w-5 h-5" />
@@ -157,6 +257,12 @@ export default function PrepHubPage() {
                         );
                     })}
                 </div>
+
+                {filteredExams.length === 0 && (
+                    <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 border-dashed">
+                        <p className="text-gray-500">No exams found in this category yet.</p>
+                    </div>
+                )}
             </div>
         </div>
     );

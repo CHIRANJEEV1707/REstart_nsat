@@ -25,6 +25,7 @@ export interface IQuestion {
     chapter?: string;
     topic?: string;
     sourceId?: string;
+    images?: string[]; // Array of image URLs/paths relating to the question
     // Coding-specific fields
     isCoding: boolean;
     functionName?: string;  // e.g., "isPrime", "secondLargest"
@@ -52,6 +53,7 @@ const QuestionSchema = new mongoose.Schema<IQuestion>({
     chapter: { type: String, index: true },
     topic: { type: String },
     sourceId: { type: String, unique: true, sparse: true },
+    images: [{ type: String }],
     isCoding: { type: Boolean, default: false },
     codeTemplate: [{ language: String, template: String, _id: false }],
     testCases: [{ input: String, expectedOutput: String, isHidden: { type: Boolean, default: false }, _id: false }]

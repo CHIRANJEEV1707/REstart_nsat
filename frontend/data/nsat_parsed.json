@@ -1,0 +1,5221 @@
+{
+  "title": "NSAT Mock Test from PDF",
+  "questions": [
+    {
+      "id": 1,
+      "section": "Mathematics",
+      "text": " How is Q related to S?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Daughter-in-law"
+        },
+        {
+          "id": "2",
+          "text": "Sister-in-law"
+        },
+        {
+          "id": "3",
+          "text": "Sister"
+        },
+        {
+          "id": "4",
+          "text": "Cousin"
+        },
+        {
+          "id": "5",
+          "text": "Daughter"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 2
+    },
+    {
+      "id": 2,
+      "section": "Mathematics",
+      "text": " Who is V's mother?",
+      "options": [
+        {
+          "id": "1",
+          "text": "W"
+        },
+        {
+          "id": "2",
+          "text": "P"
+        },
+        {
+          "id": "3",
+          "text": "X"
+        },
+        {
+          "id": "4",
+          "text": "S"
+        },
+        {
+          "id": "5",
+          "text": "T"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 2
+    },
+    {
+      "id": 3,
+      "section": "Mathematics",
+      "text": " If R is married, then how is V related to R's wife?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Son"
+        },
+        {
+          "id": "2",
+          "text": "Father"
+        },
+        {
+          "id": "3",
+          "text": "Uncle"
+        },
+        {
+          "id": "4",
+          "text": "Nephew"
+        },
+        {
+          "id": "5",
+          "text": "Husband"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 2
+    },
+    {
+      "id": 4,
+      "section": "Mathematics",
+      "text": " If 2 @ 12 = 10 and 3 @ 4 = 11, which of the following is equal to 14?",
+      "options": [
+        {
+          "id": "1",
+          "text": "2 @ 20"
+        },
+        {
+          "id": "2",
+          "text": "1 @ 7"
+        },
+        {
+          "id": "3",
+          "text": "3 @ 12"
+        },
+        {
+          "id": "4",
+          "text": "4 @ 6"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 2
+    },
+    {
+      "id": 5,
+      "section": "Mathematics",
+      "text": " In a certain code, 'MPN' means 'Lake is Blue', 'OMR' means 'Blue Big Bright' and 'KRN' means 'Moon is Bright'. Which code in that language stands for 'Big'?",
+      "options": [
+        {
+          "id": "1",
+          "text": "M"
+        },
+        {
+          "id": "2",
+          "text": "R"
+        },
+        {
+          "id": "3",
+          "text": "N"
+        },
+        {
+          "id": "4",
+          "text": "None of these"
+        },
+        {
+          "id": "5",
+          "text": "Cannot be determined Directions for questions 6 \u2013 8: Read the information given below and answer the following questions."
+        },
+        {
+          "id": "A",
+          "text": "Abhijit, Binoti, Kokila, Dinesh, Tabbu and Urmila are six students. Each of them is a student at a different college, viz. MACT, BEC, RKDF, Hamidia, Oriental and LNIT."
+        },
+        {
+          "id": "B",
+          "text": "Each of them abstains from attending the college on a different day of the week from Monday to Saturday."
+        },
+        {
+          "id": "C",
+          "text": "The student at BEC does not attend college on Thursday."
+        },
+        {
+          "id": "D",
+          "text": "Kokila is absent on Tuesday."
+        },
+        {
+          "id": "E",
+          "text": "Abhijit, the student at MACT, does attend college on Saturday and Wednesday. F. Dinesh is a student neither at MACT nor at RKDF, and is absent on Friday. G. Binoti is a student at Hamidia College, and Tabbu is a student at LNIT."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 2
+    },
+    {
+      "id": 6,
+      "section": "Mathematics",
+      "text": " Who does not attend college on Saturday?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Binoti"
+        },
+        {
+          "id": "2",
+          "text": "Tabbu"
+        },
+        {
+          "id": "3",
+          "text": "Either Binoti or Tabbu"
+        },
+        {
+          "id": "4",
+          "text": "None of these"
+        },
+        {
+          "id": "5",
+          "text": "Data inadequate"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 2
+    },
+    {
+      "id": 7,
+      "section": "Mathematics",
+      "text": " Who is the student at the Oriental college?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Dinesh"
+        },
+        {
+          "id": "2",
+          "text": "Kokila"
+        },
+        {
+          "id": "3",
+          "text": "Urmila"
+        },
+        {
+          "id": "4",
+          "text": "Data inadequate"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 3
+    },
+    {
+      "id": 8,
+      "section": "Mathematics",
+      "text": " Who is absent on the day following the day on which the student at the college Oriental is absent?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Either Binoti or Tabbu"
+        },
+        {
+          "id": "2",
+          "text": "Either Binoti or Urmila"
+        },
+        {
+          "id": "3",
+          "text": "Either Binoti or Kokila"
+        },
+        {
+          "id": "4",
+          "text": "Data inadequate"
+        },
+        {
+          "id": "5",
+          "text": "None of these Directions for questions 9 \u2013 10: Read the information given below and answer the following questions. M # N (16) \u2013 M is 24 m to the north of N. M $ N (18) \u2013 M is 26 m to the south of N. M = N (20) \u2013 M is 16 m to the east of N. M ? N (24) \u2013 M is 20 m to the west of N."
+        },
+        {
+          "id": "2",
+          "text": ", F = C"
+        },
+        {
+          "id": "4",
+          "text": ", G # F"
+        },
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 3
+    },
+    {
+      "id": 9,
+      "section": "Mathematics",
+      "text": " What is the direction of H with respect of B?",
+      "options": [
+        {
+          "id": "1",
+          "text": "East"
+        },
+        {
+          "id": "2",
+          "text": "West"
+        },
+        {
+          "id": "3",
+          "text": "North"
+        },
+        {
+          "id": "4",
+          "text": "South"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 3
+    },
+    {
+      "id": 10,
+      "section": "Mathematics",
+      "text": " If R is 10 m to the north of H, what will be the distance between R and E?",
+      "options": [
+        {
+          "id": "1",
+          "text": "35 m"
+        },
+        {
+          "id": "2",
+          "text": "30 m"
+        },
+        {
+          "id": "3",
+          "text": "40 m"
+        },
+        {
+          "id": "4",
+          "text": "45 m"
+        },
+        {
+          "id": "5",
+          "text": "50 m Directions for questions 11 \u2013 13: Study the following bar chart carefully and answer the following questions."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 3
+    },
+    {
+      "id": 11,
+      "section": "Mathematics",
+      "text": " If 15% of boys and 21% of girls in Engineering are from Himachal Pradesh and 17% of boys and 11% of girls in B.Com. are from New Delhi, then the total number of students in Engineering from Himachal Pradesh is how many more than the total number of students in B.Com. from New Delhi?",
+      "options": [
+        {
+          "id": "1",
+          "text": "7,580"
+        },
+        {
+          "id": "2",
+          "text": "9,750"
+        },
+        {
+          "id": "3",
+          "text": "8,690"
+        },
+        {
+          "id": "4",
+          "text": "6,980"
+        },
+        {
+          "id": "5",
+          "text": "9,680"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 4
+    },
+    {
+      "id": 12,
+      "section": "Mathematics",
+      "text": " If the value of 17% of boys in Engineering is P, 31% of girls in B.A. is Q and 23% of boys in Paramedical is R, then find the value of (P + Q + R).",
+      "options": [
+        {
+          "id": "1",
+          "text": "43,550"
+        },
+        {
+          "id": "2",
+          "text": "53,650"
+        },
+        {
+          "id": "3",
+          "text": "40,550"
+        },
+        {
+          "id": "4",
+          "text": "43,465"
+        },
+        {
+          "id": "5",
+          "text": "45,670"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 4
+    },
+    {
+      "id": 13,
+      "section": "Mathematics",
+      "text": " If 13% of boys in Architecture is X and 7% of girls in Paramedical is Y, then (X : Y) is",
+      "options": [
+        {
+          "id": "1",
+          "text": "13 : 23"
+        },
+        {
+          "id": "2",
+          "text": "13 : 21"
+        },
+        {
+          "id": "3",
+          "text": "21 : 27"
+        },
+        {
+          "id": "4",
+          "text": "27 : 31"
+        },
+        {
+          "id": "5",
+          "text": "18 : 23 Directions for questions 14 \u2013 16: Study the following information to answer the given questions. The first pie chart shows the percentage distribution of the total number of tourists who visited the top 5 countries of Asia, and the second pie chart shows the percentage distribution of the number of tourists who visited the top 5 states of India during the year 2015."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 4
+    },
+    {
+      "id": 14,
+      "section": "Mathematics",
+      "text": " The total number of tourists who visited Singapore is what percentage of the total number of tourists who visited Goa?",
+      "options": [
+        {
+          "id": "1",
+          "text": "48%"
+        },
+        {
+          "id": "2",
+          "text": "227.35%"
+        },
+        {
+          "id": "3",
+          "text": "171.43%"
+        },
+        {
+          "id": "4",
+          "text": "54.17%"
+        },
+        {
+          "id": "5",
+          "text": "184.62%"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 4
+    },
+    {
+      "id": 15,
+      "section": "Mathematics",
+      "text": " What will be the ratio of the sum of the numbers of tourists who visited Malaysia and Japan to that who visited Maharashtra, Rajasthan and Kerala?",
+      "options": [
+        {
+          "id": "1",
+          "text": "31 : 58"
+        },
+        {
+          "id": "2",
+          "text": "58 : 31"
+        },
+        {
+          "id": "3",
+          "text": "520 : 279"
+        },
+        {
+          "id": "4",
+          "text": "29 : 15"
+        },
+        {
+          "id": "5",
+          "text": "48 : 31"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 4
+    },
+    {
+      "id": 16,
+      "section": "Mathematics",
+      "text": " What is the sum of 20% of the number of tourists who visited Japan, 15% of that who visited Singapore and 40% of that who visited Karnataka?",
+      "options": [
+        {
+          "id": "1",
+          "text": "39,600"
+        },
+        {
+          "id": "2",
+          "text": "77,720"
+        },
+        {
+          "id": "3",
+          "text": "23,760"
+        },
+        {
+          "id": "4",
+          "text": "18,480"
+        },
+        {
+          "id": "5",
+          "text": "81,120 Directions for questions 17 \u2013 19: Study the following information and answer the questions. People of town ABC prefer Green Tea, Coffee and Lemon Tea. One person can prefer one or more out of these three. Except 1/5 th of people, all prefer Green Tea. The number of people who prefer Green Tea is 16 times the number of people who prefer only Coffee. The number of people who prefer both Coffee and Lemon Tea but not Green Tea is 50. The number of people who prefer only Coffee is 50 less than the number of people who prefer only Lemon Tea. The number of people who prefer only Green Tea is twice the number of people who prefer only Lemon Tea. The number of people who prefer Coffee is half the number of people who prefer Green Tea."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 4
+    },
+    {
+      "id": 17,
+      "section": "Mathematics",
+      "text": " What is the number of people who prefer Green Tea only?",
+      "options": [
+        {
+          "id": "1",
+          "text": "300"
+        },
+        {
+          "id": "2",
+          "text": "250"
+        },
+        {
+          "id": "3",
+          "text": "200"
+        },
+        {
+          "id": "4",
+          "text": "350"
+        },
+        {
+          "id": "5",
+          "text": "400"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 5
+    },
+    {
+      "id": 18,
+      "section": "Mathematics",
+      "text": " What is the total number of people in town ABC?",
+      "options": [
+        {
+          "id": "1",
+          "text": "800"
+        },
+        {
+          "id": "2",
+          "text": "1000"
+        },
+        {
+          "id": "3",
+          "text": "1200"
+        },
+        {
+          "id": "4",
+          "text": "1400"
+        },
+        {
+          "id": "5",
+          "text": "1500"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 5
+    },
+    {
+      "id": 19,
+      "section": "Mathematics",
+      "text": " What percent of people prefer both Green Tea and Coffee?",
+      "options": [
+        {
+          "id": "1",
+          "text": "25"
+        },
+        {
+          "id": "2",
+          "text": "15"
+        },
+        {
+          "id": "3",
+          "text": "30"
+        },
+        {
+          "id": "4",
+          "text": "75"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 5
+    },
+    {
+      "id": 20,
+      "section": "Mathematics",
+      "text": " Which of the following equations represents the line of best fit as shown?",
+      "options": [
+        {
+          "id": "1",
+          "text": " y = 1.8 + 1.3 x"
+        },
+        {
+          "id": "2",
+          "text": " y = 1.8 \u2013 1.3 x"
+        },
+        {
+          "id": "3",
+          "text": " y = -1.8 + 1.3 x"
+        },
+        {
+          "id": "4",
+          "text": " y = -1.8 - 1.3 x"
+        },
+        {
+          "id": "5",
+          "text": "None of these Directions for questions 21 \u2013 24: Study the following diagram and answer the questions in accordance to it."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 5
+    },
+    {
+      "id": 21,
+      "section": "Mathematics",
+      "text": " Which of the following statements is/are correct?",
+      "options": [
+        {
+          "id": "1",
+          "text": " The organisation will always end up building its own solution if it has the time and resources to do it."
+        },
+        {
+          "id": "2",
+          "text": " If there are solutions available in the market provided by other organisations, then the (3) The organisation has no scope for deviation in the ability of the solution to address the problem. (4) The organisation prioritises in using solutions already available in the market than trying to come up of its own. (5) All of the above"
+        }
+      ],
+      "answer": "",
+      "explanation": "ution building task will not be outsourced.",
+      "images": [],
+      "page": 6
+    },
+    {
+      "id": 22,
+      "section": "Mathematics",
+      "text": " According to the flowchart, if some other organisation has already built what is needed, at most how many times does the decision making authority of the given organisation have to pass through a decision making phase to arrive at a usable solution without having to outsource it?",
+      "options": [
+        {
+          "id": "1",
+          "text": "0"
+        },
+        {
+          "id": "2",
+          "text": "1"
+        },
+        {
+          "id": "3",
+          "text": "2"
+        },
+        {
+          "id": "4",
+          "text": "3"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 6
+    },
+    {
+      "id": 23,
+      "section": "Mathematics",
+      "text": " According to the given flowchart, how many options are available with the organisation to build a (1)\u00a00 (2)\u00a01 (3)\u00a02 (4)\u00a03 (5)\u00a0Infinitely many",
+      "options": [],
+      "answer": "",
+      "explanation": "ution to its problem?",
+      "images": [],
+      "page": 6
+    },
+    {
+      "id": 24,
+      "section": "Mathematics",
+      "text": " To arrive at a plausible solution, what is the minimum number of decision making steps the decision making body of the organisation has to go through?",
+      "options": [
+        {
+          "id": "1",
+          "text": "2"
+        },
+        {
+          "id": "2",
+          "text": "3"
+        },
+        {
+          "id": "3",
+          "text": "4"
+        },
+        {
+          "id": "4",
+          "text": "5"
+        },
+        {
+          "id": "5",
+          "text": "Cannot be determined Directions for questions 25 \u2013 28: The below 3 \u00d7 3 grid consists of elements in each of its 8 cells except the cell in the middle as shown. The grid serves as an input to a computer programme that acts on instructions sequentially in the manner below: 3N6 2T7 5V4 2J8 6H2 3D4 6P4 2K4 Step I: Interchange the digits in each cell and replace the middle letters with their immediate successors in the English alphabet. Step II: If the cell contains a vowel, subtract 1 from each of the digits enclosing the letter and replace the letter with its second most successor in the English alphabet. Else If the cell contains a consonant, add 1 to each of the digits enclosing the letter and replace the letter with its second most predecessor in the English alphabet. Step III: Replace the constituents of each cell with the middlemost letter and a number on its right obtained by summing the digits enclosing the letter in Step II. Move the constituents of each cell in clockwise direction by one cell. The below 3 \u00d7 3 grid serves as an input for the computer programme. 3H6 2E7 5K4 2L6 7D2 3N7 5C2 5T3"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 7
+    },
+    {
+      "id": 25,
+      "section": "Mathematics",
+      "text": " Which of the following elements comes in the 3 rd column of the 3 rd row in Step II?",
+      "options": [
+        {
+          "id": "1",
+          "text": "2W4"
+        },
+        {
+          "id": "2",
+          "text": "1G6"
+        },
+        {
+          "id": "3",
+          "text": "2S4"
+        },
+        {
+          "id": "4",
+          "text": "3B6"
+        },
+        {
+          "id": "5",
+          "text": "3W6"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 7
+    },
+    {
+      "id": 26,
+      "section": "Mathematics",
+      "text": " Which of the following elements will replace 1G6 in Step III?",
+      "options": [
+        {
+          "id": "1",
+          "text": "D11"
+        },
+        {
+          "id": "2",
+          "text": "J11"
+        },
+        {
+          "id": "3",
+          "text": "G72"
+        },
+        {
+          "id": "4",
+          "text": "W42"
+        },
+        {
+          "id": "5",
+          "text": "Q26"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 7
+    },
+    {
+      "id": 27,
+      "section": "Mathematics",
+      "text": " In Step III, how many constituents consist of a prime number?",
+      "options": [
+        {
+          "id": "1",
+          "text": "2"
+        },
+        {
+          "id": "2",
+          "text": "3"
+        },
+        {
+          "id": "3",
+          "text": "4"
+        },
+        {
+          "id": "4",
+          "text": "5"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 7
+    },
+    {
+      "id": 28,
+      "section": "Mathematics",
+      "text": " After Step II find the number of letters which are preceded by an odd digit and followed by an even digit.",
+      "options": [
+        {
+          "id": "1",
+          "text": "None of these"
+        },
+        {
+          "id": "2",
+          "text": "1"
+        },
+        {
+          "id": "3",
+          "text": "2"
+        },
+        {
+          "id": "4",
+          "text": "3"
+        },
+        {
+          "id": "5",
+          "text": "4 Directions for questions 29 \u2013 30: Study the following information and answer the questions. Gautam is a software engineer working on a project that involves a unique encryption algorithm. He has a special key on his computer called the \"Cipher Key\": Rule 1: If the input is a single-digit odd number, pressing the Cipher Key encrypts the number by doubling its value. Rule 2: If the input is a single-digit even number, pressing the Cipher Key encrypts the number by making it one-half. Rule 3: If the input is a two-digit odd number, pressing the Cipher Key encrypts the number by subtracting the smaller digit from the larger digit. Rule 4: If the input is a two-digit even number, pressing the Cipher Key encrypts the number by adding its digits."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 7
+    },
+    {
+      "id": 29,
+      "section": "Mathematics",
+      "text": " One day, Gautam starts with the number 23 and repeatedly presses the Cipher Key 33 times. What will be the final encrypted number displayed on his computer?",
+      "options": [
+        {
+          "id": "1",
+          "text": "12"
+        },
+        {
+          "id": "2",
+          "text": "8"
+        },
+        {
+          "id": "3",
+          "text": "6"
+        },
+        {
+          "id": "4",
+          "text": "4"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 8
+    },
+    {
+      "id": 30,
+      "section": "Mathematics",
+      "text": " Gautam starts with the number 98 as input and repeatedly presses the Cipher Key. If the below pattern shows a sequence of outputs from left to right separated by commas, what should come in the place of the question mark (?)? 17, 6, 3, 6, ?, 6",
+      "options": [
+        {
+          "id": "1",
+          "text": "1"
+        },
+        {
+          "id": "2",
+          "text": "2"
+        },
+        {
+          "id": "3",
+          "text": "3"
+        },
+        {
+          "id": "4",
+          "text": "4"
+        },
+        {
+          "id": "5",
+          "text": "5 SECTION \u2013 2: ENGLISH Directions for questions 31 \u2013 33: Read the passage and answer the questions that follow. The issue of single occupancy vehicles, especially larger cars, is a major contributor to traffic congestion on our streets. As cities continue to grow, the number of big vehicles on the road has increased significantly, leading to increased traffic congestion, air pollution, and carbon emissions. However, a new generation of electric minis may be the answer to this problem. One of the biggest advantages of electric minis is that they can easily navigate through traffic congestion. Their small size allows them to maneuver easily through tight spaces and heavy traffic, which can reduce travel time and minimise the amount of fuel consumed. This is a significant benefit, especially for those who frequently travel in urban areas where traffic congestion is a common problem. Another advantage of electric minis is that they are more environmentally friendly than larger vehicles. They have a smaller carbon footprint and produce fewer greenhouse gas emissions, which can help to reduce air pollution and carbon emissions in urban areas. This can have a significant impact on the health of city residents and the environment as a whole. In addition to being more environmentally friendly, electric minis are also more cost-effective than larger vehicles. They have a lower purchase price and maintenance costs, which can help to save drivers money in the long run. They are also more energy-efficient, which can help to reduce fuel costs and decrease the amount of money spent on transportation. Another benefit of electric minis is that they can be charged using renewable energy sources. With the increasing availability of solar panels and wind turbines, it is becoming easier to charge electric vehicles using clean and renewable energy sources. This can further reduce the environmental impact of transportation and help to promote sustainable living practices. Despite the numerous benefits of electric minis, there are still some challenges that need to be addressed. One of the biggest challenges is the limited range of electric minis. While they are perfect for short commutes, they may not be suitable for longer trips. This can be an issue for individuals who need to travel long distances or who live in areas with limited access to charging stations. However, with the increasing availability of charging infrastructure and improvements in battery technology, this may become less of an issue in the future. Another challenge is the lack of public awareness about electric minis. Many people are still unaware of the benefits of electric vehicles, and may not consider them a viable option for their transportation needs. This highlights the need for greater public education and awareness campaigns to promote the use of electric vehicles, including electric minis. In conclusion, electric minis have the potential to be a game-changer in the fight against traffic congestion, air pollution, and carbon emissions. However, there are still some challenges that need to be addressed. With continued innovation and education, electric minis could be the key to creating more sustainable and livable cities for future generations."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 8
+    },
+    {
+      "id": 31,
+      "section": "Mathematics",
+      "text": " All the following statements are 'true', except:",
+      "options": [
+        {
+          "id": "1",
+          "text": "Individual cars with only one occupant play a significant role in causing traffic congestion."
+        },
+        {
+          "id": "2",
+          "text": "The number of vehicles on the road has remained constant even as cities continue to expand."
+        },
+        {
+          "id": "3",
+          "text": "The rise in air pollution is due to factors including the growing number of large vehicles on road."
+        },
+        {
+          "id": "4",
+          "text": "The general population does not perceive electric vehicles as a practical solution for commuting."
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 10
+    },
+    {
+      "id": 32,
+      "section": "Mathematics",
+      "text": " What is one of the most significant benefits of electric mini-cars in terms of efficiently navigating through heavy traffic?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Their advanced braking systems allow them to stop on a dime, minimising the risk of collisions."
+        },
+        {
+          "id": "2",
+          "text": "Their nimble nature allows them to manoeuvre through dense traffic."
+        },
+        {
+          "id": "3",
+          "text": "Their sleek aerodynamic design cuts through wind resistance, significantly reducing travel time."
+        },
+        {
+          "id": "4",
+          "text": "Their lack of flexibility is compensated by their ability to speed up quickly."
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 10
+    },
+    {
+      "id": 33,
+      "section": "Mathematics",
+      "text": " Which of the following statements accurately describes one of the major benefits of using electric minicars instead of larger vehicles?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Electric minis have a more substantial carbon print than regular cars, resulting in higher greenhouse gas emissions."
+        },
+        {
+          "id": "2",
+          "text": "The use of larger vehicles is associated with high greenhouse gas emissions, making them an undesirable option for reducing air pollution."
+        },
+        {
+          "id": "3",
+          "text": "The use of electric minis leads to fewer greenhouse gas emissions, reducing air pollution and benefitting the environment and health of city residents."
+        },
+        {
+          "id": "4",
+          "text": "Electric minis have a negligible impact on the environment, making them an unimportant factor to consider when choosing a mode of transportation."
+        },
+        {
+          "id": "5",
+          "text": "None of these Directions for questions 34 \u2013 37: Read the passage and answer the following questions. A superconsumer of one category is often a superconsumer of other categories. Cleverly combining two or more important, yet seemingly different categories not only taps into a quest, but can also create a new category\u2014just as American Girl crashed dolls, education, and experiential retail into one category. Generac, the leading manufacturer of standby generators, found that people who buy three to four times more life insurance and lots of vitamins tend to be great prospects for proactively buying a generator for an extreme event that may never happen. These consumers are superconsumers of proactive protection. Sometimes the connection between categories is not as clear, as some categories counterbalance one another. For example, superconsumers of milk tend to be superconsumers not of other healthy foods and beverages, but of more indulgent ones like cereal, cookies, and candy. Milk was the perfect accompaniment to sweets\u2014and was probably considered something like an old-school indulgence you could buy from the Catholic Church in advance of a sin you were planning to commit. Counterintuitively, Harvard Business Review reported that shoppers who recycle their grocery bags tended to indulge more in junk food as well. What Pleasant Rowland created and Mattel helped foster is amazing. American Girl's remarkable growth may also feel intimidating. But it is more feasible than you might think, especially considering how low the success rates are for innovation in your core business. The key is to take stock of the state of your business now. Are you hitting your growth goals? How good is your ROI now? What are the odds that your business will still be successful for the next five to ten years? Of all new consumer packaged goods, 85 percent or more fail. Why? Often, the problem is that they aim too low by trying to solve the same job with a slightly modified product. Companies would do far better aspiring to for a wholly more important job than its originally intended one. The most successful businesses today have multiple business models, not just one. How well does a unidimensional business model do against a multidimensional one? Poorly, much like a boxer who runs up against a mixed martial artist who can box, kick, and wrestle. It is an unfair fight. This is both the beauty and the imperative of leveraging superconsumers to create new categories."
+        }
+      ],
+      "answer": "",
+      "explanation": "ve a quest, but falling short slightly and finding that they created a product that consumers wanted to hire",
+      "images": [],
+      "page": 10
+    },
+    {
+      "id": 34,
+      "section": "Mathematics",
+      "text": " How, according to the passage, can a superconsumer of one category be made one of other categories?",
+      "options": [
+        {
+          "id": "1",
+          "text": "By creating a product that people wanted to purchase but would typically be used for another purpose."
+        },
+        {
+          "id": "2",
+          "text": "By creating a new experiential retail category with slight modifications"
+        },
+        {
+          "id": "3",
+          "text": "By breaking a category into different yet related categories"
+        },
+        {
+          "id": "4",
+          "text": "By leveraging other superconsumers to create new superconsumers in a particular category"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 11
+    },
+    {
+      "id": 35,
+      "section": "Mathematics",
+      "text": " According to the passage, which of the following can rightly be considered a new category that arises from combining two or more different categories?",
+      "options": [
+        {
+          "id": "1",
+          "text": " The American Car which includes vehicle sales, vehicle accessories, auto parts and repair"
+        },
+        {
+          "id": "2",
+          "text": " The American Home which includes kitchen appliances, linens, furniture, garden supplies, hardware and tools, lighting, entertainment systems and personal appliances"
+        },
+        {
+          "id": "3",
+          "text": " The American Male which includes sports equipment and activities, home and entertainment appliances, and financial advising"
+        },
+        {
+          "id": "4",
+          "text": " Proactive Health which includes medicines, health aids, nutritional supplements, vision care, health insurance, personal medical equipment"
+        },
+        {
+          "id": "5",
+          "text": " None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 11
+    },
+    {
+      "id": 36,
+      "section": "Mathematics",
+      "text": " What does the word 'indulgent' as used in the passage mean?",
+      "options": [
+        {
+          "id": "1",
+          "text": " The tendency to allow another to enjoy something that is desired"
+        },
+        {
+          "id": "2",
+          "text": " Allowing oneself to enjoy something pleasurable and unwholesome"
+        },
+        {
+          "id": "3",
+          "text": " To become involved in an activity that is generally disapproved"
+        },
+        {
+          "id": "4",
+          "text": " Abstaining from partaking of something that is considered decadent"
+        },
+        {
+          "id": "5",
+          "text": " None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 11
+    },
+    {
+      "id": 37,
+      "section": "Mathematics",
+      "text": " What, according to the author, is important for leveraging superconsumers to create new categories?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Relying on a specific and definite model that would attract them"
+        },
+        {
+          "id": "2",
+          "text": "Featuring a multidimensional marketing campaign that is designed to attract many consumers"
+        },
+        {
+          "id": "3",
+          "text": "Providing the proper resources for innovation of a product which would be considered appealing and useful to consumers"
+        },
+        {
+          "id": "4",
+          "text": "Developing and featuring many means of conducting business"
+        },
+        {
+          "id": "5",
+          "text": "None of these Directions for questions 38 \u2013 40: Read the passage and answer the following questions. Believe it or not, the concept of handwashing was largely ignored even in the mid-1800s across the world. One of the key reasons behind doctors turning a blind eye to this practice during those days was their antiquated understanding of what caused diseases. Before the singular, revolutionary discoveries of Louis Pasteur and Robert Koch, the medical community (in Europe particularly) believed that diseases were caused due to miasma. Thus, be it cholera or plague, whenever an epidemic broke out, the general response of ordinary people would be to fasten the doors and shutters of their houses in an effort to prevent the 'bad air' from seeping into their homes. These misguided notions and flawed understanding on the matter stood contrary to the facts. The story of Ignaz Semmelweis, now popularly believed to be the father of handwashing, bears testament to this. In 1848, Dr Semmelweis, a Hungarian doctor working at the Vienna General Hospital, was puzzled by the fact that maternal deaths from the dreaded childbed fever (puerperal fever) in a doctor-led ward was much higher than in clinics run by midwives. On closer observation, he found that many of the doctors (mostly trainees) would help in deliveries right after cutting cadavers and corpses at the hospital morgue, without washing their hands. Mistaken though he was about the real cause of the infection and how it spread (this was the 1840s, a few decades before the knowledge that germs caused diseases was established), Dr Semmelweis nevertheless, as an experiment, decided to have the hospital's doctors wash their hands and instruments in a chlorine solution. This was to get rid of the 'cadaverous particles and smells', which he believed made their way from the physicians' hands and instruments into the bodies of the mothers. Surprisingly, the mortality rate dropped from 18 per cent to about one per cent. Thus was made the successful discovery and scientific demonstration of handwashing as a life-saving practice. Dr Semmelweis, however, did not live to see the fruits of his discovery. Instead, the medical community in Vienna didn't take lightly to his suggestion. Many doctors found it hard to accept that diseases spread through them and they were highly offended. Dr Semmelweis was admitted to a psychiatric institution and died a broken man in 1865. The world would have to wait another 50 years before Dr Semmelweis' discovery was finally taken seriously. By that time, Pasteur's and Koch's discoveries had already shaken the foundations of pathology, which, in turn, led handwashing to become the household practice it is today."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 12
+    },
+    {
+      "id": 38,
+      "section": "Mathematics",
+      "text": " Which of the following could be an appropriate factual title for the passage?",
+      "options": [
+        {
+          "id": "1",
+          "text": " Wave of Antipathy against Semmelweis and his Theory"
+        },
+        {
+          "id": "2",
+          "text": " Handwashing is a Path to Hygienic and Healthy Living"
+        },
+        {
+          "id": "3",
+          "text": " Birth of Revolutionary Ideas and Discoveries"
+        },
+        {
+          "id": "4",
+          "text": " Man who Discovered the Importance of Washing Hands"
+        },
+        {
+          "id": "5",
+          "text": " None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 13
+    },
+    {
+      "id": 39,
+      "section": "Mathematics",
+      "text": " Which of the following is inconsistent with the information in the passage?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Dr Semmelweis insisted on using a chlorine solution to get rid of the germs on the hands of the doctors."
+        },
+        {
+          "id": "2",
+          "text": "The rate of maternal deaths from childbed fever was higher in clinics run by doctors."
+        },
+        {
+          "id": "3",
+          "text": "Dr Semmelweis' practice earned widespread acceptance only years after his death."
+        },
+        {
+          "id": "4",
+          "text": "Despite reduction in mortality rate, Dr Semmelweis' ideas were rejected by the medical community"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 13
+    },
+    {
+      "id": 40,
+      "section": "Mathematics",
+      "text": " What does the author imply when he says 'didn't take lightly to his suggestion'?",
+      "options": [
+        {
+          "id": "1",
+          "text": "The medical experts were forced to ignore Dr Semmelweis' suggestions as they felt insulted."
+        },
+        {
+          "id": "2",
+          "text": "The doctors did not easily accept that they themselves were responsible for the death of their patients."
+        },
+        {
+          "id": "3",
+          "text": " Dr Semmelweis did not use tact while sharing his findings which angered many doctors."
+        },
+        {
+          "id": "4",
+          "text": " The fall in mortality rate made the doctors consider Dr. Semmelweis' conclusions seriously."
+        },
+        {
+          "id": "5",
+          "text": " None of these Directions: Read the following text and answer the question. The question of when early man began using fire to cook food has been the subject of much scientific discussion for over a century. A close analysis of the remains of a carp-like fish found at an archaeological site in Spain shows that the fish were cooked roughly 7,80,000 years ago. Until now, the earliest evidence of cooking dated back to approximately 1,70,000 years ago. These findings shed new light on the matter by __________"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 13
+    },
+    {
+      "id": 41,
+      "section": "Mathematics",
+      "text": " Which choice most logically completes the text?",
+      "options": [
+        {
+          "id": "1",
+          "text": " supporting earlier research findings that the use of fire for cooking was known to humanity from as early as the discovery of its use for lighting."
+        },
+        {
+          "id": "2",
+          "text": " providing concrete proof in support of the long-held belief that the use of fire for cooking was known to humanity ever since the first footsteps of man on the earth."
+        },
+        {
+          "id": "3",
+          "text": " illustrating prehistoric humans' ability to control fire in order to cook food, and their understanding of the benefits of cooking fish before eating it."
+        },
+        {
+          "id": "4",
+          "text": " shedding light on early human knowledge about the twin uses of fire; one for lighting in the dark, and the other for cooking food before consuming it."
+        },
+        {
+          "id": "5",
+          "text": " None of these Directions: The passage given below is followed by four alternative summaries. Choose the option that best captures the essence of the passage."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 13
+    },
+    {
+      "id": 42,
+      "section": "Mathematics",
+      "text": " Our nomadic ancestors had to conserve energy to compete for scarce resources, flee predators and fight enemies. Expending effort on anything other than short-term advantage could jeopardise their very survival. In any case, in the absence of conveniences such as antibiotics, banks, roads or refrigeration, it made little sense to think long-term. Today, mere survival has fallen off the agenda, and it is long-term vision and commitment that lead to the best outcomes. Yet our instinct remains to conserve energy, making us averse to abstract projects with distant and uncertain payoffs.",
+      "options": [
+        {
+          "id": "1",
+          "text": " Even with a change in priorities, the basic instinct of man to conserve energy prevails, albeit due to different reasons."
+        },
+        {
+          "id": "2",
+          "text": " The urge to obtain short-term benefits, despite such benefits' proven ineffectiveness, has disabled humans to focus on long-term goals."
+        },
+        {
+          "id": "3",
+          "text": " Views regarding energy expenditure on short-term and long-term goals considerably differ between us and our ancestors."
+        },
+        {
+          "id": "4",
+          "text": " Conveniences play the most important role in determining if we should expend more energy on our goals or not."
+        },
+        {
+          "id": "5",
+          "text": " None of these Directions: Read the following text and answer the question. Olive is one of the most often cited trees in the Bible and its fruit the soul of Mediterranean cooking: the olive. In his Innocents Abroad , Mark Twain called the olive tree, and the cactus, \"those fast friends of a worthless soil.\" It's true: Olive trees will produce loads of fruit in the cruellest heat and driest gravels of Spain, Portugal, North Africa, the Middle East and myriad islands in the Mediterranean. Not only that, the trees thrive in places where others may wither\u2013and olives don't only thrive, but thrive for century after century. Introduced in the post-Columbus age to warm and arid climates worldwide, ______________ everywhere and certainly one of the planet's most appreciated providers."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 14
+    },
+    {
+      "id": 43,
+      "section": "Mathematics",
+      "text": " Which choice completes the text so that it conforms to the conventions of Standard English?",
+      "options": [
+        {
+          "id": "1",
+          "text": " the olive tree is a continual favourite emblem for Italian restaurants"
+        },
+        {
+          "id": "2",
+          "text": " Italian restaurants have a continual favourite as the olive tree"
+        },
+        {
+          "id": "3",
+          "text": " Italian restaurants' favourite emblem has continually been the olive tree"
+        },
+        {
+          "id": "4",
+          "text": " it was the olive tree which is a continual favourite emblem for Italian restaurants"
+        },
+        {
+          "id": "5",
+          "text": " None of these Directions: In the following question, four statements have been provided. These statements form a coherent paragraph when properly arranged. Select the alternative representing the proper and logical sequencing of these statements."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 14
+    },
+    {
+      "id": 44,
+      "section": "Mathematics",
+      "text": "A. He publicly attacked Charles-Victor Langlois and Charles Seignobos, renowned history professors and the proponents of source criticism.",
+      "options": [
+        {
+          "id": "B",
+          "text": "\"The historian of tomorrow will be a programmer, or he will not exist,\" wrote Emmanuel Le Roy Ladurie in"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 14
+    },
+    {
+      "id": 1968,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "C",
+          "text": "Those were the heydays of a fashion for quantitative history shared in many countries and specialties; it was branded as 'new': not just 'new economic history' but also 'new social history' and 'new political history'."
+        },
+        {
+          "id": "D",
+          "text": "The novelty could be questioned: there had in fact been punch-card history in the previous decades and, as early as 1903, the young French sociologist Fran\u00e7ois Simiand had set the tone of the verbal war."
+        },
+        {
+          "id": "1",
+          "text": "ACBD"
+        },
+        {
+          "id": "2",
+          "text": "CDBA"
+        },
+        {
+          "id": "3",
+          "text": "BCDA"
+        },
+        {
+          "id": "4",
+          "text": "DABC"
+        },
+        {
+          "id": "5",
+          "text": "CDAB Directions: The following question consists of a pair of words, which have a certain relationship with each other. Select the alternative which bears the same relationship as the original pair of words does."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 14
+    },
+    {
+      "id": 45,
+      "section": "Mathematics",
+      "text": " Exasperate : Irritate",
+      "options": [
+        {
+          "id": "1",
+          "text": "Flaunt : Display"
+        },
+        {
+          "id": "2",
+          "text": "Discern : Perceive"
+        },
+        {
+          "id": "3",
+          "text": "Clamour : Glean"
+        },
+        {
+          "id": "4",
+          "text": "Haggle : Outbid"
+        },
+        {
+          "id": "5",
+          "text": "Huckster : Muster Directions: Read the given information and answer the question that follows. Dichlorophenoxyacetic acid, a pesticide being used in Andhra Pradesh for the last ten years to destroy weeds without harming the rice crop, should be banned immediately lest they cause more harm to humans. Tests at Andhra Agricultural University have shown that the end product of acid, used to destroy weeds, has been found in large quantities in the rice crop sold by Andhra farmers who have used the pesticide over the past years."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 15
+    },
+    {
+      "id": 46,
+      "section": "Mathematics",
+      "text": " Which of the following most conclusively strengthens the argument above?",
+      "options": [
+        {
+          "id": "1",
+          "text": "According to a study conducted last year, the end product of dichlorophenoxyacetic acid is now the leading cause of blood cancer among children."
+        },
+        {
+          "id": "2",
+          "text": "Traces of dichlorophenoxyacetic acid have been found in the groundwater of area where the given pesticide is used."
+        },
+        {
+          "id": "3",
+          "text": "Weeds have been found increasingly resistant to the pesticide."
+        },
+        {
+          "id": "4",
+          "text": "Industrial scientists, who contributed to the research and development of dichlorophenoxyacetic acid, conducted extensive tests to ascertain the safety of the chemical."
+        },
+        {
+          "id": "5",
+          "text": " None of these Directions: Read the following text and answer the question. Humans communicate by sight and sounds allowing the creation of words with arbitrarily chosen meaning. __________, we communicate by language, the prerequisite for the most rapid possible evolution of social order. Ants, in contrast, use chemical secretions, smelled or tasted, with gene-fixed meanings."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 15
+    },
+    {
+      "id": 47,
+      "section": "Mathematics",
+      "text": " Which choice completes the text with the most logical transition?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Similarly"
+        },
+        {
+          "id": "2",
+          "text": "In other words"
+        },
+        {
+          "id": "3",
+          "text": "However"
+        },
+        {
+          "id": "4",
+          "text": "Moreover"
+        },
+        {
+          "id": "5",
+          "text": "None of these Directions: In the following question, two statements A and B are given. These statements may be either independent causes or may be effects of independent causes or of a common cause. One of these statements may be the effect of the other statement. Read both the statements and decide which of the following answer choices correctly depicts the relationship between the two statements."
+        },
+        {
+          "id": "1",
+          "text": "if statement A is the cause and statement B is its effect."
+        },
+        {
+          "id": "2",
+          "text": "if statement B is the cause and statement A is its effect."
+        },
+        {
+          "id": "3",
+          "text": "if both statements A and B are independent causes."
+        },
+        {
+          "id": "4",
+          "text": "if both statements A and B are effects of independent causes."
+        },
+        {
+          "id": "5",
+          "text": "if both statements A and B are effects of some common cause."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 15
+    },
+    {
+      "id": 48,
+      "section": "Mathematics",
+      "text": " A. Sibling squabbles are an intrinsic part of growing up. B. Anu and Shanu fought over petty things in their childhood.",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        },
+        {
+          "id": "1",
+          "text": ""
+        },
+        {
+          "id": "2",
+          "text": ""
+        },
+        {
+          "id": "2",
+          "text": ""
+        },
+        {
+          "id": "3",
+          "text": ""
+        },
+        {
+          "id": "3",
+          "text": ""
+        },
+        {
+          "id": "4",
+          "text": ""
+        },
+        {
+          "id": "4",
+          "text": ""
+        },
+        {
+          "id": "5",
+          "text": ""
+        },
+        {
+          "id": "5",
+          "text": " Directions: Read the following text and answer the question. One emerging field that exemplifies transformation of science is 'protein nanotechnology', where nanotechnologists use proteins to design and construct microstructures and nanostructures, thereby imitating life. Proteins are the building blocks of life. In nature, they result from the careful and deterministic folding of molecular strings (polymers) consisting of combinations of 20 different units (amino acids). They can take on any imaginable shape and function at the nanoscale. Proteins work as light detectors in our eyes, electrical switches in our neurons, nanowalkers in our muscles, and rotary nanomotors to catalyse chemical reactions. They are responsible for detecting and reacting to the signals, forces and information from the environment in which an organism resides, and also for creating the structures that allow movement, the extraction of energy from food or the destruction of pathogens. Such diverse functions! It would be correct to conclude that ____________"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 16
+    },
+    {
+      "id": 49,
+      "section": "Mathematics",
+      "text": " Which of the following most logically completes the text?",
+      "options": [
+        {
+          "id": "1",
+          "text": " we can try to learn how life builds such capacities."
+        },
+        {
+          "id": "2",
+          "text": " no human-made artificial nanotechnology can dream of such capacities."
+        },
+        {
+          "id": "3",
+          "text": " 'designer proteins' don't exist in nature."
+        },
+        {
+          "id": "4",
+          "text": " the same approach can be applied to the design of new antibiotics capable of overcoming bacterial resistance."
+        },
+        {
+          "id": "5",
+          "text": " None of these Directions: In the following question, four statements have been provided. These statements form a coherent paragraph when properly arranged. Select the alternative representing the proper and logical sequencing of these statements."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 16
+    },
+    {
+      "id": 50,
+      "section": "Mathematics",
+      "text": "A. Our species has often been considered the final descendant in a long line of hominins that evolved by adapting to open grasslands (and the mammalian prey and predators that inhabited them).",
+      "options": [
+        {
+          "id": "B",
+          "text": "When not thought of in terms of grasslands, our origin story is also commonly understood by palaeoanthropologists and archaeologists in terms of adaptations to coastal environments."
+        },
+        {
+          "id": "C",
+          "text": "At cave sites on the southern and northern coasts of Africa, personal ornaments, art and complex technologies have been found suggesting that, in addition to grasslands, our species may have adapted to use protein-rich marine resources."
+        },
+        {
+          "id": "D",
+          "text": "Unlike grasslands or coasts, tropical forests have been seen as comparatively unattractive 'barriers' to Homo sapiens , due to their small, difficult-to-catch prey, poisonous plants and tropical diseases."
+        },
+        {
+          "id": "1",
+          "text": "CBDA"
+        },
+        {
+          "id": "2",
+          "text": "BADC"
+        },
+        {
+          "id": "3",
+          "text": "ABCD"
+        },
+        {
+          "id": "4",
+          "text": "DCBA"
+        },
+        {
+          "id": "5",
+          "text": "CDAB SECTION \u2013 3: MATHEMATICS"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 16
+    },
+    {
+      "id": 51,
+      "section": "Mathematics",
+      "text": " , what is the value of ab + bc + ca ?",
+      "options": [
+        {
+          "id": "1",
+          "text": "\u20133"
+        },
+        {
+          "id": "2",
+          "text": "\u20131"
+        },
+        {
+          "id": "3",
+          "text": "1"
+        },
+        {
+          "id": "4",
+          "text": "2"
+        },
+        {
+          "id": "5",
+          "text": "3"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 52,
+      "section": "Mathematics",
+      "text": "A cruise ship sets sail from the port with all its cabins filled to capacity. At the first stop, 1/8 th of the passengers disembark, and 20 new passengers come on board. At the second stop, 1/4 th of the passengers disembark, and 15 new passengers join the ship. Finally, at the last stop, all the remaining passengers disembark. If there are 114 passengers in total who leave the ship at the last stop, what is the seating capacity of the cruise ship?",
+      "options": [
+        {
+          "id": "1",
+          "text": "152"
+        },
+        {
+          "id": "2",
+          "text": "128"
+        },
+        {
+          "id": "3",
+          "text": "144"
+        },
+        {
+          "id": "4",
+          "text": "232"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 53,
+      "section": "Mathematics",
+      "text": "A fruit vendor has one unit each of five different types of fruits: Apples (A1), Bananas (B1), Cherries (C1), Dates (D1), and Elderberries (E1). The prices of A1, B1, and C1 are in the ratio 5 : 6 : 4, while the prices of B1, D1, and E1 are in the ratio 8 : 9 : 10. If D1 costs Rs. 14 more than A1, then what is the total cost (in Rs.) of all the five types of fruits?",
+      "options": [
+        {
+          "id": "1",
+          "text": "Rs. 240"
+        },
+        {
+          "id": "2",
+          "text": "Rs. 270"
+        },
+        {
+          "id": "3",
+          "text": "Rs. 134"
+        },
+        {
+          "id": "4",
+          "text": "Rs. 234"
+        },
+        {
+          "id": "5",
+          "text": "Rs. 284"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 54,
+      "section": "Mathematics",
+      "text": "Sanchit's teacher asked him to write the table of 23. Instead of writing 23 \u00d7\u00a01 = 23, 23 \u00d7\u00a02 = 46, he wrote 23123 and 23246 and so on. He also wrote all the digits together to form a single number as 2312323246... What is the 50 th digit of this number written by Sanchit?",
+      "options": [
+        {
+          "id": "1",
+          "text": "2"
+        },
+        {
+          "id": "2",
+          "text": "3"
+        },
+        {
+          "id": "3",
+          "text": "7"
+        },
+        {
+          "id": "4",
+          "text": "9"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 55,
+      "section": "Mathematics",
+      "text": "When 162 is divided by a divisor, the remainder is 9. When 217 is divided by the same divisor, the remainder is 13. However, when the difference between the two numbers 162 and 217 is divided by the divisor, the remainder obtained is the square of 2. What is the value of the divisor?",
+      "options": [
+        {
+          "id": "1",
+          "text": "15"
+        },
+        {
+          "id": "2",
+          "text": "17"
+        },
+        {
+          "id": "3",
+          "text": "22"
+        },
+        {
+          "id": "4",
+          "text": "29"
+        },
+        {
+          "id": "5",
+          "text": "34"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 56,
+      "section": "Mathematics",
+      "text": "In an experiment, a container with 80 litres of a liquid mixture has two solutions X and Y in the ratio of 3 : 5. After introducing an additional amount of solution Y into the container, the revised ratio of the two to be added to the remaining solution to obtain a new ratio of X and Y as 5 : 8? (1)\u00a09 litres (2)\u00a010 litres (3)\u00a011 litres (4)\u00a013 litres (5)\u00a015 litres",
+      "options": [],
+      "answer": "",
+      "explanation": "utions becomes 3 : 7. On the removal of one-fifth of this liquid mixture, what quantity of solution X needs",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 57,
+      "section": "Mathematics",
+      "text": " Write the solution set of the inequalities 5y + 2(2y - 8) + 2\u00a0\u2264\u00a01 - 3(y - 3) and 7y > 4(y - 3) - 6.",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        },
+        {
+          "id": "2",
+          "text": ""
+        },
+        {
+          "id": "3",
+          "text": "[-6, 2)"
+        },
+        {
+          "id": "4",
+          "text": "[-6, 2]"
+        },
+        {
+          "id": "5",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 58,
+      "section": "Mathematics",
+      "text": "A group of engineers, accountants, and architects has a combined age of 2,750 years, with an average age of 50 years. Their average age would have climbed by 7 years if the age of each engineer had increased by 3 years, of each accountant by 8 years, and of each architect by 10 years. Find the minimum possible number of accountants in the group.",
+      "options": [
+        {
+          "id": "1",
+          "text": "0"
+        },
+        {
+          "id": "2",
+          "text": "1"
+        },
+        {
+          "id": "3",
+          "text": "2"
+        },
+        {
+          "id": "4",
+          "text": "3"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 17
+    },
+    {
+      "id": 59,
+      "section": "Mathematics",
+      "text": " A jeweller has a mixture of gold and copper weighing 800 grams. The ratio of gold to copper in the mixture is 3 : 5. The jeweller decides to adulterate the mixture by adding more copper to it. After adding a certain amount of copper, the new ratio of gold to copper becomes 2 : 7. What is the weight, in grams, of the resultant mixture?",
+      "options": [
+        {
+          "id": "1",
+          "text": "850"
+        },
+        {
+          "id": "2",
+          "text": "920"
+        },
+        {
+          "id": "3",
+          "text": "1,350"
+        },
+        {
+          "id": "4",
+          "text": "1,430"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 18
+    },
+    {
+      "id": 60,
+      "section": "Mathematics",
+      "text": "Ashwani can do a piece of work in 9 days and Billu can do the same work in double that time. Mintu can only do 3/4 as much work as Ashwani can do in one day. How long will Ashwani, Billu and Mintu take, working together, to do the same job?",
+      "options": [
+        {
+          "id": "1",
+          "text": "4 days"
+        },
+        {
+          "id": "2",
+          "text": "5 days"
+        },
+        {
+          "id": "3",
+          "text": "6 days"
+        },
+        {
+          "id": "4",
+          "text": "2 days"
+        },
+        {
+          "id": "5",
+          "text": "3 days"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 18
+    },
+    {
+      "id": 61,
+      "section": "Mathematics",
+      "text": "Two positive numbers, 'a' and 'b', have a product of 884. If the ratio of the square of their sum to the square of their difference is 225 : 4, find the sum of the two numbers.",
+      "options": [
+        {
+          "id": "1",
+          "text": "60"
+        },
+        {
+          "id": "2",
+          "text": "70"
+        },
+        {
+          "id": "3",
+          "text": "72"
+        },
+        {
+          "id": "4",
+          "text": "80"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 18
+    },
+    {
+      "id": 62,
+      "section": "Mathematics",
+      "text": " (-8) 3 + G 4 __ (784) Which of the following symbols should be substituted for the blank space (__) to make the above statement true for all integers such that \u20135 < G < 7?",
+      "options": [
+        {
+          "id": "1",
+          "text": "\u2264"
+        },
+        {
+          "id": "2",
+          "text": "<"
+        },
+        {
+          "id": "3",
+          "text": "="
+        },
+        {
+          "id": "4",
+          "text": "\u2265"
+        },
+        {
+          "id": "5",
+          "text": "> Directions: In this problem, a question is followed by statements marked (I), (II) and (III). Read the statements carefully and determine which of the given statements is/are sufficient/necessary to answer the question."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 18
+    },
+    {
+      "id": 63,
+      "section": "Mathematics",
+      "text": " What is the area of the rectangular park? I. A man running along the boundary of the park completes 2 rounds in 16 minutes at a speed of 12 kmph. II. Ratio of the length to that of width of the park is 3 : 2. III. Perimeter of the park is 1280 m more than the width of the park.",
+      "options": [
+        {
+          "id": "1",
+          "text": " Only statements I and II"
+        },
+        {
+          "id": "2",
+          "text": " Only statement I and either statement II or statement III"
+        },
+        {
+          "id": "3",
+          "text": " Only statements II and III"
+        },
+        {
+          "id": "4",
+          "text": " Only statements I and II or statements II and III"
+        },
+        {
+          "id": "5",
+          "text": " Any two of the statements"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 18
+    },
+    {
+      "id": 64,
+      "section": "Mathematics",
+      "text": " Lila's present age in years represents 30% of Malti's age. In a few years, Lila's age will be two-thirds of Malti's. What percentage increase will occur in Malti's age during this period?",
+      "options": [
+        {
+          "id": "1",
+          "text": "120%"
+        },
+        {
+          "id": "2",
+          "text": "100%"
+        },
+        {
+          "id": "3",
+          "text": "110%"
+        },
+        {
+          "id": "4",
+          "text": "90%"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 18
+    },
+    {
+      "id": 65,
+      "section": "Mathematics",
+      "text": "In a garden, 16 % of the plants are daisy plants. The number of daisy plants is 25% less than that of lily plants; rest of the plants in the garden are rose plants. If the number of plants in the garden is 720, find the number of rose pants in the garden.",
+      "options": [
+        {
+          "id": "1",
+          "text": "430"
+        },
+        {
+          "id": "2",
+          "text": "440"
+        },
+        {
+          "id": "3",
+          "text": "450"
+        },
+        {
+          "id": "4",
+          "text": "500"
+        },
+        {
+          "id": "5",
+          "text": "520"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 18
+    },
+    {
+      "id": 66,
+      "section": "Mathematics",
+      "text": "Raj deposited a specific sum in a bank at an annual compound interest rate. If the interest earned at the end of the third and fifth years amounts to Rs. 700 and Rs. 1,450.50, respectively, calculate the interest accrued by him if the amount is deposited for the eleven years, expressed in INR.",
+      "options": [
+        {
+          "id": "1",
+          "text": "2,905.56"
+        },
+        {
+          "id": "2",
+          "text": "6,925.65"
+        },
+        {
+          "id": "3",
+          "text": "12,905.56"
+        },
+        {
+          "id": "4",
+          "text": "19,205.65"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 19
+    },
+    {
+      "id": 67,
+      "section": "Mathematics",
+      "text": "In a queue at a cricket match ticket counter, the ratio of the number of people standing ahead of Sarah to the number of people standing behind her is 2 : 3.\u00a0If there are a total of at most 150 people in the queue, what is the maximum number of people standing in front of Sarah?",
+      "options": [
+        {
+          "id": "1",
+          "text": "52"
+        },
+        {
+          "id": "2",
+          "text": "56"
+        },
+        {
+          "id": "3",
+          "text": "58"
+        },
+        {
+          "id": "4",
+          "text": "60"
+        },
+        {
+          "id": "5",
+          "text": "64"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 19
+    },
+    {
+      "id": 68,
+      "section": "Mathematics",
+      "text": "A, B and C invest in a business. A invested one-fourth of the total capital for 6 months, B invested two- fifths of the capital for 8 months and C invested the rest of the capital for the whole year. At the end of the year, they received a profit of Rs. 10,413. Find the share of C in the profit.",
+      "options": [
+        {
+          "id": "1",
+          "text": "Rs. 1,755"
+        },
+        {
+          "id": "2",
+          "text": "Rs. 3,744"
+        },
+        {
+          "id": "3",
+          "text": "Rs. 4,914"
+        },
+        {
+          "id": "4",
+          "text": "Rs. 5,184"
+        },
+        {
+          "id": "5",
+          "text": "Rs. 5,420"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 19
+    },
+    {
+      "id": 69,
+      "section": "Mathematics",
+      "text": "A pump can be used to both fill and empty a reservoir. The reservoir has a capacity of 5,000 litres. The pump's rate of emptying is 10 litres per minute higher than its filling rate. As a result, it takes 25 minutes less to empty the reservoir compared to filling it. What is the rate of filling the pump?",
+      "options": [
+        {
+          "id": "1",
+          "text": "30 litres per minute"
+        },
+        {
+          "id": "2",
+          "text": "40 litres per minute"
+        },
+        {
+          "id": "3",
+          "text": "50 litres per minute"
+        },
+        {
+          "id": "4",
+          "text": "60 litres per minute"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 19
+    },
+    {
+      "id": 70,
+      "section": "Mathematics",
+      "text": " A Formula One driver covers a distance at the speed of 60 mph. With what speed should he return so that his average speed for the entire journey comes out to be 120 mph?",
+      "options": [
+        {
+          "id": "1",
+          "text": "180 mph"
+        },
+        {
+          "id": "2",
+          "text": "120 mph"
+        },
+        {
+          "id": "3",
+          "text": "150 mph"
+        },
+        {
+          "id": "4",
+          "text": "250 mph"
+        },
+        {
+          "id": "5",
+          "text": "Not possible Directions: Read the following information and answer the question. In a prestigious university, the Department of Technology offers three specialised courses for students in their final year: Advanced Robotics, Artificial Intelligence, and Data Science. The university is renowned for its cutting-edge curriculum and high-quality education. There are a total of 300 final-year students in the department. Out of the 300 final-year students in the Department of Technology, a certain number of students are enrolled in each of the three specialised courses. Twelve students have chosen to study all three courses, and 100 students are enrolled in the Advanced Robotics course. The number of students taking both Advanced Robotics and Artificial Intelligence is twice as much as those studying both Advanced Robotics and Data Science and four times as much as those taking all three courses. Moreover, 120 students are studying Artificial Intelligence, and 70 students have not opted for any of these specialised courses. The group of students enrolled in both Advanced Robotics and Data Science is exactly the same as the group of students studying both Artificial Intelligence and Data Science."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 19
+    },
+    {
+      "id": 71,
+      "section": "Mathematics",
+      "text": " Determine the number of students studying only Data Science.",
+      "options": [
+        {
+          "id": "1",
+          "text": "36"
+        },
+        {
+          "id": "2",
+          "text": "44"
+        },
+        {
+          "id": "3",
+          "text": "58"
+        },
+        {
+          "id": "4",
+          "text": "94"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 19
+    },
+    {
+      "id": 72,
+      "section": "Mathematics",
+      "text": " If the function f(x) = f ( x - 1) for all x > 0, and f ( x ) is a positive-valued function such that at x = 8, the value of function is 62, then what will be the ratio of the value of the function at x = 4 to that at x = 6?",
+      "options": [
+        {
+          "id": "1",
+          "text": "17 : 60"
+        },
+        {
+          "id": "2",
+          "text": "60 : 17"
+        },
+        {
+          "id": "3",
+          "text": "70 : 17"
+        },
+        {
+          "id": "4",
+          "text": "17 : 70"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 73,
+      "section": "Mathematics",
+      "text": " How many five-digit numbers, greater than 19,999, but not greater than 50,000, can be formed using the digits 0, 1, 2, 3, 4, 5 and 8, if repetition of digits is allowed?",
+      "options": [
+        {
+          "id": "1",
+          "text": "247"
+        },
+        {
+          "id": "2",
+          "text": "2074"
+        },
+        {
+          "id": "3",
+          "text": "4027"
+        },
+        {
+          "id": "4",
+          "text": "7204"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 74,
+      "section": "Mathematics",
+      "text": " What is the largest natural number n such that 35 n divides 75!?",
+      "options": [
+        {
+          "id": "1",
+          "text": "10"
+        },
+        {
+          "id": "2",
+          "text": "11"
+        },
+        {
+          "id": "3",
+          "text": "14"
+        },
+        {
+          "id": "4",
+          "text": "16"
+        },
+        {
+          "id": "5",
+          "text": "18"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 75,
+      "section": "Mathematics",
+      "text": " If the sum of first 3m terms of an A.P. is 1830, whose first term is 3 and fourth term is 15, then for what maximum value of positive integer P is P \u00d7 (Sum of m terms of A.P) < 1830?",
+      "options": [
+        {
+          "id": "1",
+          "text": "6"
+        },
+        {
+          "id": "2",
+          "text": "7"
+        },
+        {
+          "id": "3",
+          "text": "8"
+        },
+        {
+          "id": "4",
+          "text": "9"
+        },
+        {
+          "id": "5",
+          "text": "11"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 76,
+      "section": "Mathematics",
+      "text": " For the function, g(x) = mn sin x + n cos x + p, where m is a negative integer, n is a positive integer and p is any constant, then the difference between the greatest and the least values of g(x) is ________.",
+      "options": [
+        {
+          "id": "1",
+          "text": "m"
+        },
+        {
+          "id": "2",
+          "text": "n"
+        },
+        {
+          "id": "3",
+          "text": "2m"
+        },
+        {
+          "id": "4",
+          "text": "2n"
+        },
+        {
+          "id": "5",
+          "text": "2p"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 77,
+      "section": "Mathematics",
+      "text": " If a function R is defined by R(x) = 4x + , where x is non-zero, then which of the following is always true?",
+      "options": [
+        {
+          "id": "1",
+          "text": "R is increasing in )."
+        },
+        {
+          "id": "2",
+          "text": "R is decreasing in , 0)."
+        },
+        {
+          "id": "3",
+          "text": "R is increasing in , -1/2)."
+        },
+        {
+          "id": "4",
+          "text": "R is increasing in , 0)."
+        },
+        {
+          "id": "5",
+          "text": "R is decreasing in , 0) U (1/2, )."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 78,
+      "section": "Mathematics",
+      "text": " Consider the given equation. Then, the value of a is",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        },
+        {
+          "id": "2",
+          "text": "2"
+        },
+        {
+          "id": "3",
+          "text": ""
+        },
+        {
+          "id": "4",
+          "text": "4"
+        },
+        {
+          "id": "5",
+          "text": "8"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 79,
+      "section": "Mathematics",
+      "text": " If A = , then write A 2 in terms of A and I.",
+      "options": [
+        {
+          "id": "1",
+          "text": "6A + 5I"
+        },
+        {
+          "id": "2",
+          "text": "6A - 5I"
+        },
+        {
+          "id": "3",
+          "text": "3A - 5I"
+        },
+        {
+          "id": "4",
+          "text": "3A + 5I"
+        },
+        {
+          "id": "5",
+          "text": "None of these"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 80,
+      "section": "Mathematics",
+      "text": " What is the probability that a randomly chosen factor of 100 19 is a multiple of 100 17 ?",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        },
+        {
+          "id": "2",
+          "text": ""
+        },
+        {
+          "id": "3",
+          "text": ""
+        },
+        {
+          "id": "4",
+          "text": ""
+        },
+        {
+          "id": "5",
+          "text": " NSAT Phase-1 Solutions (2) ANSWER KEY"
+        }
+      ],
+      "answer": "",
+      "explanation": "UTIONS",
+      "images": [],
+      "page": 20
+    },
+    {
+      "id": 1,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 2,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 3,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 4,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 5,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 6,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 7,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 8,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 9,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 10,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 11,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 12,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 13,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 14,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "5",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 15,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 16,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 17,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 18,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 19,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 20,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 21,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 22,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "5",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 23,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 24,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 25,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 26,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 27,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 28,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "5",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 29,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "5",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 30,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 31,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 32,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 33,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 34,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 35,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 36,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 37,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 38,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 39,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 40,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 41,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 42,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 43,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 44,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 45,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 46,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 47,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 48,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 49,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 50,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 51,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 52,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 53,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 54,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 55,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 56,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 57,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 58,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 59,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 60,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 61,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 62,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 63,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "5",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 64,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 65,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 66,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 67,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 68,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 69,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 70,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "5",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 71,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 72,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 73,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 74,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 75,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "3",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 76,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 77,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "1",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 78,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 79,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "2",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 80,
+      "section": "Mathematics",
+      "text": "",
+      "options": [
+        {
+          "id": "4",
+          "text": ""
+        }
+      ],
+      "answer": "",
+      "explanation": "S",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 1,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " S is the daughter of W, and W is the wife of T. Further, Q is the daughter-in-law of T, which means W and T must have a son. So, we can say that Q is the sister-in-law of S."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 2,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " It is given that P is the mother of U and W. U and R are brothers. So, we can say that W is the only daughter of P. Hence, W is the mother of V."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 22
+    },
+    {
+      "id": 3,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " R is the brother of W and W is the mother of V. So, V is the nephew of R's wife."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 23
+    },
+    {
+      "id": 4,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " Answer = Square of (first number) + Half of second 2 2 + (20) = 4 + 10 = 14"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 23
+    },
+    {
+      "id": 5,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " MPN - Lake is Blue"
+        },
+        {
+          "id": "1",
+          "text": " OMR - Blue Big Bright"
+        },
+        {
+          "id": "2",
+          "text": " KRN - Moon is Bright"
+        },
+        {
+          "id": "3",
+          "text": ""
+        },
+        {
+          "id": "1",
+          "text": "and"
+        },
+        {
+          "id": "2",
+          "text": ", it is deduced that M stands for Blue."
+        },
+        {
+          "id": "2",
+          "text": "and"
+        },
+        {
+          "id": "3",
+          "text": ", it is deduced that R stands for Bright."
+        },
+        {
+          "id": "2",
+          "text": ", it is concluded that O stands for Big. Hence, answer option 4 is correct."
+        },
+        {
+          "id": "A",
+          "text": "Abhijit, Binoti, Kokila, Dinesh, Tabbu and Urmila are six students. Each of them is a student at a different college, viz. MACT, BEC, RKDF, Hamidia, Oriental and LNIT."
+        },
+        {
+          "id": "B",
+          "text": "Each of them abstains from attending the college on a different day of the week from Monday to Saturday."
+        },
+        {
+          "id": "C",
+          "text": "The student at BEC does not attend college on Thursday."
+        },
+        {
+          "id": "D",
+          "text": "Kokila is absent on Tuesday. We fill the missing boxes with their respective missing elements: Student College Day of Absence Monday Kokila Tuesday Wednesday BEC Thursday Friday Saturday From the information: F. Dinesh is a student neither at MACT nor at RKDF, and is absent on Friday. We get: Student College Day of Absence Monday Kokila Tuesday Wednesday BEC Thursday Dinesh Friday Saturday Using the information:"
+        },
+        {
+          "id": "E",
+          "text": "Abhijit, the student at MACT, does attend college on Saturday and Wednesday. Student College Day of Absence Abhijit MACT Monday Kokila Tuesday Wednesday BEC Thursday Dinesh Friday Saturday We see that: G. Binoti from the college Hamidia and Tabbu from the college LNIT can be the ones absent either on Wednesday or on Saturday. This makes the final arrangement as follows: Student College Day of Absence Abhijit MACT Monday Kokila RKDF Tuesday Binoti Hamidia Wednesday/Saturday Urmila BEC Thursday Dinesh Oriental Friday Tabbu LNIT Wednesday/Saturday"
+        }
+      ],
+      "answer": "",
+      "explanation": "ution for questions 6 \u2013 8:",
+      "images": [],
+      "page": 23
+    },
+    {
+      "id": 6,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Either Binoti or Tabbu does not attend college on Saturday."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 25
+    },
+    {
+      "id": 7,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " Dinesh studies at the Oriental college."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 25
+    },
+    {
+      "id": 8,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " The student at the Oriental college is absent on Friday and on the following day, i.e. Saturday, either Binoti or Tabbu is absent."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 25
+    },
+    {
+      "id": 9,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " When the direction given is north or south, the distance (in m) between the two points is found by adding 8 to the number given in the brackets. When the direction given is east or west, the distance (in m) between the two points is found by subtracting 4 from the number given in the brackets."
+        },
+        {
+          "id": "2",
+          "text": "\u2013 E is 10 m to the north of B. F = C (24) \u2013 F is 20 m to the east of C. G ? H (29) \u2013 G is 25 m to the west of H. D = B (19) \u2013 D is 15 m to the east of B."
+        },
+        {
+          "id": "4",
+          "text": "\u2013 C is 12 m to the south of B."
+        },
+        {
+          "id": "4",
+          "text": "\u2013 G is 12 m to the north of F. H is to the east of B."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 25
+    },
+    {
+      "id": 10,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " When the direction given is north or south, the distance (in m) between the two points is found by adding 8 to the number given in the brackets. When the direction given is east or west, the distance (in m) between the two points is found by subtracting 4 from the number given in the brackets."
+        },
+        {
+          "id": "2",
+          "text": "\u2013 E is 10 m to the north of B. F = C (24) \u2013 F is 20 m to the east of C. G ? H (29) \u2013 G is 25 m to the west of H. D = B (19) \u2013 D is 15 m to the east of B."
+        },
+        {
+          "id": "4",
+          "text": "\u2013 C is 12 m to the south of B."
+        },
+        {
+          "id": "4",
+          "text": "\u2013 G is 12 m to the north of F. Distance between R and E = 20 + 25 = 45 m"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 26
+    },
+    {
+      "id": 11,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " The total number of students in Engineering from Himachal Pradesh = 15% of 50,000 + 21% of 40,000 = 7,500 + 8,400 = 15,900 The total number of students in B.Com. from New Delhi = 17% of 20,000 + 11% of 25,000 = 3,400 + 2,750 = 6,150 Thus, the required difference = 15,900 \u2013 6,150 = 9,750"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 26
+    },
+    {
+      "id": 12,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " The number of boys in Engineering = 50,000 The number of girls in B.A. = 70,000 The number of boys in Paramedical = 45,000 17% of boys in Engineering (P) = 17% of 50,000 = 8,500 31% of girls in B.A. (Q) = 31% of 70,000 = 21,700 23% of boys in Paramedical (R) = 23% of 45,000 = 10,350 Therefore, the value of (P + Q + R) = 8,500 + 21,700 + 10,350 = 40,550"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 26
+    },
+    {
+      "id": 13,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " The number of boys in Architecture = 12,000 The number of girls in Paramedical = 36,000 ATQ, X = 13% of 12,000 = 1,560 Y = 7% of 36,000 = 2,520 Therefore, X : Y = 1,560 : 2,520 = 13 : 21 This is the correct answer."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 27
+    },
+    {
+      "id": 14,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "5",
+          "text": " Number of tourists who visited Singapore = 12% of 3,60,000 = \u00d7 3,60,000 = 43,200 Number of tourists who visited India = 25% of 3,60,000 = \u00d7 3,60,000 = 90,000 Hence, number of tourists who visited Goa = 26% of 90,000 = \u00d7 90,000 = 23,400 Required Percentage = \u00d7 100 = 184.62%"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 27
+    },
+    {
+      "id": 15,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Total number of tourists who visited Malaysia and Japan = (11 + 18)% of 3,60,000 = 29% of 3,60,000 = \u00d7 3,60,000 = 1,04,400 Number of tourists who visited India = 25% of 3,60,000 = \u00d7 3,60,000 = 90,000 Hence, total number of tourists who visited Maharashtra, Rajasthan and Kerala = (18 + 16 + 28)% of 90,000 = 62% of 90,000 = \u00d7 90,000 = 55,800 Required Ratio = 1,04,400 : 55,800 = 1044 : 558 = 58 : 31"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 27
+    },
+    {
+      "id": 16,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Number of tourists who visited Japan = 18% of 3,60,000 = \u00d7 3,60,000 = 64,800 Number of tourists who visited Singapore = 12% of 3,60,000 = \u00d7 3,60,000 = 43,200 Number of tourists who visited India = 25% of 3,60,000 = \u00d7 3,60,000 = 90,000 Number of tourists who visited Karnataka = 12% of 90,000 = \u00d7 90,000 = 10,800 Required sum = 0.2 \u00d7 64,800 + 0.15 \u00d7 43,200 + 0.4 \u00d7 10,800 = 23,760"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 28
+    },
+    {
+      "id": 17,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Let the total number of people in town ABC be 100x. Number of people who prefer Green Tea = (4/5)100x = 80x Number of people who prefer Coffee only = 5x Number of people who prefer Lemon Tea only = 5x + 50 Number of people who prefer both Coffee and Lemon Tea but not Green Tea = 50 Also, (100x - 80x - 5x) - (5x + 50) = 50 10x - 50 = 50 10x = 100 x = 10 Number of people who prefer Lemon Tea only = 5x + 50 = 5(10) + 50 = 50 + 50 = 100 Thus, number of people who prefer Green Tea only = 2\u00a0\u00d7\u00a0100 = 200 Hence, answer option 3 is correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 28
+    },
+    {
+      "id": 18,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Let the total number of people in town ABC be 100x. Number of people who prefer Green Tea = (4/5)100x = 80x Number of people who prefer Coffee only = 5x Number of people who prefer Lemon Tea only = 5x + 50 Number of people who prefer both Coffee and Lemon Tea but not Green Tea = 50 Also, (100x - 80x - 5x) - (5x + 50) = 50 10x - 50 = 50 10x = 100 x = 10 Total number of people in town ABC = 100x = 1000 Hence, answer option 2 is correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 28
+    },
+    {
+      "id": 19,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Let the total number of people in town ABC be 100x. Number of people who prefer Green Tea = (4/5)100x = 80x Number of people who prefer Coffee only = 5x Number of people who prefer Lemon Tea only = 5x + 50 Number of people who prefer both Coffee and Lemon Tea but not Green Tea = 50 Also, (100x - 80x - 5x) - (5x + 50) = 50 10x - 50 = 50 10x = 100 x = 10 Total number of people = 100x = 100(10) = 1,000 Number of people who prefer Coffee = 40x = 40(10) = 400 Number of people who prefer Coffee only = 5x = 5(10) = 50 Let the number of people who prefer both Coffee and Green Tea be n. Number of people who prefer Coffee = Number of people who prefer Coffee only + Number of people who prefer both Coffee and Green Tea + Number of people who prefer both Coffee and Lemon Tea 400 = 50 + n + 50 Or, n = 300 Let the required percentage be p. So, 300 = (p/100) \u00d7 1,000 Or, p = 30 Thus, 30% of people prefer both Green Tea and Coffee. Hence, answer option 3 is correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 29
+    },
+    {
+      "id": 20,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " From the graph: At x = 0, we get a positive value of y . At x = 1, we get the value of y more than 3. So, out of the equations given in the options, only option 1 holds the conditions as true. Hence, option 1 is true."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 30
+    },
+    {
+      "id": 21,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " According to the flowchart, first and foremost, the organisation tries to explore whether other organisations have built any similar/promising solution, i.e. whether such solution is available in the market. If no such Thus, answer option 1 is not correct. Only when the consequences of application of the proposed solution cannot be handled by the organisation and the organisation does not have the time and resources to build the needed solution, will it outsource the be outsourced. Thus, answer option 2 is not correct. The steps in the flowchart clearly indicate \"Retain the solution\" even when it does not meet all the aspects listed down for the needed solution. Thus, statement 3 is not correct as well. The first step after the organisation lists down the aspects of the needed solution is that the organisation tries to explore whether other organisations have already come up with something similar or promising. Thus, answer option 4 is correct. Because of the fact that answer option 4 is correct, answer option 5 is not correct. Hence, the correct answer is answer option 4."
+        }
+      ],
+      "answer": "",
+      "explanation": "ution building task. Thus, despite availability of solution in the market, the solution building task might still",
+      "images": [],
+      "page": 30
+    },
+    {
+      "id": 22,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "5",
+          "text": " According to the given flowchart, there are maximum four decision making phases with the questions as follows: I. Does the proposed solution meet all the aspects listed down for the needed solution? II. Is it the ideal solution? III.Can the consequences of application of proposed solution be handled? IV. Is the solution workable? The organization would have to pass through at most 4 decision-making phases to arrive at a usable Hence, answer option 5 is correct, i.e \u2018None of these\u2019."
+        }
+      ],
+      "answer": "",
+      "explanation": "ution without outsourcing.",
+      "images": [],
+      "page": 30
+    },
+    {
+      "id": 23,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " According to the given flowchart, three options are available with the organisation to source solutions: I. Borrow one from whatever is available with other organisations. II. Outsource building the needed solution. III. Build the needed solution on its own. Thus, answer option 4 is correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 30
+    },
+    {
+      "id": 24,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " To arrive at a plausible solution, the decision making body of the organisation has to pass through a minimum of two decision making phases as is indicated by the first branch of the flowchart. The two decision making phases are as below:"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 31
+    },
+    {
+      "id": 1,
+      "section": "Mathematics",
+      "text": "Does the proposed solution meet all the aspects listed down for the needed solution?",
+      "options": [],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 31
+    },
+    {
+      "id": 2,
+      "section": "Mathematics",
+      "text": "Is it the ideal solution? Hence, answer option 1 is correct.",
+      "options": [],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 31
+    },
+    {
+      "id": 25,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " 6I3 7F2 4L5 6M2 2E7 7O3 2D5 3U5 Step I 5K2 8D3 5J6 7K3 1G6 6Q2 3B6 2W4 Step II Step III: Add both the digits and move the elements in clockwise direction. K10 K7 D11 Q8 J11 B9 W6 G7 Step III"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 31
+    },
+    {
+      "id": 26,
+      "section": "Mathematics",
+      "text": " Answer: ( 2) 6I3 7F2 4L5 6M2 2E7 7O3 2D5 3U5 Step I 5K2 8D3 5J6 7K3 1G6 6Q2 3B6 2W4 Step II Step III: Add both the digits and move the elements in clockwise direction. K10 K7 D11 Q8 J11 B9 W6 G7 Step III 1G6 is replaced by J11 in Step III.",
+      "options": [],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 31
+    },
+    {
+      "id": 27,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " 6I3 7F2 4L5 6M2 2E7 7O3 2D5 3U5 Step I 5K2 8D3 5J6 7K3 1G6 6Q2 3B6 2W4 Step II Step III: Add both the digits and move the elements in clockwise direction. K10 K7 D11 Q8 J11 B9 W6 G7 Step III K7, D11, J11 and G7 are four constituents which consist of a prime number."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 32
+    },
+    {
+      "id": 28,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "5",
+          "text": " 6I3 7F2 4L5 6M2 2E7 7O3 2D5 3U5 Step I 5K2 8D3 5J6 7K3 1G6 6Q2 3B6 2W4 Step II Letters which are preceded by an odd digit and followed by an even digit are:\u00a0K(5K2), J(5J6), G(1G6) and B(3B6)."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 32
+    },
+    {
+      "id": 29,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "5",
+          "text": " The given number is 23, which is a two-digit odd number. After pressing the key first time, we get: 3 - 2 = 1 After pressing the key second time, we get: 1 \u00d7 2 = 2 After pressing the key third time, we get: 2/2 = 1 After pressing the key fourth time, we get: 1 \u00d7 2 = 2 After pressing the key fifth time, we get: 2/2 = 1 After observing the pattern, we conclude that we get 2 when we press the key even number of times and get 1 when we press the key odd number of times."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 33
+    },
+    {
+      "id": 30,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Given number = 98 After pressing the key first time, we get: 9 + 8 = 17 After pressing the key second time, we get: 7 - 1 = 6 After pressing the key third time, we get: 6/2 = 3 After pressing the key fourth time, we get: 3 \u00d7 2 = 6 After pressing the key fifth time, we get: 6/2 = 3 We get the number in sequence as: 17, 6, 3, 6, 3, ..."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 33
+    },
+    {
+      "id": 31,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Option 1 is true, as single-occupancy vehicles contribute significantly to traffic congestion. Option 3 is also true, as the growing number of large vehicles on the road is one of the factors contributing to air pollution. Option 4 gets support from, \"Another challenge is the lack of public awareness about electric minis. Many people are still unaware of the benefits of electric vehicles, and may not consider them a viable option for their transportation needs.\" Option 2, on the other hand, is not accurate. As cities continue to expand, the number of vehicles on the road typically increases as well, leading to more traffic congestion and other related issues."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 33
+    },
+    {
+      "id": 32,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " The nimble nature of electric mini-cars allows them to easily manoeuvre through dense traffic, making them an ideal option for those travelling in congested urban areas. The other options are incorrect. Option 1 is incorrect; while electric minis might have strong brakes, claiming they can stop instantaneously is misleading. The passage does not support this. Option 3 is incorrect; while aerodynamic design can improve fuel efficiency, it wouldn't have a major impact on travel time in heavy traffic, which is primarily limited by the overall flow of vehicles. Option 4 is incorrect because electric mini-cars are flexible and can easily navigate through traffic, and their speed is not typically a significant advantage over larger vehicles."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 33
+    },
+    {
+      "id": 33,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " The use of electric mini-cars leads to a reduction in greenhouse gas emissions, contributing to cleaner air and a healthier environment for city residents. This statement accurately reflects one of the major benefits of electric mini-cars, which are more environmentally friendly than larger vehicles, produce fewer greenhouse gas emissions, and reduce air pollution in urban areas, ultimately benefiting public health and the environment. Option 1 is incorrect as it states the opposite of the actual benefits of electric mini-cars, option 2 does not address the benefit of electric mini-cars, while option 4 is a false statement that ignores the environmental impact of transportation."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 33
+    },
+    {
+      "id": 34,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " The correct answer is option 1. Refer to part, \"Of all new consumer packaged goods, 85 percent or more fail. Why? Often, the problem is that they aim too low by trying to solve the same job with a slightly modified product. Companies would do far better aspiring to solve a quest, but falling short slightly and finding that they created a product that consumers wanted to hire for a wholly more important job than its originally intended one.\" Option 2 is incorrect as the author discredits the 'slight modification'. Options 3 and 4 are not supported in the passage in context of the question."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 34
+    },
+    {
+      "id": 35,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Rationale: The correct answer is option 3 - The American Male which includes sports equipment and activities, home and entertainment appliances, and financial advising. This matches the context in the second paragraph which describes how different product categories have come together to create an entirely new category. Options 1, 2 and 4 provide categories that all are directly related to each other, so these cannot be correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 34
+    },
+    {
+      "id": 36,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Rationale: The correct answer is option 2 - Allowing oneself to enjoy something pleasurable and unwholesome. This is apparent in the third paragraph which states, 'Milk was the perfect accompaniment to sweets\u2014and was probably considered something like an old-school indulgence you could buy from the Catholic Church in advance of a sin you were planning to commit,' which suggests this. Option 1 is valid, but does not match the context, so this cannot be correct. Option 3 does not match the context or meaning; therefore, it too cannot be correct. Option 4 is contradictory and is also incorrect."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 34
+    },
+    {
+      "id": 37,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " Rationale: The correct answer is option 4 - Developing and featuring many means of conducting business. This is apparent in the final paragraph which states, 'The most successful businesses today have multiple business models, not just one.' Options 1, 2 and 3 might seem valid, but these are not supported in the passage, so these are not correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 34
+    },
+    {
+      "id": 38,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " The passage is about Semmelweis and his experiment to prove the importance of washing hands in reducing mortality rate. So, option 4 is the correct answer. The rest of the options do not provide a correct idea about the passage."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 34
+    },
+    {
+      "id": 39,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " The passage mentions, 'Mistaken though he was about the real cause of the infection ... before the knowledge that germs caused diseases ...' This indicates that Semmelweis did not have knowledge about germs. He used the chlorine solution to get rid of the smell and particles of cadavers on the hands of the doctors. So, option 1 is the correct answer."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 34
+    },
+    {
+      "id": 40,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " The passage mentions that the 'doctors ... were highly offended'. This indicates that the doctors rejected Dr Semmelweis' conclusion and were angered or offended by it. So, option 2 is correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 35
+    },
+    {
+      "id": 41,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Option 1 is incorrect. The use of fire for lighting is extraneous to the context. Option 2 is incorrect. 'First footsteps of man on earth' is irrelevant and incorrect since man did not come to the earth from another world. Option 3 is the correct answer. The time 7,80,000 years ago is truly prehistoric. The text shares two pieces of information about the prehistoric man: his ability to use fire and his knowledge about the use of cooking. Option 1 covers both. Option 4 is incorrect. The use of fire for lighting is extraneous to the context."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 35
+    },
+    {
+      "id": 42,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " The passage highlights that the notion to conserve energy earlier was guided by the need to survive in the short term. As the human society developed, this need to survive grew with an eye to long-term goals. Despite this, the focus of the humans is on conserving energy. This may be due to\u00a0reasons\u00a0different from the ones required for surviving in the short-term (because survival has fallen-off the agenda). Option 1 - This is the most accurate summary. It accurately specifies the shift from short-term to long-term vision. It highlights that the need to conserve energy still persists, although the reasons are different now. Option 2 - 'Proven ineffectiveness' cannot be inferred. Also, it has been clearly specified that the vision has changed towards the long-term goals, however our desire to conserve energy makes us averse to actually undertake those projects. Option 3 - No such comparative difference of views can be inferred. The difference is not regarding energy expenditure itself, rather it may be about the purpose for which energy saving is done. If anything, we and our ancestors have the same view to conserve energy. Option 4 - It inaccurately stresses upon 'conveniences' as the main theme of the passage. Also, no reference to short-term and long-term goals is made in the statement."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 35
+    },
+    {
+      "id": 43,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " Option 1 is the best answer. This choice ensures that the introductory participial phrase \"Introduced in the post-Columbus age to warm and arid climates worldwide\" appears immediately before the noun it modifies, \"the olive tree\". Options 2, 3, and 4 are incorrect because \"Introduced in the post-Columbus age to warm and arid climates worldwide\" should appear immediately before the noun it modifies, \"the olive tree\", whereas all these choices result in dangling modifiers."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 35
+    },
+    {
+      "id": 44,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " The correct sequence is BCDA. CDA form a link. The word 'new' is repeatedly used in C. 'Novelty' in D links with the repeated use of 'new' in C. D states that the 'novelty' hinted at in C could be questioned. A follows D as 'verbal war' in D links with 'publicly attacked' in A. B introduces 'Emmanuel Le Roy Ladurie', making a claim in 1968. 'Those were the heydays' in C is referring to the time period of 1968."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 35
+    },
+    {
+      "id": 45,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " (Degree of intensity) First is a more intense form of the second. 'Exasperate' means to irritate and frustrate (someone) intensely. 'Flaunt', which means 'to show off proudly', is a more intense form of 'display'. Thus, option 1 bears the same analogy as the original pair of words. The other options do not showcase the same relation."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 36
+    },
+    {
+      "id": 46,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " Dichlorophenoxyacetic acid should be banned from use in controlling weeds on rice farms in Andhra Pradesh because they pose a threat to humans. To make the connection between dichlorophenoxyacetic acid and human health problems, there must be a connection between rice and humans who suffer health problems. If, for instance, consumers of Andhra rice have recently been found to have a high rate of blood cancer, then it is likely that the traces of pesticide in the rice crop were also ingested by humans and caused the cancer."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 36
+    },
+    {
+      "id": 47,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " The correct answer is option 2 - 'In other words'. The first sentence has been restated using some different words in the next sentence. The first sentence states that humans \"use words with arbitrarily chosen meaning\" and the second sentence states this to be 'language'. Options 1 and 4 are incorrect because no similar or additional idea is provided in the next sentence. It is a restatement of the first. Option 3 is incorrect because there is no contrast involved."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 36
+    },
+    {
+      "id": 48,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " The cause of statement A is that siblings, while growing up together, often fight.\u00a0Statement B is an example of two persons who fought in their childhood. They may or may not be siblings and may or may not have fought with each other. Had Anu and Shanu been siblings, statement A would have been the cause of statement B."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 36
+    },
+    {
+      "id": 49,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Option 1 is incorrect. This part of the sentence should logically follow, 'no human-made artificial nanotechnology can dream of such capacities... (but)'. Option 2 is the correct answer. The whole text tells us what all protein nanotechnology can do. The expression of surprise, 'Such diverse function', just precedes the blank. Naturally, it is unimaginable for \u2018human-made artificial nanotechnology (to) dream of such capacities'. Option 3 is incorrect. There is no reference or link to 'designer proteins' in the whole text and it is thus unrelated to the context. Option 4 is incorrect. Which 'same approach'?"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 36
+    },
+    {
+      "id": 50,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " The correct sequence is ABCD. A begins the paragraph by describing the general notion about our species' evolution. It states that our species is regarded the last one to adapt to 'grasslands'. 'When not thought of in terms of grasslands ...' in B links with 'grasslands' in A and describes what is the general idea about our evolution when 'grasslands' are not taken into account. C follows B as 'cave sites' and 'protein-rich marine resources' link with 'coastal environments' in B. D gives references to the environments described in the previous sentences, 'grasslands or coasts', and introduces 'tropical forests'. Option 3 is the answer."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 36
+    },
+    {
+      "id": 51,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Or ( ab \u2013 a \u2013 b + 1)( c \u2013 1)\u00a0= ( ab + a + b + 1)( c + 1) 2( ab + bc + ca ) = \u20132 ab + bc + ca = \u20131"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 37
+    },
+    {
+      "id": 52,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Let the seating capacity of the cruise be S. Number of passengers left in the cruise after the first stop = Number of passengers left in the cruise after the second stop = Number of passengers left in the cruise after the last stop = 0 + 15 \u2013 114 = 0 \u2013 99 = 0 21S + 480 = 99 \u00d7 32 21S = 3168 \u2013 480 21 S = 2688 S = 128 The seating capacity of the ship is 128."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 37
+    },
+    {
+      "id": 53,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " A1 B1 C1 D1 E1 5 6 4 8 9 10 40 48 32 54 60 If D1 costs Rs. 14 more than A1, Cost of D1 = Rs. 54 Cost of A1 = Rs. 40 The difference = Rs. 14 Total cost of all the five fruits = 40 + 48 + 32 + 54 + 60 = Rs. 234"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 37
+    },
+    {
+      "id": 54,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " We have 23 \u00d7\u00a04 = 92 (23492) = 5 digits 23 \u00d7\u00a05 = 115 (235115) = 6 digits So, numbers written will be as: 2312323246........23492, there are total 20 digits; and 235115 .........\u00a0239207, there are total 30 digits. The 50 th digit will be the units digit of 23\u00a0\u00d7\u00a09 = 207. So, the 50 th digit is 7."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 38
+    },
+    {
+      "id": 55,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Let the divisor be d . When 162 is divided by d , let the quotient be ' x '. The remainder is 9. Therefore, 162 = xd + 9 When 217 is divided by the same divisor, the remainder obtained is 13. Let y be the quotient when 217 is divided by d . Then, 217 = yd + 13 When the difference between the two numbers 162 and 217 is divided by the divisor, the remainder obtained is the square of 2, i.e. 4. 217 - 162 = 55 = yd - xd + 13 \u2013 9 55 = y d - x d + 4 Because xd and yd are divisible by d , the remainder when 55 is divided by d should have been 4. However, as we know that the remainder is 4, it would be possible only when leaves a remainder of 4. If the remainder obtained is 4 when 55 is divided by ' d ', then ' d ' has to be 17. So, the divisor is 17."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 38
+    },
+    {
+      "id": 56,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " The total volume of the container is 80 litres and the original ratio is 3 : 5. Original quantities of solution X and solution Y in the original liquid mixture: = 30 litres and 80 - 30 = 50 litres, respectively Now, after adding additional amount of solution Y into the container, the revised ratio becomes 3 : 7. So, the amount of solution X is same, i.e. 30 litres, and the amount of solution Y becomes litres. Further, on the removal of one-fifth of this liquid mixture, Quantity of solution X removed = = 6 litres, and quantity of solution Y removed = = 14 litres Quantity of solution X in the mixture after removal = 30 - 6 = 24 litres Quantity of solution Y in the mixture after removal = 70 - 14 = 56 litres The final quantities of solution X and solution Y are 24 litres and 56 litres. Now, we required the ratio to be 5 : 8. Multiplying the ratio with 7, we get (35 : 56). So, the quantity of solution X in the final mixture must be 35 litres, i.e. the quantity of solution X needed to be added = 35 - 24 = 11 litres."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 38
+    },
+    {
+      "id": 57,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " The given inequalities are 5y + 2(2y - 8) + 2 \u22641 - 3(y - 3) and 7y > 4(y - 3) - 6. 5y + 2(2y - 8) + 2 \u22641 - 3(y - 3) 5y + 4y - 16 + 2 \u22641 - 3y + 9 9y - 14 \u226410 - 3y 12y \u226424"
+        },
+        {
+          "id": "1",
+          "text": " 7y > 4(y - 3) \u2013 6 7y > 4y - 12 \u2013 6 3y > -18"
+        },
+        {
+          "id": "2",
+          "text": ""
+        },
+        {
+          "id": "1",
+          "text": "and"
+        },
+        {
+          "id": "2",
+          "text": ", we get - 6 < y\u00a0<\u00a02. Required solution set: (-6, 2]"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 39
+    },
+    {
+      "id": 58,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " If there are E engineers, A accountants and K architects, then"
+        },
+        {
+          "id": "1",
+          "text": " If the average ages of engineers, accountants and architects respectively\u00a0are M, N and O years, then"
+        },
+        {
+          "id": "2",
+          "text": " Given: (M + 3)E + (N + 8)A + (O + 10)K = 57 \u00d7 55 = 3135 M \u00d7 E + 3E + N \u00d7 A + 8A + O \u00d7 K + 10K = 3135 3E + 8A + 10K = 3135 \u2013 2750"
+        },
+        {
+          "id": "2",
+          "text": " 5A + 7K = 220 ..........(3) Since A and K are always positive integer values, the minimum value of A is possible when K is maximum. K(maximum) = 30 Hence, from equation\u00a0(3), 5A + 7 \u00d7 30 = 30 5A = 10 A = 2"
+        }
+      ],
+      "answer": "",
+      "explanation": "ving (1) and (2),",
+      "images": [],
+      "page": 39
+    },
+    {
+      "id": 59,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Let the amount of gold in the mixture be 3x grams and the amount of copper be 5x grams. According to the given information, the total weight of the mixture is 800 grams: 3x + 5x = 800 8x = 800 x = 100 The initial amount of gold in the mixture is 3x = 3 \u00d7 100 = 300 grams and the initial amount of copper is 5x = 5 \u00d7 100 = 500 grams. Let's assume the amount of copper added is y grams. After adding copper, the new ratio of gold to copper becomes 2 : 7. So, ratio = 2,100 = 1,000 + 2y 2y = 2,100 - 1,000 2y = 1,100 y = 550 Final weight of the mixture = Initial weight + Amount of copper added Final weight = 800 + 550 = 1,350 grams Therefore, the weight of the adulterated mixture is 1,350 grams."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 40
+    },
+    {
+      "id": 60,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " Let the work done by Mintu in 1 day be 3 w . Thus, Ashwani does 4 w work in 1 day. As Billu takes double the time taken by Ashwani to do the same work, Billu does half as much work as Ashwani does in 1 day. Thus, work done by Billu in 1 day = 2 w Work done by Ashwani in 9 days = 9 \u00d7 4 w = 36 w As Ashwani takes 9 days to complete the work, this is the total work. Working together, let the number of days taken by them be d . So, d (3 w + 4 w + 2 w ) = d(9 w ) = total work = 36 w Or d = 4 Thus, working together, they take 4 days. Thus, answer option 1 is correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 40
+    },
+    {
+      "id": 61,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " We are given that the product of the two numbers is 884, so we have the equation:"
+        },
+        {
+          "id": "1",
+          "text": " The ratio of the square of their sum to the square of their difference is 225 : 4, which can be expressed as: ((a + b) 2 )/((a - b) 2 ) = 225/4 4(a + b) 2 = 225(a - b) 2 4(a 2 + 2ab + b 2 ) = 225(a 2 - 2ab + b 2 ) 4a 2 + 8ab + 4b 2 = 225a 2 - 450ab + 225b 2 221a 2 - 458ab + 221b 2 = 0"
+        },
+        {
+          "id": "1",
+          "text": ", put the value of ab. a 2 + b 2"
+        },
+        {
+          "id": "2",
+          "text": " Also, b = 884/a So, By solving we get a 4 - 1,832a 2 + 7,81,456 = 0 By using the discriminant formula, we get a 2 = = = = 1156 or 676 So, value of a = 34 or 26 And value of b = 26 or 34 Required sum = 60"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 40
+    },
+    {
+      "id": 62,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " Let us compute the LHS of (i) and (ii) with the integers: G -4, -3, -2, -1, 0 1, 2, 3, 4, 5, 6 (-8) 3 + (-4) 4 = -512 + (256) = -256 (-8) 3 + (-3) 4 = -512 + (81) = -431 (-8) 3 + (-2) 4 = -512 + (16) = -496 (-8) 3 + (-1) 4"
+        },
+        {
+          "id": "1",
+          "text": "= -511 (-8) 3 + (0) 4 = -512 + (0) = -512 (-8) 3"
+        },
+        {
+          "id": "1",
+          "text": " 4"
+        },
+        {
+          "id": "1",
+          "text": "= -511 (-8) 3"
+        },
+        {
+          "id": "2",
+          "text": " 4 = -512 + (16) = -496 (-8) 3"
+        },
+        {
+          "id": "3",
+          "text": " 4 = -512 + (81) = -431 (-8) 3"
+        },
+        {
+          "id": "4",
+          "text": " 4 = -512 + (256) = -256 (-8) 3"
+        },
+        {
+          "id": "5",
+          "text": " 4 = -512 + (625) = 113 (-8) 3 + (6) 4 = -512 + (1,296) = 784 So, we get (-8) 3 + G 4 \u2264(784)"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 41
+    },
+    {
+      "id": 63,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "5",
+          "text": " Using statement I: Man covers 2 rounds in 16 minutes. Distance covered by man in 16 minutes = \u00d7 16 = 3200 m Perimeter of park = 1600 m Using statements I and II: 3x + 2x = 800 5x = 800 x = 160 Length = 480 m and width = 320 m Area = 480 \u00d7 320 = 153600 m 2 Using statements I and III: Width of park = 1600 \u2013 1280 = 320 m Length of park = = 480 m Area of park = 480 \u00d7 320 = 153600 m 2 Using statements II and III: Length of park = 3x Width of park = 2x Perimeter of park = 2x + 1280 6x + 4x = 2x + 1280 8x = 1280 x = 160 m Length = 480 m and width = 320 m Area = 480 \u00d7 320 = 153600 m 2 Any two of the statements are sufficient to answer the question."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 41
+    },
+    {
+      "id": 64,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Let Lila's present age be L years and Malti's present age be M years. ATQ,"
+        },
+        {
+          "id": "1",
+          "text": " After n years, Age of Lila = L + n Age of Malti = M + n ATQ, L + n = of (M + n)"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 42
+    },
+    {
+      "id": 0,
+      "section": "Mathematics",
+      "text": "3M + n = of (M + n)",
+      "options": [],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 42
+    },
+    {
+      "id": 0,
+      "section": "Mathematics",
+      "text": "9 M + 3n = 2M + 2n n = 1.1 M Age of Malti after n years = M + n = 2.1 M Change in Malti's age = 2.1M - M = 1.1M Percentage change = \u00d7 100\u00a0= 110%",
+      "options": [],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 42
+    },
+    {
+      "id": 65,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Total number of plants in the garden = 720 Percentage of daisy plants in the garden = 16 % Number of daisy plants in the garden = 16 % of 720 = % of 720\u00a0= 120 Let the number of lily plants be x . Therefore, 120 = 75% of x x = \u00d7 120 x = 160 Number of rose pants in the garden = 720 - (120 + 160) = 720 - 280 = 440"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 43
+    },
+    {
+      "id": 66,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Let the initial amount invested by Raj be P, and the rate of interest compounded annually be r. Year 1 Year 3 Year 5 Principal P P(1 + r) 2 P(1 + r) 4 Interest Pr Pr(1 + r) 2 Pr(1 + r) 4 Amount P(1 + r) P(1 + r) 3 P(1 + r) 5 If we observe the table, the interest is in geometric progression (G.P). By dividing the interest earned in the fifth year by the interest earned in the third year, we get (1 + r) 2 = Since he kept the initial principal amount for 11 years in the fund, Interest earned in the eleventh year = Pr(1 + r) 10 = Pr(1 + r) 4 [(1 + r) 2 ] 3 = 1,450.50 \u00d7 = 12,905.558"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 43
+    },
+    {
+      "id": 67,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Let's assume the number of people standing ahead of Sarah is 2x, and the number of people standing behind her is 3x. According to the given ratio, the total number of people in the queue can be expressed as: 2x + 3x + 1 (including Sarah herself) = 5x + 1 We are given that the total number of people in the queue is less than 150: 5x + 1 \u2264150 Now, let's solve this inequality to find the maximum possible value of x: 5x \u2264149 x \u2264 Since the number of people cannot be a fraction, we need to find the largest integer value for x that satisfies this inequality. x \u226429.8 Therefore, the maximum possible integer value for x is 29. Hence, the maximum possible number of people standing in front of Sarah is 58."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 43
+    },
+    {
+      "id": 68,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Let the total capital invested = Rs. X Therefore,\u00a0A's investment = Rs. Time period = 6 months B's investment = Rs. Time period = 8 months Therefore,\u00a0C's investment = Rs. Time period = 12 months Ratio of their profit = = 15 : 32 : 42 Share of C = \u00d7 42 = 4914"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 44
+    },
+    {
+      "id": 69,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " It is given that the reservoir has a capacity of 5,000 litres. Let us consider the speed of filling the pump is 'x' litres per minute. Then, the speed of emptying the pump is (x + 10) litres per minute. Time to fill the pump = minutes Time to empty the pump = minutes According to question, Time taken to fill the pump - Time taken to empty the pump = 25 minutes = 25 5,000[x + 10 - x] = 25x(x + 10) 50,000 = 25(x 2 + 10x) x 2 + 10x - 2,000 = 0 (x + 50)(x - 40) = 0 x = 40 or x = -50 Since the speed of filling cannot be negative, the speed of filling the pump is 40 litres per minute."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 44
+    },
+    {
+      "id": 70,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "5",
+          "text": " Let\u2019s assume the distance of one side to be 240 miles. When, in the first case, the driver moves at 60 mph: Distance travelled = D 1 = 240 m Time taken = T 1 = 4h Let the speed while returning be X mph. Now, in this case, Distance travelled = D 2 = 240 m Time taken = T 2 = h Average Speed = As per the question, average speed = 120 mph 4 x = 4 x + 240 This would become 0 = 240. Thus, we may conclude that the given situation is not possible.\u00a0The average speed cannot be 120 mph."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 45
+    },
+    {
+      "id": 71,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Given: Total number of students = 300 Number of students studying Advanced Robotics, i.e. n(a) = 100 Number of students studying Artificial Intelligence, i.e. n(b) = 120 Number of students studying Data Science, i.e. n(c) = x According to question, n(a \u2229 b \u2229"
+        },
+        {
+          "id": "c",
+          "text": "= 12 Also, n(a \u2229"
+        },
+        {
+          "id": "b",
+          "text": "= 4 [n(a \u2229 b \u2229 c)] = 48 n(a \u2229"
+        },
+        {
+          "id": "c",
+          "text": "= 2 (12) = 24 n(b \u2229"
+        },
+        {
+          "id": "c",
+          "text": "= n(a \u2229"
+        },
+        {
+          "id": "c",
+          "text": "= 24 Number of students who did not opt any subject = 70 So, number of students who opted all the three courses, i.e. n(a b"
+        },
+        {
+          "id": "c",
+          "text": "= 300 - 70 = 230 By using the formula: n(a b"
+        },
+        {
+          "id": "c",
+          "text": "= n(a) + n(b) + n(c) - n(a \u2229"
+        },
+        {
+          "id": "b",
+          "text": "- n(b \u2229"
+        },
+        {
+          "id": "c",
+          "text": "- n(a \u2229"
+        },
+        {
+          "id": "c",
+          "text": "+ n(a \u2229 b \u2229 c) 230 = 100 + 120 + x - 48 - 24 - 24 + 12 230 - 220 + 84 = x So, x = 94 So, number of students who opted only Data Science = 94 - 36 = 58"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 45
+    },
+    {
+      "id": 72,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Here, f ( x ) = f ( x"
+        },
+        {
+          "id": "1",
+          "text": " At x = 8, f (8) = 62 [given]"
+        },
+        {
+          "id": "1",
+          "text": ". f (8) = f (7) f (7) = 94 Further, at x = 7, f (7) = f (6) f (6) = 152 At x = 6, f (6) = f"
+        },
+        {
+          "id": "5",
+          "text": " f"
+        },
+        {
+          "id": "5",
+          "text": "= At x = 5, we get f"
+        },
+        {
+          "id": "5",
+          "text": "= f"
+        },
+        {
+          "id": "4",
+          "text": " So, f"
+        },
+        {
+          "id": "4",
+          "text": "= Now, ratio of f"
+        },
+        {
+          "id": "4",
+          "text": "to f (6) ="
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 46
+    },
+    {
+      "id": 73,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " The smallest number in the series is 20,000, a 5-digit number which is greater than 19,999. The greatest number in the series is 50,000. The given digits are 0, 1, 2, 3, 4, 5 and 8. Since the ten thousands place will attain only three possible values i.e. (2, 3, 4) and the other place will take 7 values (due to repetition), Required number of digits which are less than 50,000 = 3 \u00d7 7 \u00d7 7 \u00d7 7 \u00d7 7 = 7,203 But one more digit, i.e. 50,000, which is greatest, is not contained in the above. Hence, total number of five-digit numbers formed = 7,203 + 1 = 7,204"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 47
+    },
+    {
+      "id": 74,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " If 75! is divisible by 35 n , 35 is a multiple of 5 and 7. In 75!, the number of 7's will be less than that of 5's; we need to determine the highest power of 7 in 75! Numbers in 75! which contain 7 in them are: 7, 14, 21, 28, 35, 42, 49, 56, 63, 70. Numbers which are multiples of 7 are 10, but 49 contains two 7's. Therefore, the total number of 7's in 75! is 11. Required answer = 11"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 47
+    },
+    {
+      "id": 75,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "3",
+          "text": " Since this is an A.P. series where a 1 = 3, a 4 = 15, Here, a + 3d = 15 i.e. d = 4 Then, its n th term = a n = 4n \u2013 1 Putting n = 3m, we get a 3m = 4(3m) - 1. Further, sum of the first 3m terms = a 1 + a 2 +....+ a 3m = = 1,830 m(6m + 1) = 610 6m 2 + m - 610 = 0 (6m + 61)(m - 10) = 0 m = 10 (m is an integer) By using: sum of the first m terms of A.P., S m = a 1 + a 2 + ..... + a m = Further, according to the question, P(Sum of m terms of A.P.) < 1,830 210P < 1,830 P <\u00a08.7 The maximum integral value of P is 8."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 47
+    },
+    {
+      "id": 76,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " The given function g(x) = mn sin x + n cos x + p, as m < 0 and n > 0. Differentiate w.r.t. x, we get g'(x) = mn cos x + n"
+        },
+        {
+          "id": "1",
+          "text": " = n cos(x + \u03b8), where cos \u03b8 = m For g'(x) = 0, we get x + \u03b8 = (2r + 1)\u03c0/2 x = (2r + 1)\u03c0/2 \u2013 \u03b8"
+        },
+        {
+          "id": "1",
+          "text": ", w.r.t. x, we get g\"(x) = -n sin(x + \u03b8) For r = 0, we get x = \u03c0/2 \u2013 \u03b8 Thus, g\"(\u03c0/2 - \u03b8) = -ve < 0 (maximum) For r = 1, we get x = 3\u03c0/2 \u2013 \u03b8 Thus, g\"(3\u03c0/2 - \u03b8) = +ve > 0 (minimum) So, maximum value of g(x) = mn sin(\u03c0/2 - \u03b8) + n cos (\u03c0/2 - \u03b8) + p = mn cos\u03b8 + n sin\u03b8 + p = m 2 n + n(1 - m 2 ) + p = n + p Similarly, minimum value of g(x) = p \u2013 n Required difference = p + n - p + n = 2n"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 48
+    },
+    {
+      "id": 77,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "1",
+          "text": " Given function R(x) = 4x + 1/x, where x is non-zero. Differentiate w.r.t. x, we get R'(x) = 4 - 1/x 2 R'(x) = For R'(x) = 0, we get (2x - 1) (2x + 1) = 0 So, x = -1/2 or 1/2 For an increasing function, R'(x) > 0 So, R(x) is increasing in the interval (-1/2, 0) U (1/2, ). Also, the function is decreasing in the interval (- , -1/2) U (0, 1/2). Hence, option 1 is correct."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 48
+    },
+    {
+      "id": 78,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Consider the given integral. Now, comparing it with the RHS of the given equation, we get Therefore, a = 2 Hence, this is the required solution."
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 49
+    },
+    {
+      "id": 79,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "2",
+          "text": " Using Cayley Hamilton theorem, the characteristic equation of the given matrix A is det(A - I) = 0 det( ) = 0 (1 - )(5 - ) = 0 5 - - 5 + = 0 By C.H. theorem, A 2 - 6A + 5 = 0 Or, 6A - 5I = A 2"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 49
+    },
+    {
+      "id": 80,
+      "section": "Mathematics",
+      "text": " Answer:",
+      "options": [
+        {
+          "id": "4",
+          "text": " The given number is 100 19 = (10)"
+        }
+      ],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 49
+    },
+    {
+      "id": 38,
+      "section": "Mathematics",
+      "text": " By factorising, we get 10 38 = 2 38 \u00d7 5",
+      "options": [],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 49
+    },
+    {
+      "id": 38,
+      "section": "Mathematics",
+      "text": " This is in the form of 2 x \u00d7 5 y. Since here, x can take values from 0 to 38 and y can take values from 0 to 38, x and y have 39 possible values. Then, the total number of choices will be 39 \u00d7 39 = 1521. Also, the number which is a multiple of 100 17 = (10) 34 = 2 34 \u00d7 5 34, which is again in the form 2 a \u00d7 5 b where a = 34 and b = 34 Now, any number which is a multiple of 100 17 = (10) 34 is in the form of 2 p \u00d7 5 q. Then p and q can take any of the 5 values: 34, 35, 36, 37, 38. So, the probability is . Hence, the answer is . - - - - - - - - - - - - - - - END OF PAPER - - - - - - - - - - - - - - -",
+      "options": [],
+      "answer": "",
+      "explanation": "",
+      "images": [],
+      "page": 49
+    }
+  ]
+}

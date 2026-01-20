@@ -364,7 +364,7 @@ export default function NSATPrepPage() {
                                 </span>
                             </Link>
 
-                            <Link href="/prep/nsat/pyqs" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all relative overflow-hidden">
+                            <Link href="/prep/nsat/pyq" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
                                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors relative z-10">
                                     <svg className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">

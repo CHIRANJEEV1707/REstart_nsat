@@ -16,6 +16,10 @@ export interface IQuestion extends Document {
     negativeMarks: number;
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
+    // Topic-wise analysis
+    subject?: string;
+    chapter?: string;
+    topic?: string;
     // Coding-specific fields
     isCoding: boolean;
     constraints?: string;
@@ -62,6 +66,10 @@ const QuestionSchema = new Schema<IQuestion>({
         default: 'medium'
     },
     tags: [{ type: String }],
+    // Topic-wise fields
+    subject: { type: String, index: true },
+    chapter: { type: String, index: true },
+    topic: { type: String },
     // Coding-specific
     isCoding: { type: Boolean, default: false },
     constraints: { type: String },

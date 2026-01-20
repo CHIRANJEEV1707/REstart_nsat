@@ -18,6 +18,10 @@ export interface IMockTest extends Document {
     isPremium: boolean;
     isActive: boolean;
     difficulty: 'easy' | 'medium' | 'hard';
+    // PYQ specific fields
+    isPYQ: boolean;
+    year?: number;
+    shift?: string;
     order: number;
     createdAt: Date;
     updatedAt: Date;
@@ -51,6 +55,10 @@ const MockTestSchema = new Schema<IMockTest>({
         enum: ['easy', 'medium', 'hard'],
         default: 'medium'
     },
+    // PYQ specific fields
+    isPYQ: { type: Boolean, default: false, index: true },
+    year: { type: Number },
+    shift: { type: String },
     order: { type: Number, default: 0 }
 }, { timestamps: true });
 

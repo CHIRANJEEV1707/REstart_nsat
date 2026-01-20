@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import ExamStickyHeader from '@/components/exam/ExamStickyHeader';
 import QuickPracticeWidget from '@/components/exam/QuickPracticeWidget';
 import ProgressSnapshotCard from '@/components/exam/ProgressSnapshotCard';
@@ -62,8 +64,17 @@ export default function NEETPage() {
           </div>
         </div>
 
+        {/* PYQ Explorer Section */}
         <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Explore Previous Year Questions</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Explore Previous Year Questions</h2>
+            <Link
+              href={`/prep/${EXAM_SLUG}/pyq`}
+              className="text-blue-600 font-medium hover:text-blue-800 flex items-center transition-colors"
+            >
+              View All Papers <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
+          </div>
           <PYQExplorer examType={EXAM_SLUG} />
         </div>
 

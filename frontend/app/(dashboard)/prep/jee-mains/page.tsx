@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import ExamStickyHeader from '@/components/exam/ExamStickyHeader';
 import QuickPracticeWidget from '@/components/exam/QuickPracticeWidget';
 import ProgressSnapshotCard from '@/components/exam/ProgressSnapshotCard';
@@ -25,13 +27,12 @@ export default function JEEMainsPage() {
     loadExam();
   }, []);
 
-  // Defaults if loading or failed (fallback to avoid layout shift or empty header)
   const headerProps = examDetails ? {
     examName: examDetails.name,
     subtext: examDetails.description || "Engineering Entrance | India",
     deadlineDate: examDetails.dates.registration_end,
     nextAttempt: new Date(examDetails.dates.exam_date_start).toLocaleString('default', { month: 'long', year: 'numeric' }),
-    eligibleColleges: "NITs, IIITs, GFTIs", // This could also be dynamic if we added a summary field, but hardcoded is okay for description
+    eligibleColleges: "NITs, IIITs, GFTIs",
   } : {
     examName: "JEE Mains 2026",
     subtext: "Engineering Entrance | India",
@@ -42,7 +43,6 @@ export default function JEEMainsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Sticky Header */}
       <ExamStickyHeader
         {...headerProps}
         onReminder={() => console.log('Reminder set!')}
@@ -52,7 +52,6 @@ export default function JEEMainsPage() {
       <div className="max-w-7xl mx-auto px-6 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Main Progress Card - Takes up 2 columns */}
           <div className="lg:col-span-2">
             <ProgressSnapshotCard
               examId={EXAM_SLUG}
@@ -60,7 +59,6 @@ export default function JEEMainsPage() {
             />
           </div>
 
-          {/* Quick Practice Widget - Takes up 1 column */}
           <div className="lg:col-span-1">
             <QuickPracticeWidget examId={EXAM_SLUG} />
           </div>
@@ -68,14 +66,20 @@ export default function JEEMainsPage() {
 
         {/* PYQ Explorer Section */}
         <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Explore Previous Year Questions</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Explore Previous Year Questions</h2>
+            <Link
+              href={`/prep/${EXAM_SLUG}/pyq`}
+              className="text-blue-600 font-medium hover:text-blue-800 flex items-center transition-colors"
+            >
+              View All Papers <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
+          </div>
           <PYQExplorer examType={EXAM_SLUG} />
         </div>
 
-        {/* Smart Insights Section */}
         <SmartInsightsSection examType={EXAM_SLUG} />
 
-        {/* Soft Upgrade CTA */}
         <div className="mt-12">
           <SoftUpgradeCard />
         </div>

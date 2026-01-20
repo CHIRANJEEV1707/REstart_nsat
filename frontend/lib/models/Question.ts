@@ -20,6 +20,10 @@ export interface IQuestion {
     negativeMarks: number;
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
+    // Topic-wise analysis
+    subject?: string;
+    chapter?: string;
+    topic?: string;
     // Coding-specific fields
     isCoding: boolean;
     functionName?: string;  // e.g., "isPrime", "secondLargest"
@@ -43,6 +47,9 @@ const QuestionSchema = new mongoose.Schema<IQuestion>({
     negativeMarks: { type: Number, default: 0 },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
     tags: [{ type: String }],
+    subject: { type: String, index: true },
+    chapter: { type: String, index: true },
+    topic: { type: String },
     isCoding: { type: Boolean, default: false },
     codeTemplate: [{ language: String, template: String, _id: false }],
     testCases: [{ input: String, expectedOutput: String, isHidden: { type: Boolean, default: false }, _id: false }]

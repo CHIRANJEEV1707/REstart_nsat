@@ -7,19 +7,28 @@ import { ArrowLeft, BookOpen, Calendar, Clock, BarChart2, ChevronRight, Play } f
 import axios from 'axios';
 import { Badge } from '@/components/ui/Badge';
 
-export default function PYQPage() {
+interface PYQDashboardProps {
+    examId?: string;
+}
+
+export default function PYQDashboard({ examId: propExamId }: PYQDashboardProps) {
     const params = useParams();
     const router = useRouter();
-    const examId = params.examId as string;
+
+    // Determine examId: Prop > Param (slug) > Param (examId)
+    const examId = propExamId || (params.slug as string) || (params.examId as string);
+
     const [activeTab, setActiveTab] = useState<'years' | 'topics'>('years');
     const [yearsData, setYearsData] = useState<{ [key: string]: any[] }>({});
     const [topicsData, setTopicsData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingPractice, setLoadingPractice] = useState<string | null>(null);
 
-    const examTitle = examId.toUpperCase().replace('-', ' ');
+    const examTitle = examId ? examId.toUpperCase().replace('-', ' ') : 'Exam';
 
     useEffect(() => {
+        if (!examId) return;
+
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -66,6 +75,8 @@ export default function PYQPage() {
     const handleStartTest = (testSlug: string) => {
         router.push(`/nsat-prep/mock-tests/${testSlug}`);
     };
+
+    if (!examId) return <div className="p-10 text-center">Exam ID not found</div>;
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">

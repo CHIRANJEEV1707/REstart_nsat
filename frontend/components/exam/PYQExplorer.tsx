@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { ExamService, Question } from '@/services/examService';
 import PracticeSessionModal from './PracticeSessionModal';
 import SolutionViewerModal from './SolutionViewerModal';
+import LatexRenderer from '@/components/ui/LatexRenderer';
 
 export default function PYQExplorer({ examType }: { examType?: string }) {
   // Filter States
@@ -213,7 +214,9 @@ export default function PYQExplorer({ examType }: { examType?: string }) {
                         <span key={idx} className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">{t}</span>
                       ))}
                     </div>
-                    <div className="text-sm font-medium text-gray-900 line-clamp-2">{q.text}</div>
+                    <div className="text-sm font-medium text-gray-900 line-clamp-2">
+                      <LatexRenderer content={q.text} />
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">{q.subject}</td>
                   <td className="px-4 py-3 text-right">

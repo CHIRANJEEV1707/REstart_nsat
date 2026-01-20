@@ -20,6 +20,7 @@ export interface IQuestion extends Document {
     subject?: string;
     chapter?: string;
     topic?: string;
+    sourceId?: string;
     // Coding-specific fields
     isCoding: boolean;
     constraints?: string;
@@ -70,6 +71,7 @@ const QuestionSchema = new Schema<IQuestion>({
     subject: { type: String, index: true },
     chapter: { type: String, index: true },
     topic: { type: String },
+    sourceId: { type: String, unique: true, sparse: true }, // Unique ID from external source
     // Coding-specific
     isCoding: { type: Boolean, default: false },
     constraints: { type: String },

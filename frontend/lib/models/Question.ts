@@ -20,6 +20,10 @@ export interface IQuestion {
     negativeMarks: number;
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
+    // Topic-wise analysis
+    subject?: string;
+    chapter?: string;
+    topic?: string;
     images?: string[]; // Array of image URLs/paths relating to the question
     // Coding-specific fields
     isCoding: boolean;
@@ -44,6 +48,9 @@ const QuestionSchema = new mongoose.Schema<IQuestion>({
     negativeMarks: { type: Number, default: 0 },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
     tags: [{ type: String }],
+    subject: { type: String, index: true },
+    chapter: { type: String, index: true },
+    topic: { type: String },
     images: [{ type: String }],
     isCoding: { type: Boolean, default: false },
     codeTemplate: [{ language: String, template: String, _id: false }],

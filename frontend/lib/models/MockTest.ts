@@ -14,6 +14,9 @@ export interface IMockTest {
     isPremium: boolean;
     isActive: boolean;
     difficulty: 'easy' | 'medium' | 'hard';
+    isPYQ: boolean;
+    year?: number;
+    shift?: string;
     order: number;
 }
 
@@ -30,7 +33,15 @@ const MockTestSchema = new mongoose.Schema<IMockTest>({
     isFree: { type: Boolean, default: false, index: true },
     isPremium: { type: Boolean, default: true },
     isActive: { type: Boolean, default: true, index: true },
-    difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
+    difficulty: {
+        type: String,
+        enum: ['easy', 'medium', 'hard'],
+        default: 'medium'
+    },
+    // PYQ specific fields
+    isPYQ: { type: Boolean, default: false, index: true },
+    year: { type: Number },
+    shift: { type: String }, // e.g., 'Shift 1', 'Morning'
     order: { type: Number, default: 0 }
 }, { timestamps: true });
 

@@ -20,6 +20,7 @@ export interface IQuestion {
     negativeMarks: number;
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
+    images?: string[]; // Array of image URLs/paths relating to the question
     // Coding-specific fields
     isCoding: boolean;
     functionName?: string;  // e.g., "isPrime", "secondLargest"
@@ -43,6 +44,7 @@ const QuestionSchema = new mongoose.Schema<IQuestion>({
     negativeMarks: { type: Number, default: 0 },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
     tags: [{ type: String }],
+    images: [{ type: String }],
     isCoding: { type: Boolean, default: false },
     codeTemplate: [{ language: String, template: String, _id: false }],
     testCases: [{ input: String, expectedOutput: String, isHidden: { type: Boolean, default: false }, _id: false }]

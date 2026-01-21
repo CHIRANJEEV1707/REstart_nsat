@@ -38,6 +38,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       embla-carousel-auto-scroll:
         specifier: ^8.6.0
         version: 8.6.0(embla-carousel@8.6.0)
@@ -56,6 +59,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
+      katex:
+        specifier: ^0.16.27
+        version: 0.16.27
       lucide-react:
         specifier: ^0.556.0
         version: 0.556.0(react@19.2.1)
@@ -83,6 +89,9 @@ importers:
       react-hot-toast:
         specifier: ^2.6.0
         version: 2.6.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react-katex:
+        specifier: ^3.1.0
+        version: 3.1.0(prop-types@15.8.1)(react@19.2.1)
       resend:
         specifier: ^6.7.0
         version: 6.7.0
@@ -995,6 +1004,10 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
+  commander@8.3.0:
+    resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
+    engines: {node: '>= 12'}
+
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
@@ -1065,6 +1078,10 @@ packages:
 
   dompurify@3.2.7:
     resolution: {integrity: sha512-WhL/YuveyGXJaerVlMYGWhvQswa7myDG17P7Vu65EWC05o8vfeNbvNf4d/BOvH99+ZW+LlQsc1GDKMa1vNK6dw==}
+
+  dotenv@17.2.3:
+    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
+    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -1627,6 +1644,10 @@ packages:
     resolution: {integrity: sha512-RKhaOBSPN8L7y4yAgNhDT2602G5FD6QbOIISbjN9D6mjHPeqeg7K+EB5IGSU5o81/X2Gzm3ICnAvQW3x3OP8HA==}
     engines: {node: '>=18.0.0'}
 
+  katex@0.16.27:
+    resolution: {integrity: sha512-aeQoDkuRWSqQN6nSvVCEFvfXdqo1OQiCmmW1kc9xSdjutPv7BGO7pqY9sQRJpMOGrEdfDgF2TfRXe5eUAD2Waw==}
+    hasBin: true
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -2011,6 +2032,12 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-katex@3.1.0:
+    resolution: {integrity: sha512-At9uLOkC75gwn2N+ZXc5HD8TlATsB+3Hkp9OGs6uA8tM3dwZ3Wljn74Bk3JyHFPgSnesY/EMrIAB1WJwqZqejA==}
+    peerDependencies:
+      prop-types: ^15.8.1
+      react: '>=15.3.2 <20'
 
   react@19.2.1:
     resolution: {integrity: sha512-DGrYcCWK7tvYMnWh79yrPHt+vdx9tY+1gPZa7nJQtO/p8bLTDaHp4dzwEhQB7pZ4Xe3ok4XKuEPrVuc+wlpkmw==}
@@ -3193,6 +3220,8 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
+  commander@8.3.0: {}
+
   concat-map@0.0.1: {}
 
   convert-source-map@2.0.0: {}
@@ -3258,6 +3287,8 @@ snapshots:
   dompurify@3.2.7:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
+
+  dotenv@17.2.3: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -3970,6 +4001,10 @@ snapshots:
 
   kareem@3.0.0: {}
 
+  katex@0.16.27:
+    dependencies:
+      commander: 8.3.0
+
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -4307,6 +4342,12 @@ snapshots:
       react-dom: 19.2.1(react@19.2.1)
 
   react-is@16.13.1: {}
+
+  react-katex@3.1.0(prop-types@15.8.1)(react@19.2.1):
+    dependencies:
+      katex: 0.16.27
+      prop-types: 15.8.1
+      react: 19.2.1
 
   react@19.2.1: {}
 

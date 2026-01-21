@@ -50,55 +50,23 @@ export function Sidebar() {
     if (!user) return null;
 
     return (
-        <aside className="w-72 bg-white border-r border-gray-100 hidden lg:flex flex-col h-screen sticky top-0">
+        <aside className="w-72 bg-white border-r border-gray-100 hidden lg:flex flex-col h-screen sticky top-0 overflow-hidden">
             {/* Logo */}
-            <div className="p-6 pb-4">
-                <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="h-20 px-6 flex items-center border-b border-gray-50/50">
+                <Link href="/dashboard" className="flex items-center">
                     <Image
-                        src="/Restart_logo.png"
+                        src="/restart.png"
                         alt="REstart Logo"
-                        width={120}
-                        height={40}
-                        className="h-8 w-auto object-contain"
+                        width={150}
+                        height={50}
+                        priority
+                        className="h-10 w-auto object-contain transition-transform hover:scale-105 duration-300"
                     />
                 </Link>
             </div>
 
-            {/* User Greeting Card */}
-            <div className="px-5 mb-6">
-                <div className="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-indigo-100/50">
-                    <div className="flex items-center gap-3 mb-3">
-                        <div className="h-10 w-10 shrink-0 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
-                            {user.name?.[0]?.toUpperCase() || 'U'}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                            <div className="font-semibold text-gray-900 text-sm truncate" title={user.name}>
-                                {user.name || 'User'}
-                            </div>
-                            <div className="text-xs text-gray-500 truncate" title={user.email}>
-                                {user.email || user.role || 'Student'}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="bg-white/70 rounded-lg px-2.5 py-1.5">
-                            <span className="text-gray-500">State</span>
-                            <div className="font-medium text-gray-900 truncate">{user.state || 'Not Set'}</div>
-                        </div>
-                        <div className="bg-white/70 rounded-lg px-2.5 py-1.5">
-                            <span className="text-gray-500">Goal</span>
-                            <div className="font-medium text-gray-900 truncate">
-                                {Array.isArray(user.target_degree)
-                                    ? user.target_degree[0]
-                                    : (user.target_degree || 'Not Set')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {/* Navigation */}
-            <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
+            <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
@@ -107,59 +75,69 @@ export function Sidebar() {
                             key={item.name}
                             href={item.href}
                             className={`
-                                group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200
+                                group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-300
                                 ${isActive
-                                    ? 'bg-indigo-50 text-indigo-700'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 ring-1 ring-blue-600'
+                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                 }
                             `}
                         >
                             <item.icon
-                                size={20}
-                                strokeWidth={isActive ? 2 : 1.5}
-                                className={`transition-colors ${isActive
-                                    ? 'text-indigo-600'
+                                size={18}
+                                strokeWidth={isActive ? 2.5 : 2}
+                                className={`transition-all duration-300 ${isActive
+                                    ? 'text-white scale-110'
                                     : 'text-gray-400 group-hover:text-gray-600'
                                     }`}
                             />
-                            <span className="flex-1">{item.name}</span>
+                            <span className={`flex-1 transition-all duration-300 ${isActive ? 'translate-x-0.5 font-semibold' : ''}`}>
+                                {item.name}
+                            </span>
                             {isActive && (
-                                <ChevronRight size={16} className="text-indigo-400" />
+                                <div className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                             )}
                         </Link>
                     );
                 })}
             </nav>
 
-            {/* Bottom Menu */}
-            <div className="p-4 border-t border-gray-100 space-y-1">
-                <Link
-                    href="/profile"
-                    className={`
-                        group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200
-                        ${pathname === '/profile'
-                            ? 'bg-indigo-50 text-indigo-700'
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                        }
-                    `}
-                >
-                    <User
-                        size={20}
-                        strokeWidth={pathname === '/profile' ? 2 : 1.5}
-                        className={`transition-colors ${pathname === '/profile'
-                            ? 'text-indigo-600'
-                            : 'text-gray-400 group-hover:text-gray-600'
-                            }`}
-                    />
-                    Profile Settings
-                </Link>
-                <button
-                    onClick={handleLogout}
-                    className="w-full group flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 rounded-xl hover:bg-red-50 transition-all duration-200"
-                >
-                    <LogOut size={20} strokeWidth={1.5} className="text-red-400 group-hover:text-red-500" />
-                    Logout
-                </button>
+            {/* Bottom Section: Profile & Logout */}
+            <div className="p-4 border-t border-gray-100 bg-gray-50/30">
+                <div className="mb-2">
+                    <Link
+                        href="/profile"
+                        className={`
+                            group flex items-center gap-3 p-2 rounded-xl transition-all duration-200
+                            ${pathname === '/profile'
+                                ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100'
+                                : 'hover:bg-gray-100 text-gray-700'
+                            }
+                        `}
+                    >
+                        <div className={`h-10 w-10 shrink-0 rounded-full flex items-center justify-center font-bold text-sm shadow-sm transition-all duration-300 ${pathname === '/profile' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 ring-1 ring-gray-200'
+                            }`}>
+                            {user.name?.[0]?.toUpperCase() || 'U'}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-gray-900 text-sm truncate">
+                                {user.name || 'User'}
+                            </div>
+                            <div className="text-[10px] text-gray-500 truncate uppercase tracking-wider font-medium">
+                                {user.role || 'Student Account'}
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+
+                <div className="space-y-0.5">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full group flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-500 rounded-lg hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                    >
+                        <LogOut size={16} strokeWidth={2} className="text-gray-400 group-hover:text-red-500" />
+                        <span>Logout</span>
+                    </button>
+                </div>
             </div>
         </aside>
     );

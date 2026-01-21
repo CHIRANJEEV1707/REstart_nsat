@@ -137,7 +137,7 @@ export default function LoginPage() {
                                 id="remember-me"
                                 type="checkbox"
                                 {...register('rememberMe')}
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                             />
                             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                                 Remember me
@@ -145,7 +145,7 @@ export default function LoginPage() {
                         </div>
 
                         <div className="text-sm">
-                            <Link href="/auth/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            <Link href="/auth/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
                                 Forgot password?
                             </Link>
                         </div>
@@ -164,7 +164,7 @@ export default function LoginPage() {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-12 flex justify-center items-center text-lg font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
+                        className="w-full h-12 flex justify-center items-center text-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200"
                     >
                         {loading ? (
                             <Loader2 className="animate-spin h-5 w-5 mr-2" />
@@ -175,7 +175,7 @@ export default function LoginPage() {
 
                     <div className="text-center text-sm">
                         <span className="text-gray-500">Don&apos;t have an account? </span>
-                        <Link href="/auth/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                        <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500">
                             Sign up
                         </Link>
                     </div>

@@ -73,6 +73,8 @@ export interface IUser extends Document {
 
     failedLoginAttempts: number;
     lockUntil: Date | null;
+    resetPasswordOTP?: string;
+    resetPasswordOTPExpire?: Date;
     createdAt: Date;
     updatedAt: Date;
     matchPassword(enteredPassword: string): Promise<boolean>;
@@ -166,6 +168,8 @@ const UserSchema = new Schema<IUser>({
 
     failedLoginAttempts: { type: Number, default: 0 },
     lockUntil: { type: Date, default: null },
+    resetPasswordOTP: { type: String, select: false },
+    resetPasswordOTPExpire: { type: Date, select: false },
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

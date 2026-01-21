@@ -7,6 +7,7 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/axios';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Loader2, ArrowLeft, Mail, CheckCircle } from 'lucide-react';
 
@@ -17,6 +18,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordPage() {
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
@@ -33,8 +35,9 @@ export default function ForgotPasswordPage() {
         setLoading(true);
         setError('');
         try {
-            await api.post('/auth/forgot-password', data);
-            setSuccess(true);
+            await api.post('/auth/forgotpassword', data);
+            // Redirect to reset password page with email as query param
+            router.push(`/auth/reset-password?email=${encodeURIComponent(data.email)}`);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Something went wrong. Please try again.');
         } finally {
@@ -54,7 +57,7 @@ export default function ForgotPasswordPage() {
                         If an account exists with that email, we've sent a password reset link.
                     </p>
                     <Link href="/auth/login">
-                        <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
+                        <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white">
                             Back to Login
                         </Button>
                     </Link>
@@ -71,8 +74,8 @@ export default function ForgotPasswordPage() {
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back to login
                     </Link>
-                    <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-                        <Mail className="w-6 h-6 text-indigo-600" />
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <Mail className="w-6 h-6 text-blue-600" />
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900">Forgot your password?</h1>
                     <p className="mt-2 text-sm text-gray-600">
@@ -102,7 +105,7 @@ export default function ForgotPasswordPage() {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-12 flex justify-center items-center text-lg font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+                        className="w-full h-12 flex justify-center items-center text-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white"
                     >
                         {loading ? (
                             <Loader2 className="animate-spin h-5 w-5" />

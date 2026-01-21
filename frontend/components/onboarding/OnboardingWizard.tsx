@@ -108,7 +108,7 @@ export function OnboardingWizard() {
                 </div>
                 <div className="hidden sm:flex space-x-1">
                     {STEPS.map((_, idx) => (
-                        <div key={idx} className={`h-2 w-8 rounded-full transition-colors ${idx <= currentStep ? 'bg-indigo-600' : 'bg-gray-200'}`} />
+                        <div key={idx} className={`h-2 w-8 rounded-full transition-colors ${idx <= currentStep ? 'bg-blue-600' : 'bg-gray-200'}`} />
                     ))}
                 </div>
             </div>
@@ -139,7 +139,7 @@ export function OnboardingWizard() {
                 ) : (
                     <button
                         onClick={nextStep}
-                        className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg flex items-center space-x-2 transition-all"
+                        className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg flex items-center space-x-2 transition-all"
                     >
                         <span>Next</span>
                         <ChevronRight className="w-5 h-5" />

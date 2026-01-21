@@ -43,7 +43,7 @@ export default function SavedCollegesPage() {
                                 <h3 className="text-xl font-bold text-gray-900 mb-1">{college.name}</h3>
                                 <p className="text-sm text-gray-500 mb-6">{college.location.city}, {college.location.state}</p>
                                 <div className="flex gap-3">
-                                    <Button asChild className="flex-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 shadow-none">
+                                    <Button asChild className="flex-1 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 shadow-none">
                                         <Link href={`/college/${college._id}`}>View Details</Link>
                                     </Button>
                                     <Button

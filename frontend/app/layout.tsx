@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "REstart - Discovery & Prep",
   description: "Find your dream college and crack the exams.",
   icons: {
-    icon: '/Restart_Logo.ico',
+    icon: '/restart.png',
   },
 };
 

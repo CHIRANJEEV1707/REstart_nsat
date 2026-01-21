@@ -180,9 +180,9 @@ function ActivePlansSection({ user }: { user: any }) {
                         : 'Unlocked Bundle';
 
                     return (
-                        <div key={i} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-indigo-100 shadow-sm">
+                        <div key={i} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-blue-100 shadow-sm">
                             <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
                                     <Code2 className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -194,7 +194,7 @@ function ActivePlansSection({ user }: { user: any }) {
                                 </div>
                             </div>
                             <Link href="/prep/nsat">
-                                <Button size="sm" variant="outline" className="border-indigo-200 text-indigo-600 hover:bg-indigo-50">
+                                <Button size="sm" variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
                                     Access Content
                                 </Button>
                             </Link>
@@ -236,7 +236,7 @@ function UpcomingSessionsSection() {
                 {activeBookings.map((booking: any) => (
                     <div key={booking._id} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-blue-100 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
                         <div className="flex items-center gap-4">
-                            <div className={`h-10 w-10 rounded-full flex items-center justify-center ${booking.sessionType === 'interview-prep' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
+                            <div className={`h-10 w-10 rounded-full flex items-center justify-center ${booking.sessionType === 'interview-prep' ? 'bg-blue-50 text-blue-600' : 'bg-sky-50 text-sky-600'}`}>
                                 {booking.sessionType === 'interview-prep' ? <Calendar className="w-5 h-5" /> : <MessageCircle className="w-5 h-5" />}
                             </div>
                             <div>

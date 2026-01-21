@@ -74,7 +74,7 @@ router.post('/create-order', protect, async (req: any, res: Response) => {
 
         // Create or Update booking record (status: pending until payment verified)
         // Reusing existing 'pending' booking to avoid duplicates
-        await SessionBooking.findOneAndUpdate(
+        const booking = await SessionBooking.findOneAndUpdate(
             { userId: req.user._id, sessionType, status: 'pending' },
             {
                 amount: amount / 100,

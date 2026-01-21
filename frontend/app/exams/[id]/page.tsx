@@ -51,7 +51,7 @@ export default function ExamDetailPage() {
             title: "Result Declaration",
             date: exam.dates.exam_date_end,
             icon: Award,
-            color: "purple",
+            color: "blue",
             description: "Expected date for results and rank announcements."
         }
     ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) : [];
@@ -79,7 +79,7 @@ export default function ExamDetailPage() {
             <div className="max-w-5xl mx-auto pt-32 pb-20 px-6">
                 {/* Header Section */}
                 <div className="mb-16 text-center">
-                    <Link href="/exams-deadlines" className="inline-flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition-colors">
+                    <Link href="/exams-deadlines" className="inline-flex items-center text-gray-500 hover:text-blue-600 mb-6 transition-colors">
                         <ArrowLeft size={20} className="mr-2" />
                         Back to Exams
                     </Link>
@@ -88,7 +88,7 @@ export default function ExamDetailPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-3 block bg-indigo-50 w-fit mx-auto px-4 py-1 rounded-full">{exam.code}</span>
+                        <span className="text-blue-600 font-bold tracking-wider text-sm uppercase mb-3 block bg-blue-50 w-fit mx-auto px-4 py-1 rounded-full">{exam.code}</span>
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{exam.name}</h1>
                         <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">{exam.description}</p>
                     </motion.div>
@@ -108,7 +108,7 @@ export default function ExamDetailPage() {
                                 blue: { bg: 'bg-blue-100', text: 'text-blue-600', border: 'border-blue-200' },
                                 red: { bg: 'bg-red-100', text: 'text-red-600', border: 'border-red-200' },
                                 green: { bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-200' },
-                                purple: { bg: 'bg-purple-100', text: 'text-purple-600', border: 'border-purple-200' },
+                                sky: { bg: 'bg-sky-100', text: 'text-sky-600', border: 'border-sky-200' },
                             }[event.color] || { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200' };
 
                             return (
@@ -156,7 +156,7 @@ export default function ExamDetailPage() {
                 {/* Additional Info Section */}
                 <div className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-sm max-w-4xl mx-auto">
                     <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <GraduationCap className="text-indigo-600" />
+                        <GraduationCap className="text-blue-600" />
                         Eligibility & Resources
                     </h3>
                     <div className="prose prose-indigo max-w-none text-gray-600">
@@ -164,7 +164,7 @@ export default function ExamDetailPage() {
                     </div>
 
                     <div className="mt-10 flex flex-wrap gap-4">
-                        <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
+                        <Button asChild className="bg-blue-600 hover:bg-blue-700">
                             <a href={exam.website} target="_blank" rel="noopener noreferrer">Visit Official Website</a>
                         </Button>
                         <Button variant="outline">Download Syllabus PDF</Button>

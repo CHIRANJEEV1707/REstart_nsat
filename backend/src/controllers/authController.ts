@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+import { sendEmail } from '../utils/sendEmail';
 
 // Zod Schemas
 export const registerSchema = z.object({
@@ -16,6 +17,20 @@ export const loginSchema = z.object({
     body: z.object({
         email: z.string().email('Invalid email address'),
         password: z.string().min(1, 'Password is required'),
+    })
+});
+
+export const forgotPasswordSchema = z.object({
+    body: z.object({
+        email: z.string().email('Invalid email address'),
+    })
+});
+
+export const resetPasswordSchema = z.object({
+    body: z.object({
+        email: z.string().email('Invalid email address'),
+        otp: z.string().length(6, 'OTP must be 6 digits'),
+        newPassword: z.string().min(6, 'Password must be at least 6 characters')
     })
 });
 
@@ -268,6 +283,91 @@ export const updatePassword = async (req: Request, res: Response, next: NextFunc
 
         // Send new token (logs out other sessions)
         sendTokenResponse(user, 200, res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Forgot Password - Send OTP
+// @route   POST /api/auth/forgotpassword
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            // Return success anyway to prevent email enumeration
+            return res.status(200).json({ success: true, message: 'If an account exists, an OTP has been sent' });
+        }
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Set OTP and expiry (2 minutes)
+        user.resetPasswordOTP = otp;
+        user.resetPasswordOTPExpire = new Date(Date.now() + 2 * 60 * 1000);
+
+        await user.save();
+
+        const message = `Your password reset OTP is: ${otp}. It will expire in 2 minutes.`;
+        const html = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #0085ff;">REstart Password Reset</h2>
+                <p>You requested a password reset. Use the OTP below to set a new password:</p>
+                <div style="background: #f4f4f4; padding: 15px; font-size: 24px; font-weight: bold; letter-spacing: 5px; text-align: center; margin: 20px 0; border-radius: 8px;">
+                    ${otp}
+                </div>
+                <p>This OTP will expire in <strong>2 minutes</strong>.</p>
+                <p>If you didn't request this, please ignore this email.</p>
+            </div>
+        `;
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Password Reset OTP',
+                message,
+                html
+            });
+
+            res.status(200).json({ success: true, message: 'OTP sent to email' });
+        } catch (error) {
+            user.resetPasswordOTP = undefined;
+            user.resetPasswordOTPExpire = undefined;
+            await user.save();
+
+            return res.status(500).json({ success: false, message: 'Email could not be sent' });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Reset Password
+// @route   POST /api/auth/resetpassword
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        const user = await User.findOne({
+            email,
+            resetPasswordOTP: otp,
+            resetPasswordOTPExpire: { $gt: Date.now() }
+        }).select('+password');
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+        }
+
+        // Set new password
+        user.password = newPassword;
+        user.resetPasswordOTP = undefined;
+        user.resetPasswordOTPExpire = undefined;
+
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Password reset successful' });
     } catch (error) {
         next(error);
     }

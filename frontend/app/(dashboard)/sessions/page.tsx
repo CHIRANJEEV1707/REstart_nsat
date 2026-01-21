@@ -47,7 +47,7 @@ const SESSION_CONFIG = {
             'Make an informed decision',
         ],
         icon: MessageCircle,
-        color: 'violet'
+        color: 'sky'
     }
 };
 
@@ -138,7 +138,7 @@ export default function SessionsPage() {
                     contact: ''
                 },
                 theme: {
-                    color: selectedType === 'interview-prep' ? '#3B82F6' : '#7C3AED'
+                    color: '#0085ff'
                 },
                 modal: {
                     ondismiss: () => setLoading(false)
@@ -186,7 +186,7 @@ export default function SessionsPage() {
                 </Link>
 
                 {/* Hero Section */}
-                <div className="bg-gradient-to-br from-violet-600 to-purple-700 rounded-3xl p-8 md:p-12 text-white mb-12">
+                <div className="bg-gradient-to-br from-blue-600 to-sky-700 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-xl shadow-blue-500/10">
                     <div className="flex items-center gap-3 mb-4">
                         <Users className="w-8 h-8" />
                         <Badge className="bg-white/20 text-white border-0">1-on-1 Sessions</Badge>
@@ -194,7 +194,7 @@ export default function SessionsPage() {
                     <h1 className="text-3xl md:text-4xl font-bold mb-4">
                         Book a Session
                     </h1>
-                    <p className="text-lg text-violet-100 max-w-2xl">
+                    <p className="text-lg text-blue-50 max-w-2xl">
                         Get personalized guidance from our team. Choose between interview prep or an unfiltered chat about NST.
                     </p>
                 </div>
@@ -204,12 +204,12 @@ export default function SessionsPage() {
                     <button
                         onClick={() => setSelectedType('restart-unfiltered')}
                         className={`flex-1 p-6 rounded-2xl border-2 transition-all ${selectedType === 'restart-unfiltered'
-                            ? 'border-violet-500 bg-violet-50'
+                            ? 'border-blue-500 bg-blue-50'
                             : 'border-gray-200 bg-white hover:border-gray-300'
                             }`}
                     >
-                        <MessageCircle className={`w-8 h-8 mb-3 ${selectedType === 'restart-unfiltered' ? 'text-violet-600' : 'text-gray-400'}`} />
-                        <h3 className={`text-xl font-bold mb-1 ${selectedType === 'restart-unfiltered' ? 'text-violet-900' : 'text-gray-900'}`}>
+                        <MessageCircle className={`w-8 h-8 mb-3 ${selectedType === 'restart-unfiltered' ? 'text-blue-600' : 'text-gray-400'}`} />
+                        <h3 className={`text-xl font-bold mb-1 ${selectedType === 'restart-unfiltered' ? 'text-blue-900' : 'text-gray-900'}`}>
                             REstart Unfiltered
                         </h3>
                         <p className="text-sm text-gray-500">Talk to seniors & students</p>
@@ -268,10 +268,7 @@ export default function SessionsPage() {
                         size="lg"
                         onClick={handleBookNow}
                         disabled={loading}
-                        className={`w-full h-14 text-lg rounded-xl ${selectedType === 'interview-prep'
-                            ? 'bg-blue-600 hover:bg-blue-700'
-                            : 'bg-violet-600 hover:bg-violet-700'
-                            }`}
+                        className="w-full h-14 text-lg rounded-xl bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
                     >
                         {loading ? 'Processing...' : `Book Now - ₹${selectedSession.price}`}
                     </Button>

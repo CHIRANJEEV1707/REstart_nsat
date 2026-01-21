@@ -149,7 +149,7 @@ export default function TestResultsPage() {
                         <div className="flex gap-4">
                             {!isPremium && (
                                 <Link href="/prep/nsat">
-                                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-lg">
+                                    <Button className="bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white border-0 shadow-lg">
                                         <Trophy className="w-4 h-4 mr-2" />
                                         Unlock Detailed Analysis
                                     </Button>
@@ -169,15 +169,15 @@ export default function TestResultsPage() {
                         <div className="text-2xl font-bold text-gray-900">{globalAccuracy}%</div>
                     </Card>
 
-                    <Card className="p-6 border-l-4 border-l-purple-500">
+                    <Card className="p-6 border-l-4 border-l-blue-500">
                         <div className="flex justify-between items-start mb-2">
                             <span className="text-gray-500 font-medium text-sm">Percentile</span>
-                            <TrendingUp className="w-5 h-5 text-purple-500" />
+                            <TrendingUp className="w-5 h-5 text-blue-500" />
                         </div>
                         <div className="text-2xl font-bold text-gray-900">
                             {isPremium ? `${analytics?.percentile || 0}th` : <span className="blur-sm select-none">95th</span>}
                         </div>
-                        {!isPremium && <div className="text-xs text-purple-600 font-medium mt-1">Premium Feature</div>}
+                        {!isPremium && <div className="text-xs text-blue-600 font-medium mt-1">Premium Feature</div>}
                     </Card>
 
                     <Card className="p-6 border-l-4 border-l-orange-500">
@@ -263,7 +263,7 @@ export default function TestResultsPage() {
                         </div>
 
                         {/* AI Recommendations */}
-                        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 relative overflow-hidden">
+                        <div className="bg-gradient-to-br from-blue-50 to-sky-50 rounded-2xl p-6 border border-blue-100 relative overflow-hidden">
                             {!isPremium && (
                                 <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-6 text-center">
                                     <Target className="w-8 h-8 text-indigo-400 mb-2" />
@@ -272,19 +272,19 @@ export default function TestResultsPage() {
                                 </div>
                             )}
 
-                            <h2 className="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">
-                                <Target className="w-5 h-5 text-indigo-600" />
+                            <h2 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+                                <Target className="w-5 h-5 text-blue-600" />
                                 AI Focus Recommendations
                             </h2>
                             <ul className="space-y-3">
                                 {analytics?.recommendations?.map((rec: string, idx: number) => (
-                                    <li key={idx} className="flex gap-3 bg-white p-3 rounded-lg border border-indigo-100 shadow-sm">
-                                        <span className="text-indigo-500 font-bold">•</span>
+                                    <li key={idx} className="flex gap-3 bg-white p-3 rounded-lg border border-blue-100 shadow-sm">
+                                        <span className="text-blue-500 font-bold">•</span>
                                         <span className="text-gray-700">{rec}</span>
                                     </li>
                                 ))}
                                 {(!analytics?.recommendations || analytics.recommendations.length === 0) && (
-                                    <p className="text-indigo-400 text-center italic">Complete more tests to generate recommendations.</p>
+                                    <p className="text-blue-400 text-center italic">Complete more tests to generate recommendations.</p>
                                 )}
                             </ul>
                         </div>

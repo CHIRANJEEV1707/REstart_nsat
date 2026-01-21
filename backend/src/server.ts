@@ -110,7 +110,7 @@ const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
     ignoredMethods: ["GET", "HEAD", "OPTIONS"],
     getCsrfTokenFromRequest: (req) => req.headers["x-csrf-token"],
     skipCsrfProtection: (req) => {
-        return ["/api/auth/login", "/api/auth/signup"].includes(req.path);
+        return ["/api/auth/login", "/api/auth/signup", "/api/auth/forgotpassword", "/api/auth/resetpassword"].includes(req.path);
     },
 });
 

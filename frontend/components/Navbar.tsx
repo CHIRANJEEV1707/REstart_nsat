@@ -14,11 +14,11 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
                     <NextImage
-                        src="/Restart_logo.png"
+                        src="/restart.png"
                         alt="REstart Logo"
-                        width={120}
-                        height={40}
-                        className="h-10 w-auto object-contain"
+                        width={200}
+                        height={60}
+                        className="h-16 w-auto object-contain border-0 shadow-none ring-0 outline-none"
                         priority
                     />
                 </Link>

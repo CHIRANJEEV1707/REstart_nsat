@@ -40,7 +40,7 @@ export default function ExamsPage() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="animate-spin text-indigo-600" size={32} />
+                <Loader2 className="animate-spin text-blue-600" size={32} />
             </div>
         );
     }
@@ -63,7 +63,7 @@ export default function ExamsPage() {
                             <CardContent className="p-6">
                                 <div className="flex justify-between items-start mb-4">
                                     <h3 className="text-xl font-bold text-gray-900">{exam.name}</h3>
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         {exam.code}
                                     </span>
                                 </div>
@@ -73,7 +73,7 @@ export default function ExamsPage() {
 
                                 <div className="space-y-3 mb-6">
                                     <div className="flex items-center text-sm text-gray-600">
-                                        <Calendar size={16} className="mr-2 text-indigo-500" />
+                                        <Calendar size={16} className="mr-2 text-blue-500" />
                                         <span>Exam: {new Date(exam.dates.exam_date_start).toLocaleDateString()}</span>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@ export default function ExamsPage() {
                                     href={exam.website}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                                    className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500"
                                 >
                                     Visit Website <ExternalLink size={14} className="ml-1" />
                                 </a>

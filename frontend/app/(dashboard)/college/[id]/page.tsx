@@ -91,7 +91,7 @@ export default function CollegeDetailPage() {
         });
     };
 
-    const handleRazorpayPayment = async (email: string) => {
+    const handleRazorpayPayment = async () => {
         try {
             const res = await loadRazorpay();
             if (!res) throw new Error('Razorpay SDK failed to load');
@@ -143,7 +143,7 @@ export default function CollegeDetailPage() {
                 },
                 prefill: {
                     name: user?.name || "User",
-                    email: email,
+                    email: user?.email || "",
                     contact: "9999999999"
                 },
                 theme: { color: "#2563EB" }

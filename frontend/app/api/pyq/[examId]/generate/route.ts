@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import MockTest from '@/lib/models/MockTest';
 import Question from '@/lib/models/Question';
-import { connectDB } from '@/lib/db';
+import connectDB from '@/lib/db';
 
-export async function POST(req: NextRequest, { params }: { params: { examId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ examId: string }> }) {
     try {
         await connectDB();
-        const { examId } = params;
+        const { examId } = await params;
         const { subject, chapter, count = 10 } = await req.json();
 
         if (!subject || !chapter) {

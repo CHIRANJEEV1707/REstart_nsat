@@ -62,6 +62,9 @@ export interface IUser extends Document {
     // Email verification
     isEmailVerified: boolean;
     emailVerifiedAt?: Date;
+
+    // Session Control
+    sessionToken?: string;
     createdAt: Date;
     updatedAt: Date;
     matchPassword(enteredPassword: string): Promise<boolean>;

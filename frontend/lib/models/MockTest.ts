@@ -21,6 +21,8 @@ export interface IMockTest {
     // Bundle access control
     requiredBundle: 'free' | 'basic' | 'core' | 'premium';
     testCategory: 'general' | 'coding';
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const MockTestSchema = new mongoose.Schema<IMockTest>({

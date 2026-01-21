@@ -84,7 +84,7 @@ export default function NSATCodingPage() {
         });
     };
 
-    const handleRazorpayPayment = async (email: string) => {
+    const handleRazorpayPayment = async () => {
         try {
             const res = await loadRazorpay();
             if (!res) throw new Error('Razorpay SDK failed to load');
@@ -137,7 +137,7 @@ export default function NSATCodingPage() {
                 },
                 prefill: {
                     name: "User",
-                    email: email,
+                    email: user?.email || "",
                     contact: "9999999999"
                 },
                 theme: { color: "#4F46E5" }
@@ -232,8 +232,8 @@ export default function NSATCodingPage() {
                                         }
                                     }}
                                     className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
-                                            ? 'bg-green-600 hover:bg-green-700 text-white border-transparent'
-                                            : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
+                                        ? 'bg-green-600 hover:bg-green-700 text-white border-transparent'
+                                        : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
                                         }`}
                                 >
                                     {purchased ? 'Access Content' : 'Get Started'}

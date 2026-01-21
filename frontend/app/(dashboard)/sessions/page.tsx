@@ -10,11 +10,6 @@ import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/axios';
 import { toast, Toaster } from 'sonner';
 
-declare global {
-    interface Window {
-        Razorpay: any;
-    }
-}
 
 const SESSION_CONFIG = {
     'interview-prep': {
@@ -63,7 +58,7 @@ export default function SessionsPage() {
 
     const loadRazorpayScript = (): Promise<boolean> => {
         return new Promise((resolve) => {
-            if (window.Razorpay) {
+            if ((window as any).Razorpay) {
                 resolve(true);
                 return;
             }
@@ -145,7 +140,7 @@ export default function SessionsPage() {
                 }
             };
 
-            const razorpay = new window.Razorpay(options);
+            const razorpay = new (window as any).Razorpay(options);
             razorpay.open();
         } catch (error: any) {
             console.error('Booking error:', error);

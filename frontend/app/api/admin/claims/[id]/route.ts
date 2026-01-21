@@ -4,8 +4,9 @@ import Claim from '@/lib/models/Claim';
 import User from '@/lib/models/User';
 import Bundle from '@/lib/models/Bundle';
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         // Admin Auth
         const adminPassword = request.headers.get('x-admin-password');
         if (adminPassword !== process.env.ADMIN_PASSWORD) {
@@ -20,7 +21,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
             return NextResponse.json({ success: false, message: 'Invalid status' }, { status: 400 });
         }
 
-        const claim = await Claim.findById(params.id);
+        const claim = await Claim.findById(id);
         if (!claim) {
             return NextResponse.json({ success: false, message: 'Claim not found' }, { status: 404 });
         }

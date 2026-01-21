@@ -8,7 +8,7 @@ import { SavedCollegesCard } from "@/components/dashboard/SavedCollegesCard";
 import CollegeCard from "@/components/colleges/CollegeCard";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
-import { Sparkles, Globe, Loader2, Code2 } from "lucide-react";
+import { Sparkles, Globe, Loader2, Code2, Calendar, MessageCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
@@ -75,6 +75,9 @@ export default function DashboardPage() {
 
             {/* 0. Active Plans */}
             <ActivePlansSection user={user} />
+
+            {/* 1.1 Upcoming Sessions */}
+            <UpcomingSessionsSection />
 
             {/* 2. Recommended Colleges Carousel */}
             <section>
@@ -202,3 +205,71 @@ function ActivePlansSection({ user }: { user: any }) {
         </div>
     );
 }
+
+function UpcomingSessionsSection() {
+    const { data: bookings, isLoading } = useQuery({
+        queryKey: ['my-sessions'],
+        queryFn: async () => {
+            const res = await api.get('/sessions/my-bookings');
+            return res.data.data;
+        }
+    });
+
+    if (isLoading || !bookings?.length) return null;
+
+    // Filter for real bookings (hide abandoned Razorpay or bugged 'paid' records)
+    const activeBookings = bookings.filter((b: any) =>
+        (b.status === 'paid' && b.paymentId) ||
+        b.status === 'pending_verification' ||
+        b.status === 'scheduled'
+    );
+
+    if (!activeBookings.length) return null;
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-2">
+                <Calendar className="text-blue-600 w-5 h-5" />
+                <h2 className="text-xl font-bold text-gray-900">Your Sessions</h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+                {activeBookings.map((booking: any) => (
+                    <div key={booking._id} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-blue-100 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="flex items-center gap-4">
+                            <div className={`h-10 w-10 rounded-full flex items-center justify-center ${booking.sessionType === 'interview-prep' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
+                                {booking.sessionType === 'interview-prep' ? <Calendar className="w-5 h-5" /> : <MessageCircle className="w-5 h-5" />}
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-900">
+                                    {booking.sessionType === 'interview-prep' ? 'Interview Prep' : 'REstart Unfiltered'}
+                                </h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <p className="text-xs text-gray-500">₹{booking.amount}</p>
+                                    {booking.status === 'pending_verification' && (
+                                        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 text-[10px] px-1.5 py-0">Pending Verification</Badge>
+                                    )}
+                                    {booking.status === 'paid' && (
+                                        <Badge className="bg-green-100 text-green-800 border-green-200 text-[10px] px-1.5 py-0">Ready to Schedule</Badge>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {booking.status === 'paid' && booking.calendlyUrl && (
+                            <Link href={booking.calendlyUrl} target="_blank">
+                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+                                    Schedule Now
+                                </Button>
+                            </Link>
+                        )}
+
+                        {booking.status === 'scheduled' && (
+                            <Badge variant="outline" className="text-blue-600 border-blue-200">Scheduled</Badge>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+

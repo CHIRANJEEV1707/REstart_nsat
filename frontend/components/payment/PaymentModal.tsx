@@ -15,9 +15,10 @@ interface PaymentModalProps {
     };
     upiId: string;
     onRazorpay: () => Promise<void>;
+    upiSubmitUrl?: string;
 }
 
-export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay, upiSubmitUrl = '/api/payment/upi-submit' }: PaymentModalProps) {
     const { user } = useAuth();
     const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi' | null>(null);
     const [qrLoading, setQrLoading] = useState(true);
@@ -50,7 +51,7 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay }: Paymen
             formData.append('productTitle', pkg.title);
 
             // Submit to UPI endpoint
-            const response = await fetch('/api/payment/upi-submit', {
+            const response = await fetch(upiSubmitUrl, {
                 method: 'POST',
                 body: formData
             });

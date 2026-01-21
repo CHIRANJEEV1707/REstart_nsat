@@ -176,6 +176,10 @@ app.use('/api/interview-guides', interviewGuideRoutes);
 app.use('/api/free-pack', freePackRoutes);
 app.use('/api/admin/nsat', nsatAdminRoutes);
 
+// Session Booking Routes
+import sessionRoutes from './routes/sessionRoutes';
+app.use('/api/sessions', sessionRoutes);
+
 
 // Simple health endpoints for debugging
 app.get('/', (req: Request, res: Response) => {

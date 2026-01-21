@@ -13,7 +13,8 @@ import {
     Sparkles,
     Code,
     ChevronRight,
-    GraduationCap
+    GraduationCap,
+    Video
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
@@ -41,6 +42,7 @@ export function Sidebar() {
         { name: 'Saved Colleges', icon: Bookmark, href: '/saved' },
         { name: 'Compare', icon: ArrowLeftRight, href: '/compare' },
         { name: 'Prep', icon: Code, href: '/prep' },
+        { name: 'Book Session', icon: Video, href: '/sessions' },
         { name: 'Entrance Exams', icon: GraduationCap, href: '/exams' },
         { name: 'Deadlines', icon: CalendarDays, href: '/exams-deadlines' },
     ];

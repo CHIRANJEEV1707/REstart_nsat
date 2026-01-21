@@ -29,6 +29,10 @@ export default function AdminPage() {
                     <h3 className="font-bold text-lg text-purple-700">Referral Claims</h3>
                     <p className="text-gray-500 text-sm mt-1">Approve free core pack claims.</p>
                 </Link>
+                <Link href="/admin/sessions" className="block p-8 bg-emerald-50 rounded-xl shadow-sm hover:shadow-md border border-emerald-100">
+                    <h3 className="font-bold text-lg text-emerald-700">Session Approvals</h3>
+                    <p className="text-gray-500 text-sm mt-1">Verify UPI payments for sessions.</p>
+                </Link>
             </div>
         </div>
     )

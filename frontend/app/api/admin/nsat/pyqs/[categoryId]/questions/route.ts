@@ -1,22 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import PYQQuestion from '@/lib/models/PYQQuestion';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
-import User from '@/lib/models/User';
-
 async function checkAdmin(request: NextRequest) {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('token')?.value;
-    if (!token) return false;
-    try {
-        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-        await dbConnect();
-        const user = await User.findById(decoded.id);
-        return user && user.role === 'admin';
-    } catch {
-        return false;
-    }
+    const adminPassword = request.headers.get('x-admin-password');
+    return adminPassword === (process.env.ADMIN_PASSWORD || 'admin123');
 }
 
 export async function GET(request: NextRequest, props: { params: Promise<{ categoryId: string }> }) {

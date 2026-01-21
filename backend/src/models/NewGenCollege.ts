@@ -49,7 +49,7 @@ export interface INewGenCollege extends Document {
 }
 
 const NewGenCollegeSchema: Schema = new Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: true },
     shortName: { type: String, required: true },
 
     // ... (rest of fields untouched, using ellipsis for context matching only if needed, but here replacing interface end and start of schema for safety)
@@ -96,11 +96,16 @@ const NewGenCollegeSchema: Schema = new Schema({
     website: { type: String },
     image: { type: String }, // For UI compatibility
 
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true, index: true },
     isTrending: { type: Boolean, default: false, index: true },
     trendingScore: { type: Number, default: 0, index: true }
 }, {
     timestamps: true
 });
+
+// Compound index for location-based filtering
+NewGenCollegeSchema.index({ 'location.state': 1, isActive: 1 });
+// Text search index
+NewGenCollegeSchema.index({ name: 'text', shortName: 'text' });
 
 export default mongoose.model<INewGenCollege>('NewGenCollege', NewGenCollegeSchema, 'newgen_colleges');

@@ -21,9 +21,12 @@ export async function POST(request: NextRequest) {
     try {
         await dbConnect();
 
-        if (!await isAdmin(request)) {
-            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+        // Simple Password Check
+        const adminPassword = request.headers.get('x-admin-password');
+        if (adminPassword !== (process.env.ADMIN_PASSWORD || 'admin123')) {
+            return NextResponse.json({ success: false, message: 'Invalid Admin Password' }, { status: 401 });
         }
+
 
         const { orderId, action } = await request.json(); // action: 'approve' | 'reject'
 

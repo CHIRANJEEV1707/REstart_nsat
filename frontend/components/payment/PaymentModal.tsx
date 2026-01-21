@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { X, CreditCard, QrCode, Upload, Check, Loader2, Image as ImageIcon, Mail } from 'lucide-react';
+import { X, CreditCard, QrCode, Upload, Check, Loader2, Image as ImageIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/context/AuthContext';
 
 interface PaymentModalProps {
     isOpen: boolean;
@@ -13,15 +14,16 @@ interface PaymentModalProps {
         price: number;
     };
     upiId: string;
-    onRazorpay: (email: string) => Promise<void>;
+    onRazorpay: () => Promise<void>;
 }
 
 export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay }: PaymentModalProps) {
+    const { user } = useAuth();
     const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi' | null>(null);
     const [qrLoading, setQrLoading] = useState(true);
     const [proofFile, setProofFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
-    const [email, setEmail] = useState('');
+    const userEmail = user?.email || '';
 
     if (!isOpen) return null;
 
@@ -33,30 +35,33 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay }: Paymen
     };
 
     const submitProof = async () => {
-        if (!proofFile || !email) {
-            toast.error("Please provide email and proof");
+        if (!proofFile) {
+            toast.error("Please upload payment proof");
             return;
         }
 
         setUploading(true);
         try {
-            // Simulate Upload
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Create FormData with proof file
+            const formData = new FormData();
+            formData.append('proof', proofFile);
+            formData.append('amount', String(pkg.price));
+            formData.append('productSlug', (pkg as any).slug || pkg.title);
+            formData.append('productTitle', pkg.title);
 
-            // Send Email
-            await fetch('/api/email/send', {
+            // Submit to UPI endpoint
+            const response = await fetch('/api/payment/upi-submit', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email,
-                    name: "Student", // Could add name input too
-                    productTitle: pkg.title,
-                    amount: pkg.price,
-                    type: 'upi_proof'
-                })
+                body: formData
             });
 
-            toast.success("Proof submitted! Confirmation email sent.", {
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to submit proof');
+            }
+
+            toast.success("Proof submitted! We'll verify it within 24 hours.", {
                 icon: '✅',
                 duration: 5000
             });
@@ -65,7 +70,7 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay }: Paymen
             onClose();
         } catch (e) {
             console.error(e);
-            toast.error("Failed to submit");
+            toast.error("Failed to submit proof. Please try again.");
         } finally {
             setUploading(false);
         }
@@ -94,28 +99,11 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay }: Paymen
                         <p className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</p>
                     </div>
 
-                    {/* Email Input */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email to receive access"
-                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
-                            />
-                        </div>
-                    </div>
 
                     {!paymentMethod ? (
                         <div className="space-y-3">
                             <button
-                                onClick={() => {
-                                    if (!email) return toast.error("Please enter your email first");
-                                    onRazorpay(email);
-                                }}
+                                onClick={() => onRazorpay()}
                                 className="w-full flex items-center justify-between p-4 rounded-xl border border-indigo-100 bg-indigo-50/50 hover:bg-indigo-50 hover:border-indigo-200 transition-all group"
                             >
                                 <div className="flex items-center gap-3">
@@ -131,7 +119,6 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay }: Paymen
 
                             <button
                                 onClick={() => {
-                                    if (!email) return toast.error("Please enter your email first");
                                     setPaymentMethod('upi');
                                     setQrLoading(true);
                                 }}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import User from '@/lib/models/User';
+import '@/lib/models/Bundle'; // Ensure Bundle model is registered
 import jwt from 'jsonwebtoken';
 
 interface JwtPayload {
@@ -33,8 +34,8 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Get user
-        const user = await User.findById(decoded.id);
+        // Get user with populated bundles
+        const user = await User.findById(decoded.id).populate('purchasedBundles.bundleId');
 
         if (!user) {
             return NextResponse.json(

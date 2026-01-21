@@ -123,7 +123,10 @@ export async function POST(request: NextRequest) {
         // Single execution (Run button)
         const response = await fetch(PISTON_API, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Agent': 'REStart-Education-App/1.0'
+            },
             body: JSON.stringify({
                 language: langConfig.language,
                 version: langConfig.version,
@@ -133,6 +136,22 @@ export async function POST(request: NextRequest) {
         });
 
         const data = await response.json();
+        console.log('[Piston Response]', JSON.stringify(data));
+
+        if (!response.ok) {
+            // If Piston returns an error, send it as stderr so it shows in the console panel
+            // Piston errors often look like { message: "..." }
+            const errorMessage = data.message || `Execution API Error: ${response.statusText}`;
+            return NextResponse.json({
+                success: true, // Return success=true so frontend processes the data
+                data: {
+                    stdout: '',
+                    stderr: errorMessage,
+                    compileOutput: '',
+                    exitCode: 1
+                }
+            });
+        }
 
         return NextResponse.json({
             success: true,

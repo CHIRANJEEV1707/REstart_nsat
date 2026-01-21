@@ -42,4 +42,7 @@ const InterviewGuideSchema = new Schema<IInterviewGuide>({
     order: { type: Number, default: 0 }
 }, { timestamps: true });
 
+// Compound index for filtered listing
+InterviewGuideSchema.index({ guideType: 1, isActive: 1, isFree: 1 });
+
 export default mongoose.model<IInterviewGuide>('InterviewGuide', InterviewGuideSchema);

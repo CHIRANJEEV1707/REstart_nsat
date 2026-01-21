@@ -11,12 +11,26 @@ export interface IBundle extends Document {
     currency: string;
     validityDays: number;
     isActive: boolean;
+    tier: string;
+    variant: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
 const BundleSchema = new Schema<IBundle>({
-    title: { type: String, required: true },
+    title: { type: String, required: true }, // Tier-based access
+    tier: {
+        type: String,
+        enum: ['basic', 'core', 'premium'],
+        required: true,
+        index: true
+    },
+    variant: {
+        type: String,
+        enum: ['combined', 'general_only', 'coding_only'],
+        default: 'combined',
+        index: true
+    },
     slug: { type: String, required: true, unique: true, index: true },
     description: { type: String, required: true },
     exam: { type: String, required: true },

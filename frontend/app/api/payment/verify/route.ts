@@ -3,6 +3,13 @@ import crypto from 'crypto';
 import connectDB from '@/lib/db';
 import Order from '@/lib/models/Order';
 import User from '@/lib/models/User';
+import { Resend } from 'resend';
+
+// WhatsApp group links for different tiers
+const WHATSAPP_LINKS: Record<string, string> = {
+    'nsat-core': 'https://chat.whatsapp.com/Dv5cSSZUPeC7egTbJ43fwF',
+    'nsat-premium': 'https://chat.whatsapp.com/FSGst6uURfRDCjUwPe8kof'
+};
 
 export async function POST(req: Request) {
     try {
@@ -47,7 +54,7 @@ export async function POST(req: Request) {
         if (user) {
             // Check if already purchased
             const alreadyPurchased = user.purchasedBundles.some(
-                (b) => (b.orderId === razorpay_order_id) || (b.productSlug && b.productSlug === order.productSlug)
+                (b: any) => (b.orderId === razorpay_order_id) || (b.productSlug && b.productSlug === order.productSlug)
             );
 
             if (!alreadyPurchased) {
@@ -59,6 +66,58 @@ export async function POST(req: Request) {
                     paymentId: razorpay_payment_id
                 });
                 await user.save();
+
+                // Send welcome email with WhatsApp link for Core/Premium
+                const productSlug = order.productSlug || '';
+                const whatsappLink = WHATSAPP_LINKS[productSlug];
+                if (whatsappLink && process.env.RESEND_API_KEY) {
+                    try {
+                        const resend = new Resend(process.env.RESEND_API_KEY);
+                        const fromEmail = process.env.RESEND_FROM_EMAIL || 'REstart <support@letsrestart.in>';
+                        const bundleName = productSlug.includes('premium') ? 'Premium' : 'Core';
+
+                        await resend.emails.send({
+                            from: fromEmail,
+                            to: user.email,
+                            subject: `🎉 Welcome to RE:START ${bundleName} - Your Interview Journey Begins!`,
+                            html: `
+                                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                                    <h1 style="color: #4F46E5;">Welcome to RE:START ${bundleName}! 🚀</h1>
+                                    
+                                    <p>Hi ${user.name || 'there'},</p>
+                                    
+                                    <p>Thank you for your purchase! You now have access to all ${bundleName} features.</p>
+                                    
+                                    <div style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;">
+                                        <h2 style="color: white; margin-bottom: 16px;">Join Your Exclusive WhatsApp Group</h2>
+                                        <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px;">
+                                            Your interview preparation will be coordinated through our WhatsApp group.
+                                        </p>
+                                        <a href="${whatsappLink}" style="display: inline-block; background: #25D366; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                                            📱 Join WhatsApp Group
+                                        </a>
+                                    </div>
+                                    
+                                    <p><strong>What's next?</strong></p>
+                                    <ul>
+                                        <li>✅ Access all your mock tests and PYQs on the dashboard</li>
+                                        <li>💬 Join the WhatsApp group for interview coordination</li>
+                                        <li>📞 Get priority support from our team</li>
+                                    </ul>
+                                    
+                                    <p>Best of luck with your NSAT preparation!</p>
+                                    
+                                    <p style="color: #6B7280; font-size: 14px; margin-top: 32px;">
+                                        - Team RE:START
+                                    </p>
+                                </div>
+                            `
+                        });
+                        console.log('[Payment] Welcome email sent to:', user.email);
+                    } catch (emailError) {
+                        console.error('[Payment] Failed to send welcome email:', emailError);
+                    }
+                }
             }
         }
 
@@ -69,3 +128,4 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: false, message: 'Verification failed' }, { status: 500 });
     }
 }
+

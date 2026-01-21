@@ -14,8 +14,8 @@ export interface IOrder extends Document {
 }
 
 const OrderSchema = new Schema<IOrder>({
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    bundleId: { type: Schema.Types.ObjectId, ref: 'Bundle', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    bundleId: { type: Schema.Types.ObjectId, ref: 'Bundle', required: true, index: true },
     razorpayOrderId: { type: String, required: true, index: true },
     razorpayPaymentId: { type: String },
     razorpaySignature: { type: String },
@@ -28,5 +28,8 @@ const OrderSchema = new Schema<IOrder>({
         index: true
     },
 }, { timestamps: true });
+
+// Compound index for user order history queries
+OrderSchema.index({ userId: 1, status: 1, createdAt: -1 });
 
 export default mongoose.model<IOrder>('Order', OrderSchema);

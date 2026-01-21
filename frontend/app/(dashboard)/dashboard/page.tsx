@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
 import { Sparkles, Globe, Loader2, Code2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import AuthButton from "@/components/ui/AuthButton";
@@ -189,9 +190,11 @@ function ActivePlansSection({ user }: { user: any }) {
                                     )}
                                 </div>
                             </div>
-                            <Button size="sm" variant="outline" className="border-indigo-200 text-indigo-600 hover:bg-indigo-50">
-                                Access Content
-                            </Button>
+                            <Link href="/prep/nsat">
+                                <Button size="sm" variant="outline" className="border-indigo-200 text-indigo-600 hover:bg-indigo-50">
+                                    Access Content
+                                </Button>
+                            </Link>
                         </div>
                     );
                 })}

@@ -12,18 +12,45 @@ import { useState } from 'react';
 export default function AdminOrdersPage() {
     const queryClient = useQueryClient();
     const [viewingProof, setViewingProof] = useState<string | null>(null);
+    const [adminPassword, setAdminPassword] = useState<string>('');
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-    const { data: orders, isLoading } = useQuery({
-        queryKey: ['admin-orders'],
-        queryFn: async () => {
-            const res = await api.get('/admin/orders?status=pending');
-            return res.data.data;
+    // Initial check for persisted password
+    useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('admin_password');
+            if (saved) {
+                setAdminPassword(saved);
+                setIsAuthenticated(true);
+            }
         }
+    });
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        localStorage.setItem('admin_password', adminPassword);
+        setIsAuthenticated(true);
+        queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+    };
+
+    const { data: orders, isLoading, error } = useQuery({
+        queryKey: ['admin-orders', adminPassword],
+        queryFn: async () => {
+            const res = await api.get('/admin/orders?status=pending', {
+                headers: { 'x-admin-password': adminPassword }
+            });
+            return res.data.data;
+        },
+        enabled: isAuthenticated,
+        retry: false
     });
 
     const mutation = useMutation({
         mutationFn: async ({ orderId, action }: { orderId: string, action: 'approve' | 'reject' }) => {
-            const res = await api.post('/admin/orders/approve', { orderId, action });
+            const res = await api.post('/admin/orders/approve',
+                { orderId, action },
+                { headers: { 'x-admin-password': adminPassword } }
+            );
             return res.data;
         },
         onSuccess: () => {
@@ -36,16 +63,61 @@ export default function AdminOrdersPage() {
         }
     });
 
+    if (!isAuthenticated || (error as any)?.response?.status === 401) {
+        if ((error as any)?.response?.status === 401 && isAuthenticated) {
+            // Auto logout on 401
+            localStorage.removeItem('admin_password');
+            setIsAuthenticated(false);
+            toast.error("Invalid password or session expired");
+        }
+
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+                <Toaster />
+                <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div className="text-center mb-8">
+                        <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span className="text-xl">🔒</span>
+                        </div>
+                        <h1 className="text-2xl font-bold text-gray-900">Admin Access</h1>
+                        <p className="text-gray-500 mt-2">Enter admin password to continue</p>
+                    </div>
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <input
+                            type="password"
+                            value={adminPassword}
+                            onChange={(e) => setAdminPassword(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                            placeholder="Password..."
+                            autoFocus
+                        />
+                        <Button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+                            Access Panel
+                        </Button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 p-8">
             <Toaster />
 
             {/* Image Modal */}
             {viewingProof && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setViewingProof(null)}>
-                    <div className="relative max-w-4xl max-h-[90vh] w-full">
-                        <img src={viewingProof} alt="Proof" className="w-full h-full object-contain rounded-lg" />
-                        <button className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full p-2" onClick={() => setViewingProof(null)}>
+                <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setViewingProof(null)}>
+                    <div className="relative w-full max-w-5xl flex items-center justify-center h-full">
+                        <img
+                            src={viewingProof}
+                            alt="Proof"
+                            className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                        <button
+                            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 transition-colors z-50 backdrop-blur-md"
+                            onClick={() => setViewingProof(null)}
+                        >
                             <X className="w-6 h-6" />
                         </button>
                     </div>
@@ -53,11 +125,23 @@ export default function AdminOrdersPage() {
             )}
 
             <div className="max-w-6xl mx-auto">
-                <div className="flex items-center gap-4 mb-8">
-                    <Link href="/admin" className="p-2 hover:bg-gray-200 rounded-full transition-colors">
-                        <ArrowLeft className="w-5 h-5" />
-                    </Link>
-                    <h1 className="text-2xl font-bold text-gray-900">Pending Approvals</h1>
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <Link href="/admin" className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                            <ArrowLeft className="w-5 h-5" />
+                        </Link>
+                        <h1 className="text-2xl font-bold text-gray-900">Pending Approvals</h1>
+                    </div>
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            localStorage.removeItem('admin_password');
+                            setIsAuthenticated(false);
+                            setAdminPassword('');
+                        }}
+                    >
+                        Log Out
+                    </Button>
                 </div>
 
                 {isLoading ? (

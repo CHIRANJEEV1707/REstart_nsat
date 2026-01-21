@@ -142,6 +142,9 @@ const UserSchema = new Schema<IUser>({
     isEmailVerified: { type: Boolean, default: false, index: true },
     emailVerifiedAt: { type: Date },
 
+    // Session Control
+    sessionToken: { type: String, select: false },
+
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

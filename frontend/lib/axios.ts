@@ -18,6 +18,12 @@ api.interceptors.request.use((config) => {
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // Inject admin password for password-locked admin routes
+        const adminPw = localStorage.getItem('admin_password');
+        if (adminPw && config.headers) {
+            config.headers['x-admin-password'] = adminPw;
+        }
     }
     return config;
 });
@@ -33,7 +39,7 @@ api.interceptors.response.use(
 
             // Avoid infinite loop if the refresh endpoint itself returns 401
             if (originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/login')) {
-                 return Promise.reject(error);
+                return Promise.reject(error);
             }
 
             originalRequest._retry = true;

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import { formatMath } from '@/lib/formatMath';
 
 interface PYQQuestion {
     _id: string;
@@ -107,7 +108,7 @@ export default function PYQQuestionsPage() {
                                         </div>
                                         <div className="flex-grow">
                                             <div className="flex justify-between items-start">
-                                                <p className="font-medium text-gray-900 pr-8">{q.questionText}</p>
+                                                <p className="font-medium text-gray-900 pr-8" dangerouslySetInnerHTML={{ __html: formatMath(q.questionText) }} />
                                                 <div className="text-gray-400">
                                                     {expandedId === q._id ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                                                 </div>
@@ -132,7 +133,7 @@ export default function PYQQuestionsPage() {
                                                             }`}
                                                     >
                                                         <span className="font-bold mr-2">{opt.id.toUpperCase()}.</span>
-                                                        {opt.text}
+                                                        <span dangerouslySetInnerHTML={{ __html: formatMath(opt.text) }} />
                                                         {opt.id === q.correctAnswer && <span className="ml-2 text-green-600 text-xs font-bold">(Correct Answer)</span>}
                                                     </div>
                                                 ))}
@@ -141,7 +142,7 @@ export default function PYQQuestionsPage() {
                                             {q.explanation && (
                                                 <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-900">
                                                     <span className="font-bold block mb-1">Explanation:</span>
-                                                    {q.explanation}
+                                                    <span dangerouslySetInnerHTML={{ __html: formatMath(q.explanation) }} />
                                                 </div>
                                             )}
                                         </div>

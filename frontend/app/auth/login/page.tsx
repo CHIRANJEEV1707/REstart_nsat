@@ -16,6 +16,7 @@ import { useQueryClient } from '@tanstack/react-query';
 const loginSchema = z.object({
     email: z.string().email('Please enter a valid email'),
     password: z.string().min(1, 'Password is required'),
+    rememberMe: z.boolean().optional(),
 });
 
 type LoginEvaluated = z.infer<typeof loginSchema>;
@@ -33,6 +34,9 @@ export default function LoginPage() {
         formState: { errors },
     } = useForm<LoginEvaluated>({
         resolver: zodResolver(loginSchema),
+        defaultValues: {
+            rememberMe: false
+        }
     });
 
     const onSubmit = async (data: LoginEvaluated) => {
@@ -131,8 +135,8 @@ export default function LoginPage() {
                         <div className="flex items-center">
                             <input
                                 id="remember-me"
-                                name="remember-me"
                                 type="checkbox"
+                                {...register('rememberMe')}
                                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                             />
                             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">

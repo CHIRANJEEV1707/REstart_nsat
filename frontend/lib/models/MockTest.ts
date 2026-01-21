@@ -18,6 +18,9 @@ export interface IMockTest {
     year?: number;
     shift?: string;
     order: number;
+    // Bundle access control
+    requiredBundle: 'free' | 'basic' | 'core' | 'premium';
+    testCategory: 'general' | 'coding';
 }
 
 const MockTestSchema = new mongoose.Schema<IMockTest>({
@@ -41,8 +44,21 @@ const MockTestSchema = new mongoose.Schema<IMockTest>({
     // PYQ specific fields
     isPYQ: { type: Boolean, default: false, index: true },
     year: { type: Number },
-    shift: { type: String }, // e.g., 'Shift 1', 'Morning'
-    order: { type: Number, default: 0 }
+    shift: { type: String },
+    order: { type: Number, default: 0 },
+    // Bundle access control
+    requiredBundle: {
+        type: String,
+        enum: ['free', 'basic', 'core', 'premium'],
+        default: 'free',
+        index: true
+    },
+    testCategory: {
+        type: String,
+        enum: ['general', 'coding'],
+        default: 'general',
+        index: true
+    }
 }, { timestamps: true });
 
 const MockTest: Model<IMockTest> = mongoose.models.MockTest || mongoose.model<IMockTest>('MockTest', MockTestSchema);

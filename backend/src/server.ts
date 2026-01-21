@@ -197,6 +197,9 @@ app.get('/api', (req: Request, res: Response) => {
 // Global Error Handler
 app.use(errorHandler);
 
+// Import College model to ensure schema registration
+import './models/College';
+
 const PORT = process.env.PORT || 5001;
 
 // Initialize server

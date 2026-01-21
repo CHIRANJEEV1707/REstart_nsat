@@ -10,11 +10,13 @@ import { PaymentModal } from '@/components/payment/PaymentModal';
 import { useAuth } from '@/context/AuthContext';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '@/lib/axios';
+import { ReferralCard } from '@/components/ReferralCard';
 
 export default function NSATPrepPage() {
     const { user, isLoading: authLoading } = useAuth();
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
     const [showUpgrade, setShowUpgrade] = useState(false);
+    const [stream, setStream] = useState<'general' | 'coding' | 'combined'>('combined');
 
     // Fetch access status
     const { data: accessData, refetch: refetchAccess, isLoading: queryLoading } = useQuery({
@@ -57,62 +59,76 @@ export default function NSATPrepPage() {
         );
     }
 
-    const packages = [
-        {
-            title: "NSAT Complete Prep – Interview + Mocks",
-            slug: "nsat-prep-complete",
-            price: 800,
-            bestFor: "Students wanting 360° coverage",
-            features: [
-                "Everything in Interview Prep",
-                "Full-length Mock Tests",
-                "Detailed Performance Analytics",
-                "Personalized Weakness Analysis",
-                "Priority Doubt Resolution"
-            ],
-            outcome: "Maximize your score and ace the interview.",
-            duration: "Until exams end",
-            color: "border-purple-200 bg-purple-50/50",
-            btnColor: "bg-purple-600 hover:bg-purple-700 text-white",
-            btnVariant: "default"
-        },
-        {
-            title: "NSAT Complete Prep – Interview",
-            slug: "nsat-prep-interview",
-            price: 500,
-            popular: true,
-            bestFor: "Students focusing on the interview stage",
-            features: [
-                "Everything in Basic Prep",
-                "Exclusive Interview Preparation Modules",
-                "Mock Interviews & Soft Skills",
-                "Resume Review Guidance",
-                "Common IIM Interview Questions"
-            ],
-            outcome: "Build confidence and crack the personal interview.",
-            duration: "Until interview phase",
-            color: "border-indigo-200 bg-indigo-50/50 ring-2 ring-indigo-500 ring-offset-2",
-            btnColor: "bg-indigo-600 hover:bg-indigo-700 text-white",
-            btnVariant: "default"
-        },
-        {
-            title: "NSAT Complete Prep – Basic",
-            slug: "nsat-prep-basic",
-            price: 300,
-            bestFor: "Building strong fundamentals",
-            features: [
-                "All Concept Video Lectures",
-                "Topic-wise Study Notes",
-                "Basic Practice Questions",
-                "Exam Pattern Overview",
-                "Access to Community Forum"
-            ],
-            outcome: "Master the core concepts required for NSAT.",
-            duration: "Until exams end",
-            color: "border-blue-200 bg-blue-50/50",
-            btnVariant: "outline"
-        }
-    ];
+    const getPackages = () => {
+        const isCombined = stream === 'combined';
+        const isCoding = stream === 'coding';
+        const streamLabel = isCombined ? 'Combined' : (isCoding ? 'Coding' : 'General');
+
+        return [
+            {
+                title: `Premium Pack (${streamLabel})`,
+                slug: isCombined ? "nsat-premium" : `nsat-premium-${stream}`,
+                price: isCombined ? 1000 : 800,
+                originalPrice: isCombined ? 1500 : 1200,
+                bestFor: "Maximum Preparation",
+                features: [
+                    isCombined ? "All 20 Mock Tests (10 General + 10 Coding)" : `10 ${streamLabel} Mock Tests`,
+                    isCombined ? "All PYQ Papers" : `All ${streamLabel} PYQ Papers`,
+                    "VIP WhatsApp Group",
+                    "Priority Interview Scheduling",
+                    "1-on-1 Doubt Support",
+                    "Lifetime Access"
+                ],
+                outcome: "Get everything you need to ace NSAT and secure admission.",
+                duration: "Lifetime Access",
+                color: "border-purple-200 bg-purple-50/50",
+                btnColor: "bg-purple-600 hover:bg-purple-700 text-white",
+                btnVariant: "default",
+                whatsappLink: "https://chat.whatsapp.com/FSGst6uURfRDCjUwPe8kof",
+                popular: isCombined // Combined premium is usually most promoted
+            },
+            {
+                title: `Core Pack (${streamLabel})`,
+                slug: isCombined ? "nsat-core" : `nsat-core-${stream}`,
+                price: isCombined ? 800 : 500,
+                originalPrice: isCombined ? 1200 : 800,
+                popular: !isCombined, // Highlight Core for specific streams
+                bestFor: "Serious About Success?",
+                features: [
+                    isCombined ? "5 Mock Tests (General + Coding)" : `5 ${streamLabel} Mock Tests`,
+                    isCombined ? "5 PYQ Papers" : `5 ${streamLabel} PYQ Papers`,
+                    "Exclusive WhatsApp Community",
+                    "Direct Interview Coordination",
+                    "Priority Support"
+                ],
+                outcome: "Build confidence with expert guidance and community support.",
+                duration: "Until exams end",
+                color: "border-indigo-200 bg-indigo-50/50 ring-2 ring-indigo-500 ring-offset-2",
+                btnColor: "bg-indigo-600 hover:bg-indigo-700 text-white",
+                btnVariant: "default",
+                whatsappLink: "https://chat.whatsapp.com/Dv5cSSZUPeC7egTbJ43fwF"
+            },
+            {
+                title: `Basic Pack (${streamLabel})`,
+                slug: isCombined ? "nsat-basic" : `nsat-basic-${stream}`,
+                price: isCombined ? 500 : 300,
+                bestFor: "Start Your NSAT Prep",
+                features: [
+                    isCombined ? "3 Full Mock Tests" : `3 ${streamLabel} Mock Tests`,
+                    isCombined ? "3 Real PYQ Papers" : `3 ${streamLabel} PYQ Papers`,
+                    "Interview Question Bank",
+                    "Detailed Solutions",
+                    "Email Support"
+                ],
+                outcome: "Get started with essential preparation resources.",
+                duration: "Until exams end",
+                color: "border-blue-200 bg-blue-50/50",
+                btnVariant: "outline"
+            }
+        ]
+    };
+
+    const packages = getPackages();
 
     // Helper to check if purchased
     const isPurchased = (slug: string) => {
@@ -129,7 +145,7 @@ export default function NSATPrepPage() {
         });
     };
 
-    const handleRazorpayPayment = async (email: string) => {
+    const handleRazorpayPayment = async () => {
         try {
             const res = await loadRazorpay();
             if (!res) throw new Error('Razorpay SDK failed to load');
@@ -181,8 +197,8 @@ export default function NSATPrepPage() {
                     setSelectedPackage(null);
                 },
                 prefill: {
-                    name: "User",
-                    email: email,
+                    name: user?.name || "User",
+                    email: user?.email || "",
                     contact: "9999999999"
                 },
                 theme: { color: "#2563EB" }
@@ -273,6 +289,26 @@ export default function NSATPrepPage() {
                             </div>
                         )}
 
+
+
+                        {/* Stream Selection */}
+                        <div className="flex justify-center mb-8">
+                            <div className="bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm inline-flex">
+                                {(['combined', 'general', 'coding'] as const).map((s) => (
+                                    <button
+                                        key={s}
+                                        onClick={() => setStream(s)}
+                                        className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${stream === s
+                                            ? 'bg-blue-600 text-white shadow-md'
+                                            : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        {s.charAt(0).toUpperCase() + s.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Pricing Grid */}
                         <div className="grid md:grid-cols-3 gap-8 items-start mb-12">
                             {packages.map((pkg, idx) => {
@@ -332,6 +368,9 @@ export default function NSATPrepPage() {
                                 );
                             })}
                         </div>
+
+                        {/* Referral Card (Bottom) */}
+                        {!isPurchased('nsat-core') && !isPurchased('nsat-premium') && <ReferralCard />}
                     </>
                 ) : (
                     // Student Dashboard View

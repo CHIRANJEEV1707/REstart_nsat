@@ -16,13 +16,16 @@ export default function TestResultsPage() {
     const { user } = useAuth();
     const attemptId = params.attemptId as string;
 
-    const { data: attempt, isLoading } = useQuery({
+    const { data: result, isLoading } = useQuery({
         queryKey: ['testAttempt', attemptId],
         queryFn: async () => {
             const res = await api.get(`/mock-tests/attempts/${attemptId}`);
-            return res.data?.data;
+            return res.data?.data; // Returns { attempt, questions, isPremium }
         }
     });
+
+    const attempt = result?.attempt;
+    const questions = result?.questions;
 
     // Check Free Pack Status
     const { data: freePackData } = useQuery({
@@ -58,9 +61,21 @@ export default function TestResultsPage() {
         );
     }
 
-    const { mockTestId: test, totalScore, totalViolations, analytics, totalTimeSpent } = attempt;
+    const { mockTestId: test, totalScore, totalViolations, analytics, totalTimeSpent } = attempt || {};
 
-    // Check access rights
+    // If test data is missing (mockTestId not populated), show error
+    if (!test) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-xl font-bold mb-2">Test data not available</h2>
+                    <Button onClick={() => router.push('/prep/nsat/mock-tests')}>Go Back</Button>
+                </div>
+            </div>
+        );
+    }
+
+    // Check access rights - use backend isPremium if available
     const hasPurchasedBundle = (user?.purchasedBundles?.length ?? 0) > 0;
     const hasFreePack = freePackData?.hasFreepack || freePackData?.accessLevel === 'free';
 
@@ -70,7 +85,7 @@ export default function TestResultsPage() {
     // But if this is a "Free Pack" test, it should be unlocked.
     // Assuming 'isPremium' controls the locking of analytics section.
 
-    const isPremium = hasPurchasedBundle || hasFreePack;
+    const isPremium = result?.isPremium || hasPurchasedBundle || hasFreePack;
 
     // Use server-calculated accuracy (fallback to client calculation if missing)
     const serverAccuracy = analytics?.accuracy;

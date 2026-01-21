@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { X, Clock, CheckCircle, Flag, ArrowRight, Loader2 } from 'lucide-react';
 import { ExamService, Question } from '@/services/examService';
+import { formatMath } from '@/lib/formatMath';
 
 interface PracticeSessionModalProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ export default function PracticeSessionModal({
           // Populate answers
           const ansMap: Record<string, string> = {};
           reviewData.answers.forEach((a: any) => {
-             ansMap[a.questionId] = a.selectedOptionId;
+            ansMap[a.questionId] = a.selectedOptionId;
           });
           setAnswers(ansMap);
 
@@ -180,76 +181,77 @@ export default function PracticeSessionModal({
                   Question {currentQuestionIndex + 1} / {questions.length}
                 </div>
                 {!isReview && (
-                    <div className="flex items-center gap-2 text-orange-600 font-mono font-bold bg-orange-50 px-3 py-1 rounded-lg">
+                  <div className="flex items-center gap-2 text-orange-600 font-mono font-bold bg-orange-50 px-3 py-1 rounded-lg">
                     <Clock className="w-4 h-4" />
                     {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-                    </div>
+                  </div>
                 )}
                 {isReview && (
-                    <div className="flex items-center gap-2 text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-lg">
-                        Review Mode
-                    </div>
+                  <div className="flex items-center gap-2 text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-lg">
+                    Review Mode
+                  </div>
                 )}
               </div>
 
               {/* Question Text */}
               <div className="mb-6 flex-1 overflow-y-auto">
-                 <div className="mb-2">
-                    <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-wider">
-                        {currentQuestion.subject}
-                    </span>
-                    <span className="ml-2 text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded uppercase tracking-wider">
-                        {currentQuestion.difficulty}
-                    </span>
-                 </div>
-                <h3 className="text-lg font-medium text-gray-900 leading-relaxed">
-                  {currentQuestion.text}
-                </h3>
+                <div className="mb-2">
+                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-wider">
+                    {currentQuestion.subject}
+                  </span>
+                  <span className="ml-2 text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded uppercase tracking-wider">
+                    {currentQuestion.difficulty}
+                  </span>
+                </div>
+                <h3
+                  className="text-lg font-medium text-gray-900 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.text) }}
+                />
 
                 {/* Options */}
                 <div className="mt-6 space-y-3">
-                    {currentQuestion.options?.map((opt) => {
-                        let buttonClass = 'border-gray-100 hover:border-gray-200 hover:bg-gray-50 text-gray-600';
-                        let badgeClass = 'bg-gray-100 text-gray-500';
+                  {currentQuestion.options?.map((opt) => {
+                    let buttonClass = 'border-gray-100 hover:border-gray-200 hover:bg-gray-50 text-gray-600';
+                    let badgeClass = 'bg-gray-100 text-gray-500';
 
-                        const isSelected = answers[currentQuestion.id] === opt.id;
+                    const isSelected = answers[currentQuestion.id] === opt.id;
 
-                        if (isReview) {
-                            if (currentQuestion.correctAnswer === opt.id) {
-                                buttonClass = 'border-green-500 bg-green-50 text-green-800';
-                                badgeClass = 'bg-green-600 text-white';
-                            } else if (isSelected) {
-                                buttonClass = 'border-red-500 bg-red-50 text-red-800';
-                                badgeClass = 'bg-red-600 text-white';
-                            }
-                        } else {
-                            if (isSelected) {
-                                buttonClass = 'border-blue-500 bg-blue-50/50 text-blue-800';
-                                badgeClass = 'bg-blue-600 text-white';
-                            }
-                        }
+                    if (isReview) {
+                      if (currentQuestion.correctAnswer === opt.id) {
+                        buttonClass = 'border-green-500 bg-green-50 text-green-800';
+                        badgeClass = 'bg-green-600 text-white';
+                      } else if (isSelected) {
+                        buttonClass = 'border-red-500 bg-red-50 text-red-800';
+                        badgeClass = 'bg-red-600 text-white';
+                      }
+                    } else {
+                      if (isSelected) {
+                        buttonClass = 'border-blue-500 bg-blue-50/50 text-blue-800';
+                        badgeClass = 'bg-blue-600 text-white';
+                      }
+                    }
 
-                        return (
-                            <button
-                                key={opt.id}
-                                onClick={() => handleOptionSelect(opt.id)}
-                                disabled={isReview}
-                                className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 ${buttonClass}`}
-                            >
-                                <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${badgeClass}`}>
-                                    {opt.id}
-                                </span>
-                                <span className="font-medium">{opt.text}</span>
-                            </button>
-                        );
-                    })}
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => handleOptionSelect(opt.id)}
+                        disabled={isReview}
+                        className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 ${buttonClass}`}
+                      >
+                        <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${badgeClass}`}>
+                          {opt.id}
+                        </span>
+                        <span className="font-medium" dangerouslySetInnerHTML={{ __html: formatMath(opt.text) }} />
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {isReview && currentQuestion.explanation && (
-                    <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-xl">
-                        <h4 className="font-bold text-yellow-800 mb-2">Explanation</h4>
-                        <p className="text-yellow-700 text-sm leading-relaxed">{currentQuestion.explanation}</p>
-                    </div>
+                  <div className="mt-6 p-4 bg-yellow-50 border border-yellow-100 rounded-xl">
+                    <h4 className="font-bold text-yellow-800 mb-2">Explanation</h4>
+                    <p className="text-yellow-700 text-sm leading-relaxed">{currentQuestion.explanation}</p>
+                  </div>
                 )}
               </div>
 

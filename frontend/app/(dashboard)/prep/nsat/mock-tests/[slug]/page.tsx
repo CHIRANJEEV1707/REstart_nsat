@@ -17,6 +17,7 @@ import { ViolationWarning } from '@/components/proctoring/ViolationWarning';
 import LanguageSelector from '@/components/coding/LanguageSelector';
 import TestCasePanel from '@/components/coding/TestCasePanel';
 import toast, { Toaster } from 'react-hot-toast';
+import { formatMath as formatQuestionText } from '@/lib/formatMath';
 
 // Dynamic import for Monaco to avoid SSR issues
 const CodeEditor = dynamic(() => import('@/components/coding/CodeEditor'), {
@@ -288,38 +289,67 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
     };
 
     const handleRunCode = async (question: Question) => {
-        if (!question) return;
+        console.log('[DEBUG] handleRunCode called', { question: question?._id });
+        if (!question) {
+            console.log('[DEBUG] No question provided, returning');
+            return;
+        }
         const qId = question._id;
         const code = getCurrentCode(qId, question);
         const lang = getCurrentLanguage(qId);
+
+        console.log('[DEBUG] Executing code', { qId, lang, codeLength: code?.length });
 
         setIsRunningCode(true);
         setActiveIOTab('output');
         setRunOutput({ stdout: '', stderr: '' });
 
         try {
+            console.log('[DEBUG] Making API call to /code/execute');
             const res = await api.post('/code/execute', {
                 code,
                 language: lang,
                 input: customInput
             });
 
+            console.log('[DEBUG] API response received', res.data);
+            console.log('[DEBUG] stdout:', JSON.stringify(res.data.data?.stdout));
+            console.log('[DEBUG] stderr:', JSON.stringify(res.data.data?.stderr));
+
             if (res.data.success) {
-                setRunOutput({
-                    stdout: res.data.data.stdout,
-                    stderr: res.data.data.stderr || res.data.data.compileOutput
-                });
-                if (res.data.data.stderr || res.data.data.compileOutput) {
+                const stdout = res.data.data.stdout || '';
+                const stderr = res.data.data.stderr || res.data.data.compileOutput || '';
+
+                // If both are empty, the code ran but produced no output
+                if (!stdout && !stderr) {
+                    setRunOutput({
+                        stdout: '(No output - your code executed successfully but didn\'t print anything)',
+                        stderr: ''
+                    });
+                } else {
+                    setRunOutput({ stdout, stderr });
+                }
+
+                if (stderr) {
                     setActiveIOTab('error');
                 }
+            } else {
+                console.log('[DEBUG] API returned success=false', res.data);
+                setRunOutput({
+                    stdout: '',
+                    stderr: res.data.message || 'Execution failed'
+                });
+                setActiveIOTab('error');
             }
         } catch (error: any) {
+            console.error('[DEBUG] API call failed', error);
             setRunOutput({
                 stdout: '',
-                stderr: error.response?.data?.message || 'Execution failed'
+                stderr: error.response?.data?.message || error.message || 'Execution failed'
             });
             setActiveIOTab('error');
         } finally {
+            console.log('[DEBUG] Setting isRunningCode to false');
             setIsRunningCode(false);
         }
     };
@@ -733,7 +763,10 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Button
-                                            onClick={() => handleRunCode(currentQuestion)}
+                                            onClick={() => {
+                                                console.log('[DEBUG] Run button clicked!', { isRunningCode, isSubmitted: submittedQuestions[currentQuestion._id] });
+                                                handleRunCode(currentQuestion);
+                                            }}
                                             disabled={isRunningCode || submittedQuestions[currentQuestion._id]}
                                             size="sm"
                                             variant="outline"
@@ -811,26 +844,10 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
                         /* ===== MCQ QUESTION: Regular layout ===== */
                         <div className="flex-1 overflow-y-auto p-6 lg:p-8">
                             <div className="max-w-4xl mx-auto">
-                                {/* Question Header for MCQ */}
-                                <div className="bg-white border-b px-6 py-4 flex items-center justify-between mb-6 -mx-6 lg:-mx-8 -mt-6 lg:-mt-8 rounded-t-lg">
-                                    <div>
-                                        <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                                            {currentSection}
-                                        </span>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <h2 className="text-xl font-bold text-gray-900">Question {currentIndex + 1}</h2>
-                                            <Badge variant="outline">MCQ</Badge>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="font-bold text-green-600">+{currentQuestion?.marks} Marks</div>
-                                        <div className="text-sm text-red-500">-{currentQuestion?.negativeMarks} Neg.</div>
-                                    </div>
-                                </div>
-
-                                <p className="text-lg text-gray-800 leading-relaxed whitespace-pre-wrap mb-8 font-medium">
-                                    {currentQuestion?.questionText}
-                                </p>
+                                <div
+                                    className="text-lg text-gray-800 leading-relaxed mb-8 font-medium question-text"
+                                    dangerouslySetInnerHTML={{ __html: formatQuestionText(currentQuestion?.questionText || '') }}
+                                />
 
                                 <div className="space-y-3">
                                     {currentQuestion?.options.map((option) => (
@@ -850,10 +867,10 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
                                                     <div className="w-2.5 h-2.5 rounded-full bg-white" />
                                                 )}
                                             </div>
-                                            <span className={`flex-1 font-medium ${answers[currentQuestion._id] === option.id ? 'text-blue-900' : 'text-gray-700'
-                                                }`}>
-                                                {option.text}
-                                            </span>
+                                            <span
+                                                className={`flex-1 font-medium ${answers[currentQuestion._id] === option.id ? 'text-blue-900' : 'text-gray-700'}`}
+                                                dangerouslySetInnerHTML={{ __html: formatQuestionText(option.text) }}
+                                            />
                                         </div>
                                     ))}
                                 </div>

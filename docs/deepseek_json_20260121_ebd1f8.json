@@ -1,0 +1,956 @@
+{
+  "NSAT_General_Mocks": [
+    {
+      "mock_number": 1,
+      "sections": [
+        {
+          "section_name": "Math (Class 10)",
+          "questions": [
+            {
+              "id": 1,
+              "question": "If the cost price of 20 articles is equal to the selling price of 25 articles, find the loss percentage.",
+              "options": ["15%", "20%", "25%", "30%", "35%"],
+              "correct_answer": "2",
+              "topic": "Profit and Loss"
+            },
+            {
+              "id": 2,
+              "question": "Find the HCF of 36, 54 and 72.",
+              "options": ["12", "18", "24", "36", "48"],
+              "correct_answer": "2",
+              "topic": "Number Systems"
+            },
+            {
+              "id": 3,
+              "question": "A train 150m long passes a pole in 15 seconds. Find the speed of the train in km/hr.",
+              "options": ["36", "40", "45", "50", "54"],
+              "correct_answer": "1",
+              "topic": "Time, Speed and Distance"
+            },
+            {
+              "id": 4,
+              "question": "If 3x + 4y = 11 and 4x + 3y = 10, find the value of x + y.",
+              "options": ["2", "3", "4", "5", "6"],
+              "correct_answer": "2",
+              "topic": "Linear Equations"
+            },
+            {
+              "id": 5,
+              "question": "The radius of a circle is increased by 20%. Find the percentage increase in its area.",
+              "options": ["40%", "44%", "48%", "52%", "56%"],
+              "correct_answer": "2",
+              "topic": "Mensuration"
+            },
+            {
+              "id": 6,
+              "question": "Find the mean of first 10 prime numbers.",
+              "options": ["12.2", "12.9", "13.5", "14.1", "15.2"],
+              "correct_answer": "2",
+              "topic": "Statistics"
+            },
+            {
+              "id": 7,
+              "question": "A sum of money doubles itself in 5 years at simple interest. In how many years will it become 8 times?",
+              "options": ["25", "30", "35", "40", "45"],
+              "correct_answer": "3",
+              "topic": "Simple Interest"
+            },
+            {
+              "id": 8,
+              "question": "If the angles of a triangle are in the ratio 2:3:4, find the largest angle.",
+              "options": ["60°", "70°", "80°", "90°", "100°"],
+              "correct_answer": "3",
+              "topic": "Geometry"
+            },
+            {
+              "id": 9,
+              "question": "Find the value of √(0.09) + √(0.25) + √(0.36).",
+              "options": ["1.4", "1.5", "1.6", "1.7", "1.8"],
+              "correct_answer": "3",
+              "topic": "Square Roots"
+            },
+            {
+              "id": 10,
+              "question": "A can do a work in 15 days and B can do it in 20 days. They work together for 4 days. What fraction of work is left?",
+              "options": ["1/3", "2/5", "8/15", "7/15", "3/5"],
+              "correct_answer": "3",
+              "topic": "Time and Work"
+            },
+            {
+              "id": 11,
+              "question": "The average of 5 numbers is 30. If one number is excluded, the average becomes 28. Find the excluded number.",
+              "options": ["34", "36", "38", "40", "42"],
+              "correct_answer": "3",
+              "topic": "Averages"
+            },
+            {
+              "id": 12,
+              "question": "Find the value of (0.6 × 0.6 × 0.6 + 0.4 × 0.4 × 0.4) / (0.6 × 0.6 - 0.6 × 0.4 + 0.4 × 0.4).",
+              "options": ["0.2", "0.4", "0.6", "1.0", "1.2"],
+              "correct_answer": "4",
+              "topic": "Algebraic Identities"
+            },
+            {
+              "id": 13,
+              "question": "A man buys 10 oranges for ₹100 and sells 8 oranges for ₹100. Find his gain percentage.",
+              "options": ["20%", "25%", "30%", "35%", "40%"],
+              "correct_answer": "2",
+              "topic": "Profit Percentage"
+            },
+            {
+              "id": 14,
+              "question": "If 2^x = 8^(y+1) and 9^y = 3^(x-9), find the value of x + y.",
+              "options": ["18", "21", "24", "27", "30"],
+              "correct_answer": "2",
+              "topic": "Exponents"
+            },
+            {
+              "id": 15,
+              "question": "Find the area of a triangle with vertices at (0,0), (4,0) and (0,3).",
+              "options": ["5", "6", "7", "8", "9"],
+              "correct_answer": "2",
+              "topic": "Coordinate Geometry"
+            }
+          ]
+        },
+        {
+          "section_name": "Math (11-12)",
+          "questions": [
+            {
+              "id": 16,
+              "question": "Find the number of ways to arrange the letters of the word 'BANANA'.",
+              "options": ["60", "90", "120", "150", "180"],
+              "correct_answer": "1",
+              "topic": "Permutations"
+            },
+            {
+              "id": 17,
+              "question": "If P(A) = 0.4, P(B) = 0.5 and P(A∩B) = 0.2, find P(A∪B).",
+              "options": ["0.6", "0.7", "0.8", "0.9", "1.0"],
+              "correct_answer": "2",
+              "topic": "Probability"
+            },
+            {
+              "id": 18,
+              "question": "Find the derivative of f(x) = x^3 + 3x^2 - 5x + 7 with respect to x.",
+              "options": ["3x^2+6x-5", "3x^2+6x+5", "3x^2-6x-5", "3x^2-6x+5", "x^2+6x-5"],
+              "correct_answer": "1",
+              "topic": "Calculus"
+            },
+            {
+              "id": 19,
+              "question": "If A = {1,2,3,4} and B = {3,4,5,6}, find A∩B.",
+              "options": ["{1,2}", "{3,4}", "{5,6}", "{1,2,3,4,5,6}", "{}"],
+              "correct_answer": "2",
+              "topic": "Sets"
+            },
+            {
+              "id": 20,
+              "question": "Find the value of lim(x→2) (x^2 - 4)/(x - 2).",
+              "options": ["0", "2", "4", "6", "8"],
+              "correct_answer": "3",
+              "topic": "Limits"
+            },
+            {
+              "id": 21,
+              "question": "If A = [[1,2],[3,4]] and B = [[5,6],[7,8]], find A+B.",
+              "options": ["[[6,8],[10,12]]", "[[5,12],[21,32]]", "[[6,7],[8,9]]", "[[5,8],[10,12]]", "[[6,8],[9,12]]"],
+              "correct_answer": "1",
+              "topic": "Matrices"
+            },
+            {
+              "id": 22,
+              "question": "Find the value of ∫(2x dx) from 0 to 3.",
+              "options": ["6", "8", "9", "12", "18"],
+              "correct_answer": "3",
+              "topic": "Integration"
+            },
+            {
+              "id": 23,
+              "question": "In how many ways can 5 people sit around a circular table?",
+              "options": ["12", "24", "48", "96", "120"],
+              "correct_answer": "2",
+              "topic": "Circular Permutations"
+            },
+            {
+              "id": 24,
+              "question": "If tanθ = 3/4, find sinθ.",
+              "options": ["3/5", "4/5", "5/3", "5/4", "3/4"],
+              "correct_answer": "1",
+              "topic": "Trigonometry"
+            },
+            {
+              "id": 25,
+              "question": "Find the determinant of [[2,3],[4,5]].",
+              "options": ["-2", "-1", "0", "1", "2"],
+              "correct_answer": "1",
+              "topic": "Determinants"
+            },
+            {
+              "id": 26,
+              "question": "If f(x) = 3x^2 - 2x + 1, find f'(2).",
+              "options": ["8", "9", "10", "11", "12"],
+              "correct_answer": "3",
+              "topic": "Derivatives"
+            },
+            {
+              "id": 27,
+              "question": "A bag contains 4 red and 6 blue balls. Two balls are drawn at random. Find the probability that both are red.",
+              "options": ["1/15", "2/15", "3/15", "4/15", "5/15"],
+              "correct_answer": "2",
+              "topic": "Probability"
+            },
+            {
+              "id": 28,
+              "question": "Find the value of log₁₀100 + log₁₀1000.",
+              "options": ["2", "3", "5", "6", "8"],
+              "correct_answer": "3",
+              "topic": "Logarithms"
+            },
+            {
+              "id": 29,
+              "question": "If A and B are independent events with P(A)=0.3 and P(B)=0.4, find P(A∩B).",
+              "options": ["0.07", "0.12", "0.18", "0.24", "0.28"],
+              "correct_answer": "2",
+              "topic": "Independent Events"
+            },
+            {
+              "id": 30,
+              "question": "Find the 10th term of the arithmetic sequence 5, 8, 11, 14,...",
+              "options": ["29", "32", "35", "38", "41"],
+              "correct_answer": "2",
+              "topic": "Arithmetic Progression"
+            }
+          ]
+        },
+        {
+          "section_name": "Logic & Data Interpretation",
+          "questions": [
+            {
+              "id": 31,
+              "question": "In a row of 40 students, A is 15th from the left and B is 20th from the right. How many students are between A and B?",
+              "options": ["3", "4", "5", "6", "7"],
+              "correct_answer": "3",
+              "topic": "Ranking"
+            },
+            {
+              "id": 32,
+              "question": "If 'PEN' is coded as '35' and 'PENCIL' is coded as '63', how is 'PAPER' coded?",
+              "options": ["40", "45", "50", "55", "60"],
+              "correct_answer": "4",
+              "topic": "Coding-Decoding"
+            },
+            {
+              "id": 33,
+              "question": "A is B's sister. C is B's mother. D is C's father. E is D's mother. How is A related to D?",
+              "options": ["Granddaughter", "Grandson", "Daughter", "Son", "Niece"],
+              "correct_answer": "1",
+              "topic": "Blood Relations"
+            },
+            {
+              "id": 34,
+              "type": "data_interpretation",
+              "question": "Study the table below and answer:\n\nYear | Sales (in lakhs)\n2018 | 120\n2019 | 150\n2020 | 180\n2021 | 210\n2022 | 240\n\nWhat is the average annual growth rate from 2018 to 2022?",
+              "options": ["15%", "18%", "20%", "22%", "25%"],
+              "correct_answer": "3",
+              "topic": "Table DI"
+            },
+            {
+              "id": 35,
+              "question": "All roses are flowers. Some flowers are red. Some red things are beautiful. Which conclusion follows?",
+              "options": ["All roses are red", "Some roses are beautiful", "Some flowers are beautiful", "All red things are roses", "None of these"],
+              "correct_answer": "5",
+              "topic": "Syllogisms"
+            },
+            {
+              "id": 36,
+              "question": "Find the missing number: 2, 6, 12, 20, ?, 42",
+              "options": ["28", "30", "32", "34", "36"],
+              "correct_answer": "2",
+              "topic": "Number Series"
+            },
+            {
+              "id": 37,
+              "type": "data_interpretation",
+              "question": "In a class of 50 students, 30 like Math, 25 like Science, and 15 like both. How many like neither?",
+              "options": ["5", "10", "15", "20", "25"],
+              "correct_answer": "2",
+              "topic": "Venn Diagrams"
+            },
+            {
+              "id": 38,
+              "question": "If 'MORNING' is coded as 'NPSOJOH', how is 'EVENING' coded?",
+              "options": ["FWFOJOH", "FWFOJPI", "FWFNJOH", "FWFOJOG", "FWFNJOF"],
+              "correct_answer": "1",
+              "topic": "Coding-Decoding"
+            },
+            {
+              "id": 39,
+              "question": "A clock shows 3:15. What is the angle between the hour and minute hands?",
+              "options": ["0°", "5°", "7.5°", "10°", "12.5°"],
+              "correct_answer": "3",
+              "topic": "Clock Problems"
+            },
+            {
+              "id": 40,
+              "question": "Find the odd one out: 8, 27, 64, 100, 125, 216",
+              "options": ["27", "64", "100", "125", "216"],
+              "correct_answer": "3",
+              "topic": "Odd One Out"
+            },
+            {
+              "id": 41,
+              "type": "data_interpretation",
+              "question": "A pie chart shows expenditure: Food 40%, Rent 25%, Transport 15%, Entertainment 10%, Savings 10%. If total income is ₹50,000, what is food expenditure?",
+              "options": ["₹15,000", "₹18,000", "₹20,000", "₹22,000", "₹25,000"],
+              "correct_answer": "3",
+              "topic": "Pie Chart"
+            },
+            {
+              "id": 42,
+              "question": "If 'A + B' means A is brother of B, 'A × B' means A is father of B, 'A ÷ B' means A is mother of B. What does 'P × Q + R' mean?",
+              "options": ["P is father of Q and R", "Q is brother of R", "P is father of Q and Q is brother of R", "P is grandfather of R", "None of these"],
+              "correct_answer": "3",
+              "topic": "Coded Relations"
+            },
+            {
+              "id": 43,
+              "question": "Find the missing number in the pattern:\n2, 5, 10, 17, 26, ?",
+              "options": ["35", "36", "37", "38", "39"],
+              "correct_answer": "3",
+              "topic": "Number Pattern"
+            },
+            {
+              "id": 44,
+              "type": "data_interpretation",
+              "question": "Bar graph shows company profits (in crores): 2018: 20, 2019: 25, 2020: 30, 2021: 35, 2022: 40. What is percentage increase from 2018 to 2022?",
+              "options": ["80%", "90%", "100%", "110%", "120%"],
+              "correct_answer": "3",
+              "topic": "Bar Graph"
+            },
+            {
+              "id": 45,
+              "question": "In a code language, 'COMPUTER' is written as 'EQORWVGT'. How is 'SCIENCE' written in that code?",
+              "options": ["UEKGPG", "UEKGPF", "UEKGPE", "UEKGPK", "UEKGPH"],
+              "correct_answer": "1",
+              "topic": "Letter Coding"
+            },
+            {
+              "id": 46,
+              "question": "A walks 10m South, then turns left and walks 5m, then turns right and walks 3m. How far is he from starting point?",
+              "options": ["√74 m", "√84 m", "√94 m", "√104 m", "√114 m"],
+              "correct_answer": "1",
+              "topic": "Direction Sense"
+            },
+            {
+              "id": 47,
+              "question": "If 'PEN' is written as 'QFO', 'INK' is written as 'JOL', how is 'BOOK' written?",
+              "options": ["CPPL", "CPPM", "CQQM", "CQQL", "CPQL"],
+              "correct_answer": "1",
+              "topic": "Word Coding"
+            },
+            {
+              "id": 48,
+              "type": "data_interpretation",
+              "question": "Table shows student marks:\nStudent | Math | Science\nA | 80 | 70\nB | 90 | 85\nC | 70 | 90\nD | 85 | 80\nWho has highest average?",
+              "options": ["A", "B", "C", "D", "B and D tie"],
+              "correct_answer": "2",
+              "topic": "Table Analysis"
+            },
+            {
+              "id": 49,
+              "question": "Find the next term: Z, X, V, T, ?",
+              "options": ["R", "Q", "P", "O", "N"],
+              "correct_answer": "1",
+              "topic": "Alphabet Series"
+            },
+            {
+              "id": 50,
+              "question": "Statements: Some cats are dogs. No dog is a tiger. Conclusions: I. Some cats are not tigers. II. No cat is a tiger.",
+              "options": ["Only I follows", "Only II follows", "Both follow", "Neither follows", "Cannot be determined"],
+              "correct_answer": "1",
+              "topic": "Logical Deduction"
+            }
+          ]
+        },
+        {
+          "section_name": "Algorithmic Thinking",
+          "questions": [
+            {
+              "id": 51,
+              "question": "What is the output of the flowchart if input is 5?\n[Start] → [Input N] → [S=0, i=1] → [i≤N?] → Yes → [S=S+i] → [i=i+1] → [i≤N?] → No → [Print S] → [End]",
+              "options": ["10", "12", "15", "18", "20"],
+              "correct_answer": "3",
+              "topic": "Flowchart Tracing"
+            },
+            {
+              "id": 52,
+              "question": "In a robot grid, robot at (0,0) facing North. Commands: F=Forward, L=Left, R=Right. After FLFRF, where is robot?",
+              "options": ["(1,1)", "(1,2)", "(2,1)", "(2,2)", "(0,2)"],
+              "correct_answer": "1",
+              "topic": "Robot Movement"
+            },
+            {
+              "id": 53,
+              "question": "What does this algorithm do?\n1. Input N\n2. Set flag = 0\n3. For i=2 to N-1\n4. If N%i=0, flag=1\n5. End For\n6. If flag=0, print 'Prime'\n7. Else print 'Not Prime'",
+              "options": ["Factorial", "Prime Check", "Palindrome Check", "Fibonacci", "GCD"],
+              "correct_answer": "2",
+              "topic": "Algorithm Purpose"
+            },
+            {
+              "id": 54,
+              "question": "Input: 3, 7, 2, 9, 1\nAlgorithm: Compare adjacent elements and swap if needed (Bubble Sort - 1 pass). Output?",
+              "options": ["3,2,7,1,9", "3,2,1,7,9", "2,3,7,1,9", "1,2,3,7,9", "7,3,9,2,1"],
+              "correct_answer": "1",
+              "topic": "Sorting Logic"
+            },
+            {
+              "id": 55,
+              "question": "Pattern recognition: 1, 1, 2, 3, 5, 8, ?",
+              "options": ["11", "12", "13", "14", "15"],
+              "correct_answer": "3",
+              "topic": "Pattern Recognition"
+            },
+            {
+              "id": 56,
+              "question": "If A=1, B=2, C=3,... Z=26, what is value of 'CODE'?",
+              "options": ["35", "36", "37", "38", "39"],
+              "correct_answer": "4",
+              "topic": "Pattern Logic"
+            },
+            {
+              "id": 57,
+              "question": "Input sequence: 5, 2, 8, 3, 1\nAlgorithm finds minimum. After 3 comparisons, what is current minimum?",
+              "options": ["5", "2", "3", "1", "8"],
+              "correct_answer": "2",
+              "topic": "Algorithm Execution"
+            },
+            {
+              "id": 58,
+              "question": "In a maze, even numbers are open, odd are walls. Robot at (2,3) facing East. Cell values:\n(1,1)=4, (1,2)=7, (1,3)=2\n(2,1)=6, (2,2)=3, (2,3)=8\n(3,1)=5, (3,2)=9, (3,3)=10\nWhich move is valid?",
+              "options": ["Forward", "Left", "Right", "Back", "None"],
+              "correct_answer": "1",
+              "topic": "Maze Logic"
+            },
+            {
+              "id": 59,
+              "question": "Binary search on sorted array [1,3,5,7,9,11,13,15]. Searching for 7. How many comparisons?",
+              "options": ["1", "2", "3", "4", "5"],
+              "correct_answer": "3",
+              "topic": "Search Algorithms"
+            },
+            {
+              "id": 60,
+              "question": "What is time complexity of finding maximum in unsorted array of n elements?",
+              "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)", "O(n²)"],
+              "correct_answer": "3",
+              "topic": "Complexity Analysis"
+            }
+          ]
+        },
+        {
+          "section_name": "Reading Comprehension",
+          "questions": [
+            {
+              "id": 61,
+              "passage": "Artificial Intelligence (AI) is revolutionizing healthcare by enabling faster and more accurate diagnoses. Machine learning algorithms can analyze medical images, predict disease outbreaks, and personalize treatment plans. However, ethical concerns about data privacy and algorithmic bias remain significant challenges that need addressing.",
+              "questions": [
+                {
+                  "question": "What is the main idea of the passage?",
+                  "options": ["AI is perfect for healthcare", "AI has benefits and challenges in healthcare", "AI should be banned in healthcare", "AI has no ethical concerns", "Only doctors should use AI"],
+                  "correct_answer": "2",
+                  "type": "Main Idea"
+                },
+                {
+                  "question": "According to the passage, what can AI do in healthcare?",
+                  "options": ["Analyze images only", "Predict outbreaks only", "Both analyze images and predict outbreaks", "Replace all doctors", "None of the above"],
+                  "correct_answer": "3",
+                  "type": "Detail"
+                }
+              ]
+            },
+            {
+              "id": 62,
+              "passage": "Climate change refers to long-term shifts in temperatures and weather patterns. These shifts may be natural, but since the 1800s, human activities have been the main driver of climate change, primarily due to burning fossil fuels like coal, oil and gas. Burning fossil fuels generates greenhouse gas emissions that act like a blanket wrapped around the Earth, trapping the sun's heat and raising temperatures.",
+              "questions": [
+                {
+                  "question": "What is the primary cause of climate change since the 1800s?",
+                  "options": ["Natural cycles", "Human activities", "Volcanic eruptions", "Solar flares", "Ocean currents"],
+                  "correct_answer": "2",
+                  "type": "Detail"
+                },
+                {
+                  "question": "How do greenhouse gases affect Earth?",
+                  "options": ["Cool the planet", "Trap heat", "Reflect sunlight", "Increase oxygen", "Reduce clouds"],
+                  "correct_answer": "2",
+                  "type": "Analogy"
+                }
+              ]
+            },
+            {
+              "id": 63,
+              "passage": "The Internet of Things (IoT) connects everyday objects to the internet, allowing them to send and receive data. This enables smart homes where appliances can be controlled remotely, smart cities with efficient traffic management, and improved industrial processes through real-time monitoring.",
+              "questions": [
+                {
+                  "question": "What does IoT enable according to the passage?",
+                  "options": ["Only smart homes", "Only smart cities", "Both smart homes and smart cities", "Nothing useful", "Only industrial processes"],
+                  "correct_answer": "3",
+                  "type": "Detail"
+                },
+                {
+                  "question": "What is the key function of IoT devices?",
+                  "options": ["Generate electricity", "Send and receive data", "Cook food", "Clean houses", "Drive cars"],
+                  "correct_answer": "2",
+                  "type": "Function"
+                }
+              ]
+            },
+            {
+              "id": 64,
+              "passage": "Renewable energy sources like solar, wind, and hydropower are becoming increasingly important as the world seeks to reduce carbon emissions. While these sources are cleaner than fossil fuels, they face challenges such as intermittency (sun doesn't always shine, wind doesn't always blow) and high initial investment costs.",
+              "questions": [
+                {
+                  "question": "Why are renewable energy sources important?",
+                  "options": ["They are expensive", "They reduce carbon emissions", "They work all the time", "They are easy to install", "They need no maintenance"],
+                  "correct_answer": "2",
+                  "type": "Purpose"
+                },
+                {
+                  "question": "What is a challenge mentioned for solar and wind power?",
+                  "options": ["Too much power", "Intermittency", "No challenges", "Too cheap", "Too reliable"],
+                  "correct_answer": "2",
+                  "type": "Challenge"
+                }
+              ]
+            },
+            {
+              "id": 65,
+              "passage": "Blockchain technology creates a decentralized digital ledger that records transactions across many computers. This makes records transparent and difficult to alter without consensus. Originally developed for Bitcoin, blockchain now has applications in supply chain management, voting systems, and digital identity verification.",
+              "questions": [
+                {
+                  "question": "What is a key feature of blockchain?",
+                  "options": ["Centralized control", "Easy to alter", "Transparent and difficult to alter", "Only for Bitcoin", "Requires no computers"],
+                  "correct_answer": "3",
+                  "type": "Feature"
+                },
+                {
+                  "question": "Which is NOT mentioned as a blockchain application?",
+                  "options": ["Supply chain", "Voting systems", "Digital identity", "Social media", "Bitcoin"],
+                  "correct_answer": "4",
+                  "type": "Application"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_name": "Language Reasoning",
+          "questions": [
+            {
+              "id": 66,
+              "question": "Rearrange to form coherent paragraph:\nA. This made transportation easier\nB. The invention of the wheel was revolutionary\nC. It allowed movement of heavy goods\nD. Ancient civilizations quickly adopted it",
+              "correct_order": ["B","C","A","D"],
+              "options": ["B-C-A-D", "A-B-C-D", "C-B-D-A", "D-A-B-C", "B-A-C-D"],
+              "correct_answer": "1",
+              "topic": "Para-jumbles"
+            },
+            {
+              "id": 67,
+              "question": "Find the error: 'Neither the students nor the teacher are coming to the party.'",
+              "options": ["Neither", "students", "teacher", "are", "No error"],
+              "correct_answer": "4",
+              "topic": "Error Spotting"
+            },
+            {
+              "id": 68,
+              "question": "Statement: 'All successful people work hard.'\nConclusion: 'Rahul works hard, so he will be successful.'\nThis conclusion is:",
+              "options": ["Definitely true", "Probably true", "Cannot be determined", "Probably false", "Definitely false"],
+              "correct_answer": "3",
+              "topic": "Critical Reasoning"
+            },
+            {
+              "id": 69,
+              "question": "Choose the correct sentence:",
+              "options": ["She don't like apples", "She doesn't likes apples", "She doesn't like apples", "She not like apples", "She do not likes apples"],
+              "correct_answer": "3",
+              "topic": "Sentence Correction"
+            },
+            {
+              "id": 70,
+              "question": "Statement: 'If it rains, the match will be cancelled.'\nAssumption: The match requires dry conditions.\nIs this assumption implicit?",
+              "options": ["Yes", "No", "Cannot say", "Partially", "Depends on weather"],
+              "correct_answer": "1",
+              "topic": "Assumptions"
+            },
+            {
+              "id": 71,
+              "question": "Rearrange: 'quickly/the/finished/he/assignment/his'",
+              "options": ["He finished his assignment quickly", "Quickly he finished his assignment", "His assignment he finished quickly", "Finished he quickly his assignment", "Assignment he finished quickly his"],
+              "correct_answer": "1",
+              "topic": "Sentence Formation"
+            },
+            {
+              "id": 72,
+              "question": "Find the error: 'One of the boy are playing in the park.'",
+              "options": ["One", "boy", "are", "playing", "No error"],
+              "correct_answer": "3",
+              "topic": "Subject-Verb Agreement"
+            },
+            {
+              "id": 73,
+              "question": "Statement: 'Only disciplined students achieve success.'\nConclusion: 'Ankit is successful, so he is disciplined.'",
+              "options": ["Follows", "Does not follow", "Maybe follows", "Cannot say", "Opposite follows"],
+              "correct_answer": "1",
+              "topic": "Logical Conclusion"
+            },
+            {
+              "id": 74,
+              "question": "Choose the correct preposition: 'She is good ___ mathematics.'",
+              "options": ["at", "in", "on", "for", "with"],
+              "correct_answer": "1",
+              "topic": "Prepositions"
+            },
+            {
+              "id": 75,
+              "question": "Rearrange sentences to form coherent paragraph:\nA. Then, add the eggs and mix well\nB. First, preheat the oven to 180°C\nC. Finally, bake for 30 minutes\nD. Next, combine flour and sugar",
+              "correct_order": ["B","D","A","C"],
+              "options": ["B-D-A-C", "A-B-C-D", "C-B-A-D", "D-A-B-C", "B-A-D-C"],
+              "correct_answer": "1",
+              "topic": "Sequence"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mock_number": 2,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 3,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 4,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 5,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 6,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 7,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 8,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 9,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    },
+    {
+      "mock_number": 10,
+      "note": "Structure similar to Mock 1 with different values and questions. Total 80 questions across 6 sections."
+    }
+  ],
+  "NSAT_Coding_Mocks": [
+    {
+      "mock_number": 1,
+      "sections": [
+        {
+          "section_name": "Learnability",
+          "questions": [
+            {
+              "id": 1,
+              "passage": "In a new game called 'Number Swap', you have two piles of numbers: Pile A and Pile B. Initially, Pile A has numbers 1,3,5 and Pile B has 2,4,6. A move consists of swapping one number from Pile A with one from Pile B. The goal is to make the sum of Pile A equal to the sum of Pile B.",
+              "questions": [
+                {
+                  "question": "What is the initial sum difference between piles?",
+                  "options": ["0", "3", "6", "9", "12"],
+                  "correct_answer": "2",
+                  "type": "Calculation"
+                },
+                {
+                  "question": "If you swap 5 from A with 2 from B, what is the new sum of A?",
+                  "options": ["9", "10", "11", "12", "13"],
+                  "correct_answer": "3",
+                  "type": "Application"
+                },
+                {
+                  "question": "How many swaps are needed minimum to balance sums?",
+                  "options": ["0", "1", "2", "3", "4"],
+                  "correct_answer": "2",
+                  "type": "Optimization"
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "passage": "The 'Mirror Cipher' works as follows: Write the alphabet A-Z. For any letter, find its mirror by counting from the opposite end. A↔Z, B↔Y, C↔X, etc.",
+              "questions": [
+                {
+                  "question": "What is mirror of 'G'?",
+                  "options": ["J", "T", "S", "R", "Q"],
+                  "correct_answer": "2",
+                  "type": "Application"
+                },
+                {
+                  "question": "If 'CODE' is encoded, what is result?",
+                  "options": ["XLWV", "XLVW", "WLXV", "WVXL", "XLWU"],
+                  "correct_answer": "1",
+                  "type": "Encoding"
+                },
+                {
+                  "question": "What is true about this cipher?",
+                  "options": ["It is symmetric", "Only for uppercase", "Changes with key", "Not reversible", "Uses numbers"],
+                  "correct_answer": "1",
+                  "type": "Property"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "passage": "A new sorting algorithm 'Min-Max Sort' works by finding minimum and maximum in each pass and placing them at ends. For array [4,2,7,1,5], first pass: min=1 to left, max=7 to right → [1,4,2,5,7].",
+              "questions": [
+                {
+                  "question": "After first pass of [3,8,1,6,4], what is array?",
+                  "options": ["[1,3,6,4,8]", "[1,3,4,6,8]", "[8,3,1,6,4]", "[1,8,3,6,4]", "[3,1,6,4,8]"],
+                  "correct_answer": "1",
+                  "type": "Application"
+                },
+                {
+                  "question": "How many passes needed for n elements?",
+                  "options": ["n", "n/2", "log n", "n²", "n-1"],
+                  "correct_answer": "2",
+                  "type": "Analysis"
+                },
+                {
+                  "question": "Time complexity of this algorithm?",
+                  "options": ["O(1)", "O(n)", "O(n log n)", "O(n²)", "O(2ⁿ)"],
+                  "correct_answer": "4",
+                  "type": "Complexity"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "passage": "In 'GridWalk' game, a robot starts at (0,0). Moves: U=(x,y+1), D=(x,y-1), L=(x-1,y), R=(x+1,y). Sequence: R,R,U,L,D,D.",
+              "questions": [
+                {
+                  "question": "Where does robot end?",
+                  "options": ["(0,0)", "(1,-1)", "(1,0)", "(0,-1)", "(1,1)"],
+                  "correct_answer": "2",
+                  "type": "Position"
+                },
+                {
+                  "question": "How far from start (Manhattan distance)?",
+                  "options": ["0", "1", "2", "3", "4"],
+                  "correct_answer": "3",
+                  "type": "Distance"
+                },
+                {
+                  "question": "If adding U at end, where now?",
+                  "options": ["(1,0)", "(1,1)", "(0,0)", "(0,1)", "(2,0)"],
+                  "correct_answer": "1",
+                  "type": "Modification"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "section_name": "Pseudocoding",
+          "questions": [
+            {
+              "id": 5,
+              "pseudocode": "x = 5\ny = 3\nz = x + y\nx = z - y\ny = x + z\nprint x, y, z",
+              "question": "What is the output?",
+              "options": ["5 8 8", "5 13 8", "8 13 8", "8 21 8", "5 8 5"],
+              "correct_answer": "2",
+              "topic": "Variable Tracing"
+            },
+            {
+              "id": 6,
+              "pseudocode": "a = [2,4,6,8]\nsum = 0\nfor i from 0 to 3:\n  sum = sum + a[i]\nprint sum",
+              "question": "What is output?",
+              "options": ["10", "15", "20", "25", "30"],
+              "correct_answer": "3",
+              "topic": "Array Sum"
+            },
+            {
+              "id": 7,
+              "pseudocode": "function check(n):\n  if n % 2 == 0:\n    return 'Even'\n  else:\n    return 'Odd'\nprint check(7)",
+              "question": "What is output?",
+              "options": ["Even", "Odd", "7", "None", "Error"],
+              "correct_answer": "2",
+              "topic": "Function Output"
+            },
+            {
+              "id": 8,
+              "pseudocode": "i = 1\nwhile i < 6:\n  print i\n  i = i + 2",
+              "question": "What numbers are printed?",
+              "options": ["1 3 5", "1 2 3 4 5", "1 3", "2 4", "1 4"],
+              "correct_answer": "1",
+              "topic": "Loop Execution"
+            },
+            {
+              "id": 9,
+              "pseudocode": "a = 10\nb = 20\nif a > b:\n  print 'A larger'\nelif a == b:\n  print 'Equal'\nelse:\n  print 'B larger'",
+              "question": "What is output?",
+              "options": ["A larger", "Equal", "B larger", "10", "No output"],
+              "correct_answer": "3",
+              "topic": "Conditionals"
+            },
+            {
+              "id": 10,
+              "pseudocode": "arr = [3,1,4,1,5]\nmin = arr[0]\nfor i from 1 to 4:\n  if arr[i] < min:\n    min = arr[i]\nprint min",
+              "question": "What is output?",
+              "options": ["1", "3", "4", "5", "14"],
+              "correct_answer": "1",
+              "topic": "Find Minimum"
+            },
+            {
+              "id": 11,
+              "pseudocode": "x = 0\nfor i from 1 to 5:\n  x = x + i\nprint x",
+              "question": "What is output?",
+              "options": ["10", "12", "14", "15", "20"],
+              "correct_answer": "4",
+              "topic": "Summation"
+            },
+            {
+              "id": 12,
+              "pseudocode": "function mystery(a,b):\n  if b == 0:\n    return a\n  else:\n    return mystery(b, a % b)\nprint mystery(12,18)",
+              "question": "What is output?",
+              "options": ["2", "3", "6", "12", "18"],
+              "correct_answer": "3",
+              "topic": "Recursive Function"
+            },
+            {
+              "id": 13,
+              "pseudocode": "count = 0\nfor i from 1 to 10:\n  if i % 3 == 0:\n    count = count + 1\nprint count",
+              "question": "What is output?",
+              "options": ["2", "3", "4", "5", "6"],
+              "correct_answer": "2",
+              "topic": "Counting"
+            },
+            {
+              "id": 14,
+              "pseudocode": "str = 'hello'\nresult = ''\nfor ch in str:\n  result = ch + result\nprint result",
+              "question": "What is output?",
+              "options": ["hello", "olleh", "h e l l o", "HELLO", "Error"],
+              "correct_answer": "2",
+              "topic": "String Reverse"
+            }
+          ]
+        },
+        {
+          "section_name": "Coding (Hands-on)",
+          "questions": [
+            {
+              "id": 15,
+              "problem": "Write a function to check if a number is prime.",
+              "input_format": "Integer n",
+              "output_format": "Boolean true/false",
+              "sample_input": "7",
+              "sample_output": "true",
+              "difficulty": "Easy",
+              "topic": "Prime Check"
+            },
+            {
+              "id": 16,
+              "problem": "Write a function to find the factorial of a number.",
+              "input_format": "Integer n",
+              "output_format": "Integer factorial",
+              "sample_input": "5",
+              "sample_output": "120",
+              "difficulty": "Easy",
+              "topic": "Factorial"
+            },
+            {
+              "id": 17,
+              "problem": "Write a function to reverse a string.",
+              "input_format": "String s",
+              "output_format": "Reversed string",
+              "sample_input": "\"hello\"",
+              "sample_output": "\"olleh\"",
+              "difficulty": "Easy",
+              "topic": "String Manipulation"
+            },
+            {
+              "id": 18,
+              "problem": "Write a function to find the second largest element in an array.",
+              "input_format": "Array of integers",
+              "output_format": "Integer",
+              "sample_input": "[3,1,4,1,5,9]",
+              "sample_output": "5",
+              "difficulty": "Medium",
+              "topic": "Array Processing"
+            },
+            {
+              "id": 19,
+              "problem": "Write a function to check if a string is a palindrome.",
+              "input_format": "String s",
+              "output_format": "Boolean",
+              "sample_input": "\"racecar\"",
+              "sample_output": "true",
+              "difficulty": "Medium",
+              "topic": "Palindrome"
+            },
+            {
+              "id": 20,
+              "problem": "Write a function to rotate an array left by k positions.",
+              "input_format": "Array arr, integer k",
+              "output_format": "Rotated array",
+              "sample_input": "[1,2,3,4,5], 2",
+              "sample_output": "[3,4,5,1,2]",
+              "difficulty": "Medium",
+              "topic": "Array Rotation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mock_number": 2,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 3,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 4,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 5,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 6,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 7,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 8,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 9,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    },
+    {
+      "mock_number": 10,
+      "note": "Structure similar to Coding Mock 1 with different problems. Total 26 questions across 3 sections."
+    }
+  ]
+}

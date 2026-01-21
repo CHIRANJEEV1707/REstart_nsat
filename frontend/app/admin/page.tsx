@@ -25,6 +25,10 @@ export default function AdminPage() {
                     <h3 className="font-bold text-lg text-blue-700">NSAT Prep Content</h3>
                     <p className="text-gray-500 text-sm mt-1">Manage Mock Tests, PYQs, and Guides.</p>
                 </Link>
+                <Link href="/admin/claims" className="block p-8 bg-purple-50 rounded-xl shadow-sm hover:shadow-md border border-purple-100">
+                    <h3 className="font-bold text-lg text-purple-700">Referral Claims</h3>
+                    <p className="text-gray-500 text-sm mt-1">Approve free core pack claims.</p>
+                </Link>
             </div>
         </div>
     )

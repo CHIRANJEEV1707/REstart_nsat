@@ -33,13 +33,43 @@ router.post('/claim', protect, async (req: any, res: Response) => {
         const claim = await FreePackClaim.create({
             userId: req.user._id,
             email: user.email,
-            phone: req.body.phone || user.profile?.phoneNumber,
+            phone: req.body.phoneNumber || user.profile?.phoneNumber,
+            registeredName: req.body.name,
+            registeredEmail: req.body.registeredEmail,
+            stream: req.body.stream || 'general',
             source: req.body.source || 'direct'
         });
 
+        // GRANT BUNDLE
+        // Grant "Core Pack" based on stream.
+        const stream = req.body.stream || 'general';
+        // If stream is generic, map to specific slug
+        let bundleSlug = 'nsat-core'; // Default combined
+        if (stream === 'general') bundleSlug = 'nsat-core-general';
+        if (stream === 'coding') bundleSlug = 'nsat-core-coding';
+
+        const Bundle = require('../models/Bundle').default;
+        const bundle = await Bundle.findOne({ slug: bundleSlug });
+
+        // Fallback to combined if specific not found
+        const finalBundle = bundle || await Bundle.findOne({ slug: 'nsat-core' });
+
+        if (finalBundle) {
+            const alreadyHas = user.purchasedBundles.some((b: any) => b.bundleId.toString() === finalBundle._id.toString());
+            if (!alreadyHas) {
+                user.purchasedBundles.push({
+                    bundleId: finalBundle._id,
+                    purchasedAt: new Date(),
+                    orderId: 'REFERRAL-CLAIM',
+                    paymentId: 'FREE'
+                });
+                await user.save();
+            }
+        }
+
         res.status(201).json({
             success: true,
-            message: 'Free pack claimed successfully!',
+            message: 'Free pack and Core Bundle claimed successfully!',
             data: claim
         });
     } catch (error: any) {

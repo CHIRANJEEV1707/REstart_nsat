@@ -1,0 +1,79 @@
+{
+  "title": "NSAT General Mock 2",
+  "slug": "nsat-general-mock-2",
+  "examType": "nsat_general",
+  "duration": 180,
+  "totalMarks": 300,
+  "sections": [
+    {
+      "name": "Math (Class 10)",
+      "questionCount": 15,
+      "marks": 60
+    },
+    {
+      "name": "Math (11-12)",
+      "questionCount": 15,
+      "marks": 60
+    },
+    {
+      "name": "Logic & Data Interpretation",
+      "questionCount": 20,
+      "marks": 80
+    },
+    {
+      "name": "Algorithmic Thinking",
+      "questionCount": 10,
+      "marks": 40
+    },
+    {
+      "name": "Reading Comprehension",
+      "questionCount": 10,
+      "marks": 40
+    },
+    {
+      "name": "Language Reasoning",
+      "questionCount": 10,
+      "marks": 40
+    }
+  ],
+  "questions": [
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 1,
+      "questionText": "A shopkeeper marks his goods 20% above cost price but allows a discount of 10%. What is his net profit percentage?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Profit and Loss"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "8%" },
+        { "id": "2", "text": "10%" },
+        { "id": "3", "text": "12%" },
+        { "id": "4", "text": "15%" },
+        { "id": "5", "text": "18%" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Let CP=100. MP=120. Discount=10% of 120=12. SP=108. Profit=8%."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 2,
+      "questionText": "The LCM of two numbers is 48 and their HCF is 8. If one number is 24, find the other.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Number Systems"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "16" },
+        { "id": "2", "text": "32" },
+        { "id": "3", "text": "40" },
+        { "id": "4", "text": "48" },
+        { "id": "5", "text": "56" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Product of numbers = LCM × HCF = 48×8=384. Other number = 384/24=16."
+    }
+  ]
+}

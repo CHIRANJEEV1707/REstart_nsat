@@ -6,20 +6,22 @@ import { z } from 'zod';
 
 const loginSchema = z.object({
     email: z.string().email('Invalid email address'),
-    password: z.string().min(1, 'Password is required')
+    password: z.string().min(1, 'Password is required'),
+    rememberMe: z.boolean().optional(),
 });
 
 // Helper: Sign Access Token (15 min)
-const signAccessToken = (id: string) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET!, {
+const signAccessToken = (id: string, sessionToken: string) => {
+    return jwt.sign({ id, sessionToken }, process.env.JWT_SECRET!, {
         expiresIn: '15m'
     });
 };
 
-// Helper: Sign Refresh Token (7 days)
-const signRefreshToken = (id: string) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET!, {
-        expiresIn: '7d'
+// Helper: Sign Refresh Token (7 days or 30 days)
+const signRefreshToken = (id: string, rememberMe: boolean = false) => {
+    const expiresIn = rememberMe ? '30d' : '7d';
+    return jwt.sign({ id, rememberMe }, process.env.JWT_SECRET!, {
+        expiresIn
     });
 };
 
@@ -27,26 +29,21 @@ export async function POST(request: NextRequest) {
     try {
         console.log('[Login] Request received');
         await dbConnect();
-        console.log('[Login] DB Connected');
-
         const body = await request.json();
-        console.log('[Login] Processing login for:', body.email);
 
         // Validate input
         const parsed = loginSchema.safeParse(body);
         if (!parsed.success) {
-            console.log('[Login] Validation failed');
             return NextResponse.json(
                 { success: false, message: parsed.error.issues[0].message },
                 { status: 400 }
             );
         }
 
-        const { email, password } = parsed.data;
+        const { email, password, rememberMe } = parsed.data;
 
         // Find user with password
         const user = await User.findOne({ email }).select('+password');
-        console.log('[Login] User found:', !!user);
 
         if (!user) {
             return NextResponse.json(
@@ -55,17 +52,10 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // ... lockout check logs ...
-
         // Check password
-        console.log('[Login] Checking password...');
         const isMatch = await user.matchPassword(password);
-        console.log('[Login] Password match result:', isMatch);
 
         if (!isMatch) {
-            console.log('[Login] Password mismatch');
-            // ... existing lockout logic ...
-            // Increment failed attempts
             user.failedLoginAttempts += 1;
             await user.save();
             return NextResponse.json(
@@ -74,18 +64,22 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.log('[Login] Success. Generating tokens...');
-
         // Success - Reset login attempts
         if (user.failedLoginAttempts > 0) {
             user.failedLoginAttempts = 0;
             user.lockUntil = null;
-            await user.save();
         }
 
+        // Generate and Save Session Token
+        const sessionToken = crypto.randomUUID();
+        user.sessionToken = sessionToken;
+        await user.save();
+
+        console.log('[Login] Session Token generated for:', user.email);
+
         // Generate tokens
-        const accessToken = signAccessToken(user._id.toString());
-        const refreshToken = signRefreshToken(user._id.toString());
+        const accessToken = signAccessToken(user._id.toString(), sessionToken);
+        const refreshToken = signRefreshToken(user._id.toString(), rememberMe);
 
         // Cookie options
         const isProduction = process.env.NODE_ENV === 'production';
@@ -115,9 +109,14 @@ export async function POST(request: NextRequest) {
             maxAge: 15 * 60, // 15 minutes
         });
 
+        // Refresh token maxAge depends on rememberMe
+        const refreshTokenMaxAge = rememberMe
+            ? 30 * 24 * 60 * 60 // 30 days
+            : 7 * 24 * 60 * 60; // 7 days
+
         response.cookies.set('refreshToken', refreshToken, {
             ...cookieOptions,
-            maxAge: 7 * 24 * 60 * 60, // 7 days
+            maxAge: refreshTokenMaxAge,
         });
 
         return response;

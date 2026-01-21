@@ -3,17 +3,36 @@ import MockTest from '../models/MockTest';
 import Question from '../models/Question';
 import TestAttempt from '../models/TestAttempt';
 import FreePackClaim from '../models/FreePackClaim';
+import User from '../models/User'; // Standard import
 import { protect } from '../middleware/auth';
 
 const router = express.Router();
 
 // Helper to check premium access
 const hasPremiumAccess = async (userId: string) => {
-    // Check if user has any purchased bundle that grants premium access
-    const User = require('../models/User').default;
-    const user = await User.findById(userId);
-    return user?.purchasedBundles?.length > 0;
+    try {
+        const user = await User.findById(userId);
+        console.log(`[DEBUG_AUTH] User: ${userId} - Bundles: ${user?.purchasedBundles?.length}`);
+
+        // Debugging Bypass for specific user email (if you want to hardcode for safety)
+        if (user?.email === 'sahil.khan@adypu.edu.in') {
+            console.log('[DEBUG_AUTH] *** BYPASS GRANTED FOR SUPER USER ***');
+            // return true; // Uncomment if you want to force it, but let's check bundles first
+        }
+
+        if (user && user.purchasedBundles && user.purchasedBundles.length > 0) {
+            user.purchasedBundles.forEach((b: any, i: number) => {
+                console.log(`[DEBUG_AUTH] Bundle ${i}: Slug=${b.productSlug}, Status=${b.verificationStatus}`);
+            });
+            return true;
+        }
+        return false;
+    } catch (e) {
+        console.error('[DEBUG_AUTH] Error:', e);
+        return false;
+    }
 };
+
 
 // Helper to check free pack claim
 const hasFreePackAccess = async (userId: string) => {
@@ -35,10 +54,27 @@ router.get('/', async (req: Request, res: Response) => {
             .select('title slug description examType duration totalMarks sections isFree isPremium difficulty order')
             .sort({ order: 1, createdAt: -1 });
 
+        // Get question counts using aggregation
+        const counts = await Question.aggregate([
+            { $group: { _id: "$mockTestId", count: { $sum: 1 } } }
+        ]);
+
+        const countMap = new Map(counts.map((c: any) => [c._id.toString(), c.count]));
+
+        const testsWithCounts = tests.map(t => {
+            const qCount = countMap.get(t._id.toString()) || 0;
+            console.log(`[DEBUG_LIST] Test: ${t.title} (${t._id}) -> Questions: ${qCount}`);
+            return {
+                ...t.toObject(),
+                questionCount: qCount
+            };
+        });
+
+
         res.json({
             success: true,
-            count: tests.length,
-            data: tests
+            count: testsWithCounts.length,
+            data: testsWithCounts
         });
     } catch (error: any) {
         console.error('[MockTest List Error]', error);
@@ -82,8 +118,27 @@ router.post('/:slug/start', protect, async (req: any, res: Response) => {
         const isPremium = await hasPremiumAccess(req.user._id);
         const hasFree = await hasFreePackAccess(req.user._id);
 
+
+
+        console.log(`[DEBUG_START] ===============================`);
+        console.log(`[DEBUG_START] Slug: ${req.params.slug}`);
+        console.log(`[DEBUG_START] Test Found: ${test.title} (isFree: ${test.isFree})`);
+        console.log(`[DEBUG_START] User ID: ${req.user._id}`);
+        console.log(`[DEBUG_START] User Email: ${req.user.email}`);
+        console.log(`[DEBUG_START] User Bundles: ${JSON.stringify(req.user.purchasedBundles)}`);
+        console.log(`[DEBUG_START] isPremium: ${isPremium}`);
+        console.log(`[DEBUG_START] hasFreeAccess: ${hasFree}`);
+        console.log(`[DEBUG_START] ===============================`);
+
         if (!test.isFree && !isPremium) {
+            console.log('[DEBUG_START] Access Blocked - Not Premium & Not Free Test');
             // Check if it's a free pack test and user has claimed
+            // Logic seems contradictory? If test.isFree is false, then !test.isFree is true.
+            // So (!hasFree || true) -> always true.
+            // This implies: If test is NOT free, and user is NOT premium, they ALWAYS get 403.
+            // Even if they claimed the free pack?
+            // "Free Pack" likely grants access to specific tests? Or just "freepack" variant?
+
             if (!hasFree || !test.isFree) {
                 return res.status(403).json({
                     success: false,
@@ -423,7 +478,28 @@ router.post('/attempts/:attemptId/submit', protect, async (req: any, res: Respon
 
 // @desc    Get user's attempt history
 // @route   GET /api/mock-tests/attempts
+// @route   GET /api/mock-tests/attempts/history (alias)
 // @access  Private
+router.get('/attempts', protect, async (req: any, res: Response) => {
+    try {
+        const attempts = await TestAttempt.find({
+            userId: req.user._id,
+            status: 'completed'
+        })
+            .populate('mockTestId', 'title slug examType')
+            .select('totalScore maxScore percentage completedAt analytics.percentile analytics.rank')
+            .sort({ completedAt: -1 });
+
+        res.json({
+            success: true,
+            data: attempts
+        });
+    } catch (error: any) {
+        console.error('[Attempts Error]', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch attempt history' });
+    }
+});
+
 router.get('/attempts/history', protect, async (req: any, res: Response) => {
     try {
         const attempts = await TestAttempt.find({

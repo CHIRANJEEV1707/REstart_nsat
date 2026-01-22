@@ -6,7 +6,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import api from '@/lib/axios';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, Clock, FileText, Lock, Sparkles, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Clock, FileText, Lock, Sparkles, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -54,7 +54,7 @@ export default function MockTestsPage() {
     }, [accessData]);
 
     // Fetch mock tests
-    const { data: testsData, isLoading } = useQuery({
+    const { data: testsData, isLoading, isError } = useQuery({
         queryKey: ['mockTests', 'nsat'],
         queryFn: async () => {
             const [nsatRes, codingRes] = await Promise.all([
@@ -347,7 +347,24 @@ export default function MockTestsPage() {
                     <div className="text-center py-12">Loading tests...</div>
                 )}
 
-                {!isLoading && (
+                {isError && (
+                    <div className="text-center py-12 text-red-500 bg-red-50 rounded-lg border border-red-100 mx-auto max-w-lg">
+                        <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-50" />
+                        <div className="text-lg font-bold mb-2">Failed to load tests</div>
+                        <p className="mb-4 text-sm text-red-600">Unable to fetch mock tests from the server.</p>
+                        <Button variant="outline" size="sm" onClick={() => window.location.reload()} className="bg-white hover:bg-red-50">
+                            Retry
+                        </Button>
+                    </div>
+                )}
+
+                {!isLoading && !isError && displayTests.length === 0 && (
+                    <div className="text-center py-12 text-gray-500">
+                        <p>No mock tests found matching your criteria.</p>
+                    </div>
+                )}
+
+                {!isLoading && !isError && displayTests.length > 0 && (
                     <div className="space-y-12">
                         {/* Free Tier */}
                         {tierGroups.free.length > 0 && (

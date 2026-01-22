@@ -1,5 +1,5 @@
 
-> frontend@0.1.0 dev
+> frontend@0.1.0 dev /app/frontend
 > next dev
 
    ▲ Next.js 16.0.8 (Turbopack)
@@ -14,14 +14,134 @@ You can learn more, including how to opt-out if you'd not like to participate in
 https://nextjs.org/telemetry
 
  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
- ✓ Ready in 1883ms
- ○ Compiling /dashboard ...
- GET /dashboard 200 in 9.1s (compile: 8.2s, proxy.ts: 169ms, render: 704ms)
- GET /onboarding 200 in 2.5s (compile: 2.3s, proxy.ts: 46ms, render: 189ms)
- GET /onboarding 200 in 2.5s (compile: 2.3s, proxy.ts: 44ms, render: 152ms)
- GET /exams 200 in 1893ms (compile: 1785ms, proxy.ts: 52ms, render: 56ms)
- GET /api/dashboard 200 in 3.6s (compile: 2.1s, proxy.ts: 49ms, render: 1490ms)
- GET /api/saved 200 in 3.8s (compile: 2.5s, proxy.ts: 11ms, render: 1340ms)
+ ✓ Ready in 1529ms
+ ○ Compiling /prep/nsat/mock-tests ...
+ GET /prep/nsat/mock-tests 200 in 5.0s (compile: 4.1s, proxy.ts: 99ms, render: 755ms)
 [DB] MongoDB connected successfully
- GET /college/int1?type=international 200 in 1728ms (compile: 1607ms, proxy.ts: 7ms, render: 114ms)
- GET /api/saved 401 in 26ms (compile: 11ms, proxy.ts: 6ms, render: 9ms)
+[Get Saved Error] MissingSchemaError: Schema hasn't been registered for model "College".
+Use mongoose.model(name, schema)
+    at new Promise (<anonymous>)
+    at async GET (app/api/saved/route.ts:22:22)
+  20 |         }
+  21 |
+> 22 |         const user = await User.findById(userId)
+     |                      ^
+  23 |             .populate('saved_colleges')
+  24 |             .populate('saved_international_colleges')
+  25 |             .populate('saved_newgen_colleges');
+ GET /api/saved 500 in 4.3s (compile: 1212ms, proxy.ts: 10ms, render: 3.0s)
+ GET /api/auth/me 200 in 5.4s (compile: 1111ms, proxy.ts: 11ms, render: 4.3s)
+[Get Saved Error] MissingSchemaError: Schema hasn't been registered for model "College".
+Use mongoose.model(name, schema)
+    at new Promise (<anonymous>)
+    at async GET (app/api/saved/route.ts:22:22)
+  20 |         }
+  21 |
+> 22 |         const user = await User.findById(userId)
+     |                      ^
+  23 |             .populate('saved_colleges')
+  24 |             .populate('saved_international_colleges')
+  25 |             .populate('saved_newgen_colleges');
+ GET /api/saved 500 in 479ms (compile: 6ms, proxy.ts: 6ms, render: 467ms)
+(node:12591) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Failed to proxy http://localhost:5001/api/mock-tests?examType=nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+Failed to proxy http://localhost:5001/api/mock-tests?examType=coding-nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+ GET /api/free-pack 200 in 885ms (compile: 389ms, proxy.ts: 11ms, render: 484ms)
+Failed to proxy http://localhost:5001/api/mock-tests?examType=nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+Failed to proxy http://localhost:5001/api/mock-tests?examType=coding-nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+[Get Saved Error] MissingSchemaError: Schema hasn't been registered for model "College".
+Use mongoose.model(name, schema)
+    at new Promise (<anonymous>)
+    at async GET (app/api/saved/route.ts:22:22)
+  20 |         }
+  21 |
+> 22 |         const user = await User.findById(userId)
+     |                      ^
+  23 |             .populate('saved_colleges')
+  24 |             .populate('saved_international_colleges')
+  25 |             .populate('saved_newgen_colleges');
+ GET /api/saved 500 in 370ms (compile: 4ms, proxy.ts: 4ms, render: 363ms)
+Failed to proxy http://localhost:5001/api/mock-tests?examType=nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+Failed to proxy http://localhost:5001/api/mock-tests?examType=coding-nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+[Get Saved Error] MissingSchemaError: Schema hasn't been registered for model "College".
+Use mongoose.model(name, schema)
+    at new Promise (<anonymous>)
+    at async GET (app/api/saved/route.ts:22:22)
+  20 |         }
+  21 |
+> 22 |         const user = await User.findById(userId)
+     |                      ^
+  23 |             .populate('saved_colleges')
+  24 |             .populate('saved_international_colleges')
+  25 |             .populate('saved_newgen_colleges');
+ GET /api/saved 500 in 359ms (compile: 3ms, proxy.ts: 3ms, render: 353ms)
+Failed to proxy http://localhost:5001/api/mock-tests?examType=nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+Failed to proxy http://localhost:5001/api/mock-tests?examType=coding-nsat AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+AggregateError:
+    at ignore-listed frames {
+  code: 'ECONNREFUSED'
+}
+ ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+   ▲ Next.js 16.0.8 (Turbopack)
+   - Local:         http://localhost:3000
+   - Network:       http://192.168.0.2:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+ ✓ Ready in 1398ms
+ ELIFECYCLE  Command failed.
+[?25h

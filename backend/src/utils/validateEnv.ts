@@ -10,6 +10,10 @@ interface RequiredEnvVars {
  */
 export const validateEnv = (): void => {
     // Set fallbacks for missing variables to prevent crashes
+    // Set fallbacks for missing variables to prevent crashes
+    if (!process.env.MONGO_URI && process.env.MONGODB_URI) process.env.MONGO_URI = process.env.MONGODB_URI;
+    if (!process.env.MONGODB_URI && process.env.MONGO_URI) process.env.MONGODB_URI = process.env.MONGO_URI;
+
     if (!process.env.JWT_SECRET) process.env.JWT_SECRET = "fallback_secret_dev_only";
     if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
     if (!process.env.RAZORPAY_KEY_ID) process.env.RAZORPAY_KEY_ID = 'rzp_test_key';
@@ -17,7 +21,7 @@ export const validateEnv = (): void => {
 
     const requiredVars: RequiredEnvVars = {
         JWT_SECRET: process.env.JWT_SECRET,
-        MONGODB_URI: process.env.MONGODB_URI,
+        MONGODB_URI: process.env.MONGODB_URI || process.env.MONGO_URI,
         NODE_ENV: process.env.NODE_ENV,
         RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
         RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,

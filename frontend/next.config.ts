@@ -23,7 +23,9 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://127.0.0.1:5001/api/:path*',
+        destination: process.env.NODE_ENV === 'production'
+          ? 'https://restart-backend-unfucked.vercel.app/api/:path*' // Updated to likely production URL
+          : 'http://127.0.0.1:5001/api/:path*',
       },
     ];
   },

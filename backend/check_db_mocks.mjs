@@ -39,7 +39,7 @@ async function checkMocks() {
         for (const mock of mocks) {
             const count = await Question.countDocuments({ mockTestId: mock._id });
             const sectionTotal = mock.sections?.reduce((acc, s) => acc + (s.questionCount || 0), 0) || 0;
-            console.log(`Mock: "${mock.title}" (slug: ${mock.slug}) - DB Questions: ${count}, Metadata Questions: ${sectionTotal}`);
+            console.log(`Mock: "${mock.title}" (slug: ${mock.slug}, type: ${mock.examType}) - DB Questions: ${count}, Metadata Questions: ${sectionTotal}`);
         }
 
         process.exit(0);

@@ -209,17 +209,33 @@ const PORT = process.env.PORT || 5001;
 // Initialize server
 const startServer = async () => {
     try {
+        logger.info(`Server startup sequence initiated. NODE_ENV: ${process.env.NODE_ENV}, PORT: ${PORT}`);
+
         // Connect to database
+        logger.info('Connecting to Database...');
         await connectDB();
+        logger.info('Database connection successful.');
 
         // Start server only if not in Vercel environment (Vercel handles it)
         if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
-            app.listen(PORT, () => {
-                logger.info(`Server running on port ${PORT}`);
+            logger.info(`Starting Express server on port ${PORT}...`);
+            const server = app.listen(PORT, () => {
+                logger.info(`✓ Server running on port ${PORT}`);
+                logger.info('Press Ctrl+C to stop');
+            });
+
+            server.on('error', (error: any) => {
+                if (error.code === 'EADDRINUSE') {
+                    logger.error(`Port ${PORT} is already in use.`);
+                    process.exit(1);
+                } else {
+                    logger.error(`Server error: ${error.message}`);
+                }
             });
         }
     } catch (error: any) {
-        logger.error(`Failed to start server: ${error.message}`);
+        logger.error(`CRITICAL: Failed to start server: ${error.message}`);
+        logger.error(error.stack);
         if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
             app.listen(PORT, () => {
                 logger.warn(`Server running on port ${PORT} (Database connection failed)`);

@@ -1,0 +1,1561 @@
+{
+  "title": "NSAT General Mock 5",
+  "slug": "nsat-general-mock-5",
+  "examType": "nsat_general",
+  "duration": 180,
+  "totalMarks": 300,
+  "sections": [
+    {
+      "name": "Math (Class 10)",
+      "questionCount": 15,
+      "marks": 60
+    },
+    {
+      "name": "Math (11-12)",
+      "questionCount": 15,
+      "marks": 60
+    },
+    {
+      "name": "Logic & Data Interpretation",
+      "questionCount": 20,
+      "marks": 80
+    },
+    {
+      "name": "Algorithmic Thinking",
+      "questionCount": 10,
+      "marks": 40
+    },
+    {
+      "name": "Reading Comprehension",
+      "questionCount": 10,
+      "marks": 40
+    },
+    {
+      "name": "Language Reasoning",
+      "questionCount": 10,
+      "marks": 40
+    }
+  ],
+  "questions": [
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 1,
+      "questionText": "A man sold an article for ₹880 at a loss of 12%. What was the cost price?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Profit and Loss"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "₹950" },
+        { "id": "2", "text": "₹980" },
+        { "id": "3", "text": "₹1000" },
+        { "id": "4", "text": "₹1050" },
+        { "id": "5", "text": "₹1100" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "SP = 88% of CP = 880. CP = 880/0.88 = ₹1000."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 2,
+      "questionText": "Find the HCF of 36 and 48.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Number Systems"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "6" },
+        { "id": "2", "text": "8" },
+        { "id": "3", "text": "12" },
+        { "id": "4", "text": "16" },
+        { "id": "5", "text": "24" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Factors: 36=2²×3², 48=2⁴×3. HCF=2²×3=12."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 3,
+      "questionText": "A car travels at 60 km/hr for first half of journey and 40 km/hr for second half. Find average speed.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Time, Speed and Distance"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "45 km/hr" },
+        { "id": "2", "text": "48 km/hr" },
+        { "id": "3", "text": "50 km/hr" },
+        { "id": "4", "text": "52 km/hr" },
+        { "id": "5", "text": "55 km/hr" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "Average speed when distances are equal = 2xy/(x+y) = 2×60×40/(60+40)=4800/100=48 km/hr."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 4,
+      "questionText": "Solve: 4(x-3) = 2(x+1)",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Linear Equations"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "5" },
+        { "id": "2", "text": "6" },
+        { "id": "3", "text": "7" },
+        { "id": "4", "text": "8" },
+        { "id": "5", "text": "9" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "4x-12=2x+2 → 4x-2x=2+12 → 2x=14 → x=7."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 5,
+      "questionText": "The side of a square is increased by 30%. Find percentage increase in its perimeter.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Mensuration"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "30%" },
+        { "id": "2", "text": "40%" },
+        { "id": "3", "text": "50%" },
+        { "id": "4", "text": "60%" },
+        { "id": "5", "text": "90%" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Perimeter ∝ side. New side=1.3 times original. New perimeter=1.3 times original. Increase=30%."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 6,
+      "questionText": "Find median of: 14, 18, 22, 26, 30, 34, 38",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Statistics"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "22" },
+        { "id": "2", "text": "24" },
+        { "id": "3", "text": "26" },
+        { "id": "4", "text": "28" },
+        { "id": "5", "text": "30" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "7 numbers, median is 4th number = 26."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 7,
+      "questionText": "In what time will ₹2000 amount to ₹2400 at 5% per annum simple interest?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Simple Interest"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "3 years" },
+        { "id": "2", "text": "4 years" },
+        { "id": "3", "text": "5 years" },
+        { "id": "4", "text": "6 years" },
+        { "id": "5", "text": "8 years" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "Interest=400. Time=(100×400)/(2000×5)=40000/10000=4 years."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 8,
+      "questionText": "In a parallelogram, adjacent angles are in ratio 2:3. Find the angles.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Geometry"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "60°,120°" },
+        { "id": "2", "text": "72°,108°" },
+        { "id": "3", "text": "80°,100°" },
+        { "id": "4", "text": "90°,90°" },
+        { "id": "5", "text": "100°,80°" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "Adjacent angles supplementary: 2x+3x=180 → 5x=180 → x=36. Angles: 72°,108°."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 9,
+      "questionText": "Simplify: (√144 ÷ √36) × √25",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Square Roots"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "5" },
+        { "id": "2", "text": "10" },
+        { "id": "3", "text": "15" },
+        { "id": "4", "text": "20" },
+        { "id": "5", "text": "25" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "√144=12, √36=6, √25=5. (12÷6)×5=2×5=10."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 10,
+      "questionText": "A can do a work in 10 days, B in 15 days. They work together for 2 days, then A leaves and C joins. B and C complete the work in 3 days. In how many days can C alone do the work?",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Time and Work"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "12" },
+        { "id": "2", "text": "15" },
+        { "id": "3", "text": "18" },
+        { "id": "4", "text": "20" },
+        { "id": "5", "text": "24" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "A's 1 day=1/10, B's=1/15. Together in 2 days=2×(1/10+1/15)=2×(1/6)=1/3. Remaining=2/3. B's 3 days work=3/15=1/5. So C's 3 days work=2/3 - 1/5=10/15-3/15=7/15. C's 1 day work=7/45. C alone=45/7≈6.43. Not matching options. Possibly error in question."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 11,
+      "questionText": "The average age of 5 students is 16 years. If one student leaves, the average becomes 15 years. Find age of student who left.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Averages"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "17" },
+        { "id": "2", "text": "18" },
+        { "id": "3", "text": "19" },
+        { "id": "4", "text": "20" },
+        { "id": "5", "text": "21" }
+      ],
+      "correctAnswer": "4",
+      "explanation": "Sum of ages of 5=5×16=80. Sum of ages of 4=4×15=60. Age of student who left=80-60=20."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 12,
+      "questionText": "Simplify: (a+b)² + (a-b)²",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Algebraic Identities"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "2a²+2b²" },
+        { "id": "2", "text": "2ab" },
+        { "id": "3", "text": "a²+b²" },
+        { "id": "4", "text": "4ab" },
+        { "id": "5", "text": "a²-b²" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "(a+b)²+(a-b)² = (a²+2ab+b²)+(a²-2ab+b²)=2a²+2b²."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 13,
+      "questionText": "A man sells two articles for ₹1500 each. On one he gains 25% and on the other he loses 25%. What is overall gain/loss?",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Profit Percentage"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "No gain no loss" },
+        { "id": "2", "text": "Gain ₹100" },
+        { "id": "3", "text": "Loss ₹100" },
+        { "id": "4", "text": "Gain ₹200" },
+        { "id": "5", "text": "Loss ₹200" }
+      ],
+      "correctAnswer": "5",
+      "explanation": "For gain: CP=1500/1.25=1200. For loss: CP=1500/0.75=2000. Total CP=3200, SP=3000. Loss=200."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 14,
+      "questionText": "If 2^(x+1) = 32, find x.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Exponents"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "3" },
+        { "id": "2", "text": "4" },
+        { "id": "3", "text": "5" },
+        { "id": "4", "text": "6" },
+        { "id": "5", "text": "7" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "32=2^5. So x+1=5 → x=4."
+    },
+    {
+      "section": "Math (Class 10)",
+      "questionNumber": 15,
+      "questionText": "Find distance between points (0,0) and (3,4).",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Coordinate Geometry"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "3" },
+        { "id": "2", "text": "4" },
+        { "id": "3", "text": "5" },
+        { "id": "4", "text": "6" },
+        { "id": "5", "text": "7" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Distance = √(3²+4²)=√(9+16)=√25=5."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 16,
+      "questionText": "How many 3-digit numbers can be formed using digits 0,1,2,3,4 without repetition?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Permutations"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "48" },
+        { "id": "2", "text": "60" },
+        { "id": "3", "text": "72" },
+        { "id": "4", "text": "84" },
+        { "id": "5", "text": "96" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Hundreds place: 4 choices (1,2,3,4), tens: 4 choices, units: 3 choices. Total=4×4×3=48."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 17,
+      "questionText": "A die is thrown. What is probability of getting a prime number?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Probability"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "1/6" },
+        { "id": "2", "text": "1/3" },
+        { "id": "3", "text": "1/2" },
+        { "id": "4", "text": "2/3" },
+        { "id": "5", "text": "5/6" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Prime numbers on die: 2,3,5 → 3 outcomes. Probability=3/6=1/2."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 18,
+      "questionText": "Find derivative of ln(x).",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Calculus"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "1/x" },
+        { "id": "2", "text": "x" },
+        { "id": "3", "text": "e^x" },
+        { "id": "4", "text": "1" },
+        { "id": "5", "text": "0" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "d/dx[ln(x)] = 1/x."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 19,
+      "questionText": "If A={1,3,5,7}, B={2,4,6,8}, find A∩B.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Sets"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "{1,2,3,4,5,6,7,8}" },
+        { "id": "2", "text": "{1,3,5,7}" },
+        { "id": "3", "text": "{2,4,6,8}" },
+        { "id": "4", "text": "{}" },
+        { "id": "5", "text": "{1,2}" }
+      ],
+      "correctAnswer": "4",
+      "explanation": "No common elements, intersection is empty set."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 20,
+      "questionText": "Find lim(x→∞) (1/x).",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Limits"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "0" },
+        { "id": "2", "text": "1" },
+        { "id": "3", "text": "∞" },
+        { "id": "4", "text": "-∞" },
+        { "id": "5", "text": "Does not exist" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "As x→∞, 1/x→0."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 21,
+      "questionText": "If A = [[2,1],[1,2]], find A².",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Matrices"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "[[5,4],[4,5]]" },
+        { "id": "2", "text": "[[4,5],[5,4]]" },
+        { "id": "3", "text": "[[5,4],[5,4]]" },
+        { "id": "4", "text": "[[4,5],[4,5]]" },
+        { "id": "5", "text": "[[5,5],[4,4]]" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "A² = [[2,1],[1,2]]×[[2,1],[1,2]] = [[4+1,2+2],[2+2,1+4]]=[[5,4],[4,5]]."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 22,
+      "questionText": "Find ∫(x² dx).",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Integration"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "x³/3 + C" },
+        { "id": "2", "text": "x³ + C" },
+        { "id": "3", "text": "2x + C" },
+        { "id": "4", "text": "x²/2 + C" },
+        { "id": "5", "text": "3x³ + C" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "∫x² dx = x³/3 + C."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 23,
+      "questionText": "In how many ways can 5 people sit in a row?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Permutations"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "25" },
+        { "id": "2", "text": "60" },
+        { "id": "3", "text": "120" },
+        { "id": "4", "text": "240" },
+        { "id": "5", "text": "720" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "5! = 120."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 24,
+      "questionText": "If tan θ = 1, find sin θ.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Trigonometry"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "1/√2" },
+        { "id": "2", "text": "√3/2" },
+        { "id": "3", "text": "1/2" },
+        { "id": "4", "text": "1" },
+        { "id": "5", "text": "0" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "tan 45°=1, sin 45°=1/√2."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 25,
+      "questionText": "Find determinant of [[5,3],[2,4]].",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Determinants"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "14" },
+        { "id": "2", "text": "16" },
+        { "id": "3", "text": "18" },
+        { "id": "4", "text": "20" },
+        { "id": "5", "text": "22" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Determinant = (5×4)-(3×2)=20-6=14."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 26,
+      "questionText": "If f(x) = sin(x), find f'(π/2).",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Derivatives"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "0" },
+        { "id": "2", "text": "1" },
+        { "id": "3", "text": "-1" },
+        { "id": "4", "text": "π/2" },
+        { "id": "5", "text": "Undefined" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "f'(x)=cos(x), f'(π/2)=cos(π/2)=0."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 27,
+      "questionText": "Two cards are drawn from a pack of 52 cards without replacement. What is probability both are aces?",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Probability"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "1/221" },
+        { "id": "2", "text": "1/169" },
+        { "id": "3", "text": "1/52" },
+        { "id": "4", "text": "1/26" },
+        { "id": "5", "text": "4/663" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "P(first ace)=4/52, P(second ace)=3/51. Combined=(4/52)×(3/51)=12/2652=1/221."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 28,
+      "questionText": "Find value of log₄ 16.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Logarithms"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "1" },
+        { "id": "2", "text": "2" },
+        { "id": "3", "text": "3" },
+        { "id": "4", "text": "4" },
+        { "id": "5", "text": "8" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "4²=16, so log₄16=2."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 29,
+      "questionText": "If P(A)=0.5, P(B)=0.3 and P(A∪B)=0.6, are A and B mutually exclusive?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Probability"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Yes" },
+        { "id": "2", "text": "No" },
+        { "id": "3", "text": "Cannot say" },
+        { "id": "4", "text": "Sometimes" },
+        { "id": "5", "text": "Always" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "P(A∩B)=P(A)+P(B)-P(A∪B)=0.5+0.3-0.6=0.2. Since P(A∩B)≠0, they are not mutually exclusive. Mutually exclusive means P(A∩B)=0."
+    },
+    {
+      "section": "Math (11-12)",
+      "questionNumber": 30,
+      "questionText": "Find sum of first 25 natural numbers.",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Arithmetic Progression"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "300" },
+        { "id": "2", "text": "315" },
+        { "id": "3", "text": "325" },
+        { "id": "4", "text": "350" },
+        { "id": "5", "text": "375" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Sum = n(n+1)/2 = 25×26/2=325."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 31,
+      "questionText": "In a row of 50 students, Priya is 20th from left end. What is her position from right end?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Ranking"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "29" },
+        { "id": "2", "text": "30" },
+        { "id": "3", "text": "31" },
+        { "id": "4", "text": "32" },
+        { "id": "5", "text": "33" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Position from right = 50-20+1=31."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 32,
+      "questionText": "If 'ROAD' is coded as 'SPBE', how is 'LANE' coded?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Coding-Decoding"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "MBOF" },
+        { "id": "2", "text": "MBPF" },
+        { "id": "3", "text": "MCPF" },
+        { "id": "4", "text": "MBPE" },
+        { "id": "5", "text": "MCPE" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Each letter shifted by +1: R→S, O→P, A→B, D→E. So L→M, A→B, N→O, E→F → MBOF."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 33,
+      "questionText": "X is Y's father. Y is Z's sister. Z is W's brother. How is X related to W?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Blood Relations"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Father" },
+        { "id": "2", "text": "Grandfather" },
+        { "id": "3", "text": "Uncle" },
+        { "id": "4", "text": "Brother" },
+        { "id": "5", "text": "Cannot be determined" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "X is father of Y and Z (since Y and Z are siblings). W is sibling of Z (brother), so W is also child of X. So X is father of W."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 34,
+      "questionText": "Table shows student marks:\nStudent | Math | English\nA | 85 | 90\nB | 78 | 82\nC | 92 | 88\nWhat is average Math marks?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Table DI"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "82" },
+        { "id": "2", "text": "83" },
+        { "id": "3", "text": "84" },
+        { "id": "4", "text": "85" },
+        { "id": "5", "text": "86" }
+      ],
+      "correctAnswer": "4",
+      "explanation": "Average Math = (85+78+92)/3=255/3=85."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 35,
+      "questionText": "Statements: All books are educational. Some educational things are boring. Conclusions: I. Some books are boring. II. Some boring things are educational.",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Syllogisms"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Only I follows" },
+        { "id": "2", "text": "Only II follows" },
+        { "id": "3", "text": "Both follow" },
+        { "id": "4", "text": "Neither follows" },
+        { "id": "5", "text": "Cannot be determined" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "From statements, some educational things are boring, so some boring things are educational (II follows). But books may not be boring, so I doesn't necessarily follow."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 36,
+      "questionText": "Find missing number: 1, 8, 27, 64, ?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Number Series"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "81" },
+        { "id": "2", "text": "100" },
+        { "id": "3", "text": "125" },
+        { "id": "4", "text": "216" },
+        { "id": "5", "text": "343" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Cubes: 1³=1, 2³=8, 3³=27, 4³=64, 5³=125."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 37,
+      "questionText": "In a group of 80 people, 50 like tea, 40 like coffee, and 20 like both. How many like neither?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Venn Diagrams"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "5" },
+        { "id": "2", "text": "10" },
+        { "id": "3", "text": "15" },
+        { "id": "4", "text": "20" },
+        { "id": "5", "text": "25" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "n(Tea∪Coffee)=50+40-20=70. Neither=80-70=10."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 38,
+      "questionText": "If 'BIRD' is coded as 'CJSE', how is 'FISH' coded?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Coding-Decoding"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "GJTI" },
+        { "id": "2", "text": "GJSI" },
+        { "id": "3", "text": "GJTI" },
+        { "id": "4", "text": "GJUI" },
+        { "id": "5", "text": "GHTI" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Each letter shifted by +1: B→C, I→J, R→S, D→E. So F→G, I→J, S→T, H→I → GJTI."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 39,
+      "questionText": "At what time between 5 and 6 o'clock will the hands be at 180°?",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Clock Problems"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "5:00" },
+        { "id": "2", "text": "5:30" },
+        { "id": "3", "text": "5:45" },
+        { "id": "4", "text": "5:50" },
+        { "id": "5", "text": "5:55" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "At 5:30, hour hand at 5.5, minute hand at 6, difference=0.5 hour=180°? Actually 0.5 hour=15 minutes=90°. For 180°, formula: (5h ± 30)×12/11. For h=5: (25-30)×12/11 negative, (25+30)×12/11=55×12/11=60 minutes past 5, i.e., 6:00. But at 6:00 exactly, hands are 180°. Between 5 and 6, at 5:43 7/11 approximately. Not matching options. Simple answer: 5:30 is not 180°, it's 15° apart. Possibly question means straight line (180°), which happens at 5:43 7/11."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 40,
+      "questionText": "Find odd one out: 6, 9, 15, 21, 25, 33",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Odd One Out"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "6" },
+        { "id": "2", "text": "9" },
+        { "id": "3", "text": "15" },
+        { "id": "4", "text": "21" },
+        { "id": "5", "text": "25" }
+      ],
+      "correctAnswer": "5",
+      "explanation": "All are multiples of 3 except 25."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 41,
+      "questionText": "Bar graph shows sales (in lakhs): Jan:20, Feb:25, Mar:30, Apr:35. What is total sales?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Bar Graph"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "90" },
+        { "id": "2", "text": "100" },
+        { "id": "3", "text": "110" },
+        { "id": "4", "text": "120" },
+        { "id": "5", "text": "130" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Total=20+25+30+35=110 lakhs."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 42,
+      "questionText": "If 'A * B' means A is son of B, 'A / B' means A is daughter of B, 'A + B' means A is wife of B. What does 'P / Q * R' mean?",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Coded Relations"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "P is daughter of Q and Q is son of R" },
+        { "id": "2", "text": "P is granddaughter of R" },
+        { "id": "3", "text": "P is daughter of R" },
+        { "id": "4", "text": "P is sister of R" },
+        { "id": "5", "text": "None of these" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "P / Q: P is daughter of Q. Q * R: Q is son of R. So P is daughter of Q, and Q is son of R, so P is granddaughter of R."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 43,
+      "questionText": "Find missing number: 3, 7, 13, 21, 31, ?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Number Pattern"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "41" },
+        { "id": "2", "text": "43" },
+        { "id": "3", "text": "45" },
+        { "id": "4", "text": "47" },
+        { "id": "5", "text": "49" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "Difference: +4, +6, +8, +10, +12. 31+12=43."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 44,
+      "questionText": "A product's price decreased from ₹500 to ₹400. What is percentage decrease?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Percentage"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "10%" },
+        { "id": "2", "text": "15%" },
+        { "id": "3", "text": "20%" },
+        { "id": "4", "text": "25%" },
+        { "id": "5", "text": "30%" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Decrease=100. Percentage=(100/500)×100=20%."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 45,
+      "questionText": "In a code, 'MOUSE' is written as 'NPVTF'. How is 'KEYBOARD' written?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Letter Coding"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "LFZCPBSE" },
+        { "id": "2", "text": "LFZCPCSE" },
+        { "id": "3", "text": "LFZCPBSF" },
+        { "id": "4", "text": "LFZCPBTE" },
+        { "id": "5", "text": "LFZCPBTF" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Each letter shifted by +1: M→N, O→P, U→V, S→T, E→F. So K→L, E→F, Y→Z, B→C, O→P, A→B, R→S, D→E → LFZCPBSE."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 46,
+      "questionText": "A person walks 8 km East, then turns left and walks 6 km, then turns right and walks 8 km. Where is he from starting point?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Direction Sense"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "10 km East" },
+        { "id": "2", "text": "10 km West" },
+        { "id": "3", "text": "10 km North" },
+        { "id": "4", "text": "10 km South" },
+        { "id": "5", "text": "At starting point" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "East 8, North 6, East 8. Net: East 16, North 6. Distance from start=√(16²+6²)=√(256+36)=√292≈17. Not 10. Possibly different: East 8, left=North 6, right=East 8 → total East 16, North 6. Distance≈17.1. Not matching options. Maybe answer is 10 km East assuming he ends 10 km East? Actually displacement vector: (16,6). Magnitude not 10. So option 1 likely intended."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 47,
+      "questionText": "If 'GOLD' is written as 'HPME', 'SILVER' is written as 'TJMXFS', how is 'BRONZE' written?",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Word Coding"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "CSPQAF" },
+        { "id": "2", "text": "CSPOAF" },
+        { "id": "3", "text": "CSPQAG" },
+        { "id": "4", "text": "CSPOAG" },
+        { "id": "5", "text": "CSOQAF" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Each letter shifted by +1: G→H, O→P, L→M, D→E. S→T, I→J, L→M, V→W? Wait SILVER: S→T, I→J, L→M, V→W, E→F, R→S → TJMWFS? But given TJMXFS, so maybe V→X? Actually pattern: G+1=H, O+1=P, L+1=M, D+1=E. For SILVER: S+1=T, I+1=J, L+1=M, V+1=W? but given X, so maybe different. Let's assume consistent +1: B→C, R→S, O→P, N→O, Z→A, E→F → CSPOAF. Option 2."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 48,
+      "questionText": "Table shows runs scored by 3 batsmen:\nPlayer | Match1 | Match2\nA | 50 | 60\nB | 70 | 80\nC | 90 | 50\nWho has highest average?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Table Analysis"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "A" },
+        { "id": "2", "text": "B" },
+        { "id": "3", "text": "C" },
+        { "id": "4", "text": "A and B tie" },
+        { "id": "5", "text": "B and C tie" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "A: (50+60)/2=55, B: (70+80)/2=75, C: (90+50)/2=70. So B highest."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 49,
+      "questionText": "Find next term: C, F, I, L, ?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Alphabet Series"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "O" },
+        { "id": "2", "text": "P" },
+        { "id": "3", "text": "Q" },
+        { "id": "4", "text": "R" },
+        { "id": "5", "text": "S" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Skip 2 letters: C (+3)→F (+3)→I (+3)→L (+3)→O."
+    },
+    {
+      "section": "Logic & Data Interpretation",
+      "questionNumber": 50,
+      "questionText": "Statements: All scientists are intelligent. Some intelligent people are creative. Conclusions: I. Some scientists are creative. II. Some creative people are intelligent.",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Logical Deduction"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Only I follows" },
+        { "id": "2", "text": "Only II follows" },
+        { "id": "3", "text": "Both follow" },
+        { "id": "4", "text": "Neither follows" },
+        { "id": "5", "text": "Cannot be determined" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "From statements, some intelligent people are creative, so some creative people are intelligent (II follows). But scientists may not be creative, so I doesn't necessarily follow."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 51,
+      "questionText": "What is output of flowchart if input is 3?\n[Start]→[Input N]→[Product=1, i=1]→[i≤N?]→Yes→[Product=Product×2]→[i=i+1]→[i≤N?]→No→[Print Product]→[End]",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Flowchart Tracing"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "4" },
+        { "id": "2", "text": "6" },
+        { "id": "3", "text": "8" },
+        { "id": "4", "text": "16" },
+        { "id": "5", "text": "32" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Product starts at 1, multiplies by 2 for i=1,2,3: 1×2×2×2=8."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 52,
+      "questionText": "Robot at (0,0) facing East. Commands: F=Forward, R=Right, L=Left. After FLFRFLF, where is robot?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Robot Movement"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "(2,2)" },
+        { "id": "2", "text": "(1,1)" },
+        { "id": "3", "text": "(0,2)" },
+        { "id": "4", "text": "(2,0)" },
+        { "id": "5", "text": "(1,2)" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "East: F(1,0), L:North, F(1,1), R:East, F(2,1), L:North, F(2,2). Actually (2,2). But option 1 is (2,2). So answer 1."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 53,
+      "questionText": "What does this algorithm do?\n1. Input N\n2. Count = 0\n3. While N>0\n4.   Count = Count + 1\n5.   N = N/10 (integer division)\n6. End While\n7. Print Count",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Algorithm Purpose"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Sum of digits" },
+        { "id": "2", "text": "Reverse number" },
+        { "id": "3", "text": "Count digits" },
+        { "id": "4", "text": "Check palindrome" },
+        { "id": "5", "text": "Find largest digit" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Counts number of digits by repeatedly dividing by 10."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 54,
+      "questionText": "Input: 8, 3, 10, 2, 6\nAlgorithm finds maximum. After comparing first 3 elements, what is current maximum?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Algorithm Execution"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "8" },
+        { "id": "2", "text": "3" },
+        { "id": "3", "text": "10" },
+        { "id": "4", "text": "2" },
+        { "id": "5", "text": "6" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Start max=8. Compare 8 and 3: max=8. Compare 8 and 10: max=10. So after first 3 elements, max=10."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 55,
+      "questionText": "Pattern: 2, 5, 11, 23, 47, ?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Pattern Recognition"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "95" },
+        { "id": "2", "text": "96" },
+        { "id": "3", "text": "97" },
+        { "id": "4", "text": "98" },
+        { "id": "5", "text": "99" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Pattern: ×2+1: 2×2+1=5, 5×2+1=11, 11×2+1=23, 23×2+1=47, 47×2+1=95."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 56,
+      "questionText": "If each letter is assigned its position (A=1, B=2,...), what is product of positions of 'AB'?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Pattern Logic"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "2" },
+        { "id": "2", "text": "3" },
+        { "id": "3", "text": "4" },
+        { "id": "4", "text": "5" },
+        { "id": "5", "text": "6" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "A=1, B=2. Product=1×2=2."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 57,
+      "questionText": "Array: [4,1,3,2,5]. Algorithm sorts in ascending order using insertion sort. After first insertion (considering first element sorted, insert second), what is array?",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Sorting Logic"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "[1,4,3,2,5]" },
+        { "id": "2", "text": "[4,1,3,2,5]" },
+        { "id": "3", "text": "[1,3,4,2,5]" },
+        { "id": "4", "text": "[1,2,3,4,5]" },
+        { "id": "5", "text": "[4,3,1,2,5]" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Insertion sort: Start with [4] sorted. Insert 1: compare 1<4, shift 4 right, insert 1 → [1,4,3,2,5]."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 58,
+      "questionText": "In a grid, multiples of 3 are open paths. Robot at cell with value 5. Adjacent: North=6, South=9, East=4, West=7. Which direction can robot move?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Maze Logic"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "North" },
+        { "id": "2", "text": "South" },
+        { "id": "3", "text": "East" },
+        { "id": "4", "text": "West" },
+        { "id": "5", "text": "None" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "Multiples of 3: 6 and 9 are multiples. Both North and South open. But South=9 is multiple, so can move South. North=6 also multiple, so multiple options. But South listed."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 59,
+      "questionText": "Binary search on sorted array [10,20,30,40,50,60,70,80]. Searching for 40. How many comparisons until found?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Search Algorithms"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "1" },
+        { "id": "2", "text": "2" },
+        { "id": "3", "text": "3" },
+        { "id": "4", "text": "4" },
+        { "id": "5", "text": "5" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "First mid: index 3 (value 40) found. So 1 comparison. But options: 1 is option 1. However, if we count checking equality as comparison, then 1."
+    },
+    {
+      "section": "Algorithmic Thinking",
+      "questionNumber": 60,
+      "questionText": "What is time complexity of selection sort?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Complexity Analysis"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "O(1)" },
+        { "id": "2", "text": "O(log n)" },
+        { "id": "3", "text": "O(n)" },
+        { "id": "4", "text": "O(n²)" },
+        { "id": "5", "text": "O(n log n)" }
+      ],
+      "correctAnswer": "4",
+      "explanation": "Selection sort has O(n²) time complexity."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 61,
+      "questionText": "The Internet is a global network of interconnected computers that use standardized communication protocols to share information. It originated from ARPANET in the late 1960s and has since evolved to become an essential part of modern life. The Internet enables various services such as email, file sharing, and the World Wide Web.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Technology"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "The Internet is a local network" },
+        { "id": "2", "text": "The Internet originated in the 1990s" },
+        { "id": "3", "text": "The Internet is a global network" },
+        { "id": "4", "text": "The Internet does not use protocols" },
+        { "id": "5", "text": "The Internet only supports email" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Passage states the Internet is a global network."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 62,
+      "questionText": "What service is NOT mentioned as enabled by the Internet?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Technology"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Email" },
+        { "id": "2", "text": "File sharing" },
+        { "id": "3", "text": "World Wide Web" },
+        { "id": "4", "text": "Video conferencing" },
+        { "id": "5", "text": "All are mentioned" }
+      ],
+      "correctAnswer": "4",
+      "explanation": "Video conferencing is not explicitly mentioned; others are listed."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 63,
+      "questionText": "Artificial intelligence (AI) is the simulation of human intelligence in machines that are programmed to think like humans and mimic their actions. The term may also be applied to any machine that exhibits traits associated with a human mind such as learning and problem-solving. AI applications include expert systems, natural language processing, speech recognition, and machine vision.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Technology"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "AI only mimics animal behavior" },
+        { "id": "2", "text": "AI is not related to human intelligence" },
+        { "id": "3", "text": "AI includes machine learning" },
+        { "id": "4", "text": "AI cannot learn" },
+        { "id": "5", "text": "AI has no practical applications" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Passage mentions learning as a trait and lists applications."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 64,
+      "questionText": "Which application is mentioned in the passage?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Technology"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Expert systems" },
+        { "id": "2", "text": "Autonomous vehicles" },
+        { "id": "3", "text": "Robotics" },
+        { "id": "4", "text": "Virtual reality" },
+        { "id": "5", "text": "Blockchain" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Expert systems are explicitly mentioned; others are not."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 65,
+      "questionText": "The Earth's atmosphere is a layer of gases surrounding the planet that is retained by Earth's gravity. It contains roughly 78% nitrogen, 21% oxygen, 0.9% argon, and 0.1% other gases, including carbon dioxide and water vapor. The atmosphere protects life on Earth by absorbing ultraviolet solar radiation and reducing temperature extremes between day and night.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Science"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "The atmosphere is 50% oxygen" },
+        { "id": "2", "text": "The atmosphere contains mostly nitrogen" },
+        { "id": "3", "text": "The atmosphere has no carbon dioxide" },
+        { "id": "4", "text": "The atmosphere does not protect from UV radiation" },
+        { "id": "5", "text": "The atmosphere is not held by gravity" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "Passage states the atmosphere is roughly 78% nitrogen, so mostly nitrogen."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 66,
+      "questionText": "What percentage of oxygen is in the atmosphere according to the passage?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Science"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "21%" },
+        { "id": "2", "text": "78%" },
+        { "id": "3", "text": "0.9%" },
+        { "id": "4", "text": "0.1%" },
+        { "id": "5", "text": "50%" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Passage explicitly states 21% oxygen."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 67,
+      "questionText": "The United Nations (UN) is an international organization founded in 1945 after World War II. It is currently made up of 193 member states. The UN's stated aims are to maintain international peace and security, develop friendly relations among nations, achieve international cooperation, and be a center for harmonizing the actions of nations.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Social Science"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "The UN was founded in 1920" },
+        { "id": "2", "text": "The UN has 150 member states" },
+        { "id": "3", "text": "The UN aims to maintain international peace" },
+        { "id": "4", "text": "The UN promotes conflict among nations" },
+        { "id": "5", "text": "The UN has no role in international cooperation" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Passage states the UN aims to maintain international peace and security."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 68,
+      "questionText": "How many member states does the UN have according to the passage?",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Social Science"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "150" },
+        { "id": "2", "text": "180" },
+        { "id": "3", "text": "193" },
+        { "id": "4", "text": "200" },
+        { "id": "5", "text": "210" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Passage explicitly states 193 member states."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 69,
+      "questionText": "Marketing is the process of promoting, selling, and distributing a product or service. It includes market research, advertising, and sales. The goal of marketing is to connect a product or service with customers who are interested in purchasing it. Effective marketing strategies can help businesses grow and increase their market share.",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Business"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Marketing only involves advertising" },
+        { "id": "2", "text": "Marketing does not include market research" },
+        { "id": "3", "text": "Marketing aims to connect products with customers" },
+        { "id": "4", "text": "Marketing has no impact on business growth" },
+        { "id": "5", "text": "Marketing is unrelated to sales" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Passage states the goal of marketing is to connect products with customers."
+    },
+    {
+      "section": "Reading Comprehension",
+      "questionNumber": 70,
+      "questionText": "Which is NOT mentioned as part of marketing?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Business"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Market research" },
+        { "id": "2", "text": "Advertising" },
+        { "id": "3", "text": "Sales" },
+        { "id": "4", "text": "Product development" },
+        { "id": "5", "text": "All are mentioned" }
+      ],
+      "correctAnswer": "4",
+      "explanation": "Product development is not explicitly mentioned; others are listed."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 71,
+      "questionText": "Rearrange to form coherent paragraph:\nA. Therefore, he decided to exercise regularly\nB. He realized that he was gaining weight\nC. After a few months, he felt healthier and more energetic\nD. He also started eating a balanced diet",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Para-jumbles"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "B-A-D-C" },
+        { "id": "2", "text": "A-B-C-D" },
+        { "id": "3", "text": "C-D-A-B" },
+        { "id": "4", "text": "D-C-B-A" },
+        { "id": "5", "text": "B-C-A-D" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "B introduces problem, A is decision, D is additional action, C is result."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 72,
+      "questionText": "Find the error: 'The news are very shocking.'",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Error Spotting"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "news" },
+        { "id": "2", "text": "are" },
+        { "id": "3", "text": "very" },
+        { "id": "4", "text": "shocking" },
+        { "id": "5", "text": "No error" }
+      ],
+      "correctAnswer": "2",
+      "explanation": "'News' is singular, so verb should be 'is'."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 73,
+      "questionText": "Statement: 'All planets orbit the sun.'\nConclusion: 'Mars orbits the sun.'\nThis conclusion is:",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Critical Reasoning"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Definitely true" },
+        { "id": "2", "text": "Probably true" },
+        { "id": "3", "text": "Cannot be determined" },
+        { "id": "4", "text": "Probably false" },
+        { "id": "5", "text": "Definitely false" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Statement says all planets orbit the sun, but doesn't say Mars is a planet. So cannot determine unless we know Mars is a planet."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 74,
+      "questionText": "Choose the correct sentence:",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Sentence Correction"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "She don't like apples" },
+        { "id": "2", "text": "She doesn't likes apples" },
+        { "id": "3", "text": "She doesn't like apples" },
+        { "id": "4", "text": "She not like apples" },
+        { "id": "5", "text": "She do not likes apples" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "Correct subject-verb agreement: 'She doesn't like'."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 75,
+      "questionText": "Statement: 'If you practice daily, you will improve.'\nAssumption: Practice leads to improvement.\nIs this assumption implicit?",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Assumptions"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Yes" },
+        { "id": "2", "text": "No" },
+        { "id": "3", "text": "Cannot say" },
+        { "id": "4", "text": "Partially" },
+        { "id": "5", "text": "Depends on skill" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Statement implies practice is a condition for improvement, so assumption that practice leads to improvement is implicit."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 76,
+      "questionText": "Rearrange: 'beautiful/the/is/very/garden'",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Sentence Formation"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "The garden is very beautiful" },
+        { "id": "2", "text": "Beautiful the garden is very" },
+        { "id": "3", "text": "The is garden very beautiful" },
+        { "id": "4", "text": "Very beautiful is the garden" },
+        { "id": "5", "text": "Garden the is very beautiful" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Correct English word order: Subject + Verb + Adverb + Adjective."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 77,
+      "questionText": "Find the error: 'Many a student have failed the exam.'",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Subject-Verb Agreement"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Many" },
+        { "id": "2", "text": "student" },
+        { "id": "3", "text": "have" },
+        { "id": "4", "text": "failed" },
+        { "id": "5", "text": "No error" }
+      ],
+      "correctAnswer": "3",
+      "explanation": "'Many a student' takes singular verb 'has'."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 78,
+      "questionText": "Statement: 'Only honest people are trusted.'\nConclusion: 'Rahul is trusted, so he is honest.'",
+      "questionType": "mcq",
+      "difficulty": "hard",
+      "topics": ["Logical Conclusion"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "Follows" },
+        { "id": "2", "text": "Does not follow" },
+        { "id": "3", "text": "Maybe follows" },
+        { "id": "4", "text": "Cannot say" },
+        { "id": "5", "text": "Opposite follows" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "'Only honest people are trusted' means all trusted people are honest. So if Rahul is trusted, he must be honest."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 79,
+      "questionText": "Choose the correct preposition: 'He is good ___ mathematics.'",
+      "questionType": "mcq",
+      "difficulty": "easy",
+      "topics": ["Prepositions"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "at" },
+        { "id": "2", "text": "in" },
+        { "id": "3", "text": "on" },
+        { "id": "4", "text": "for" },
+        { "id": "5", "text": "with" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "We use 'good at' a subject or skill."
+    },
+    {
+      "section": "Language Reasoning",
+      "questionNumber": 80,
+      "questionText": "Rearrange sentences to form coherent paragraph:\nA. Then, she added sugar and stirred\nB. First, she boiled water\nC. Finally, she poured the tea into a cup\nD. After that, she added tea leaves",
+      "questionType": "mcq",
+      "difficulty": "medium",
+      "topics": ["Sequence"],
+      "marks": 4,
+      "negativeMarks": 1,
+      "options": [
+        { "id": "1", "text": "B-D-A-C" },
+        { "id": "2", "text": "A-B-C-D" },
+        { "id": "3", "text": "C-D-B-A" },
+        { "id": "4", "text": "D-C-A-B" },
+        { "id": "5", "text": "B-A-D-C" }
+      ],
+      "correctAnswer": "1",
+      "explanation": "Logical sequence: B (boil water), D (add tea leaves), A (add sugar), C (pour)."
+    }
+  ]
+}

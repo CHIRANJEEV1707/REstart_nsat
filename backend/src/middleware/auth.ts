@@ -20,105 +20,70 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
         next();
     };
 
-    try {
-        // DEBUG: Log tokens received
-        console.log(`[Auth] Header: ${req.headers.authorization ? 'Present' : 'Missing'}, Cookie: ${req.cookies.token ? 'Present' : 'Missing'}`);
-        if (token) console.log(`[Auth] Token used: ${token.substring(0, 10)}...`);
+    // Flag to indicate if we should try refresh token
+    let tryRefresh = false;
 
-        if (token) {
-            // Try to verify Access Token
-            try {
-                const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-                const user = await User.findById(decoded.id);
-                if (user) {
-                    return setAuthorizedUser(user);
-                } else {
-                    console.log('[Auth] Token Valid but User Not Found in DB');
-                }
-            } catch (e: any) {
-                console.log(`[Auth] Token Verify Failed: ${e.message}`);
+    // Step 1: Verify Access Token if present
+    if (token) {
+        try {
+            const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+            const user = await User.findById(decoded.id);
+            if (user) {
+                return setAuthorizedUser(user);
+            } else {
+                console.log('[Auth] Token Valid but User Not Found in DB');
+                tryRefresh = true; // User might have been deleted, but technically token was valid signature.
+                // Actually if user not found, refresh won't help unless db id changed?
+                // But let's fall through to be safe.
             }
-        } else {
-            console.log('[Auth] No Header Token found');
+        } catch (e: any) {
+            console.log(`[Auth] Access Token Verify Failed: ${e.message}`);
+            tryRefresh = true;
         }
-
-        // If Access Token is invalid/missing, try Refresh Token
-        if (req.cookies.refreshToken) {
-            console.log('[Auth] Attempting Refresh Token...');
-            try {
-                const decodedRefresh: any = jwt.verify(req.cookies.refreshToken, process.env.JWT_SECRET || 'secret');
-                const user = await User.findById(decodedRefresh.id);
-
-                if (user) {
-                    // Issue new Access Token
-                    const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret', {
-                        expiresIn: '15m'
-                    });
-
-                    // Set new cookie with correct Production settings
-                    res.cookie('token', newAccessToken, {
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === 'production',
-                        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Fix: 'none' for production
-                        path: '/',
-                        expires: new Date(Date.now() + 15 * 60 * 1000)
-                    });
-
-                    // Add Authorization header to response for client to update local state if needed
-                    res.setHeader('Authorization', `Bearer ${newAccessToken}`);
-
-                    return setAuthorizedUser(user);
-                }
-            } catch (refreshError) {
-                console.log('[Auth] Refresh Token Failed');
-            }
-        } else {
-            console.log('[Auth] No Refresh Token Cookie found');
-        }
-
-        // Neither token worked
-        console.log('[Auth] Returning 401 - Final Fallback');
-        return res.status(401).json({ success: false, message: 'Not authorized' });
-
-    } catch (error: any) {
-        // If the first token verification failed (expired), we should have fallen through to refresh token above?
-        // No, verify throws. We need to catch specific TokenExpiredError or handle flow logic manually.
-        // Actually, simpler logic:
-        // Inside the catch block is where we should try the refresh token if the error was expiration.
-        // But to keep it clean, let's just attempt refresh logic if the first check failed OR threw.
-
-        // RE-TRY Refresh Token logic here if it wasn't already tried?
-        // Copy-paste logic is bad. 
-        // Let's rely on the block structure: 
-        // If verify throws, we land here. We should TRY refresh token here.
-
-        if (req.cookies.refreshToken) {
-            try {
-                const decodedRefresh: any = jwt.verify(req.cookies.refreshToken, process.env.JWT_SECRET || 'secret');
-                const user = await User.findById(decodedRefresh.id);
-
-                if (user) {
-                    const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret', {
-                        expiresIn: '15m'
-                    });
-
-                    res.cookie('token', newAccessToken, {
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === 'production',
-                        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-                        path: '/',
-                        expires: new Date(Date.now() + 15 * 60 * 1000)
-                    });
-
-                    return setAuthorizedUser(user);
-                }
-            } catch (err) {
-                // Refresh failed too
-            }
-        }
-
-        return res.status(401).json({ success: false, message: 'Not authorized: ' + error.message });
+    } else {
+        console.log('[Auth] No Access Token found');
+        tryRefresh = true;
     }
+
+    // Step 2: Try Refresh Token if needed
+    if (tryRefresh && req.cookies.refreshToken) {
+        console.log('[Auth] Attempting Refresh Token...');
+        try {
+            const decodedRefresh: any = jwt.verify(req.cookies.refreshToken, process.env.JWT_SECRET || 'secret');
+            const user = await User.findById(decodedRefresh.id);
+
+            if (user) {
+                // Issue new Access Token
+                const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret', {
+                    expiresIn: '15m'
+                });
+
+                // Set new cookie with correct Production settings
+                res.cookie('token', newAccessToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                    path: '/',
+                    expires: new Date(Date.now() + 15 * 60 * 1000)
+                });
+
+                // Add Authorization header to response for client to update local state if needed
+                res.setHeader('Authorization', `Bearer ${newAccessToken}`);
+
+                return setAuthorizedUser(user);
+            } else {
+                console.log('[Auth] Refresh Token User Not Found');
+            }
+        } catch (refreshError: any) {
+            console.log(`[Auth] Refresh Token Verify Failed: ${refreshError.message}`);
+        }
+    } else if (tryRefresh) {
+        console.log('[Auth] No Refresh Token Cookie found to fallback on');
+    }
+
+    // Neither token worked
+    console.log('[Auth] Returning 401 - Not authorized');
+    return res.status(401).json({ success: false, message: 'Not authorized' });
 };
 
 // Admin middleware - must be used after 'protect'
@@ -129,4 +94,3 @@ export const admin = (req: Request, res: Response, next: NextFunction) => {
         res.status(403).json({ success: false, message: 'Admin access required' });
     }
 };
-

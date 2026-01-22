@@ -35,8 +35,8 @@ try {
     validateEnv();
     validateOptionalEnv();
 } catch (error: any) {
-    logger.error('Server startup failed: ' + error.message);
-    process.exit(1);
+    logger.error('Environment validation failed: ' + error.message);
+    // In serverless, we don't exit(1) as it causes loops. Vercel handles function crashes.
 }
 
 const app: Express = express();
@@ -120,12 +120,21 @@ app.get("/api/csrf-token", (req, res) => {
     res.json({ csrfToken });
 });
 
-// Apply CSRF protection to all mutation routes
-// NOTE: We apply it globally or selectively?
-// "Implement csrf-csrf (NOT the deprecated csurf). Configure it to use the "Double Submit Cookie" pattern."
-// Usually applied globally after body parsing.
-// app.use(doubleCsrfProtection);
+// 6. Database Connection Middleware (Safe for Serverless)
+const dbConnectionMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error: any) {
+        logger.error(`Database middleware error: ${error.message}`);
+        res.status(503).json({
+            success: false,
+            message: 'Database connection failed, please try again.'
+        });
+    }
+};
 
+app.use(dbConnectionMiddleware);
 
 // --- END SECURITY MIDDLEWARE ---
 
@@ -249,10 +258,4 @@ export default app;
 
 if (require.main === module) {
     startServer();
-} else {
-    // For Vercel (imported), ensure DB is connected.
-    // However, since handler is synchronous (app), we can't await connectDB here easily without top-level await
-    // or adding a middleware.
-    // Adding a middleware to ensure DB connection is the safest serverless pattern.
-    connectDB();
 }

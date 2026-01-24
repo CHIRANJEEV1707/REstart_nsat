@@ -6,6 +6,10 @@ import InternationalCollege from '@/lib/models/InternationalCollege';
 import NewGenCollege from '@/lib/models/NewGenCollege';
 import { getUserFromToken } from '@/lib/auth-utils';
 
+// Force model registration for serverless cold start
+// This ensures schemas are loaded before populate() runs
+void College; void InternationalCollege; void NewGenCollege;
+
 // GET - Get all saved colleges
 export async function GET(request: NextRequest) {
     try {

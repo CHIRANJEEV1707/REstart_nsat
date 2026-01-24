@@ -3,8 +3,6 @@ import dbConnect from '@/lib/db';
 import Order from '@/lib/models/Order';
 import User from '@/lib/models/User';
 import jwt from 'jsonwebtoken';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 import { Resend } from 'resend';
 
 // Helper for Auth
@@ -40,18 +38,15 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, message: 'Missing fields' }, { status: 400 });
         }
 
-        // 3. Save File
+        // 3. Convert file to base64 data URL (Vercel doesn't support filesystem writes)
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
+        const base64 = buffer.toString('base64');
+        const mimeType = file.type || 'image/jpeg';
+        const dataUrl = `data:${mimeType};base64,${base64}`;
 
-        // Create unique filename
-        const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-        const uploadDir = path.join(process.cwd(), 'public/uploads/proofs');
-        const filepath = path.join(uploadDir, filename);
-
-        await writeFile(filepath, buffer);
-
-        const fileUrl = `/uploads/proofs/${filename}`;
+        // Store a reference URL (data URL stored in DB)
+        const fileUrl = dataUrl;
 
         // 4. Create Order
         const order = await Order.create({

@@ -145,7 +145,9 @@ export default function NSATPrepPage() {
         });
     };
 
-    const handleRazorpayPayment = async () => {
+    const handleRazorpayPayment = async (discountedPrice?: number) => {
+        const priceToCharge = discountedPrice ?? selectedPackage.price;
+
         try {
             const res = await loadRazorpay();
             if (!res) throw new Error('Razorpay SDK failed to load');
@@ -154,7 +156,7 @@ export default function NSATPrepPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    amount: selectedPackage.price,
+                    amount: priceToCharge,
                     currency: 'INR',
                     productSlug: selectedPackage.slug,
                     receipt: `receipt_${selectedPackage.slug}_${Date.now()}`.substring(0, 40)
@@ -169,7 +171,7 @@ export default function NSATPrepPage() {
                 amount: orderData.amount,
                 currency: orderData.currency,
                 name: "REstart",
-                description: `Payment for ${selectedPackage.title}`,
+                description: discountedPrice ? `Payment for ${selectedPackage.title} (50% OFF)` : `Payment for ${selectedPackage.title}`,
                 order_id: orderData.id,
                 handler: async function (response: any) {
                     try {

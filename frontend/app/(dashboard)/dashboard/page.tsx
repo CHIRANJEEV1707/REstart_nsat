@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import AuthButton from "@/components/ui/AuthButton";
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { RepublicDayBanner } from "@/components/dashboard/RepublicDayBanner";
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -67,7 +68,8 @@ export default function DashboardPage() {
     const showInternational = user.preferences?.preferredCountries?.some((c: string) => c !== 'India') || dashboard.user.preferences?.preferredCountries?.some((c: string) => c !== 'India');
 
     return (
-        <div className="p-6 md:p-8 max-w-6xl mx-auto w-full space-y-10 pb-24 animate-fade-in-up">
+        <div className="min-h-full p-6 md:p-8 max-w-6xl mx-auto w-full space-y-10 pb-24 animate-fade-in-up">
+
             {/* 1. College Fit Hero */}
             <section>
                 <MatchSummaryCard />

@@ -52,15 +52,15 @@ export function Sidebar() {
     return (
         <aside className="w-72 bg-white border-r border-gray-100 hidden lg:flex flex-col h-screen sticky top-0 overflow-hidden">
             {/* Logo */}
-            <div className="h-20 px-6 flex items-center border-b border-gray-50/50">
+            <div className="h-24 px-6 flex items-center border-b border-gray-50/50">
                 <Link href="/dashboard" className="flex items-center">
                     <Image
                         src="/restart.png"
                         alt="REstart Logo"
-                        width={150}
-                        height={50}
+                        width={280}
+                        height={100}
                         priority
-                        className="h-10 w-auto object-contain transition-transform hover:scale-105 duration-300"
+                        className="h-28 w-auto object-contain transition-transform hover:scale-105 duration-300"
                     />
                 </Link>
             </div>

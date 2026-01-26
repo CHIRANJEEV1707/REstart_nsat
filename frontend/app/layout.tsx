@@ -7,6 +7,7 @@ import { ToastProvider } from "@/components/providers/ToastProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OfflineBanner } from "@/components/OfflineBanner";
+import { RepublicDayAlertBar } from "@/components/RepublicDayAlertBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ErrorBoundary>
+          <RepublicDayAlertBar />
           <OfflineBanner />
           <Providers>
             <AuthProvider>

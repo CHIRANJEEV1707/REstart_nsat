@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { X, CreditCard, QrCode, Upload, Check, Loader2, Image as ImageIcon } from 'lucide-react';
+import { X, CreditCard, QrCode, Upload, Check, Loader2, Image as ImageIcon, Tag, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 
@@ -14,7 +14,7 @@ interface PaymentModalProps {
         price: number;
     };
     upiId: string;
-    onRazorpay: () => Promise<void>;
+    onRazorpay: (discountedPrice?: number) => Promise<void>;
     upiSubmitUrl?: string;
 }
 
@@ -25,6 +25,39 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay, upiSubmi
     const [proofFile, setProofFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const userEmail = user?.email || '';
+
+    // Coupon state
+    const [couponCode, setCouponCode] = useState('');
+    const [couponApplied, setCouponApplied] = useState(false);
+    const [discount, setDiscount] = useState(0);
+
+    // Check if today is Jan 26 for Republic Day offer
+    const isRepublicDay = () => {
+        const today = new Date();
+        return today.getMonth() === 0 && today.getDate() === 26;
+    };
+
+    const applyCoupon = () => {
+        const code = couponCode.trim().toUpperCase();
+        if (code === 'INDIA77' && isRepublicDay()) {
+            const discountAmount = Math.floor(pkg.price * 0.5);
+            setDiscount(discountAmount);
+            setCouponApplied(true);
+            toast.success('🎉 Republic Day offer applied! 50% OFF');
+        } else if (code === 'INDIA77' && !isRepublicDay()) {
+            toast.error('This offer is only valid on Republic Day (Jan 26)');
+        } else {
+            toast.error('Invalid coupon code');
+        }
+    };
+
+    const removeCoupon = () => {
+        setCouponCode('');
+        setCouponApplied(false);
+        setDiscount(0);
+    };
+
+    const finalPrice = pkg.price - discount;
 
     if (!isOpen) return null;
 
@@ -46,9 +79,13 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay, upiSubmi
             // Create FormData with proof file
             const formData = new FormData();
             formData.append('proof', proofFile);
-            formData.append('amount', String(pkg.price));
+            formData.append('amount', String(finalPrice));
             formData.append('productSlug', (pkg as any).slug || pkg.title);
             formData.append('productTitle', pkg.title);
+            if (couponApplied) {
+                formData.append('couponCode', couponCode);
+                formData.append('originalPrice', String(pkg.price));
+            }
 
             // Submit to UPI endpoint
             const response = await fetch(upiSubmitUrl, {
@@ -77,7 +114,7 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay, upiSubmi
         }
     };
 
-    const upiUrl = `upi://pay?pa=${upiId}&pn=REstart&am=${pkg.price}&cu=INR`;
+    const upiUrl = `upi://pay?pa=${upiId}&pn=REstart&am=${finalPrice}&cu=INR`;
     const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
 
     return (
@@ -95,16 +132,66 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay, upiSubmi
                 </div>
 
                 <div className="p-6">
-                    <div className="mb-6 text-center">
+                    {/* Price Display */}
+                    <div className="mb-4 text-center">
                         <p className="text-gray-500 text-sm mb-1">Total Amount</p>
-                        <p className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</p>
+                        {couponApplied ? (
+                            <div className="flex items-center justify-center gap-3">
+                                <p className="text-2xl text-gray-400 line-through">₹{pkg.price}</p>
+                                <p className="text-4xl font-extrabold text-green-600">₹{finalPrice}</p>
+                            </div>
+                        ) : (
+                            <p className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</p>
+                        )}
+                        {couponApplied && (
+                            <p className="text-sm text-green-600 mt-1 font-medium">🎉 You save ₹{discount}!</p>
+                        )}
+                    </div>
+
+                    {/* Coupon Code Section */}
+                    <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 via-white to-green-50 rounded-xl border border-orange-200">
+                        <p className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
+                            <Tag className="w-3 h-3" /> Have a coupon code?
+                        </p>
+                        {!couponApplied ? (
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={couponCode}
+                                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                    placeholder="Enter code"
+                                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                />
+                                <Button
+                                    onClick={applyCoupon}
+                                    disabled={!couponCode.trim()}
+                                    className="bg-orange-500 hover:bg-orange-600 text-white px-4"
+                                >
+                                    Apply
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-between bg-green-50 p-3 rounded-lg border border-green-200">
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-green-600" />
+                                    <span className="font-mono font-bold text-green-700">{couponCode}</span>
+                                    <span className="text-xs text-green-600">(-50%)</span>
+                                </div>
+                                <button
+                                    onClick={removeCoupon}
+                                    className="text-gray-400 hover:text-red-500 text-xs"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        )}
                     </div>
 
 
                     {!paymentMethod ? (
                         <div className="space-y-3">
                             <button
-                                onClick={() => onRazorpay()}
+                                onClick={() => onRazorpay(couponApplied ? finalPrice : undefined)}
                                 className="w-full flex items-center justify-between p-4 rounded-xl border border-indigo-100 bg-indigo-50/50 hover:bg-indigo-50 hover:border-indigo-200 transition-all group"
                             >
                                 <div className="flex items-center gap-3">
@@ -153,7 +240,7 @@ export function PaymentModal({ isOpen, onClose, pkg, upiId, onRazorpay, upiSubmi
                                 />
                             </div>
 
-                            <p className="text-sm font-medium text-gray-900 mb-1">Scan to Pay ₹{pkg.price}</p>
+                            <p className="text-sm font-medium text-gray-900 mb-1">Scan to Pay ₹{finalPrice}</p>
                             <p className="text-xs text-gray-500 mb-6">Use PhonePe, Paytm, GPay or any UPI app</p>
 
                             {/* Proof Upload Section */}

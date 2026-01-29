@@ -1,0 +1,26 @@
+[dotenv@17.2.3] injecting env (9) from .env -- tip: ⚙️  override existing env vars with { override: true }
+✅ Connected to MongoDB
+
+🚀 Starting JEE Question Bank Seeding...
+
+📖 Processing Mathematics...
+   Found 550 questions
+   ✅ Inserted: 550, Skipped: 0
+📖 Processing Physics...
+   Found 550 questions
+   ✅ Inserted: 550, Skipped: 0
+📖 Processing Chemistry...
+   Found 549 questions
+   ✅ Inserted: 549, Skipped: 0
+
+📊 Summary:
+   Total Documents: 1649
+   Total Inserted: 1649
+   Total Skipped: 0
+
+📚 Chapters per Subject:
+   Chemistry: 24 chapters
+   Mathematics: 30 chapters
+   Physics: 31 chapters
+
+🎉 Seeding Complete!

@@ -18,6 +18,8 @@ import LanguageSelector from '@/components/coding/LanguageSelector';
 import TestCasePanel from '@/components/coding/TestCasePanel';
 import toast, { Toaster } from 'react-hot-toast';
 import { formatMath as formatQuestionText } from '@/lib/formatMath';
+import { renderMath } from '@/components/ui/MathRenderer';
+import { useAuth } from '@/context/AuthContext';
 
 // Dynamic import for Monaco to avoid SSR issues
 const CodeEditor = dynamic(() => import('@/components/coding/CodeEditor'), {
@@ -63,6 +65,7 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
     const router = useRouter();
     const slug = params.slug as string;
     const proctoring = useProctoring();
+    const { user } = useAuth();
 
     // State
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -846,34 +849,55 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
                             <div className="max-w-4xl mx-auto">
                                 <div
                                     className="text-lg text-gray-800 leading-relaxed mb-8 font-medium question-text"
-                                    dangerouslySetInnerHTML={{ __html: formatQuestionText(currentQuestion?.questionText || '') }}
+                                    dangerouslySetInnerHTML={{ __html: renderMath(currentQuestion?.questionText || '') }}
                                 />
 
-                                <div className="space-y-3">
-                                    {currentQuestion?.options.map((option) => (
-                                        <div
-                                            key={option.id}
-                                            onClick={() => handleOptionSelect(currentQuestion._id, option.id)}
-                                            className={`group relative flex items-center p-4 cursor-pointer rounded-xl border-2 transition-all duration-200 ${answers[currentQuestion._id] === option.id
-                                                ? 'border-blue-600 bg-blue-50'
-                                                : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-                                                }`}
-                                        >
-                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-4 transition-colors ${answers[currentQuestion._id] === option.id
-                                                ? 'border-blue-600 bg-blue-600'
-                                                : 'border-gray-300 group-hover:border-blue-400'
-                                                }`}>
-                                                {answers[currentQuestion._id] === option.id && (
-                                                    <div className="w-2.5 h-2.5 rounded-full bg-white" />
-                                                )}
+                                {/* Show input box for integer-type questions (no options) */}
+                                {(!currentQuestion?.options || currentQuestion.options.length === 0) ? (
+                                    <div className="max-w-md">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Enter your answer:
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={answers[currentQuestion?._id] || ''}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setAnswers(prev => ({ ...prev, [currentQuestion._id]: value }));
+                                                handleStatusUpdate(currentQuestion._id, value ? 'answered' : 'visited');
+                                                syncAnswer(currentQuestion._id, value, value ? 'answered' : 'visited');
+                                            }}
+                                            placeholder="Type your answer here..."
+                                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-lg font-medium"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {currentQuestion?.options.map((option) => (
+                                            <div
+                                                key={option.id}
+                                                onClick={() => handleOptionSelect(currentQuestion._id, option.id)}
+                                                className={`group relative flex items-center p-4 cursor-pointer rounded-xl border-2 transition-all duration-200 ${answers[currentQuestion._id] === option.id
+                                                    ? 'border-blue-600 bg-blue-50'
+                                                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-4 transition-colors ${answers[currentQuestion._id] === option.id
+                                                    ? 'border-blue-600 bg-blue-600'
+                                                    : 'border-gray-300 group-hover:border-blue-400'
+                                                    }`}>
+                                                    {answers[currentQuestion._id] === option.id && (
+                                                        <div className="w-2.5 h-2.5 rounded-full bg-white" />
+                                                    )}
+                                                </div>
+                                                <span
+                                                    className={`flex-1 font-medium ${answers[currentQuestion._id] === option.id ? 'text-blue-900' : 'text-gray-700'}`}
+                                                    dangerouslySetInnerHTML={{ __html: renderMath(option.text) }}
+                                                />
                                             </div>
-                                            <span
-                                                className={`flex-1 font-medium ${answers[currentQuestion._id] === option.id ? 'text-blue-900' : 'text-gray-700'}`}
-                                                dangerouslySetInnerHTML={{ __html: formatQuestionText(option.text) }}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
@@ -918,11 +942,11 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
                         <div className="p-6 border-b bg-gray-50">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
-                                    U
+                                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                                 </div>
                                 <div>
-                                    <div className="font-bold text-gray-900">Candidate</div>
-                                    <div className="text-xs text-gray-500">ID: {attemptId?.substring(0, 8)}...</div>
+                                    <div className="font-bold text-gray-900">{user?.name || 'Student'}</div>
+                                    <div className="text-xs text-gray-500">{testData?.title || 'Mock Test'}</div>
                                 </div>
                             </div>
 
@@ -945,42 +969,48 @@ function TestInterface({ onAttemptIdChange }: { onAttemptIdChange?: (id: string 
 
                         {/* Question Grid */}
                         <div className="flex-1 overflow-y-auto p-4">
-                            {sections.map(([sectionName, sectionQuestions]) => (
-                                <div key={sectionName} className="mb-6">
-                                    <h3 className="font-bold text-gray-700 text-sm mb-3 uppercase tracking-wider sticky top-0 bg-white py-2 z-10 border-b">
-                                        {sectionName}
-                                    </h3>
-                                    <div className="grid grid-cols-4 gap-2">
-                                        {sectionQuestions.map((q) => {
-                                            const status = questionStatus[q._id] || 'not-visited';
-                                            const isCurrent = currentQuestion?._id === q._id;
+                            {sections.map(([sectionName, sectionQuestions]) => {
+                                // Find the starting index for this section in the full questions array
+                                const sectionStartIndex = questions.findIndex(q => q.section === sectionName);
 
-                                            // Determine styles based on status
-                                            let bgClass = 'bg-gray-100 text-gray-600 border-gray-200'; // Default not-visited
+                                return (
+                                    <div key={sectionName} className="mb-6">
+                                        <h3 className="font-bold text-gray-700 text-sm mb-3 uppercase tracking-wider sticky top-0 bg-white py-2 z-10 border-b">
+                                            {sectionName}
+                                        </h3>
+                                        <div className="grid grid-cols-4 gap-2">
+                                            {sectionQuestions.map((q, idx) => {
+                                                const status = questionStatus[q._id] || 'not-visited';
+                                                const isCurrent = currentQuestion?._id === q._id;
+                                                const displayNumber = sectionStartIndex + idx + 1; // Sequential number
 
-                                            if (status === 'answered') bgClass = 'bg-green-100 text-green-700 border-green-300';
-                                            else if (status === 'visited') bgClass = 'bg-red-50 text-red-600 border-red-200'; // Visited but not answered
-                                            else if (status === 'marked-for-review') bgClass = 'bg-purple-100 text-purple-700 border-purple-300';
-                                            else if (status === 'answered-marked-for-review') bgClass = 'bg-purple-100 text-purple-700 border-green-500 ring-1 ring-green-500';
+                                                // Determine styles based on status
+                                                let bgClass = 'bg-gray-100 text-gray-600 border-gray-200'; // Default not-visited
 
-                                            if (isCurrent) bgClass += ' ring-2 ring-blue-500 ring-offset-1';
+                                                if (status === 'answered') bgClass = 'bg-green-100 text-green-700 border-green-300';
+                                                else if (status === 'visited') bgClass = 'bg-red-50 text-red-600 border-red-200';
+                                                else if (status === 'marked-for-review') bgClass = 'bg-purple-100 text-purple-700 border-purple-300';
+                                                else if (status === 'answered-marked-for-review') bgClass = 'bg-purple-100 text-purple-700 border-green-500 ring-1 ring-green-500';
 
-                                            return (
-                                                <button
-                                                    key={q._id}
-                                                    onClick={() => jumpToQuestion(questions.findIndex(qt => qt._id === q._id))}
-                                                    className={`h-10 rounded-lg flex items-center justify-center text-sm font-medium border transition-all ${bgClass}`}
-                                                >
-                                                    {q.questionNumber}
-                                                    {status === 'answered-marked-for-review' && (
-                                                        <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
+                                                if (isCurrent) bgClass += ' ring-2 ring-blue-500 ring-offset-1';
+
+                                                return (
+                                                    <button
+                                                        key={q._id}
+                                                        onClick={() => jumpToQuestion(questions.findIndex(qt => qt._id === q._id))}
+                                                        className={`h-10 rounded-lg flex items-center justify-center text-sm font-medium border transition-all ${bgClass}`}
+                                                    >
+                                                        {displayNumber}
+                                                        {status === 'answered-marked-for-review' && (
+                                                            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         {/* Submit Button */}

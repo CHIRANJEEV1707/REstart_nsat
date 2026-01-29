@@ -189,6 +189,9 @@ app.use('/api/admin/nsat', nsatAdminRoutes);
 import sessionRoutes from './routes/sessionRoutes';
 app.use('/api/sessions', sessionRoutes);
 
+// JEE Question Bank Routes
+import jeeBankRoutes from './routes/jeeBank';
+app.use('/api/jee-bank', jeeBankRoutes);
 
 // Simple health endpoints for debugging
 app.get('/', (req: Request, res: Response) => {

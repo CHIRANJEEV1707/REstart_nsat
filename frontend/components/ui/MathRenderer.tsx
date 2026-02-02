@@ -42,7 +42,9 @@ export function renderMath(text: string): string {
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
             .replace(/&amp;/g, '&')
-            .replace(/&nbsp;/g, ' ');
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&#39;/g, "'")
+            .replace(/&quot;/g, '"');
 
         // Handle <inlineMath>...</inlineMath> tags (from NSAT questions)
         result = result.replace(/<inlineMath>([\s\S]*?)<\/inlineMath>/g, (match, formula) => {
@@ -135,6 +137,19 @@ export function renderMath(text: string): string {
         result = result.replace(/\$([^$]+)\$/g, (match, formula) => {
             try {
                 return katex.renderToString(formula.trim(), {
+                    displayMode: false,
+                    throwOnError: false,
+                    strict: false
+                });
+            } catch {
+                return match;
+            }
+        });
+
+        // Handle bare LaTeX environments \begin{...} ... \end{...}
+        result = result.replace(/\\begin\{([a-zA-Z0-9\*]+)\}([\s\S]*?)\\end\{\1\}/g, (match, env, content) => {
+            try {
+                return katex.renderToString(match, {
                     displayMode: false,
                     throwOnError: false,
                     strict: false

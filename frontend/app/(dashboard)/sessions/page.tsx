@@ -208,7 +208,6 @@ export default function SessionsPage() {
                             REstart Unfiltered
                         </h3>
                         <p className="text-sm text-gray-500">Talk to seniors & students</p>
-                        <div className="mt-4 text-2xl font-bold text-gray-900">₹200</div>
                     </button>
 
                     <button
@@ -223,7 +222,6 @@ export default function SessionsPage() {
                             Interview Prep
                         </h3>
                         <p className="text-sm text-gray-500">Mock NSAT interview</p>
-                        <div className="mt-4 text-2xl font-bold text-gray-900">₹100</div>
                     </button>
                 </div>
 
@@ -265,7 +263,7 @@ export default function SessionsPage() {
                         disabled={loading}
                         className="w-full h-14 text-lg rounded-xl bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
                     >
-                        {loading ? 'Processing...' : `Book Now - ₹${selectedSession.price}`}
+                        {loading ? 'Processing...' : 'Book Now'}
                     </Button>
                     <p className="text-center text-sm text-gray-400 mt-4">
                         Pay securely via Razorpay or UPI QR. After payment, you&apos;ll be redirected to pick your slot.

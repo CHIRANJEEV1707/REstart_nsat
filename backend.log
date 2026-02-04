@@ -7,7 +7,15 @@
 [33m[nodemon] watching path(s): src/**/*[39m
 [33m[nodemon] watching extensions: ts[39m
 [32m[nodemon] starting `ts-node src/server.ts`[39m
-2026-01-19 17:33:19 [[31merror[39m]: Missing required environment variables: JWT_SECRET, MONGO_URI, NODE_ENV, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
-2026-01-19 17:33:19 [[31merror[39m]: Please check your .env file and ensure all required variables are set
-2026-01-19 17:33:19 [[31merror[39m]: Server startup failed: Missing required environment variables: JWT_SECRET, MONGO_URI, NODE_ENV, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
-[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+2026-02-04 15:12:58 [[32minfo[39m]: ✓ All required environment variables are set
+2026-02-04 15:12:58 [[33mwarn[39m]: Optional environment variable FRONTEND_URL is not set, using default
+2026-02-04 15:12:58 [[33mwarn[39m]: Optional environment variable PORT is not set, using default
+2026-02-04 15:13:01 [[32minfo[39m]: Server startup sequence initiated. NODE_ENV: development, PORT: 5001
+2026-02-04 15:13:01 [[32minfo[39m]: Connecting to Database...
+2026-02-04 15:13:03 [[32minfo[39m]: MongoDB Connected: ac-mhiszp8-shard-00-00.fq24fhd.mongodb.net
+2026-02-04 15:13:03 [[32minfo[39m]: Database connection successful.
+2026-02-04 15:13:03 [[32minfo[39m]: Starting Express server on port 5001...
+2026-02-04 15:13:03 [[32minfo[39m]: ✓ Server running on port 5001
+2026-02-04 15:13:03 [[32minfo[39m]: Press Ctrl+C to stop
+2026-02-04 15:14:06 [[32minfo[39m]: MongoDB Connected: ac-mhiszp8-shard-00-00.fq24fhd.mongodb.net
+2026-02-04 15:14:06 [[32minfo[39m]: HEAD / 200 55 - 5.381 ms

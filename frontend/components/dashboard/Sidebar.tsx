@@ -3,17 +3,8 @@
 import Link from "next/link";
 import {
     LayoutDashboard,
-    Compass,
-    Bookmark,
-    ArrowLeftRight,
-    CalendarDays,
-    Globe,
-    User,
     LogOut,
-    Sparkles,
     Code,
-    ChevronRight,
-    GraduationCap,
     Video
 } from "lucide-react";
 import Image from "next/image";
@@ -36,15 +27,8 @@ export function Sidebar() {
 
     const navItems = [
         { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-        { name: 'Indian Colleges', icon: Compass, href: '/indian-colleges' },
-        { name: 'International', icon: Globe, href: '/international' },
-        { name: 'New-Gen Colleges', icon: Sparkles, href: '/new-gen' },
-        { name: 'Saved Colleges', icon: Bookmark, href: '/saved' },
-        { name: 'Compare', icon: ArrowLeftRight, href: '/compare' },
-        { name: 'Prep', icon: Code, href: '/prep' },
+        { name: 'Prep', icon: Code, href: '/prep/nsat' },
         { name: 'Book Session', icon: Video, href: '/sessions' },
-        { name: 'Entrance Exams', icon: GraduationCap, href: '/exams' },
-        { name: 'Deadlines', icon: CalendarDays, href: '/exams-deadlines' },
     ];
 
     if (!user) return null;

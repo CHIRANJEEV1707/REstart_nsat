@@ -3,7 +3,6 @@
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { DashboardProvider } from "@/context/DashboardContext";
 import AuthGuard from "@/components/auth/AuthGuard";
 import { usePathname } from "next/navigation";
 
@@ -16,8 +15,7 @@ export default function DashboardLayout({
     const pathname = usePathname();
 
     return (
-        <DashboardProvider>
-            <AuthGuard>
+        <AuthGuard>
                 <div className="flex min-h-screen bg-gray-50">
                     {/* Desktop Sidebar - Hidden on Exam Pages */}
                     {!pathname?.includes('/prep/nsat/mock-tests/') || pathname?.includes('/results/') ? (
@@ -47,6 +45,5 @@ export default function DashboardLayout({
                     </main>
                 </div>
             </AuthGuard>
-        </DashboardProvider>
     );
 }

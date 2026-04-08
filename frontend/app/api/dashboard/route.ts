@@ -1,29 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import User from '@/lib/models/User';
-import Exam from '@/lib/models/Exam';
-import '@/lib/models/College';
-import '@/lib/models/InternationalCollege';
-import '@/lib/models/NewGenCollege';
-import jwt from 'jsonwebtoken';
-
-interface JwtPayload {
-    id: string;
-}
-
-async function getUserFromToken(request: NextRequest) {
-    const token = request.cookies.get('token')?.value ||
-        request.headers.get('authorization')?.replace('Bearer ', '');
-
-    if (!token) return null;
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-        return decoded.id;
-    } catch {
-        return null;
-    }
-}
+import { getUserFromToken } from '@/lib/auth-utils';
+import UserExamProgress from '@/lib/models/UserExamProgress';
+import TestAttempt from '@/lib/models/TestAttempt';
+import '@/lib/models/MockTest';
+import SessionBooking from '@/lib/models/SessionBooking';
+import Question from '@/lib/models/Question';
 
 export async function GET(request: NextRequest) {
     try {
@@ -31,85 +13,88 @@ export async function GET(request: NextRequest) {
 
         const userId = await getUserFromToken(request);
         if (!userId) {
-            return NextResponse.json(
-                { success: false, message: 'Not authorized' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
-        const user = await User.findById(userId)
-            .populate('saved_colleges')
-            .populate('saved_international_colleges')
-            .populate('saved_newgen_colleges');
+        // Sum totalQuestionsSolved across all exam progress docs for this user
+        const progressDocs = await UserExamProgress.find({ user: userId })
+            .select('totalQuestionsSolved')
+            .lean();
+        const totalQuestionsAttempted = progressDocs.reduce(
+            (sum, doc) => sum + (doc.totalQuestionsSolved || 0),
+            0
+        );
 
-        if (!user) {
-            return NextResponse.json(
-                { success: false, message: 'User not found' },
-                { status: 404 }
-            );
-        }
+        // Last 10 completed mock test attempts, populated with test title
+        const attempts = await TestAttempt.find({ userId, status: 'completed' })
+            .sort({ completedAt: -1 })
+            .limit(10)
+            .populate<{ mockTestId: { title: string } }>('mockTestId', 'title')
+            .lean();
 
-        // Get upcoming exam deadlines
-        const today = new Date();
-        let upcomingExams;
-
-        if (user.target_exams && user.target_exams.length > 0) {
-            // Prioritize tracked exams
-            upcomingExams = await Exam.find({
-                _id: { $in: user.target_exams },
-                $or: [
-                    { 'dates.registration_end': { $gte: today } },
-                    { 'dates.exam_date_start': { $gte: today } }
-                ]
-            }).sort('dates.registration_end');
-        } else {
-            // Fallback to general upcoming exams
-            upcomingExams = await Exam.find({
-                $or: [
-                    { 'dates.registration_end': { $gte: today } },
-                    { 'dates.exam_date_start': { $gte: today } }
-                ]
-            }).sort('dates.registration_end').limit(5);
-        }
-
-        // Format deadlines
-        const deadlines = upcomingExams.map(exam => ({
-            _id: exam._id,
-            title: exam.name,
-            date: exam.dates?.registration_end || exam.dates?.exam_date_start,
-            type: exam.dates?.registration_end ? 'registration' : 'exam',
-            url: exam.website
+        const mockScores = attempts.map((attempt) => ({
+            testName: (attempt.mockTestId as any)?.title ?? 'Unknown Test',
+            score: attempt.totalScore,
+            maxScore: attempt.maxScore,
+            takenAt: attempt.completedAt,
         }));
 
-        // Combine saved colleges
-        const saved_colleges = [
-            ...(user.saved_colleges || []).map((c: any) => ({ ...c.toObject?.() || c, type: 'indian' })),
-            ...(user.saved_international_colleges || []).map((c: any) => ({ ...c.toObject?.() || c, type: 'international' })),
-            ...(user.saved_newgen_colleges || []).map((c: any) => ({ ...c.toObject?.() || c, type: 'newgen' }))
-        ];
+        // Next scheduled session for this user
+        const nextSessionDoc = await SessionBooking.findOne({
+            userId,
+            status: 'scheduled',
+        })
+            .sort({ createdAt: 1 })
+            .lean();
 
-        // Dashboard data matching frontend expectations
-        const dashboardData = {
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                onboardingCompleted: user.onboardingCompleted,
-                preferences: user.preferences
-            },
-            saved_colleges,
-            deadlines,
-            purchasedBundles: user.purchasedBundles || []
-        };
+        const nextSession = nextSessionDoc
+            ? {
+                topic: nextSessionDoc.sessionType,
+                sessionDate: nextSessionDoc.createdAt,
+                whatsappLink: nextSessionDoc.calendlyUrl,
+            }
+            : null;
+
+        // Deterministic Question of the Day based on today's date
+        const today = new Date();
+        const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+        const total = await Question.countDocuments({ isCoding: false, questionType: 'mcq' });
+
+        let questionOfTheDay = null;
+        if (total > 0) {
+            const index = seed % total;
+            const qotd = await Question.findOne({ isCoding: false, questionType: 'mcq' })
+                .skip(index)
+                .select('questionText options correctAnswer explanation difficulty subject section')
+                .lean();
+
+            if (qotd) {
+                questionOfTheDay = {
+                    questionText: qotd.questionText,
+                    options: qotd.options,
+                    correctAnswer: qotd.correctAnswer,
+                    explanation: qotd.explanation,
+                    difficulty: qotd.difficulty,
+                    subject: qotd.subject ?? null,
+                    section: qotd.section,
+                };
+            }
+        }
 
         return NextResponse.json({
             success: true,
-            data: dashboardData
+            data: {
+                totalQuestionsAttempted,
+                mockScores,
+                nextSession,
+                questionOfTheDay,
+            },
         });
     } catch (error: any) {
         console.error('[Dashboard Error]', error);
         return NextResponse.json(
-            { success: false, message: error.message || 'Failed to get dashboard' },
+            { success: false, message: 'Internal Server Error' },
             { status: 500 }
         );
     }

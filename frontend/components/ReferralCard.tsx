@@ -40,8 +40,8 @@ export function ReferralCard() {
 
     return (
         <>
-            <div className="bg-gradient-to-br from-indigo-900 to-blue-900 rounded-2xl p-8 text-white text-center relative overflow-hidden my-8">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+            <div className="bg-[#0a0f1e] rounded-2xl p-8 text-white text-center relative overflow-hidden my-8">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#0085ff]/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                 <div className="relative z-10 max-w-3xl mx-auto">
                     <Sparkles className="w-8 h-8 text-yellow-400 mx-auto mb-4" />
                     <h2 className="text-2xl font-bold mb-2">Registered for NSAT using our Referral Link?</h2>
@@ -59,7 +59,7 @@ export function ReferralCard() {
                             {copied ? "Copied!" : "Copy Link"}
                         </Button>
                         <Button
-                            className="bg-white text-blue-900 hover:bg-blue-50 font-semibold min-w-[200px]"
+                            className="bg-[#0085ff] text-white hover:bg-blue-500 font-semibold min-w-[200px]"
                             onClick={() => setIsClaimOpen(true)}
                         >
                             Get Details & Claim Reward

@@ -17,15 +17,20 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'flagcdn.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
     ],
   },
   async rewrites() {
+    const backendBase = process.env.NODE_ENV === 'production'
+      ? 'https://restart-backend.vercel.app'
+      : 'http://127.0.0.1:5001';
     return [
       {
-        source: '/api/:path*',
-        destination: process.env.NODE_ENV === 'production'
-          ? 'https://restart-backend.vercel.app/api/:path*'
-          : 'http://127.0.0.1:5001/api/:path*',
+        source: '/api/code/execute',
+        destination: `${backendBase}/api/code/execute`,
       },
     ];
   },

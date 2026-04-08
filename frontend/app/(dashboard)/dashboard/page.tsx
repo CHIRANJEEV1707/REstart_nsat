@@ -1,277 +1,383 @@
 "use client";
 
-import { useDashboard } from "@/context/DashboardContext";
-import { MatchSummaryCard } from "@/components/dashboard/MatchSummaryCard";
-import { RecommendedCollegesCard } from "@/components/dashboard/RecommendedCollegesCard";
-import { DeadlinesCard } from "@/components/dashboard/DeadlinesCard";
-import { SavedCollegesCard } from "@/components/dashboard/SavedCollegesCard";
-import CollegeCard from "@/components/colleges/CollegeCard";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/axios";
-import { Sparkles, Globe, Loader2, Code2, Calendar, MessageCircle } from "lucide-react";
+import { BookOpen, ClipboardList, Trophy, Sparkles, Calendar, ArrowRight, CalendarDays } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import Link from 'next/link';
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import AuthButton from "@/components/ui/AuthButton";
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { RepublicDayBanner } from "@/components/dashboard/RepublicDayBanner";
+import { useEffect, useState } from "react";
+
+interface MockScore {
+    testName: string;
+    score: number;
+    maxScore: number;
+    takenAt: string;
+}
+
+interface NextSession {
+    topic: string;
+    sessionDate: string;
+    whatsappLink: string;
+}
+
+interface QotdOption {
+    id: string;
+    text: string;
+}
+
+interface QuestionOfTheDay {
+    questionText: string;
+    options: QotdOption[];
+    correctAnswer: string;
+    explanation: string;
+    difficulty: string;
+    subject: string | null;
+    section: string;
+}
+
+interface DashboardData {
+    totalQuestionsAttempted: number;
+    mockScores: MockScore[];
+    nextSession: NextSession | null;
+    questionOfTheDay: QuestionOfTheDay | null;
+}
+
+function getGreeting(name: string): string {
+    const hour = new Date().getHours();
+    const period = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
+    return `Good ${period}, ${name?.split(" ")[0] || "there"}`;
+}
+
+function formatSessionDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    });
+}
+
+const OPTION_LABELS = ["A", "B", "C", "D"];
+
+const difficultyBadgeClass: Record<string, string> = {
+    easy: "bg-green-100 text-green-700",
+    medium: "bg-yellow-100 text-yellow-700",
+    hard: "bg-red-100 text-red-700",
+};
+
+function QotdCard({ qotd }: { qotd: QuestionOfTheDay }) {
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+    const [revealed, setRevealed] = useState(false);
+
+    const handleSelect = (optionId: string) => {
+        if (revealed) return;
+        setSelectedAnswer(optionId);
+        setRevealed(true);
+    };
+
+    const getOptionClass = (optionId: string): string => {
+        if (!revealed) {
+            return "border-gray-200 bg-white text-gray-800 hover:border-indigo-300 hover:bg-indigo-50/40 cursor-pointer";
+        }
+        if (optionId.toLowerCase() === qotd.correctAnswer.toLowerCase()) {
+            return "border-green-400 bg-green-50 text-green-700 cursor-default";
+        }
+        if (selectedAnswer && optionId.toLowerCase() === selectedAnswer.toLowerCase()) {
+            return "border-red-400 bg-red-50 text-red-700 cursor-default";
+        }
+        return "border-gray-200 bg-white text-gray-400 cursor-default";
+    };
+
+    return (
+        <div className="rounded-2xl bg-gradient-to-br from-indigo-50 via-blue-50 to-indigo-100 border border-indigo-100 p-6 space-y-4">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-indigo-500 shrink-0" />
+                    <h2 className="text-base font-bold text-indigo-900">Question of the Day</h2>
+                </div>
+                <span
+                    className={`shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-semibold capitalize ${
+                        difficultyBadgeClass[qotd.difficulty] ?? "bg-gray-100 text-gray-600"
+                    }`}
+                >
+                    {qotd.difficulty}
+                </span>
+            </div>
+
+            {/* Question text */}
+            <p className="text-sm text-gray-800 leading-relaxed font-medium">
+                {qotd.questionText}
+            </p>
+
+            {/* Options */}
+            <div className="space-y-2">
+                {qotd.options.map((option, idx) => (
+                    <button
+                        key={option.id}
+                        onClick={() => handleSelect(option.id)}
+                        disabled={revealed}
+                        className={`w-full flex items-start gap-3 px-4 py-3 rounded-full border text-sm text-left transition-all ${getOptionClass(option.id)}`}
+                    >
+                        <span className="shrink-0 font-bold w-4">{OPTION_LABELS[idx] ?? option.id}.</span>
+                        <span className="flex-1">{option.text}</span>
+                    </button>
+                ))}
+            </div>
+
+            {/* Explanation */}
+            {revealed && qotd.explanation && (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Explanation</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{qotd.explanation}</p>
+                </div>
+            )}
+
+            {/* Footer */}
+            <div className="flex items-center gap-1.5 pt-1">
+                <CalendarDays className="w-3.5 h-3.5 text-gray-400" />
+                <span className="text-xs text-gray-400">New question every day</span>
+            </div>
+        </div>
+    );
+}
 
 export default function DashboardPage() {
     const { user } = useAuth();
     const router = useRouter();
-    const { openCollegeDetails } = useDashboard();
+    const queryClient = useQueryClient();
 
-    // Redirect if onboarding not complete
     useEffect(() => {
         if (user && !user.onboardingCompleted) {
-            router.replace('/onboarding');
+            router.replace("/onboarding");
         }
     }, [user, router]);
 
-    // Check Auth - although AuthGuard handles this, keeping it robust for data fetching
-    const { data: dashboard, isLoading: isDashboardLoading, isError } = useQuery({
-        queryKey: ['dashboard'],
+    const { data: dashboard, isLoading, isError } = useQuery<DashboardData>({
+        queryKey: ["dashboard"],
         queryFn: async () => {
-            const res = await api.get('/dashboard');
+            const res = await api.get("/dashboard");
             return res.data.data;
         },
         enabled: !!user,
         retry: 2,
-        refetchOnWindowFocus: true
+        refetchOnWindowFocus: true,
     });
 
-    if (isDashboardLoading || !user) {
+    if (isLoading || !user) {
         return (
-            <div className="p-6 md:p-8 space-y-8">
-                <div className="h-48 w-full bg-gray-100 animate-pulse rounded-2xl"></div>
-                <div className="grid grid-cols-2 gap-8">
-                    <div className="h-64 w-full bg-gray-100 animate-pulse rounded-2xl"></div>
-                    <div className="h-64 w-full bg-gray-100 animate-pulse rounded-2xl"></div>
+            <div className="min-h-full p-6 md:p-8 max-w-6xl mx-auto w-full space-y-8 pb-24">
+                <div className="h-9 w-72 bg-gray-100 animate-pulse rounded-xl" />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[0, 1, 2].map((i) => (
+                        <div key={i} className="h-24 bg-gray-100 animate-pulse rounded-2xl" />
+                    ))}
                 </div>
+                <div className="h-44 bg-gray-100 animate-pulse rounded-2xl" />
+                <div className="h-24 bg-gray-100 animate-pulse rounded-2xl" />
+                <div className="h-24 bg-gray-100 animate-pulse rounded-2xl" />
             </div>
         );
     }
 
     if (isError) {
         return (
-            <div className="flex items-center justify-center flex-col min-h-[50vh] px-4">
-                <p className="mb-4 text-gray-600 text-lg">Unable to load dashboard. Please login again.</p>
-                <AuthButton />
+            <div className="min-h-full p-6 md:p-8 max-w-6xl mx-auto w-full flex flex-col items-center justify-center gap-4 pb-24">
+                <p className="text-gray-600 text-lg">Failed to load dashboard.</p>
+                <button
+                    onClick={() => queryClient.invalidateQueries({ queryKey: ["dashboard"] })}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors"
+                >
+                    Retry
+                </button>
             </div>
         );
     }
 
-    // Preference Checks
-    const showNewGen = user.preferences?.newGenInterest || user.preferences?.aspiringCollegeType?.includes("New-Gen") || dashboard.user.preferences?.newGenInterest;
-    const showInternational = user.preferences?.preferredCountries?.some((c: string) => c !== 'India') || dashboard.user.preferences?.preferredCountries?.some((c: string) => c !== 'India');
+    const mockScores = dashboard?.mockScores ?? [];
+    const totalQuestionsAttempted = dashboard?.totalQuestionsAttempted ?? 0;
+    const nextSession = dashboard?.nextSession ?? null;
+    const questionOfTheDay = dashboard?.questionOfTheDay ?? null;
+
+    const bestScore =
+        mockScores.length > 0
+            ? Math.max(...mockScores.map((m) => Math.round((m.score / m.maxScore) * 100)))
+            : null;
+
+    const isPremium = (user?.purchasedBundles?.length ?? 0) > 0;
 
     return (
         <div className="min-h-full p-6 md:p-8 max-w-6xl mx-auto w-full space-y-10 pb-24 animate-fade-in-up">
 
-            {/* 1. College Fit Hero */}
-            <section>
-                <MatchSummaryCard />
-            </section>
+            {/* ── Section 1: Greeting + Progress Snapshot ── */}
+            <div className="space-y-6">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                    {getGreeting(user.name)}
+                </h1>
 
-            {/* 0. Active Plans */}
-            <ActivePlansSection user={user} />
-
-            {/* 1.1 Upcoming Sessions */}
-            <UpcomingSessionsSection />
-
-            {/* 2. Recommended Colleges Carousel */}
-            <section>
-                <RecommendedCollegesCard userId={user?._id} />
-            </section>
-
-            {/* 🆕 New-Gen Colleges Section - Conditionally Rendered */}
-            {showNewGen && <NewGenSection openCollegeDetails={openCollegeDetails} />}
-
-            {/* 🌍 International Colleges Section - Conditionally Rendered */}
-            {showInternational && <InternationalSection openCollegeDetails={openCollegeDetails} user={user} />}
-
-            {/* 3. Deadlines & Saved Colleges Row */}
-            <section className="grid md:grid-cols-2 gap-6">
-                <DeadlinesCard deadlines={dashboard.deadlines} />
-                <SavedCollegesCard colleges={dashboard.saved_colleges} count={user.saved_count || dashboard.saved_colleges.length} />
-            </section>
-        </div>
-    );
-}
-
-function NewGenSection({ openCollegeDetails }: { openCollegeDetails: (id: string) => void }) {
-    const { data: newGenColleges } = useQuery({
-        queryKey: ['newgen-colleges-dashboard'],
-        queryFn: async () => {
-            const res = await api.get('/colleges/new-gen?limit=3');
-            return res.data.data;
-        }
-    });
-
-    if (!newGenColleges?.length) return null;
-
-    return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-2">
-                <Sparkles className="text-indigo-600 w-5 h-5" />
-                <h2 className="text-xl font-bold text-gray-900">New-Gen Tech Schools</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-                {newGenColleges.slice(0, 3).map((col: any) => (
-                    <div key={col._id} className="h-full">
-                        <CollegeCard
-                            college={col}
-                            variant="newgen"
-                            onClick={() => openCollegeDetails(col._id)}
-                        />
+                {/* Stat Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+                        <div className="h-11 w-11 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                            <BookOpen className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">
+                                Questions Attempted
+                            </p>
+                            <p className="text-2xl font-bold text-gray-900 tabular-nums">
+                                {totalQuestionsAttempted.toLocaleString()}
+                            </p>
+                        </div>
                     </div>
-                ))}
-            </div>
-        </div>
-    );
-}
 
-function InternationalSection({ openCollegeDetails, user }: { openCollegeDetails: (id: string) => void, user: any }) {
-    const { data: internationalColleges } = useQuery({
-        queryKey: ['international-colleges-dashboard'],
-        queryFn: async () => {
-            const countries = user.preferences?.preferredCountries?.filter((c: string) => c !== 'India').join(',');
-            const res = await api.get(`/colleges/international?country=${countries}&limit=3`);
-            return res.data.data;
-        }
-    });
-
-    if (!internationalColleges?.length) return null;
-
-    return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-2">
-                <Globe className="text-blue-600 w-5 h-5" />
-                <h2 className="text-xl font-bold text-gray-900">Global Opportunities</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-                {internationalColleges.slice(0, 3).map((col: any) => (
-                    <div key={col._id} className="h-full">
-                        <CollegeCard
-                            college={col}
-                            variant="international"
-                            onClick={() => openCollegeDetails(col._id)}
-                        />
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+                        <div className="h-11 w-11 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
+                            <ClipboardList className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div>
+                            <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">
+                                Mock Tests Taken
+                            </p>
+                            <p className="text-2xl font-bold text-gray-900 tabular-nums">
+                                {mockScores.length}
+                            </p>
+                        </div>
                     </div>
-                ))}
-            </div>
-        </div>
-    );
-}
 
-function ActivePlansSection({ user }: { user: any }) {
-    if (!user?.purchasedBundles?.length) return null;
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+                        <div className="h-11 w-11 rounded-full bg-yellow-50 flex items-center justify-center shrink-0">
+                            <Trophy className="w-5 h-5 text-yellow-500" />
+                        </div>
+                        <div>
+                            <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">
+                                Best Mock Score
+                            </p>
+                            <p className="text-2xl font-bold text-gray-900 tabular-nums">
+                                {bestScore !== null ? `${bestScore}%` : "N/A"}
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-    return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-2">
-                <Sparkles className="text-yellow-500 w-5 h-5" />
-                <h2 className="text-xl font-bold text-gray-900">Your Active Plans</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-4">
-                {user.purchasedBundles.map((p: any, i: number) => {
-                    const title = p.productSlug
-                        ? p.productSlug.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-                        : 'Unlocked Bundle';
-
-                    return (
-                        <div key={i} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-blue-100 shadow-sm">
-                            <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                                    <Code2 className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900">{title}</h3>
-                                    <p className="text-xs text-gray-500">Active since {new Date(p.purchasedAt).toLocaleDateString()}</p>
-                                    {p.verificationStatus === 'pending' && (
-                                        <Badge className="ml-2 bg-yellow-100 text-yellow-800 border-yellow-200">Pending Verification</Badge>
-                                    )}
-                                </div>
-                            </div>
-                            <Link href="/prep/nsat">
-                                <Button size="sm" variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
-                                    Access Content
-                                </Button>
+                {/* Score Trend */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Recent Mock Results</h3>
+                    {mockScores.length === 0 ? (
+                        <div className="py-6 text-center">
+                            <p className="text-sm text-gray-500">No mock tests taken yet.</p>
+                            <Link
+                                href="/prep/nsat/mock-tests"
+                                className="inline-flex items-center gap-1 mt-2 text-sm font-medium text-blue-600 hover:underline"
+                            >
+                                Start your first mock <ArrowRight className="w-3.5 h-3.5" />
                             </Link>
                         </div>
-                    );
-                })}
+                    ) : (
+                        <ul className="divide-y divide-gray-50">
+                            {mockScores.slice(0, 5).map((m, i) => (
+                                <li
+                                    key={i}
+                                    className="flex items-center justify-between py-2 text-sm"
+                                >
+                                    <span className="text-gray-700 truncate max-w-[60%]">{m.testName}</span>
+                                    <span className="font-semibold text-gray-900 tabular-nums shrink-0">
+                                        {m.score}/{m.maxScore}
+                                        <span className="text-gray-400 font-normal ml-1.5">
+                                            ({Math.round((m.score / m.maxScore) * 100)}%)
+                                        </span>
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
             </div>
-        </div>
-    );
-}
 
-function UpcomingSessionsSection() {
-    const { data: bookings, isLoading } = useQuery({
-        queryKey: ['my-sessions'],
-        queryFn: async () => {
-            const res = await api.get('/sessions/my-bookings');
-            return res.data.data;
-        }
-    });
-
-    if (isLoading || !bookings?.length) return null;
-
-    // Filter for real bookings (hide abandoned Razorpay or bugged 'paid' records)
-    const activeBookings = bookings.filter((b: any) =>
-        (b.status === 'paid' && b.paymentId) ||
-        b.status === 'pending_verification' ||
-        b.status === 'scheduled'
-    );
-
-    if (!activeBookings.length) return null;
-
-    return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-2">
-                <Calendar className="text-blue-600 w-5 h-5" />
-                <h2 className="text-xl font-bold text-gray-900">Your Sessions</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-4">
-                {activeBookings.map((booking: any) => (
-                    <div key={booking._id} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-blue-100 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <div className="flex items-center gap-4">
-                            <div className={`h-10 w-10 rounded-full flex items-center justify-center ${booking.sessionType === 'interview-prep' ? 'bg-blue-50 text-blue-600' : 'bg-sky-50 text-sky-600'}`}>
-                                {booking.sessionType === 'interview-prep' ? <Calendar className="w-5 h-5" /> : <MessageCircle className="w-5 h-5" />}
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-gray-900">
-                                    {booking.sessionType === 'interview-prep' ? 'Interview Prep' : 'REstart Unfiltered'}
-                                </h3>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <p className="text-xs text-gray-500">₹{booking.amount}</p>
-                                    {booking.status === 'pending_verification' && (
-                                        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 text-[10px] px-1.5 py-0">Pending Verification</Badge>
-                                    )}
-                                    {booking.status === 'paid' && (
-                                        <Badge className="bg-green-100 text-green-800 border-green-200 text-[10px] px-1.5 py-0">Ready to Schedule</Badge>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        {booking.status === 'paid' && booking.calendlyUrl && (
-                            <Link href={booking.calendlyUrl} target="_blank">
-                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-                                    Schedule Now
-                                </Button>
-                            </Link>
-                        )}
-
-                        {booking.status === 'scheduled' && (
-                            <Badge variant="outline" className="text-blue-600 border-blue-200">Scheduled</Badge>
-                        )}
+            {/* ── Section 2: Question of the Day ── */}
+            {questionOfTheDay ? (
+                <QotdCard qotd={questionOfTheDay} />
+            ) : (
+                <div className="rounded-2xl bg-gradient-to-br from-indigo-50 via-blue-50 to-indigo-100 border border-indigo-100 p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                        <Sparkles className="w-5 h-5 text-indigo-500" />
+                        <h2 className="text-base font-bold text-indigo-900">Question of the Day</h2>
                     </div>
-                ))}
-            </div>
+                    <p className="text-sm text-indigo-700">Coming soon — check back tomorrow!</p>
+                </div>
+            )}
+
+            {/* ── Section 3: Upcoming Session ── */}
+            {nextSession ? (
+                <div className="bg-white rounded-2xl border border-blue-100 shadow-sm p-6">
+                    <div className="flex items-start gap-4">
+                        <div className="h-11 w-11 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                            <Calendar className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">
+                                Upcoming Session
+                            </p>
+                            <h2 className="text-base font-bold text-gray-900 capitalize">
+                                {nextSession.topic.replace(/-/g, " ")}
+                            </h2>
+                            <p className="text-xs text-gray-500 mt-1">
+                                {formatSessionDate(nextSession.sessionDate)}
+                            </p>
+                        </div>
+                        <Link
+                            href={nextSession.whatsappLink}
+                            target="_blank"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
+                        >
+                            Join WhatsApp Group <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                    </div>
+                </div>
+            ) : isPremium ? (
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="h-11 w-11 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                            <Calendar className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <h2 className="text-sm font-semibold text-gray-900">
+                                No upcoming sessions scheduled
+                            </h2>
+                            <p className="text-xs text-gray-500 mt-0.5">
+                                Book a slot whenever you're ready.
+                            </p>
+                        </div>
+                    </div>
+                    <Link
+                        href="/sessions"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors shrink-0"
+                    >
+                        Book a Session <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                </div>
+            ) : (
+                <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 p-6 text-white">
+                    <div className="flex items-start justify-between gap-6">
+                        <div>
+                            <h2 className="text-lg font-bold">Unlock Live Sessions</h2>
+                            <p className="text-sm text-blue-100 mt-1">
+                                Get 1-on-1 mentorship, interview prep, and live doubt-clearing.
+                            </p>
+                        </div>
+                        <Link
+                            href="/checkout"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-blue-700 hover:bg-blue-50 text-sm font-bold rounded-xl transition-colors shrink-0"
+                        >
+                            Upgrade Now <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }
-

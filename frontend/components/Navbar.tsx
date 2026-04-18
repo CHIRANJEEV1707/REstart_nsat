@@ -31,9 +31,9 @@ export default function Navbar() {
                         <NextImage
                             src="/images/REstart_dark.svg"
                             alt="REstart"
-                            width={260}
-                            height={80}
-                            className="h-16 md:h-20 w-auto object-contain"
+                            width={400}
+                            height={120}
+                            className="h-28 md:h-32 w-auto object-contain"
                             priority
                         />
                     </Link>

@@ -4,6 +4,8 @@ import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import { ReferralCard } from '@/components/ReferralCard';
 import { BookOpen, ClipboardList, Users, MessageCircle, UserPlus, Trophy } from 'lucide-react';
+import { PricingContainer, PricingPlan } from '@/components/ui/pricing-container';
+import { ProcessPillars } from '@/components/ui/process-pillars';
 
 // ── What's Included ────────────────────────────────────────────────────────────
 
@@ -221,7 +223,7 @@ const steps = [
 function HowItWorksSection() {
     return (
         <section className="py-20 bg-white">
-            <div className="max-w-4xl mx-auto px-6">
+            <div className="max-w-5xl mx-auto px-6">
                 <p className="text-xs tracking-widest text-[#0085ff] font-semibold uppercase mb-4">
                     How It Works
                 </p>
@@ -229,20 +231,31 @@ function HowItWorksSection() {
                     Go from zero to<br />prepared in 3 steps.
                 </h2>
 
-                <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Dashed connector line */}
-                    <div className="hidden md:block absolute border-t-2 border-dashed border-blue-200 top-4 left-[16%] right-[16%] z-0" />
-
-                    {steps.map((step) => (
-                        <div key={step.num} className="flex flex-col gap-3 relative z-10">
-                            <div className="w-8 h-8 rounded-full bg-[#0085ff] flex items-center justify-center text-sm font-bold text-white">
-                                {step.num}
+                <div className="flex flex-col md:flex-row items-start gap-12">
+                    {/* Left: step descriptions */}
+                    <div className="flex flex-col gap-10 flex-1">
+                        {steps.map((step) => (
+                            <div key={step.num} className="flex gap-5 items-start">
+                                <div className="w-8 h-8 rounded-full bg-[#0085ff] flex items-center justify-center text-sm font-bold text-white shrink-0 mt-0.5">
+                                    {step.num}
+                                </div>
+                                <div className="flex flex-col gap-1.5">
+                                    <step.Icon className="w-5 h-5 text-[#0085ff]" />
+                                    <h3 className="font-black uppercase tracking-tight text-gray-900 text-sm">{step.title}</h3>
+                                    <p className="text-gray-500 text-sm leading-relaxed">{step.description}</p>
+                                </div>
                             </div>
-                            <step.Icon className="w-5 h-5 text-[#0085ff] mt-1" />
-                            <h3 className="font-black uppercase tracking-tight text-gray-900 text-sm">{step.title}</h3>
-                            <p className="text-gray-500 text-sm leading-relaxed">{step.description}</p>
+                        ))}
+                    </div>
+
+                    {/* Right: animated ProcessPillars — top-aligned with the text column */}
+                    <div className="hidden md:flex flex-col items-start shrink-0 gap-3 pt-0 -mt-20">
+                        <div>
+                            <p className="text-xs text-[#0085ff] font-semibold uppercase tracking-widest mb-0.5">Avg. Score Progression</p>
+                            <p className="text-[11px] text-gray-400">Students who complete all 3 steps score 3× higher</p>
                         </div>
-                    ))}
+                        <ProcessPillars />
+                    </div>
                 </div>
             </div>
         </section>
@@ -251,54 +264,47 @@ function HowItWorksSection() {
 
 // ── Pricing ────────────────────────────────────────────────────────────────────
 
-interface PricingPlan {
-    name: string;
-    price: string;
-    description: string;
-    features: string[];
-    cta: string;
-    href: string;
-    highlight?: boolean;
-}
-
 const plans: PricingPlan[] = [
     {
         name: 'Free',
-        price: '₹0',
-        description: '10 PYQs + 1 free mock test',
+        monthlyPrice: 0,
+        yearlyPrice: 0,
         features: [
-            '10 PYQs across all sections',
+            '10 PYQs total',
             '1 full mock test',
             'Basic score report',
-            'No credit card needed',
+            'No card needed',
         ],
+        accent: 'bg-green-500',
         cta: 'Get Started Free',
         href: '/auth/signup',
     },
     {
         name: 'Core',
-        price: '₹800',
-        description: 'Full PYQ bank, all mocks, interview guide',
+        monthlyPrice: 800,
+        yearlyPrice: 650,
         features: [
-            'Full PYQ bank (500+ questions)',
+            'Full PYQ bank (500+)',
             'All 22 mock tests',
             'Complete interview guide',
             'Detailed analytics',
         ],
+        isPopular: true,
+        accent: 'bg-[#0085ff]',
         cta: 'Get Core Pack',
         href: '/checkout',
-        highlight: true,
     },
     {
         name: 'Premium',
-        price: '₹1,499',
-        description: 'Core + live weekly sessions',
+        monthlyPrice: 1499,
+        yearlyPrice: 1199,
         features: [
             'Everything in Core',
             'Weekly live sessions',
             'Direct mentor access',
             'Priority support',
         ],
+        accent: 'bg-indigo-600',
         cta: 'Get Premium',
         href: '/checkout',
     },
@@ -306,56 +312,14 @@ const plans: PricingPlan[] = [
 
 function PricingSection() {
     return (
-        <section className="py-24 bg-white">
-            <div className="max-w-4xl mx-auto px-6">
-                <p className="text-xs tracking-widest text-[#0085ff] font-semibold uppercase mb-4">
+        <section className="py-24 bg-white overflow-hidden">
+            <div className="w-full mx-auto px-2 md:px-6">
+                <p className="text-xs tracking-widest text-[#0085ff] font-semibold uppercase mb-4 text-center relative z-20">
                     Pricing
                 </p>
-                <h2 className="text-4xl font-black tracking-tight text-gray-900 uppercase mb-14 leading-tight">
-                    Start free.<br />Upgrade when ready.
-                </h2>
+                <PricingContainer title="START FREE. UPGRADE WHEN READY." plans={plans} />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-                    {plans.map((plan) => (
-                        <div
-                            key={plan.name}
-                            className={`relative bg-white rounded-2xl p-8 flex flex-col ${
-                                plan.highlight
-                                    ? 'border-2 border-[#0085ff]'
-                                    : 'border border-gray-100'
-                            }`}
-                        >
-                            {plan.highlight && (
-                                <span className="absolute top-0 right-0 bg-[#0085ff] text-white text-xs px-2 py-1 rounded-bl-xl rounded-tr-2xl font-medium">
-                                    Most Popular
-                                </span>
-                            )}
-                            <p className="text-sm font-semibold text-gray-900 mb-2">{plan.name}</p>
-                            <p className="text-4xl text-gray-900">{plan.price}</p>
-                            <p className="text-gray-500 text-sm mt-2 mb-6">{plan.description}</p>
-                            <ul className="flex flex-col gap-2 mb-8 flex-1">
-                                {plan.features.map((f) => (
-                                    <li key={f} className="flex items-start gap-2 text-sm text-gray-600">
-                                        <span className="text-[#0085ff] font-bold shrink-0 mt-px">✓</span>
-                                        {f}
-                                    </li>
-                                ))}
-                            </ul>
-                            <Link
-                                href={plan.href}
-                                className={`w-full text-center px-6 py-2.5 rounded-full text-sm font-medium transition-colors ${
-                                    plan.highlight
-                                        ? 'bg-[#0085ff] text-white hover:bg-blue-600'
-                                        : 'border border-gray-200 text-gray-700 hover:border-gray-400'
-                                }`}
-                            >
-                                {plan.cta}
-                            </Link>
-                        </div>
-                    ))}
-                </div>
-
-                <p className="text-center text-gray-400 text-sm mt-8">
+                <p className="text-center text-gray-400 text-sm mt-8 relative z-20">
                     🔒 Secure payment via Razorpay · Instant access · Cancel anytime
                 </p>
             </div>

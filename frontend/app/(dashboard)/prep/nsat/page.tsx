@@ -53,8 +53,8 @@ export default function NSATPrepPage() {
 
     if (authLoading || queryLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50/30">
-                <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-10 h-10 text-[#0085ff] animate-spin" />
             </div>
         );
     }
@@ -81,8 +81,8 @@ export default function NSATPrepPage() {
                 ],
                 outcome: "Get everything you need to ace NSAT and secure admission.",
                 duration: "Lifetime Access",
-                color: "border-purple-200 bg-purple-50/50",
-                btnColor: "bg-purple-600 hover:bg-purple-700 text-white",
+                color: "",
+                btnColor: "bg-[#0085ff] hover:bg-[#0070d9] text-white",
                 btnVariant: "default",
                 whatsappLink: "https://chat.whatsapp.com/FSGst6uURfRDCjUwPe8kof",
                 popular: isCombined // Combined premium is usually most promoted
@@ -103,8 +103,8 @@ export default function NSATPrepPage() {
                 ],
                 outcome: "Build confidence with expert guidance and community support.",
                 duration: "Until exams end",
-                color: "border-indigo-200 bg-indigo-50/50 ring-2 ring-indigo-500 ring-offset-2",
-                btnColor: "bg-indigo-600 hover:bg-indigo-700 text-white",
+                color: "",
+                btnColor: "bg-[#0085ff] hover:bg-[#0070d9] text-white",
                 btnVariant: "default",
                 whatsappLink: "https://chat.whatsapp.com/Dv5cSSZUPeC7egTbJ43fwF"
             },
@@ -122,7 +122,7 @@ export default function NSATPrepPage() {
                 ],
                 outcome: "Get started with essential preparation resources.",
                 duration: "Until exams end",
-                color: "border-blue-200 bg-blue-50/50",
+                color: "",
                 btnVariant: "outline"
             }
         ]
@@ -214,7 +214,7 @@ export default function NSATPrepPage() {
     };
 
     return (
-        <div className="min-h-screen pb-20 page-transition bg-gray-50/30">
+        <div className="min-h-screen pb-20 page-transition">
             <Toaster position="top-right" />
 
             <PaymentModal
@@ -247,7 +247,7 @@ export default function NSATPrepPage() {
                     // Marketing / Sales View
                     <>
                         {/* Hero Section */}
-                        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-xl overflow-hidden relative">
+                        <div className="rounded-3xl p-8 md:p-12 text-white mb-12 overflow-hidden relative" style={{ background: 'linear-gradient(135deg, #0085ff 0%, #0060cc 100%)', boxShadow: '0 8px 40px rgba(0,133,255,0.25)' }}>
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
                             <div className="relative z-10">
                                 <div className="flex items-center gap-3 mb-4">
@@ -267,10 +267,10 @@ export default function NSATPrepPage() {
 
                         {/* Free Pack Offer */}
                         {!hasFreePack && !hasPurchasedAny && (
-                            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 mb-12 border border-orange-100 relative overflow-hidden">
+                            <div className="rounded-2xl p-8 mb-12 relative overflow-hidden" style={{ background: 'rgba(0,133,255,0.04)', border: '1px solid rgba(0,133,255,0.18)' }}>
                                 <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                                     <div>
-                                        <div className="flex items-center gap-2 mb-2 text-orange-600 font-bold uppercase tracking-wider text-sm">
+                                        <div className="flex items-center gap-2 mb-2 font-bold uppercase tracking-wider text-sm text-[#0085ff]">
                                             <Gift className="w-5 h-5" />
                                             Limited Time Offer
                                         </div>
@@ -283,7 +283,8 @@ export default function NSATPrepPage() {
                                         size="lg"
                                         onClick={() => claimMutation.mutate()}
                                         disabled={claimMutation.isPending}
-                                        className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg shadow-orange-500/20 whitespace-nowrap min-w-[200px]"
+                                        className="text-white border-0 whitespace-nowrap min-w-[200px]"
+                                        style={{ background: '#0085ff', boxShadow: '0 4px 16px rgba(0,133,255,0.25)' }}
                                     >
                                         {claimMutation.isPending ? 'Claiming...' : 'Claim Free Pack'}
                                     </Button>
@@ -295,15 +296,16 @@ export default function NSATPrepPage() {
 
                         {/* Stream Selection */}
                         <div className="flex justify-center mb-8">
-                            <div className="bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm inline-flex">
+                            <div className="bg-white p-1.5 rounded-xl inline-flex" style={{ border: '1px solid rgba(0,133,255,0.18)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                                 {(['combined', 'general', 'coding'] as const).map((s) => (
                                     <button
                                         key={s}
                                         onClick={() => setStream(s)}
                                         className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${stream === s
-                                            ? 'bg-blue-600 text-white shadow-md'
-                                            : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                                            ? 'text-white shadow-md'
+                                            : 'text-gray-500 hover:text-gray-900 hover:bg-[rgba(0,133,255,0.04)]'
                                             }`}
+                                        style={stream === s ? { background: '#0085ff' } : {}}
                                     >
                                         {s.charAt(0).toUpperCase() + s.slice(1)}
                                     </button>
@@ -316,9 +318,9 @@ export default function NSATPrepPage() {
                             {packages.map((pkg, idx) => {
                                 const purchased = isPurchased(pkg.slug);
                                 return (
-                                    <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full border ${pkg.popular ? pkg.color + ' shadow-xl scale-105 z-10' : 'border-gray-100 hover:border-gray-200 hover:shadow-lg'}`}>
+                                    <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full ${pkg.popular ? 'shadow-xl scale-105 z-10' : 'hover:shadow-lg'}`} style={pkg.popular ? { border: '2px solid #0085ff', boxShadow: '0 8px 40px rgba(0,133,255,0.18)' } : { border: '1px solid rgba(0,133,255,0.12)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                                         {pkg.popular && (
-                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide">
+                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide" style={{ background: '#0085ff' }}>
                                                 MOST POPULAR
                                             </div>
                                         )}
@@ -334,7 +336,7 @@ export default function NSATPrepPage() {
                                             <ul className="space-y-3">
                                                 {pkg.features.map((feat, i) => (
                                                     <li key={i} className="flex items-start gap-3 text-gray-700">
-                                                        <div className={`mt-1 p-0.5 rounded-full ${pkg.popular ? 'bg-blue-100 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                                                        <div className="mt-1 p-0.5 rounded-full text-[#0085ff]" style={{ background: 'rgba(0,133,255,0.08)' }}>
                                                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                                             </svg>
@@ -359,8 +361,9 @@ export default function NSATPrepPage() {
                                             disabled={purchased}
                                             className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
                                                 ? 'bg-green-100 text-green-700 border-transparent cursor-default'
-                                                : (pkg.btnColor || 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300')
+                                                : (pkg.btnColor || 'bg-white text-[#0085ff] hover:bg-[rgba(0,133,255,0.06)]')
                                                 }`}
+                                            style={!purchased && !pkg.btnColor ? { border: '1.5px solid #0085ff' } : undefined}
                                         >
                                             {purchased ? (
                                                 <span className="flex items-center gap-2"><CheckCircle className="w-5 h-5" /> Active</span>
@@ -382,7 +385,7 @@ export default function NSATPrepPage() {
                             <p className="text-gray-600">Track your progress and access your NSAT prep resources.</p>
 
                             {hasFreePack && !hasPurchasedAny && (
-                                <div className="mt-4 bg-orange-50 border border-orange-100 text-orange-800 px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2">
+                                <div className="mt-4 px-4 py-2 rounded-lg text-sm inline-flex items-center gap-2 text-[#0085ff]" style={{ background: 'rgba(0,133,255,0.06)', border: '1px solid rgba(0,133,255,0.18)' }}>
                                     <Gift className="w-4 h-4" />
                                     Free Starter Pack Active. Upgrade for full access.
                                 </div>
@@ -391,44 +394,44 @@ export default function NSATPrepPage() {
 
                         {/* Quick Access Cards */}
                         <div className="grid md:grid-cols-3 gap-6 mb-12">
-                            <Link href="/prep/nsat/mock-tests" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
-                                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors relative z-10">
-                                    <svg className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <Link href="/prep/nsat/mock-tests" className="group bg-white rounded-2xl p-6 transition-all relative overflow-hidden" style={{ border: '1px solid rgba(0,133,255,0.15)', boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 8px 28px rgba(0,133,255,0.08)' }}>
+                                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none" style={{ background: 'rgba(0,133,255,0.06)' }}></div>
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors relative z-10" style={{ background: 'rgba(0,133,255,0.08)' }}>
+                                    <svg className="w-6 h-6 text-[#0085ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                                     </svg>
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-900 mb-2 relative z-10">Mock Tests</h3>
                                 <p className="text-sm text-gray-500 relative z-10">Full-length proctored mock tests for NSAT & Coding NSAT</p>
-                                <span className="inline-flex items-center text-blue-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
+                                <span className="inline-flex items-center text-[#0085ff] text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
                                     Start Practice <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                                 </span>
                             </Link>
 
-                            <Link href="/prep/nsat/pyq" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
-                                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors relative z-10">
-                                    <svg className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <Link href="/prep/nsat/pyq" className="group bg-white rounded-2xl p-6 transition-all relative overflow-hidden" style={{ border: '1px solid rgba(0,133,255,0.15)', boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 8px 28px rgba(0,133,255,0.08)' }}>
+                                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none" style={{ background: 'rgba(0,133,255,0.06)' }}></div>
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors relative z-10" style={{ background: 'rgba(0,133,255,0.08)' }}>
+                                    <svg className="w-6 h-6 text-[#0085ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-900 mb-2 relative z-10">Previous Year Questions</h3>
                                 <p className="text-sm text-gray-500 relative z-10">Practice with actual questions from past NSAT exams</p>
-                                <span className="inline-flex items-center text-green-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
+                                <span className="inline-flex items-center text-[#0085ff] text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
                                     View PYQs <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                                 </span>
                             </Link>
 
-                            <Link href="/prep/nsat/interview-guide" className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
-                                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-600 transition-colors relative z-10">
-                                    <svg className="w-6 h-6 text-purple-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <Link href="/prep/nsat/interview-guide" className="group bg-white rounded-2xl p-6 transition-all relative overflow-hidden" style={{ border: '1px solid rgba(0,133,255,0.15)', boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 8px 28px rgba(0,133,255,0.08)' }}>
+                                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none" style={{ background: 'rgba(0,133,255,0.06)' }}></div>
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors relative z-10" style={{ background: 'rgba(0,133,255,0.08)' }}>
+                                    <svg className="w-6 h-6 text-[#0085ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-900 mb-2 relative z-10">Interview Guide</h3>
                                 <p className="text-sm text-gray-500 relative z-10">Expert tips and sample questions for NSAT interview</p>
-                                <span className="inline-flex items-center text-purple-600 text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
+                                <span className="inline-flex items-center text-[#0085ff] text-sm font-medium mt-3 group-hover:gap-2 transition-all relative z-10">
                                     Read Guide <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                                 </span>
                             </Link>
@@ -467,13 +470,13 @@ function RecentPerformance() {
     if (attempts.length === 0) return null;
 
     return (
-        <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm mb-12">
+        <div className="bg-white rounded-2xl p-8 mb-12" style={{ border: '1px solid rgba(0,133,255,0.18)', boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 8px 32px rgba(0,133,255,0.10)' }}>
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <TrendingUp className="w-6 h-6 text-blue-600" />
+                    <TrendingUp className="w-6 h-6 text-[#0085ff]" />
                     Your Recent Performance
                 </h2>
-                <Link href="/prep/nsat/results" className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                <Link href="/prep/nsat/results" className="text-sm font-medium text-[#0085ff] hover:underline">
                     View All Results
                 </Link>
             </div>

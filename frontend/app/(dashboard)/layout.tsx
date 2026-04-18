@@ -16,7 +16,14 @@ export default function DashboardLayout({
 
     return (
         <AuthGuard>
-                <div className="flex min-h-screen bg-gray-50">
+                <div className="flex min-h-screen bg-[#f7faff] relative">
+                    {/* Ambient blue glow — top-right */}
+                    <div
+                        className="absolute inset-0 pointer-events-none z-0"
+                        style={{
+                            background: 'radial-gradient(ellipse 70% 45% at 75% -5%, rgba(0,133,255,0.07) 0%, transparent 100%)',
+                        }}
+                    />
                     {/* Desktop Sidebar - Hidden on Exam Pages */}
                     {!pathname?.includes('/prep/nsat/mock-tests/') || pathname?.includes('/results/') ? (
                         <Sidebar />
@@ -25,7 +32,7 @@ export default function DashboardLayout({
                     {/* Mobile Header - Hidden on Exam Pages */}
                     {(!pathname?.includes('/prep/nsat/mock-tests/') || pathname?.includes('/results/')) && (
                         <div className="lg:hidden fixed top-0 left-0 w-full z-50 bg-white border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
-                            <span className="font-bold text-indigo-600 text-xl">REstart</span>
+                            <span className="font-bold text-[#0085ff] text-xl">REstart</span>
                             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-gray-600">
                                 {mobileMenuOpen ? <X /> : <Menu />}
                             </button>
@@ -40,7 +47,7 @@ export default function DashboardLayout({
                     )}
 
                     {/* Main Content */}
-                    <main className="flex-1 overflow-y-auto h-screen lg:pt-0 pt-16">
+                    <main className="flex-1 overflow-y-auto h-screen lg:pt-0 pt-16 relative z-10">
                         {children}
                     </main>
                 </div>

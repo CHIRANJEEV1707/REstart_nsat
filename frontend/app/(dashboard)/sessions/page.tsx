@@ -158,7 +158,7 @@ export default function SessionsPage() {
     };
 
     return (
-        <div className="min-h-screen pb-20 page-transition">
+        <div className="min-h-screen pb-20 page-transition bg-transparent">
             <Toaster position="top-right" />
 
             <PaymentModal
@@ -181,7 +181,7 @@ export default function SessionsPage() {
                 </Link>
 
                 {/* Hero Section */}
-                <div className="bg-gradient-to-br from-blue-600 to-sky-700 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-xl shadow-blue-500/10">
+                <div className="rounded-3xl p-8 md:p-12 text-white mb-12" style={{ background: 'linear-gradient(135deg, #0085ff 0%, #0060cc 100%)', boxShadow: '0 8px 40px rgba(0,133,255,0.25)' }}>
                     <div className="flex items-center gap-3 mb-4">
                         <Users className="w-8 h-8" />
                         <Badge className="bg-white/20 text-white border-0">1-on-1 Sessions</Badge>
@@ -198,13 +198,13 @@ export default function SessionsPage() {
                 <div className="flex gap-4 mb-8">
                     <button
                         onClick={() => setSelectedType('restart-unfiltered')}
-                        className={`flex-1 p-6 rounded-2xl border-2 transition-all ${selectedType === 'restart-unfiltered'
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-gray-200 bg-white hover:border-gray-300'
-                            }`}
+                        className="flex-1 p-6 rounded-2xl transition-all bg-white"
+                        style={selectedType === 'restart-unfiltered'
+                            ? { border: '2px solid #0085ff', background: 'rgba(0,133,255,0.04)', boxShadow: '0 4px 16px rgba(0,133,255,0.12)' }
+                            : { border: '1px solid rgba(0,133,255,0.15)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
                     >
-                        <MessageCircle className={`w-8 h-8 mb-3 ${selectedType === 'restart-unfiltered' ? 'text-blue-600' : 'text-gray-400'}`} />
-                        <h3 className={`text-xl font-bold mb-1 ${selectedType === 'restart-unfiltered' ? 'text-blue-900' : 'text-gray-900'}`}>
+                        <MessageCircle className={`w-8 h-8 mb-3 ${selectedType === 'restart-unfiltered' ? 'text-[#0085ff]' : 'text-gray-400'}`} />
+                        <h3 className={`text-xl font-bold mb-1 ${selectedType === 'restart-unfiltered' ? 'text-gray-900' : 'text-gray-900'}`}>
                             REstart Unfiltered
                         </h3>
                         <p className="text-sm text-gray-500">Talk to seniors & students</p>
@@ -212,13 +212,13 @@ export default function SessionsPage() {
 
                     <button
                         onClick={() => setSelectedType('interview-prep')}
-                        className={`flex-1 p-6 rounded-2xl border-2 transition-all ${selectedType === 'interview-prep'
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-gray-200 bg-white hover:border-gray-300'
-                            }`}
+                        className="flex-1 p-6 rounded-2xl transition-all bg-white"
+                        style={selectedType === 'interview-prep'
+                            ? { border: '2px solid #0085ff', background: 'rgba(0,133,255,0.04)', boxShadow: '0 4px 16px rgba(0,133,255,0.12)' }
+                            : { border: '1px solid rgba(0,133,255,0.15)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
                     >
-                        <Calendar className={`w-8 h-8 mb-3 ${selectedType === 'interview-prep' ? 'text-blue-600' : 'text-gray-400'}`} />
-                        <h3 className={`text-xl font-bold mb-1 ${selectedType === 'interview-prep' ? 'text-blue-900' : 'text-gray-900'}`}>
+                        <Calendar className={`w-8 h-8 mb-3 ${selectedType === 'interview-prep' ? 'text-[#0085ff]' : 'text-gray-400'}`} />
+                        <h3 className={`text-xl font-bold mb-1 text-gray-900`}>
                             Interview Prep
                         </h3>
                         <p className="text-sm text-gray-500">Mock NSAT interview</p>
@@ -226,7 +226,7 @@ export default function SessionsPage() {
                 </div>
 
                 {/* Session Details */}
-                <div className="bg-white rounded-3xl border border-gray-100 p-8 mb-8">
+                <div className="bg-white rounded-3xl p-8 mb-8" style={{ border: '1px solid rgba(0,133,255,0.18)', boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 8px 32px rgba(0,133,255,0.10)' }}>
                     <div className="flex items-center gap-3 mb-4">
                         <h2 className="text-2xl font-bold text-gray-900">{selectedSession.title}</h2>
                         <Badge variant="outline" className="text-gray-500">
@@ -261,7 +261,10 @@ export default function SessionsPage() {
                         size="lg"
                         onClick={handleBookNow}
                         disabled={loading}
-                        className="w-full h-14 text-lg rounded-xl bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
+                        className="w-full h-14 text-lg rounded-xl text-white transition-all active:scale-[0.98]"
+                        style={{ background: '#0085ff', boxShadow: '0 4px 20px rgba(0,133,255,0.30)' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#0070d9')}
+                        onMouseLeave={e => (e.currentTarget.style.background = '#0085ff')}
                     >
                         {loading ? 'Processing...' : 'Book Now'}
                     </Button>
@@ -272,18 +275,16 @@ export default function SessionsPage() {
 
                 {/* Trust Signals */}
                 <div className="grid md:grid-cols-3 gap-6 text-center">
-                    <div className="bg-gray-50 rounded-2xl p-6">
-                        <div className="text-3xl font-bold text-gray-900 mb-1">100+</div>
-                        <p className="text-sm text-gray-500">Sessions completed</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-2xl p-6">
-                        <div className="text-3xl font-bold text-gray-900 mb-1">4.9★</div>
-                        <p className="text-sm text-gray-500">Average rating</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-2xl p-6">
-                        <div className="text-3xl font-bold text-gray-900 mb-1">1 hour</div>
-                        <p className="text-sm text-gray-500">Session duration</p>
-                    </div>
+                    {[
+                        { stat: '100+', label: 'Sessions completed' },
+                        { stat: '4.9★', label: 'Average rating' },
+                        { stat: '1 hour', label: 'Session duration' },
+                    ].map(({ stat, label }) => (
+                        <div key={label} className="bg-white rounded-2xl p-6" style={{ border: '1px solid rgba(0,133,255,0.15)', boxShadow: '0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,133,255,0.08)' }}>
+                            <div className="text-3xl font-bold text-[#0085ff] mb-1">{stat}</div>
+                            <p className="text-sm text-gray-500">{label}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

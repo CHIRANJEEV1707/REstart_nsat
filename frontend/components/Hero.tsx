@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
+import { GlowingShadow } from '@/components/ui/glowing-shadow';
 
 
 // ── 3D text shadows ────────────────────────────────────────────────────────────
@@ -88,20 +89,39 @@ export default function Hero() {
                                     boxShadow: '0 0 0 1px rgba(0,133,255,0.1), 0 0 32px rgba(0,133,255,0.2), 0 8px 40px rgba(0,133,255,0.08)',
                                 }}
                             >
-                                <Image
-                                    src="https://i.pravatar.cc/48?img=11"
-                                    alt="Arjun S."
-                                    width={48}
-                                    height={48}
-                                    className="w-12 h-12 rounded-full border-2 border-white/40"
-                                />
-                                <p className="font-bold text-sm mt-2" style={{ color: '#0085ff' }}>Arjun S.</p>
-                                <p className="text-xs" style={{ color: '#0085ff', opacity: 0.6 }}>Mock Score</p>
-                                <p className="text-3xl font-black mt-1" style={{ color: '#0085ff' }}>218 / 240</p>
-                                <div className="rounded-full h-1.5 w-full mt-2" style={{ background: 'rgba(0,133,255,0.15)' }}>
-                                    <div className="h-full rounded-full" style={{ width: '90%', background: '#0085ff' }} />
+                                {/* Header: avatar + name */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Image
+                                        src="/images/12.svg"
+                                        alt="Arjun S."
+                                        width={64}
+                                        height={64}
+                                        className="w-14 h-14 rounded-full border-2 border-white/60 object-cover shadow-md"
+                                    />
+                                    <div>
+                                        <p className="font-bold text-sm leading-tight" style={{ color: '#0a0a0a' }}>Arjun S.</p>
+                                        <p className="text-[11px] font-medium mt-0.5" style={{ color: '#0085ff', opacity: 0.7 }}>Mock Score</p>
+                                    </div>
                                 </div>
-                                <p className="text-xs mt-2" style={{ color: '#1a1a1a' }}>Top 4% nationally 🏆</p>
+
+                                {/* Score */}
+                                <p className="text-[28px] font-black leading-none tracking-tight" style={{ color: '#0085ff' }}>
+                                    218<span className="text-lg font-bold opacity-50"> / 240</span>
+                                </p>
+
+                                {/* Progress bar */}
+                                <div className="rounded-full h-2 w-full mt-3" style={{ background: 'rgba(0,133,255,0.10)' }}>
+                                    <div className="h-full rounded-full transition-all" style={{ width: '90%', background: 'linear-gradient(90deg, #0085ff, #00bbff)' }} />
+                                </div>
+
+                                {/* Badge */}
+                                <div
+                                    className="mt-3 inline-flex items-center gap-1 rounded-full px-3 py-1"
+                                    style={{ background: 'rgba(0,133,255,0.06)', border: '1px solid rgba(0,133,255,0.15)' }}
+                                >
+                                    <span className="text-[11px] font-semibold" style={{ color: '#0085ff' }}>Top 4% nationally</span>
+                                    <span className="text-xs">🏆</span>
+                                </div>
                             </div>
 
                         </div>
@@ -110,7 +130,7 @@ export default function Hero() {
                     {/* ── Floating card — Priya, right of CRACK line ── */}
                     <motion.div
                         className="hidden md:block absolute z-30"
-                        style={{ top: '-4%', right: '-12%' }}
+                        style={{ top: '10%', right: '-12%' }}
                         animate={{ y: [0, -18, 0] }}
                         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
                     >
@@ -125,23 +145,32 @@ export default function Hero() {
                                     boxShadow: '0 0 0 1px rgba(0,133,255,0.1), 0 0 32px rgba(0,133,255,0.2), 0 8px 40px rgba(0,133,255,0.08)',
                                 }}
                             >
-                                <Image
-                                    src="https://i.pravatar.cc/48?img=5"
-                                    alt="Priya M."
-                                    width={48}
-                                    height={48}
-                                    className="w-12 h-12 rounded-full border-2 border-white/40"
-                                />
-                                <p className="font-bold text-sm mt-2" style={{ color: '#0085ff' }}>Priya M.</p>
-                                <p className="text-xs" style={{ color: '#0085ff', opacity: 0.6 }}>This week</p>
-                                <p className="font-semibold text-base mt-1" style={{ color: '#1a1a1a' }}>Interview Prep · 8PM</p>
+                                {/* Header: avatar + name */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Image
+                                        src="/images/11.svg"
+                                        alt="Priya M."
+                                        width={64}
+                                        height={64}
+                                        className="w-14 h-14 rounded-full border-2 border-white/60 object-cover shadow-md"
+                                    />
+                                    <div>
+                                        <p className="font-bold text-sm leading-tight" style={{ color: '#0a0a0a' }}>Priya M.</p>
+                                        <p className="text-[11px] font-medium mt-0.5" style={{ color: '#0085ff', opacity: 0.7 }}>This week</p>
+                                    </div>
+                                </div>
+
+                                {/* Session info */}
+                                <p className="font-semibold text-[15px] leading-snug" style={{ color: '#1a1a1a' }}>Interview Prep · 8PM</p>
+
+                                {/* CTA button */}
                                 <Link
                                     href="/auth/signup"
-                                    className="mt-3 inline-block rounded-full px-4 py-1.5 text-xs font-bold transition-colors"
+                                    className="mt-4 inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-bold transition-all hover:scale-105"
                                     style={{
-                                        background: 'rgba(0,133,255,0.08)',
-                                        border: '1px solid rgba(0,133,255,0.3)',
-                                        color: '#0085ff',
+                                        background: '#0085ff',
+                                        color: '#ffffff',
+                                        boxShadow: '0 2px 12px rgba(0,133,255,0.3)',
                                     }}
                                 >
                                     Join Session →
@@ -173,47 +202,64 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* ── Bottom strip ── */}
-            <div className="absolute bottom-0 w-full bg-[#0085ff] border-t border-[#0060cc] py-5 px-8 z-40">
-                <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4">
-
-                    {/* Avatars + count */}
-                    <div className="flex items-center">
-                        <div className="flex items-center">
-                            {[1, 2, 3].map((n, i) => (
-                                <Image
-                                    key={n}
-                                    src={`https://i.pravatar.cc/32?img=${n}`}
-                                    alt={`Student ${n}`}
-                                    width={32}
-                                    height={32}
-                                    className={`w-8 h-8 rounded-full border-2 border-white object-cover${i > 0 ? ' -ml-2' : ''}`}
-                                />
+            {/* ── Floating Pill Bottom Bar ── */}
+            <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-40">
+                <GlowingShadow>
+                    {/* Left: avatars + text */}
+                    <div className="flex items-center shrink-0">
+                        <div className="flex items-center shrink-0">
+                            {[
+                                { initials: 'A', bg: '#0085ff' },
+                                { initials: 'R', bg: '#00bbff' },
+                                { initials: 'P', bg: '#3b82f6' },
+                            ].map((s, i) => (
+                                <div
+                                    key={s.initials}
+                                    className={`w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[11px] font-bold text-white shadow-sm shrink-0${i > 0 ? ' -ml-2' : ''}`}
+                                    style={{ background: s.bg, zIndex: 3 - i }}
+                                >
+                                    {s.initials}
+                                </div>
                             ))}
                         </div>
-                        <span className="text-white text-sm ml-3">2,000+ students already preparing</span>
+                        <span className="text-[#1a1a1a] text-sm ml-3 font-medium shrink-0 whitespace-nowrap">2,000+ students already preparing</span>
                     </div>
 
-                    {/* Stats */}
-                    <div className="hidden sm:flex items-center">
-                        {['22 Mock Tests', '500+ PYQs', 'Weekly Sessions'].map((stat, i) => (
-                            <span
-                                key={stat}
-                                className={`text-white text-xs px-4${i > 0 ? ' border-l border-white/30' : ''}`}
-                            >
-                                {stat}
-                            </span>
-                        ))}
+                    {/* Center: stats */}
+                    <div className="flex items-center gap-4 shrink-0 px-4">
+                        <div className="flex items-baseline gap-1.5 shrink-0 whitespace-nowrap">
+                            <span className="text-[#0085FF] font-bold tracking-tight shrink-0">22</span>
+                            <span style={{ color: '#0085FF', fontSize: '11px', fontWeight: 500 }} className="shrink-0">Mock Tests</span>
+                        </div>
+                        <div style={{ width: '1px', height: '16px', background: 'rgba(0, 133, 255, 0.2)' }} className="shrink-0" />
+                        <div className="flex items-baseline gap-1.5 shrink-0 whitespace-nowrap">
+                            <span className="text-[#0085FF] font-bold tracking-tight shrink-0">500+</span>
+                            <span style={{ color: '#0085FF', fontSize: '11px', fontWeight: 500 }} className="shrink-0">PYQs</span>
+                        </div>
+                        <div style={{ width: '1px', height: '16px', background: 'rgba(0, 133, 255, 0.2)' }} className="shrink-0" />
+                        <div className="flex items-baseline gap-1.5 shrink-0 whitespace-nowrap">
+                            <span className="text-[#0085FF] font-bold tracking-tight shrink-0">Weekly</span>
+                            <span style={{ color: '#0085FF', fontSize: '11px', fontWeight: 500 }} className="shrink-0">Sessions</span>
+                        </div>
                     </div>
 
-                    {/* CTA */}
+                    {/* Right: CTA */}
                     <Link
                         href="/auth/signup"
-                        className="bg-white text-[#0085ff] rounded-full px-6 py-2.5 text-sm font-bold hover:bg-blue-50 transition-colors shrink-0"
+                        className="shrink-0 transition-transform hover:scale-105 whitespace-nowrap"
+                        style={{
+                            background: '#0085FF',
+                            color: '#ffffff',
+                            borderRadius: '9999px',
+                            padding: '10px 22px',
+                            fontWeight: 600,
+                            fontSize: '14px',
+                            boxShadow: '0 0 16px rgba(0, 133, 255, 0.3)'
+                        }}
                     >
                         Start Free →
                     </Link>
-                </div>
+                </GlowingShadow>
             </div>
 
         </section>

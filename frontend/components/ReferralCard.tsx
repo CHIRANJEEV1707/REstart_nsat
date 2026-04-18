@@ -40,19 +40,24 @@ export function ReferralCard() {
 
     return (
         <>
-            <div className="bg-[#0a0f1e] rounded-2xl p-8 text-white text-center relative overflow-hidden my-8">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#0085ff]/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+            <div 
+                className="rounded-2xl p-8 text-center relative overflow-hidden my-8 border border-[rgba(0,133,255,0.2)]"
+                style={{
+                    background: 'radial-gradient(ellipse at 50% 0%, rgba(0,133,255,0.06) 0%, #ffffff 70%), #ffffff',
+                    boxShadow: '0 0 0 1px rgba(0, 133, 255, 0.1), 0 8px 40px rgba(0, 133, 255, 0.12)'
+                }}
+            >
                 <div className="relative z-10 max-w-3xl mx-auto">
-                    <Sparkles className="w-8 h-8 text-yellow-400 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold mb-2">Registered for NSAT using our Referral Link?</h2>
-                    <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-                        If you used our special referral link to apply for NSAT 2025, you are eligible for the <span className="font-bold text-white">Core Pack (Worth ₹800)</span> absolutely FREE!
+                    <Sparkles className="w-8 h-8 text-[#0085FF] mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold mb-2 text-[#0a0a0a]">Registered for NSAT using our Referral Link?</h2>
+                    <p className="text-[#444444] mb-6 max-w-2xl mx-auto">
+                        If you used our special referral link to apply for NSAT 2025, you are eligible for the <span className="font-bold text-[#0085FF]">Core Pack (Worth ₹800)</span> absolutely FREE!
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Button
                             variant="outline"
-                            className="bg-transparent text-white border-white/30 hover:bg-white/10 gap-2 min-w-[160px]"
+                            className="bg-[#ffffff] text-[#0085FF] border border-[rgba(0,133,255,0.3)] hover:bg-[rgba(0,133,255,0.05)] hover:text-[#0085FF] gap-2 min-w-[160px]"
                             onClick={handleCopy}
                         >
                             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -60,6 +65,7 @@ export function ReferralCard() {
                         </Button>
                         <Button
                             className="bg-[#0085ff] text-white hover:bg-blue-500 font-semibold min-w-[200px]"
+                            style={{ boxShadow: '0 0 16px rgba(0,133,255,0.3)' }}
                             onClick={() => setIsClaimOpen(true)}
                         >
                             Get Details & Claim Reward

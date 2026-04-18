@@ -26,7 +26,7 @@ export default function ProfilePage() {
 
     if (isLoading) return (
         <div className="h-screen flex items-center justify-center">
-            <Loader2 className="animate-spin text-indigo-600 w-8 h-8" />
+            <Loader2 className="animate-spin text-[#0085ff] w-8 h-8" />
         </div>
     );
 
@@ -37,7 +37,7 @@ export default function ProfilePage() {
             {/* Page Header */}
             <div className="mb-8">
                 <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[#0085ff]" style={{ background: 'rgba(0,133,255,0.08)' }}>
                         <User size={22} />
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -246,11 +246,11 @@ function PreferencesSection({ user }: { user: any }) {
 
 
                 {/* New-Gen College Preference (High Signal) */}
-                <div className="p-5 border border-indigo-100 bg-indigo-50/50 rounded-xl space-y-3">
+                <div className="p-5 rounded-xl space-y-3" style={{ border: '1px solid rgba(0,133,255,0.18)', background: 'rgba(0,133,255,0.03)' }}>
                     <div className="flex items-start justify-between">
                         <div>
-                            <h3 className="font-semibold text-indigo-950">New-Gen College Preference</h3>
-                            <p className="text-xs text-indigo-800/80 mt-1 max-w-lg">
+                            <h3 className="font-semibold text-gray-900">New-Gen College Preference</h3>
+                            <p className="text-xs text-gray-500 mt-1 max-w-lg">
                                 New-Gen colleges focus on industry-driven curriculum, startup exposure, and modern learning models (e.g. Newton School of Technology, Scaler School of Technology).
                             </p>
                         </div>
@@ -265,17 +265,15 @@ function PreferencesSection({ user }: { user: any }) {
                             <div
                                 key={option.id}
                                 onClick={() => setFormData({ ...formData, collegeTypePreference: option.id })}
-                                className={`
-                                    relative flex flex-col items-center justify-center p-3 rounded-lg border-2 cursor-pointer transition-all
-                                    ${formData.collegeTypePreference === option.id
-                                        ? 'border-indigo-600 bg-white shadow-sm ring-1 ring-indigo-600'
-                                        : 'border-transparent bg-white hover:bg-gray-50 border-gray-200'}
-                                `}
+                                className="relative flex flex-col items-center justify-center p-3 rounded-lg border-2 cursor-pointer transition-all bg-white"
+                                style={formData.collegeTypePreference === option.id
+                                    ? { borderColor: '#0085ff', boxShadow: '0 0 0 1px #0085ff' }
+                                    : { borderColor: 'rgba(0,133,255,0.12)' }}
                             >
-                                <option.icon className={`w-5 h-5 mb-2 ${formData.collegeTypePreference === option.id ? 'text-indigo-600' : 'text-gray-500'}`} />
+                                <option.icon className={`w-5 h-5 mb-2 ${formData.collegeTypePreference === option.id ? 'text-[#0085ff]' : 'text-gray-500'}`} />
                                 <span className="font-medium text-sm text-gray-900">{option.label}</span>
                                 {formData.collegeTypePreference === option.id && (
-                                    <div className="absolute top-2 right-2 text-indigo-600">
+                                    <div className="absolute top-2 right-2 text-[#0085ff]">
                                         <Check className="w-3 h-3" />
                                     </div>
                                 )}
@@ -283,7 +281,7 @@ function PreferencesSection({ user }: { user: any }) {
                         ))}
                     </div>
                     {!formData.collegeTypePreference && (
-                        <p className="text-xs text-amber-600 font-medium">Please select a preference to save.</p>
+                        <p className="text-xs text-[#0085ff] font-medium">Please select a preference to save.</p>
                     )}
                 </div>
 
@@ -507,7 +505,7 @@ function ExamScoresSection({ user }: { user: any }) {
                                 </button>
                             ))}
                         </div>
-                        {selectedDegreeFilter.length === 0 && <p className="text-xs text-amber-600 mt-1">Please select at least one degree to see exams.</p>}
+                        {selectedDegreeFilter.length === 0 && <p className="text-xs text-[#0085ff] mt-1">Please select at least one degree to see exams.</p>}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

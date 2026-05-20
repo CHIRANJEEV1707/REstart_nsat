@@ -56,7 +56,14 @@ app.use(helmetConfig);
 const allowedOrigins = [
     "https://www.letsrestart.in",
     "https://letsrestart.in",
+    // Vercel preview & production deployments
+    /https:\/\/.*\.vercel\.app$/,
 ];
+
+// Add custom frontend URL from env (e.g. custom domain)
+if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+}
 
 if (process.env.NODE_ENV !== 'production') {
     allowedOrigins.push("http://localhost:3000");
@@ -65,10 +72,12 @@ if (process.env.NODE_ENV !== 'production') {
 
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
-        if (allowedOrigins.indexOf(origin) !== -1) {
+        const allowed = allowedOrigins.some(o =>
+            typeof o === 'string' ? o === origin : o.test(origin)
+        );
+        if (allowed) {
             callback(null, true);
         } else {
             logger.warn(`CORS blocked request from origin: ${origin}`);

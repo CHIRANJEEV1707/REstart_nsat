@@ -25,7 +25,7 @@ interface MockTest {
     isFree: boolean;
     isPremium: boolean;
     difficulty: 'easy' | 'medium' | 'hard';
-    requiredBundle?: 'free' | 'basic' | 'core' | 'premium';
+    requiredBundle?: 'free' | 'premium';
     testCategory?: 'general' | 'coding';
 }
 
@@ -127,127 +127,33 @@ export default function MockTestsPage() {
 
     const allTests = testsData || [];
 
-    const getTestTier = (test: MockTest): number => {
-        const tiers: Record<string, number> = { 'free': 0, 'basic': 1, 'core': 2, 'premium': 3 };
-        if (test.requiredBundle && tiers[test.requiredBundle] !== undefined) return tiers[test.requiredBundle];
+    // 0 = free tier (Tests 01-04), 1 = premium tier (Tests 05-10)
+    const getTestTier = (test: MockTest): 0 | 1 => {
+        if (test.requiredBundle === 'free' || test.isFree) return 0;
+        if (test.requiredBundle === 'premium') return 1;
 
-        // If test is marked as free, it's tier 0
-        if (test.isFree) return 0;
-
-        // Extract test number from title (e.g., "Mock 3", "Test 01", "Test 10")
-        const title = (test.title || '').toLowerCase();
-        const numberMatch = title.match(/(?:mock|test)\s*(\d+)/i) || title.match(/(\d+)$/);
-        const testNumber = numberMatch ? parseInt(numberMatch[1], 10) : 0;
-
-        console.log(`[DEBUG] getTestTier: ${test.title} -> Number: ${testNumber}`);
-
-        // Tier assignment based on test number - all paid mocks:
-        // Tests 1-3 = Basic (tier 1)
-        // Tests 4-5 = Core (tier 2)
-        // Tests 6+ = Premium (tier 3)
-        if (testNumber >= 1 && testNumber <= 3) return 1;
-        if (testNumber >= 4 && testNumber <= 5) return 2;
-        if (testNumber >= 6) return 3;
-
-        // Fallback: If no number found, check for common keywords
-        if (title.includes('interview') || title.includes('practice')) return 1;
-
-        return 1; // Default to Basic for safety
+        // Fallback: infer from title number
+        const match = (test.title || '').match(/(?:mock|test)\s*(?:test\s*)?(\d+)/i) || (test.title || '').match(/(\d+)$/);
+        const num = match ? parseInt(match[1], 10) : 99;
+        return num >= 1 && num <= 4 ? 0 : 1;
     };
 
     const canAccessTest = (test: MockTest) => {
-        if (test.isFree) return true;
-        const requiredTier = getTestTier(test);
-        if (requiredTier === 0) return true;
-
-        if (!user?.purchasedBundles?.length) {
-            console.log(`[DEBUG_ACCESS] ${test.title}: No bundles`);
-            return false;
-        }
-
-        const result = user.purchasedBundles.some((bundle: any) => {
-            if (bundle.verificationStatus !== 'active' && bundle.verificationStatus !== 'approved') {
-                console.log(`[DEBUG_ACCESS] ${test.title}: Bundle ${bundle.productSlug} status is ${bundle.verificationStatus}`);
-                return false;
-            }
-
-            // 1. Determine Bundle Tier
-            let bundleTier = 0;
-            const slug = bundle.productSlug?.toLowerCase() || '';
-            const variant = bundle.bundleId?.variant || 'combined'; // Default to combined if missing
-
-            if (slug.includes('premium')) bundleTier = 3;
-            else if (slug.includes('core')) bundleTier = 2;
-            else if (slug.includes('basic')) bundleTier = 1;
-
-            console.log(`[DEBUG_ACCESS] ${test.title}: Slug=${slug}, BundleTier=${bundleTier}, RequiredTier=${requiredTier}, Variant=${variant}`);
-
-            // 2. Check Tier Level
-            if (bundleTier < requiredTier) {
-                console.log(`[DEBUG_ACCESS] ${test.title}: Tier check FAILED (${bundleTier} < ${requiredTier})`);
-                return false;
-            }
-
-            // 3. Check Granularity (Variant)
-            const testCategory = test.testCategory || (test.examType === 'coding-nsat' ? 'coding' : 'general');
-
-            if (variant === 'combined') {
-                console.log(`[DEBUG_ACCESS] ${test.title}: PASSED (combined variant)`);
-                return true;
-            }
-            if (variant === 'general' && testCategory === 'general') {
-                console.log(`[DEBUG_ACCESS] ${test.title}: PASSED (general match)`);
-                return true;
-            }
-            if (variant === 'coding' && testCategory === 'coding') {
-                console.log(`[DEBUG_ACCESS] ${test.title}: PASSED (coding match)`);
-                return true;
-            }
-
-            console.log(`[DEBUG_ACCESS] ${test.title}: Variant check FAILED (variant=${variant}, category=${testCategory})`);
-            return false;
-        });
-
-        return result;
+        const tier = getTestTier(test);
+        if (tier === 0) return accessLevel === 'free' || accessLevel === 'premium';
+        return accessLevel === 'premium';
     };
 
-    // DEBUGGING LOGS
-    console.log('[DEBUG] MockTestsPage: Raw API Response (allTests)', allTests.length, allTests);
-    console.log('[DEBUG] MockTestsPage: User Object', user);
-    console.log('[DEBUG] MockTestsPage: Purchased Bundles', user?.purchasedBundles);
-
-    const tests = allTests.filter(t => {
-        const fullMockCheck = isFullMock(t);
-        const relevanceCheck = getUserRelevance(t);
-        const accessCheck = canAccessTest(t);
-
-        console.log(`[DEBUG] Test: ${t.title} (ID: ${t._id})`);
-        console.log(`\tIs Full Mock? ${fullMockCheck} (QCount: ${t.questionCount})`);
-        console.log(`\tIs Relevant? ${relevanceCheck}`);
-        console.log(`\tUser Has Access? ${accessCheck}`);
-        console.log(`\tExamType: ${t.examType}, Category: ${t.testCategory}`);
-
-        return fullMockCheck && relevanceCheck;
-    });
-
-    // Filter tests for display (only isFullMock check, show all tiers)
     const displayTests = allTests.filter(t => isFullMock(t));
 
-    console.log('[DEBUG] MockTestsPage: Display Tests (isFullMock only)', displayTests.length);
-
-    // Group tests by Tier for UI - show ALL tiers, lock/unlock based on access
     const tierGroups = {
         free: displayTests.filter(t => getTestTier(t) === 0),
-        basic: displayTests.filter(t => getTestTier(t) === 1),
-        core: displayTests.filter(t => getTestTier(t) === 2),
-        premium: displayTests.filter(t => getTestTier(t) === 3),
+        premium: displayTests.filter(t => getTestTier(t) === 1),
     };
 
     const renderTestCard = (test: MockTest) => {
         const hasAccess = canAccessTest(test);
-        const requiredTier = getTestTier(test);
-        const tierNames = ['Free', 'Basic', 'Core', 'Premium'];
-        const requiredLabel = tierNames[requiredTier] || 'Premium';
+        const requiredLabel = getTestTier(test) === 0 ? 'Free Pack' : 'Premium';
         const testHasQuestions = hasQuestions(test);
 
         // Filter Check
@@ -288,7 +194,7 @@ export default function MockTestsPage() {
                         </Button>
                     ) : hasAccess ? (
                         <Link href={`/prep/nsat/mock-tests/${test.slug}`} className="w-full">
-                            <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">Start Test</Button>
+                            <Button size="sm" className="w-full text-white" style={{ background: '#0085ff' }}>Start Test</Button>
                         </Link>
                     ) : (
                         <Link href="/prep/nsat" className="w-full">
@@ -333,9 +239,10 @@ export default function MockTestsPage() {
                                 key={type}
                                 onClick={() => setFilter(type)}
                                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${filter === type
-                                    ? 'bg-blue-50 text-blue-700'
+                                    ? 'text-[#0085ff]'
                                     : 'text-gray-500 hover:text-gray-900'
                                     }`}
+                                style={filter === type ? { background: 'rgba(0,133,255,0.08)' } : undefined}
                             >
                                 {type.charAt(0).toUpperCase() + type.slice(1)}
                             </button>
@@ -372,38 +279,10 @@ export default function MockTestsPage() {
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="h-8 w-1 bg-green-500 rounded-full"></div>
                                     <h2 className="text-xl font-bold text-gray-900">Free Tests</h2>
-                                    <Badge className="bg-green-100 text-green-700">Open for everyone</Badge>
+                                    <Badge className="bg-green-100 text-green-700">Claim free pack to access</Badge>
                                 </div>
                                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                                     {tierGroups.free.map(renderTestCard)}
-                                </div>
-                            </section>
-                        )}
-
-                        {/* Basic Tier */}
-                        {tierGroups.basic.length > 0 && (
-                            <section>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="h-8 w-1 bg-blue-500 rounded-full"></div>
-                                    <h2 className="text-xl font-bold text-gray-900">Basic Tier</h2>
-                                    <Badge variant="outline">Fundamental Practice</Badge>
-                                </div>
-                                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    {tierGroups.basic.map(renderTestCard)}
-                                </div>
-                            </section>
-                        )}
-
-                        {/* Core Tier */}
-                        {tierGroups.core.length > 0 && (
-                            <section>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="h-8 w-1 bg-purple-500 rounded-full"></div>
-                                    <h2 className="text-xl font-bold text-gray-900">Core Tier</h2>
-                                    <Badge variant="outline">Advanced Scenarios</Badge>
-                                </div>
-                                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    {tierGroups.core.map(renderTestCard)}
                                 </div>
                             </section>
                         )}
@@ -412,9 +291,9 @@ export default function MockTestsPage() {
                         {tierGroups.premium.length > 0 && (
                             <section>
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="h-8 w-1 bg-amber-500 rounded-full"></div>
-                                    <h2 className="text-xl font-bold text-gray-900">Premium Tier</h2>
-                                    <Badge variant="outline">Complete Mastery</Badge>
+                                    <div className="h-8 w-1 rounded-full" style={{ background: '#0085ff' }}></div>
+                                    <h2 className="text-xl font-bold text-gray-900">Premium Tests</h2>
+                                    <Badge variant="outline" className="text-[#0085ff] border-[rgba(0,133,255,0.3)]">₹800 — Lifetime access</Badge>
                                 </div>
                                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                                     {tierGroups.premium.map(renderTestCard)}

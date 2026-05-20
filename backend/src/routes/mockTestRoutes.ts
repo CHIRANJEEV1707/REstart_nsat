@@ -8,27 +8,17 @@ import { protect } from '../middleware/auth';
 
 const router = express.Router();
 
-// Helper to check premium access
+// Helper to check premium access (requires nsat-premium bundle)
 const hasPremiumAccess = async (userId: string) => {
     try {
         const user = await User.findById(userId);
-        console.log(`[DEBUG_AUTH] User: ${userId} - Bundles: ${user?.purchasedBundles?.length}`);
-
-        // Debugging Bypass for specific user email (if you want to hardcode for safety)
-        if (user?.email === 'sahil.khan@adypu.edu.in') {
-            console.log('[DEBUG_AUTH] *** BYPASS GRANTED FOR SUPER USER ***');
-            // return true; // Uncomment if you want to force it, but let's check bundles first
-        }
-
-        if (user && user.purchasedBundles && user.purchasedBundles.length > 0) {
-            user.purchasedBundles.forEach((b: any, i: number) => {
-                console.log(`[DEBUG_AUTH] Bundle ${i}: Slug=${b.productSlug}, Status=${b.verificationStatus}`);
-            });
-            return true;
-        }
-        return false;
+        if (!user?.purchasedBundles?.length) return false;
+        return user.purchasedBundles.some((b: any) =>
+            (b.verificationStatus === 'active' || b.verificationStatus === 'approved') &&
+            b.productSlug?.includes('premium')
+        );
     } catch (e) {
-        console.error('[DEBUG_AUTH] Error:', e);
+        console.error('[hasPremiumAccess] Error:', e);
         return false;
     }
 };
@@ -51,7 +41,7 @@ router.get('/', async (req: Request, res: Response) => {
         if (examType) filter.examType = examType;
 
         const tests = await MockTest.find(filter)
-            .select('title slug description examType duration totalMarks sections isFree isPremium difficulty order')
+            .select('title slug description examType duration totalMarks sections isFree isPremium requiredBundle difficulty order')
             .sort({ order: 1, createdAt: -1 });
 
         // Get question counts using aggregation
@@ -120,26 +110,18 @@ router.post('/:slug/start', protect, async (req: any, res: Response) => {
 
 
 
-        console.log(`[DEBUG_START] ===============================`);
-        console.log(`[DEBUG_START] Slug: ${req.params.slug}`);
-        console.log(`[DEBUG_START] Test Found: ${test.title} (isFree: ${test.isFree})`);
-        console.log(`[DEBUG_START] User ID: ${req.user._id}`);
-        console.log(`[DEBUG_START] User Email: ${req.user.email}`);
-        console.log(`[DEBUG_START] User Bundles: ${JSON.stringify(req.user.purchasedBundles)}`);
-        console.log(`[DEBUG_START] isPremium: ${isPremium}`);
-        console.log(`[DEBUG_START] hasFreeAccess: ${hasFree}`);
-        console.log(`[DEBUG_START] ===============================`);
-
-        if (!test.isFree && !isPremium) {
-            console.log('[DEBUG_START] Access Blocked - Not Premium & Not Free Test');
-            // Check if it's a free pack test and user has claimed
-            // Logic seems contradictory? If test.isFree is false, then !test.isFree is true.
-            // So (!hasFree || true) -> always true.
-            // This implies: If test is NOT free, and user is NOT premium, they ALWAYS get 403.
-            // Even if they claimed the free pack?
-            // "Free Pack" likely grants access to specific tests? Or just "freepack" variant?
-
-            if (!hasFree || !test.isFree) {
+        // Access control: free tests need free-pack claim or premium; premium tests need premium bundle
+        const isFreeTest = test.isFree || test.requiredBundle === 'free';
+        if (isFreeTest) {
+            if (!hasFree && !isPremium) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Please claim your free pack to access this test',
+                    requiresFreePack: true
+                });
+            }
+        } else {
+            if (!isPremium) {
                 return res.status(403).json({
                     success: false,
                     message: 'Premium access required',

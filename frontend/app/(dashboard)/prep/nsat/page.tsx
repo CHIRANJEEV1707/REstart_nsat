@@ -16,7 +16,6 @@ export default function NSATPrepPage() {
     const { user, isLoading: authLoading } = useAuth();
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
     const [showUpgrade, setShowUpgrade] = useState(false);
-    const [stream, setStream] = useState<'general' | 'coding' | 'combined'>('combined');
 
     // Fetch access status
     const { data: accessData, refetch: refetchAccess, isLoading: queryLoading } = useQuery({
@@ -58,77 +57,6 @@ export default function NSATPrepPage() {
             </div>
         );
     }
-
-    const getPackages = () => {
-        const isCombined = stream === 'combined';
-        const isCoding = stream === 'coding';
-        const streamLabel = isCombined ? 'Combined' : (isCoding ? 'Coding' : 'General');
-
-        return [
-            {
-                title: `Premium Pack (${streamLabel})`,
-                slug: isCombined ? "nsat-premium" : `nsat-premium-${stream}`,
-                price: isCombined ? 1000 : 800,
-                originalPrice: isCombined ? 1500 : 1200,
-                bestFor: "Maximum Preparation",
-                features: [
-                    isCombined ? "All 20 Mock Tests (10 General + 10 Coding)" : `10 ${streamLabel} Mock Tests`,
-                    isCombined ? "All PYQ Papers" : `All ${streamLabel} PYQ Papers`,
-                    "VIP WhatsApp Group",
-                    "Priority Interview Scheduling",
-                    "1-on-1 Doubt Support",
-                    "Lifetime Access"
-                ],
-                outcome: "Get everything you need to ace NSAT and secure admission.",
-                duration: "Lifetime Access",
-                color: "",
-                btnColor: "bg-[#0085ff] hover:bg-[#0070d9] text-white",
-                btnVariant: "default",
-                whatsappLink: "https://chat.whatsapp.com/FSGst6uURfRDCjUwPe8kof",
-                popular: isCombined // Combined premium is usually most promoted
-            },
-            {
-                title: `Core Pack (${streamLabel})`,
-                slug: isCombined ? "nsat-core" : `nsat-core-${stream}`,
-                price: isCombined ? 800 : 500,
-                originalPrice: isCombined ? 1200 : 800,
-                popular: !isCombined, // Highlight Core for specific streams
-                bestFor: "Serious About Success?",
-                features: [
-                    isCombined ? "5 Mock Tests (General + Coding)" : `5 ${streamLabel} Mock Tests`,
-                    isCombined ? "5 PYQ Papers" : `5 ${streamLabel} PYQ Papers`,
-                    "Exclusive WhatsApp Community",
-                    "Direct Interview Coordination",
-                    "Priority Support"
-                ],
-                outcome: "Build confidence with expert guidance and community support.",
-                duration: "Until exams end",
-                color: "",
-                btnColor: "bg-[#0085ff] hover:bg-[#0070d9] text-white",
-                btnVariant: "default",
-                whatsappLink: "https://chat.whatsapp.com/Dv5cSSZUPeC7egTbJ43fwF"
-            },
-            {
-                title: `Basic Pack (${streamLabel})`,
-                slug: isCombined ? "nsat-basic" : `nsat-basic-${stream}`,
-                price: isCombined ? 500 : 300,
-                bestFor: "Start Your NSAT Prep",
-                features: [
-                    isCombined ? "3 Full Mock Tests" : `3 ${streamLabel} Mock Tests`,
-                    isCombined ? "3 Real PYQ Papers" : `3 ${streamLabel} PYQ Papers`,
-                    "Interview Question Bank",
-                    "Detailed Solutions",
-                    "Email Support"
-                ],
-                outcome: "Get started with essential preparation resources.",
-                duration: "Until exams end",
-                color: "",
-                btnVariant: "outline"
-            }
-        ]
-    };
-
-    const packages = getPackages();
 
     // Helper to check if purchased
     const isPurchased = (slug: string) => {
@@ -276,7 +204,7 @@ export default function NSATPrepPage() {
                                         </div>
                                         <h2 className="text-2xl font-bold text-gray-900 mb-2">Claim Your Free Starter Pack</h2>
                                         <p className="text-gray-600 max-w-xl">
-                                            Get instant access to <strong>1 Full-length NSAT Mock Test</strong>, <strong>1 Coding Mock Test</strong>, and <strong>Previous Year Questions</strong> - completely FREE!
+                                            Get instant access to <strong>4 Full-length General Mock Tests</strong> and <strong>4 Coding Mock Tests</strong> — completely FREE!
                                         </p>
                                     </div>
                                     <Button
@@ -294,88 +222,103 @@ export default function NSATPrepPage() {
 
 
 
-                        {/* Stream Selection */}
-                        <div className="flex justify-center mb-8">
-                            <div className="bg-white p-1.5 rounded-xl inline-flex" style={{ border: '1px solid rgba(0,133,255,0.18)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                                {(['combined', 'general', 'coding'] as const).map((s) => (
-                                    <button
-                                        key={s}
-                                        onClick={() => setStream(s)}
-                                        className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${stream === s
-                                            ? 'text-white shadow-md'
-                                            : 'text-gray-500 hover:text-gray-900 hover:bg-[rgba(0,133,255,0.04)]'
-                                            }`}
-                                        style={stream === s ? { background: '#0085ff' } : {}}
-                                    >
-                                        {s.charAt(0).toUpperCase() + s.slice(1)}
-                                    </button>
-                                ))}
+                        {/* Pricing Cards — Free vs Premium */}
+                        <div className="grid md:grid-cols-2 gap-8 items-start max-w-3xl mx-auto mb-12">
+                            {/* Free Card */}
+                            <div className="relative bg-white rounded-3xl p-8 flex flex-col h-full hover:shadow-lg transition-all duration-300" style={{ border: '1px solid rgba(0,133,255,0.12)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                                <div className="mb-6">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3 bg-green-100 text-green-700">
+                                        <Gift className="w-3.5 h-3.5" /> FREE
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-1">Starter Pack</h3>
+                                    <p className="text-sm text-gray-500 mb-4">Begin your NSAT journey</p>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-4xl font-extrabold text-gray-900">₹0</span>
+                                        <span className="text-gray-400 font-medium">/ forever</span>
+                                    </div>
+                                </div>
+                                <ul className="space-y-3 flex-1 mb-8">
+                                    {[
+                                        '4 Full-length General Mock Tests',
+                                        '4 Full-length Coding Mock Tests',
+                                        'Detailed solutions & analytics',
+                                        'Performance tracking dashboard',
+                                    ].map((feat, i) => (
+                                        <li key={i} className="flex items-start gap-3 text-gray-700">
+                                            <div className="mt-1 p-0.5 rounded-full text-[#0085ff]" style={{ background: 'rgba(0,133,255,0.08)' }}>
+                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span className="text-sm leading-relaxed">{feat}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Button
+                                    size="lg"
+                                    onClick={() => !hasFreePack && claimMutation.mutate()}
+                                    disabled={hasFreePack || claimMutation.isPending}
+                                    className={`w-full rounded-xl py-6 text-base font-semibold transition-all ${hasFreePack ? 'bg-green-100 text-green-700 cursor-default' : 'bg-white text-[#0085ff] hover:bg-[rgba(0,133,255,0.06)]'}`}
+                                    style={!hasFreePack ? { border: '1.5px solid #0085ff' } : undefined}
+                                >
+                                    {hasFreePack ? (
+                                        <span className="flex items-center gap-2"><CheckCircle className="w-5 h-5" /> Active</span>
+                                    ) : claimMutation.isPending ? 'Claiming...' : 'Claim Free Pack'}
+                                </Button>
+                            </div>
+
+                            {/* Premium Card */}
+                            <div className="relative bg-white rounded-3xl p-8 flex flex-col h-full shadow-xl scale-[1.02]" style={{ border: '2px solid #0085ff', boxShadow: '0 8px 40px rgba(0,133,255,0.18)' }}>
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide" style={{ background: '#0085ff' }}>
+                                    MOST POPULAR
+                                </div>
+                                <div className="mb-6">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3" style={{ background: 'rgba(0,133,255,0.08)', color: '#0085ff' }}>
+                                        <Sparkles className="w-3.5 h-3.5" /> PREMIUM
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-1">Premium Pack</h3>
+                                    <p className="text-sm text-gray-500 mb-4">Complete NSAT mastery</p>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-4xl font-extrabold text-gray-900">₹800</span>
+                                        <span className="text-gray-400 font-medium">/ lifetime</span>
+                                    </div>
+                                </div>
+                                <ul className="space-y-3 flex-1 mb-8">
+                                    {[
+                                        'All 10 General + 10 Coding Mock Tests',
+                                        'Full PYQ library',
+                                        'VIP WhatsApp community',
+                                        'Interview prep priority support',
+                                        'Lifetime access',
+                                    ].map((feat, i) => (
+                                        <li key={i} className="flex items-start gap-3 text-gray-700">
+                                            <div className="mt-1 p-0.5 rounded-full text-[#0085ff]" style={{ background: 'rgba(0,133,255,0.08)' }}>
+                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span className="text-sm leading-relaxed">{feat}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Button
+                                    size="lg"
+                                    onClick={() => !hasPurchasedAny && setSelectedPackage({ title: 'NSAT Premium Pack', slug: 'nsat-premium', price: 800 })}
+                                    disabled={hasPurchasedAny}
+                                    className={`w-full rounded-xl py-6 text-base font-semibold transition-all ${hasPurchasedAny ? 'bg-green-100 text-green-700 cursor-default' : 'text-white'}`}
+                                    style={!hasPurchasedAny ? { background: '#0085ff', boxShadow: '0 4px 16px rgba(0,133,255,0.30)' } : undefined}
+                                    onMouseEnter={e => !hasPurchasedAny && (e.currentTarget.style.background = '#0070d9')}
+                                    onMouseLeave={e => !hasPurchasedAny && (e.currentTarget.style.background = '#0085ff')}
+                                >
+                                    {hasPurchasedAny ? (
+                                        <span className="flex items-center gap-2"><CheckCircle className="w-5 h-5" /> Active</span>
+                                    ) : 'Get Premium — ₹800'}
+                                </Button>
                             </div>
                         </div>
 
-                        {/* Pricing Grid */}
-                        <div className="grid md:grid-cols-3 gap-8 items-start mb-12">
-                            {packages.map((pkg, idx) => {
-                                const purchased = isPurchased(pkg.slug);
-                                return (
-                                    <div key={idx} className={`relative bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col h-full ${pkg.popular ? 'shadow-xl scale-105 z-10' : 'hover:shadow-lg'}`} style={pkg.popular ? { border: '2px solid #0085ff', boxShadow: '0 8px 40px rgba(0,133,255,0.18)' } : { border: '1px solid rgba(0,133,255,0.12)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                                        {pkg.popular && (
-                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md tracking-wide" style={{ background: '#0085ff' }}>
-                                                MOST POPULAR
-                                            </div>
-                                        )}
-                                        <div className="mb-6">
-                                            <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
-                                            <p className="text-sm text-gray-500 font-medium mb-4">{pkg.bestFor}</p>
-                                            <div className="flex items-baseline gap-1">
-                                                <span className="text-4xl font-extrabold text-gray-900">₹{pkg.price}</span>
-                                                <span className="text-gray-400 font-medium">/ bundle</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex-1 space-y-4 mb-8">
-                                            <ul className="space-y-3">
-                                                {pkg.features.map((feat, i) => (
-                                                    <li key={i} className="flex items-start gap-3 text-gray-700">
-                                                        <div className="mt-1 p-0.5 rounded-full text-[#0085ff]" style={{ background: 'rgba(0,133,255,0.08)' }}>
-                                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                        </div>
-                                                        <span className="text-sm leading-relaxed">{feat}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            <div className="flex items-center gap-2 text-xs text-gray-400 px-1 mt-auto pt-4">
-                                                <span className="font-bold">Duration:</span> {pkg.duration}
-                                            </div>
-                                        </div>
-                                        <Button
-                                            size="lg"
-                                            onClick={() => {
-                                                if (purchased) {
-                                                    // Already purchased
-                                                } else {
-                                                    setSelectedPackage(pkg);
-                                                }
-                                            }}
-                                            disabled={purchased}
-                                            className={`w-full rounded-xl py-6 text-base font-semibold shadow-sm transition-all ${purchased
-                                                ? 'bg-green-100 text-green-700 border-transparent cursor-default'
-                                                : (pkg.btnColor || 'bg-white text-[#0085ff] hover:bg-[rgba(0,133,255,0.06)]')
-                                                }`}
-                                            style={!purchased && !pkg.btnColor ? { border: '1.5px solid #0085ff' } : undefined}
-                                        >
-                                            {purchased ? (
-                                                <span className="flex items-center gap-2"><CheckCircle className="w-5 h-5" /> Active</span>
-                                            ) : 'Get Started'}
-                                        </Button>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
                         {/* Referral Card (Bottom) */}
-                        {!isPurchased('nsat-core') && !isPurchased('nsat-premium') && <ReferralCard />}
+                        {!isPurchased('nsat-premium') && <ReferralCard />}
                     </>
                 ) : (
                     // Student Dashboard View

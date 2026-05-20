@@ -8,6 +8,7 @@
     "dev": "nodemon src/server.ts",
     "seed": "ts-node src/seed.ts",
     "seed:nsat": "ts-node src/scripts/seedNsat.ts",
+    "seed:nsatv2": "ts-node src/scripts/seedNsatV2.ts",
     "seed:newgen": "ts-node src/seedNewGen.ts",
     "seed:iits": "ts-node src/seedIITs.ts",
     "seed:nits": "ts-node src/seedNITs.ts",

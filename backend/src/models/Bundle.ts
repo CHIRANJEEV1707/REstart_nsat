@@ -12,7 +12,7 @@ export interface IBundle extends Document {
     validityDays: number;
     isActive: boolean;
     // Tier-based access
-    tier: 'basic' | 'core' | 'premium';
+    tier: 'free' | 'premium';
     variant: 'general' | 'coding' | 'combined';
     mocksIncluded: number;
     pyqsIncluded: number;
@@ -36,7 +36,7 @@ const BundleSchema = new Schema<IBundle>({
     // Tier-based access
     tier: {
         type: String,
-        enum: ['basic', 'core', 'premium'],
+        enum: ['free', 'premium'],
         required: true,
         index: true
     },

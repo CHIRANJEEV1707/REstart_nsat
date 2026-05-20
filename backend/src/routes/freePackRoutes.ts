@@ -5,12 +5,36 @@ import { protect } from '../middleware/auth';
 
 const router = express.Router();
 
-// @desc    Claim free pack
-// @route   POST /api/free-pack/claim
+const getStatus = async (userId: string) => {
+    const claim = await FreePackClaim.findOne({ userId });
+    const user = await User.findById(userId);
+    const isPremium = (user?.purchasedBundles || []).some((b: any) =>
+        (b.verificationStatus === 'active' || b.verificationStatus === 'approved') &&
+        b.productSlug?.includes('premium')
+    );
+    return {
+        hasFreepack: !!claim,
+        claimedAt: claim?.claimedAt,
+        isPremium,
+        accessLevel: isPremium ? 'premium' : (claim ? 'free' : 'none')
+    };
+};
+
+// @desc    Check free pack status (root path used by frontend)
+// @route   GET /api/free-pack
 // @access  Private
-router.post('/claim', protect, async (req: any, res: Response) => {
+router.get('/', protect, async (req: any, res: Response) => {
     try {
-        // Check if already claimed
+        const data = await getStatus(req.user._id);
+        res.json({ success: true, data });
+    } catch (error: any) {
+        console.error('[Free Pack Status Error]', error);
+        res.status(500).json({ success: false, message: 'Failed to check status' });
+    }
+});
+
+const claimHandler = async (req: any, res: Response) => {
+    try {
         const existingClaim = await FreePackClaim.findOne({ userId: req.user._id });
 
         if (existingClaim) {
@@ -22,14 +46,11 @@ router.post('/claim', protect, async (req: any, res: Response) => {
             });
         }
 
-        // Get user details
         const user = await User.findById(req.user._id);
-
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        // Create claim
         const claim = await FreePackClaim.create({
             userId: req.user._id,
             email: user.email,
@@ -40,64 +61,34 @@ router.post('/claim', protect, async (req: any, res: Response) => {
             source: req.body.source || 'direct'
         });
 
-        // GRANT BUNDLE
-        // Grant "Core Pack" based on stream.
-        const stream = req.body.stream || 'general';
-        // If stream is generic, map to specific slug
-        let bundleSlug = 'nsat-core'; // Default combined
-        if (stream === 'general') bundleSlug = 'nsat-core-general';
-        if (stream === 'coding') bundleSlug = 'nsat-core-coding';
-
-        const Bundle = require('../models/Bundle').default;
-        const bundle = await Bundle.findOne({ slug: bundleSlug });
-
-        // Fallback to combined if specific not found
-        const finalBundle = bundle || await Bundle.findOne({ slug: 'nsat-core' });
-
-        if (finalBundle) {
-            const alreadyHas = user.purchasedBundles.some((b: any) => b.bundleId.toString() === finalBundle._id.toString());
-            if (!alreadyHas) {
-                user.purchasedBundles.push({
-                    bundleId: finalBundle._id,
-                    purchasedAt: new Date(),
-                    orderId: 'REFERRAL-CLAIM',
-                    paymentId: 'FREE'
-                });
-                await user.save();
-            }
-        }
-
         res.status(201).json({
             success: true,
-            message: 'Free pack and Core Bundle claimed successfully!',
+            message: 'Free pack claimed successfully!',
             data: claim
         });
     } catch (error: any) {
         console.error('[Free Pack Claim Error]', error);
         res.status(500).json({ success: false, message: 'Failed to claim free pack' });
     }
-});
+};
 
-// @desc    Check free pack status
+// @desc    Claim free pack (root path used by frontend)
+// @route   POST /api/free-pack
+// @access  Private
+router.post('/', protect, claimHandler);
+
+// @desc    Claim free pack (legacy path)
+// @route   POST /api/free-pack/claim
+// @access  Private
+router.post('/claim', protect, claimHandler);
+
+// @desc    Check free pack status (legacy path)
 // @route   GET /api/free-pack/status
 // @access  Private
 router.get('/status', protect, async (req: any, res: Response) => {
     try {
-        const claim = await FreePackClaim.findOne({ userId: req.user._id });
-
-        // Also check premium status
-        const user = await User.findById(req.user._id);
-        const isPremium = (user?.purchasedBundles?.length ?? 0) > 0;
-
-        res.json({
-            success: true,
-            data: {
-                hasFreepack: !!claim,
-                claimedAt: claim?.claimedAt,
-                isPremium,
-                accessLevel: isPremium ? 'premium' : (claim ? 'free' : 'none')
-            }
-        });
+        const data = await getStatus(req.user._id);
+        res.json({ success: true, data });
     } catch (error: any) {
         console.error('[Free Pack Status Error]', error);
         res.status(500).json({ success: false, message: 'Failed to check status' });

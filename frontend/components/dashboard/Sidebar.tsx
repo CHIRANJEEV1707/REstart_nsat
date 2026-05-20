@@ -33,7 +33,7 @@ function PrepProgressCard({ done, total }: { done: number; total: number }) {
                             strokeLinecap="round"
                         />
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#0085ff] rotate-90">
+                    <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#0085ff]">
                         {pct}%
                     </span>
                 </div>

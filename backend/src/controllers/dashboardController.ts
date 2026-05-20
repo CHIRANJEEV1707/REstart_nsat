@@ -1,107 +1,120 @@
 import { Request, Response } from 'express';
 import User from '../models/User';
-import College from '../models/College';
-import Exam from '../models/Exam';
-import { generateAlerts } from '../utils/alertGenerator';
+import TestAttempt from '../models/TestAttempt';
+import Question from '../models/Question';
+import MockTest from '../models/MockTest';
+import SessionBooking from '../models/SessionBooking';
 import logger from '../utils/logger';
 
-// @desc    Get dashboard metrics (Saved, Recommended, Deadlines, Alerts)
+// @desc    Get NSAT dashboard data
 // @route   GET /api/dashboard
-
-// @desc    Get dashboard metrics (Saved, Recommended, Deadlines, Alerts)
-// @route   GET /api/dashboard
+// @access  Private
 export const getDashboardData = async (req: Request, res: Response) => {
     try {
         if (!req.user || !req.user._id) {
-            res.cookie('token', 'none', {
-                expires: new Date(Date.now() + 10 * 1000),
-                httpOnly: true
-            });
             return res.status(401).json({ success: false, message: 'Not authorized' });
         }
-        const user = await User.findById(req.user._id).populate('saved_colleges');
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
-        }
 
-        // 1. Recommendations (Fit Score based on restart_score)
-        let rawRecommendations = [];
-        if (user.state) {
-            rawRecommendations = await College.find({ 'location.state': user.state }).sort('-restart_score').limit(3);
-        } else {
-            rawRecommendations = await College.find().sort('-restart_score').limit(3);
-        }
+        const userId = req.user._id;
 
-        // If not enough recommendations from state, fill with top colleges
-        if (rawRecommendations.length < 3) {
-            const moreColleges = await College.find({ _id: { $nin: rawRecommendations.map((c: any) => c._id) } }).sort('-restart_score').limit(3 - rawRecommendations.length);
-            rawRecommendations = [...rawRecommendations, ...moreColleges];
-        }
+        // ── 1. Completed mock attempts ────────────────────────────────────
+        const attempts = await TestAttempt.find({ userId, status: 'completed' })
+            .populate('mockTestId', 'title slug examType totalMarks')
+            .sort({ completedAt: -1 })
+            .lean();
 
-        const recommendations = rawRecommendations.map((col: any) => ({
-            _id: col._id,
-            name: col.name,
-            logo: '/college-placeholder.png', // Placeholder until image field exists
-            fit_score: Math.round((col.restart_score || 0) * 10), // Convert 0-10 scale to percentage
-            fees: col.fees ? `₹${col.fees.toLocaleString()}/yr` : 'N/A',
-            exam: col.exams_required?.[0] || 'Merit'
+        const mockScores = attempts.map((a: any) => ({
+            testId: a.mockTestId?._id,
+            testTitle: a.mockTestId?.title || 'Unknown Test',
+            testSlug: a.mockTestId?.slug,
+            score: a.totalScore,
+            maxScore: a.maxScore,
+            percentage: a.percentage,
+            completedAt: a.completedAt,
+            attemptId: a._id,
         }));
 
-        // 2. Deadlines (Upcoming Exams)
-        let upcomingExams = [];
-        const today = new Date();
+        // ── 2. Total questions attempted (answered answers across all attempts) ─
+        const totalQuestionsAttempted = attempts.reduce((sum: number, a: any) => {
+            const answered = (a.answers || []).filter(
+                (ans: any) => ans.status === 'answered' || ans.status === 'answered-marked-for-review'
+            ).length;
+            return sum + answered;
+        }, 0);
 
-        // Find exams with upcoming dates
-        upcomingExams = await Exam.find({
-            $or: [
-                { 'dates.registration_end': { $gte: today } },
-                { 'dates.exam_date_start': { $gte: today } }
-            ]
-        }).sort('dates.registration_end').limit(5);
+        // ── 3. Question of the Day (deterministic by date, MCQ only) ─────
+        let questionOfTheDay = null;
+        try {
+            const today = new Date();
+            const dayIndex = today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate();
 
+            const totalQs = await Question.countDocuments({
+                questionType: { $ne: 'coding' },
+                isCoding: { $ne: true },
+                options: { $exists: true, $not: { $size: 0 } },
+            });
 
+            if (totalQs > 0) {
+                const skip = dayIndex % totalQs;
+                const q = await Question.findOne({
+                    questionType: { $ne: 'coding' },
+                    isCoding: { $ne: true },
+                    options: { $exists: true, $not: { $size: 0 } },
+                })
+                    .skip(skip)
+                    .select('questionText options correctAnswer explanation difficulty section')
+                    .lean();
 
-        // ... (imports)
+                if (q) {
+                    questionOfTheDay = {
+                        _id: q._id,
+                        questionText: (q as any).questionText,
+                        options: (q as any).options,
+                        correctAnswer: (q as any).correctAnswer,
+                        explanation: (q as any).explanation,
+                        difficulty: (q as any).difficulty,
+                        section: (q as any).section,
+                    };
+                }
+            }
+        } catch (e) {
+            logger.error('QotD fetch error:', e);
+        }
 
-        // inside getDashboardData
-        // 3. Dynamic Alerts
-        const alerts = generateAlerts(user, upcomingExams);
+        // ── 4. Next upcoming session ──────────────────────────────────────
+        let nextSession = null;
+        try {
+            const booking = await SessionBooking.findOne({
+                userId,
+                status: { $in: ['scheduled', 'paid'] },
+                sessionDate: { $gte: new Date() },
+            })
+                .sort({ sessionDate: 1 })
+                .lean();
 
-        // 4. Fit Overview (Calculated)
-        const savedCount = user.saved_colleges ? user.saved_colleges.length : 0;
-        const fitOverview = {
-            total_matches: rawRecommendations.length,
-            score_range: recommendations.length > 0 ? `${Math.min(...recommendations.map(r => r.fit_score))}% - ${Math.max(...recommendations.map(r => r.fit_score))}%` : 'N/A'
-        };
+            if (booking) {
+                nextSession = {
+                    _id: (booking as any)._id,
+                    topic: (booking as any).sessionType,
+                    sessionDate: (booking as any).sessionDate,
+                    whatsappLink: null,
+                };
+            }
+        } catch (e) {
+            logger.error('Next session fetch error:', e);
+        }
 
         res.status(200).json({
             success: true,
             data: {
-                user: {
-                    name: user.name,
-                    email: user.email,
-                    onboardingCompleted: user.onboardingCompleted,
-                    saved_count: savedCount
-                },
-                fit_overview: fitOverview,
-                saved_colleges: user.saved_colleges ? user.saved_colleges.map((c: any) => ({
-                    _id: c._id,
-                    name: c.name,
-                    tags: c.badges || [],
-                    location: c.location ? `${c.location.city}, ${c.location.state}` : 'Unknown'
-                })) : [],
-                recommendations,
-                deadlines: upcomingExams.map((e: any) => ({
-                    _id: e._id,
-                    name: e.name,
-                    date: e.dates.registration_end || e.dates.exam_date_start,
-                    type: e.dates.registration_end > today ? 'Registration' : 'Exam Date'
-                })),
-                alerts
-            }
+                mockScores,
+                totalQuestionsAttempted,
+                questionOfTheDay,
+                nextSession,
+            },
         });
     } catch (error) {
-        logger.error('Error fetching dashboard data:', error);
+        logger.error('Dashboard error:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

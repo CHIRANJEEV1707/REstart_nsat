@@ -16,6 +16,7 @@ export interface IMockTest extends Document {
     instructions: string[];
     isFree: boolean;
     isPremium: boolean;
+    requiredBundle: 'free' | 'premium';
     isActive: boolean;
     difficulty: 'easy' | 'medium' | 'hard';
     // PYQ specific fields
@@ -49,6 +50,7 @@ const MockTestSchema = new Schema<IMockTest>({
     instructions: [{ type: String }],
     isFree: { type: Boolean, default: false, index: true },
     isPremium: { type: Boolean, default: true },
+    requiredBundle: { type: String, enum: ['free', 'premium'], default: 'premium', index: true },
     isActive: { type: Boolean, default: true, index: true },
     difficulty: {
         type: String,

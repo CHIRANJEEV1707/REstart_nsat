@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react';
 import katex from 'katex';
-import 'katex/dist/katex.min.css';
 
 interface MathRendererProps {
     text: string;
